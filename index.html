@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="hi"> 
+<head>
+  <!-- Meta tags aura links waise hi rahenge -->
+  <meta charset="UTF-8"/>
+  <!-- Dynamic Base URL for GitHub Pages (Adaptive) -->
+  <base href="/apnastore.com/"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apna Store - Local Store</title>
+  <link rel="icon" href="./source/assets/logos/app-logo.png" type="image/jpeg">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./source/main.css" />
+
+  <!-- Set theme color for browser UI -->
+  <meta name="theme-color" id="theme-color-meta" content="#4361ee">
+  <script>
+    // This inline script runs before rendering to prevent a "flash of unstyled content" (FOUC).
+    // It sets the theme class on the <html> element based on user preference or system settings.
+    (function() {
+      const preference = localStorage.getItem('app-theme');
+      const systemIsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      // Use saved preference; otherwise, fall back to system setting.
+      const theme = preference || (systemIsDark ? 'dark' : 'light');
+      
+      document.documentElement.classList.add(`${theme}-mode`);
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body id="main-body">
+  <div id="pullToRefresh">
+    <!-- Arrow icon -->
+    <span class="material-icons" id="arrowIcon">refresh</span>
+    <!-- Spinner icon (hidden by default) -->
+    <span class="material-icons" id="spinnerIcon" style="display:none;">autorenew</span>
+  </div>
+
+  <!-- Toast notifications are now handled by a JS module and will be appended here dynamically. -->
+  <!-- No placeholder is needed. -->
+
+  <!-- 🌀 Full Screen Loader -->
+  <div id="full-screen-loader" class="full-screen-loader hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- 1. Header Partial -->
+<header id="main-header-placeholder"></header>
+  <!-- 3. Drawer Partial -->
+<aside id="drawer-placeholder"></aside>  
+ <!-- 5. Bottom Navigation Partial (should be last for stacking context) -->
+<nav id="bottom-nav-placeholder"></nav>
+
+
+<!-- 8. Scripts -->
+  <!-- Use a modular script to keep the HTML clean -->
+<!-- 4. Page Main Content -->
+<main class="page-content">
+
+<!-- 🌟 Filter Bar Placeholder 🌟 -->
+<div id="filter-bar-placeholder"></div>
+
+<!-- 🌟 Enhanced View Containers with State Management 🌟 -->
+<div class="views-wrapper">
+  <!-- Guest Views -->
+  <div id="guest-home-view" class="view-container" data-view="home" data-role="guest"></div>
+  <div id="guest-explore-view" class="view-container" data-view="explore" data-role="guest"></div>
+  <div id="guest-saved-view" class="view-container" data-view="saved" data-role="guest"></div>
+  <div id="guest-cart-view" class="view-container" data-view="cart" data-role="guest"></div>
+  <div id="guest-account-view" class="view-container" data-view="account" data-role="guest"></div>
+
+  <!-- User Views -->
+  <div id="user-home-view" class="view-container" data-view="home" data-role="user"></div>
+  <div id="user-explore-view" class="view-container" data-view="explore" data-role="user"></div>
+  <div id="user-saved-view" class="view-container" data-view="saved" data-role="user"></div>
+  <div id="user-cart-view" class="view-container" data-view="cart" data-role="user"></div>
+  <div id="user-account-view" class="view-container" data-view="account" data-role="user"></div>
+
+  <!-- Merchant Views -->
+  <div id="merchant-home-view" class="view-container" data-view="home" data-role="merchant"></div>
+  <div id="merchant-inventory-view" class="view-container" data-view="explore" data-role="merchant"></div>
+  <div id="merchant-add-view" class="view-container" data-view="add" data-role="merchant"></div>
+  <div id="merchant-analytics-view" class="view-container" data-view="analytics" data-role="merchant"></div>
+  <div id="merchant-account-view" class="view-container" data-view="account" data-role="merchant"></div>
+
+  <!-- Admin Views -->
+  <div id="admin-home-view" class="view-container" data-view="home" data-role="admin"></div>
+  <div id="admin-data-view" class="view-container" data-view="data" data-role="admin"></div>
+  <div id="admin-logs-view" class="view-container" data-view="logs" data-role="admin"></div>
+  <div id="admin-promo-view" class="view-container" data-view="promo" data-role="admin"></div>
+  <div id="admin-account-view" class="view-container" data-view="account" data-role="admin"></div>
+</div>
+</main>
+
+
+  <!-- 7. Dev Mode Switcher (should be last) -->
+  <div id="role-switcher-placeholder"></div>
+
+  <!-- 8. Scripts -->
+  <!-- This single module is the main entry point for the application's logic. -->
+  <!-- It handles loading all other necessary components and scripts in the correct order. -->
+<!-- Chart.js for data visualization -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script type="module">
+  // ✅ Import critical modules at the top.
+  import { APP_CONFIG } from './source/utils/app-config.js';
+  import { initializePwaInstall, setDeferredPrompt, getDeferredPrompt } from './source/utils/pwa-manager.js';
+  import './source/firebase/firebase-config.js';
+  import { loadSmartPartials } from './source/utils/partial-loader.js';
+  import './source/main.js'; // Import main.js first to ensure viewManager is available
+
+  // Log the current configuration for easy debugging.
+  if (APP_CONFIG.appMode) {
+    console.log(`%c🚀 App Mode: ${APP_CONFIG.appMode.toUpperCase()}`, 'color: #448aff; font-weight: bold; font-size: 12px;');
+  } else {
+    console.log(`%c🚀 App Mode: PRODUCTION`, 'color: #4caf50; font-weight: bold; font-size: 12px;');
+  }
+  console.log(`%c💾 Data Source: ${APP_CONFIG.dataSource.toUpperCase()}`, 'color: #ff9800; font-weight: bold; font-size: 12px;');
+  console.log(`%c🔒 Verification Flow: ${APP_CONFIG.verificationEnabled ? 'ENABLED' : 'DISABLED'}`, 'color: #e91e63; font-weight: bold; font-size: 12px;');
+  console.log(`%c🎨 Header Style: ${APP_CONFIG.headerStyle.toUpperCase()}`, 'color: #9c27b0; font-weight: bold; font-size: 12px;');
+
+    // --- PWA Install Prompt Handling ---
+    // This listener captures the event that allows the app to be installed.
+    // It prevents the default browser prompt and saves the event for later use.
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      setDeferredPrompt(e);
+      // Dispatch a custom event to notify UI components that the app is installable.
+      // This is better than directly manipulating the DOM from here.
+      window.dispatchEvent(new CustomEvent('pwaInstallReady'));
+      console.log('`beforeinstallprompt` event was fired and captured.');
+    });
+    // --- Service Worker Management ---
+
+  if ('serviceWorker' in navigator) {
+    // This flag can be manually set to true in the console for PWA testing in dev mode.
+    const forceSWInDev = true;
+
+    const register = () => {
+      if (APP_CONFIG.appMode === 'dev' && forceSWInDev) {
+        console.warn('DEV MODE: Service Worker is being registered for testing purposes.');
+      }
+      // Register the service worker as a module to allow 'import' statements inside it.
+      navigator.serviceWorker.register('./service-worker.js', { type: 'module' })
+        .then(registration => console.log('✅ Service Worker registered successfully:', registration))
+        .catch(error => console.error('❌ Service Worker registration failed:', error, 'Ensure the service worker file is served with the correct MIME type (application/javascript or text/javascript) and not text/html.'));
+    };
+
+    const unregister = () => {
+      console.log('DEV MODE: Unregistering all service workers.');
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    };
+
+    (APP_CONFIG.appMode === 'dev' && !forceSWInDev) ? unregister() : register();
+  } else {
+    console.warn('Service Worker not supported in this browser.');
+  }
+
+
+  // 2. Load all HTML partials.
+  loadSmartPartials()
+    .then(() => {
+      // 3. Partials are successfully loaded. main.js is already imported and initialized.
+      console.log("✅ All partials loaded and main application script initialized.");
+    })
+    .catch(error => {
+      // This is a critical error. The app cannot start.
+      console.error("❌ CRITICAL: Failed to load essential app components. App cannot start.", error);
+      document.body.innerHTML = `<div style="padding: 40px 20px; text-align: center; font-family: sans-serif; color: #333;"><h1 style="color: #d9534f;">Application Error</h1><p>The application could not be started due to a critical error.</p><p>Please try refreshing the page. If the problem persists, check the browser console for details.</p></div>`;
+    });
+</script>
+</body>
+</html>

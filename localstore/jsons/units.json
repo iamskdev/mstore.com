@@ -1,0 +1,2622 @@
+[
+  {
+    "meta": {
+      "unitId": "UNT000000000001",
+      "type": "weight",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "g",
+      "conversionMode": "relative",
+      "displayOrder": 1
+    },
+    "subunits": [
+      {
+        "code": "g",
+        "symbol": "g",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "kg",
+        "symbol": "kg",
+        "toBase": 1000,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "mg",
+        "symbol": "mg",
+        "toBase": 0.001,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000002",
+      "type": "volume",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "ml",
+      "conversionMode": "relative",
+      "displayOrder": 2
+    },
+    "subunits": [
+      {
+        "code": "ml",
+        "symbol": "ml",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "l",
+        "symbol": "l",
+        "toBase": 1000,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "cl",
+        "symbol": "cl",
+        "toBase": 10,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000003",
+      "type": "length",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "cm",
+      "conversionMode": "relative",
+      "displayOrder": 3
+    },
+    "subunits": [
+      {
+        "code": "cm",
+        "symbol": "cm",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "m",
+        "symbol": "m",
+        "toBase": 100,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "mm",
+        "symbol": "mm",
+        "toBase": 0.1,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000004",
+      "type": "area",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "m2",
+      "conversionMode": "relative",
+      "displayOrder": 4
+    },
+    "subunits": [
+      {
+        "code": "m2",
+        "symbol": "m²",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "cm2",
+        "symbol": "cm²",
+        "toBase": 0.0001,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "km2",
+        "symbol": "km²",
+        "toBase": 1000000,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000005",
+      "type": "time",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "s",
+      "conversionMode": "relative",
+      "displayOrder": 5
+    },
+    "subunits": [
+      {
+        "code": "s",
+        "symbol": "s",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "min",
+        "symbol": "min",
+        "toBase": 60,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "h",
+        "symbol": "h",
+        "toBase": 3600,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000006",
+      "type": "currency",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "global",
+      "baseUnitCode": "USD",
+      "conversionMode": "relative",
+      "displayOrder": 6
+    },
+    "subunits": [
+      {
+        "code": "USD",
+        "symbol": "$",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "EUR",
+        "symbol": "€",
+        "toBase": 1.2,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "INR",
+        "symbol": "₹",
+        "toBase": 0.013,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000007",
+      "type": "temperature",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "C",
+      "conversionMode": "absolute",
+      "displayOrder": 7
+    },
+    "subunits": [
+      {
+        "code": "C",
+        "symbol": "°C",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "F",
+        "symbol": "°F",
+        "toBase": 0.5556,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "K",
+        "symbol": "K",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000008",
+      "type": "speed",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "km/h",
+      "conversionMode": "relative",
+      "displayOrder": 8
+    },
+    "subunits": [
+      {
+        "code": "km/h",
+        "symbol": "km/h",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "m/s",
+        "symbol": "m/s",
+        "toBase": 3.6,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "mph",
+        "symbol": "mph",
+        "toBase": 1.60934,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000009",
+      "type": "data",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "global",
+      "baseUnitCode": "MB",
+      "conversionMode": "relative",
+      "displayOrder": 9
+    },
+    "subunits": [
+      {
+        "code": "MB",
+        "symbol": "MB",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "GB",
+        "symbol": "GB",
+        "toBase": 1024,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "KB",
+        "symbol": "KB",
+        "toBase": 0.001,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000010",
+      "type": "power",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "W",
+      "conversionMode": "relative",
+      "displayOrder": 10
+    },
+    "subunits": [
+      {
+        "code": "W",
+        "symbol": "W",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "kW",
+        "symbol": "kW",
+        "toBase": 1000,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "MW",
+        "symbol": "MW",
+        "toBase": 1000000,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000011",
+      "type": "pressure",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "Pa",
+      "conversionMode": "relative",
+      "displayOrder": 11
+    },
+    "subunits": [
+      {
+        "code": "Pa",
+        "symbol": "Pa",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "kPa",
+        "symbol": "kPa",
+        "toBase": 1000,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "bar",
+        "symbol": "bar",
+        "toBase": 100000,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000012",
+      "type": "frequency",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "Hz",
+      "conversionMode": "relative",
+      "displayOrder": 12
+    },
+    "subunits": [
+      {
+        "code": "Hz",
+        "symbol": "Hz",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "kHz",
+        "symbol": "kHz",
+        "toBase": 1000,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "MHz",
+        "symbol": "MHz",
+        "toBase": 1000000,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000013",
+      "type": "angle",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "rad",
+      "conversionMode": "relative",
+      "displayOrder": 13
+    },
+    "subunits": [
+      {
+        "code": "rad",
+        "symbol": "rad",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "deg",
+        "symbol": "°",
+        "toBase": 0.0174533,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "grad",
+        "symbol": "grad",
+        "toBase": 0.01570796,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000014",
+      "type": "volume_flow_rate",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "l/s",
+      "conversionMode": "relative",
+      "displayOrder": 14
+    },
+    "subunits": [
+      {
+        "code": "l/s",
+        "symbol": "l/s",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "m3/h",
+        "symbol": "m³/h",
+        "toBase": 0.27778,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "gal/min",
+        "symbol": "gal/min",
+        "toBase": 0.06309,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000015",
+      "type": "illuminance",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "lx",
+      "conversionMode": "relative",
+      "displayOrder": 15
+    },
+    "subunits": [
+      {
+        "code": "lx",
+        "symbol": "lx",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "fc",
+        "symbol": "fc",
+        "toBase": 10.764,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "cd/m2",
+        "symbol": "cd/m²",
+        "toBase": 0.092903,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000016",
+      "type": "magnetic_flux",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "Wb",
+      "conversionMode": "relative",
+      "displayOrder": 16
+    },
+    "subunits": [
+      {
+        "code": "Wb",
+        "symbol": "Wb",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "T",
+        "symbol": "T",
+        "toBase": 1000000,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "mWb",
+        "symbol": "mWb",
+        "toBase": 0.001,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000017",
+      "type": "electric_charge",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "metric",
+      "baseUnitCode": "C",
+      "conversionMode": "relative",
+      "displayOrder": 17
+    },
+    "subunits": [
+      {
+        "code": "C",
+        "symbol": "C",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "mC",
+        "symbol": "mC",
+        "toBase": 0.001,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "kC",
+        "symbol": "kC",
+        "toBase": 1000,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000018",
+      "type": "transport_logistics",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false
+      },
+      "system": "mixed",
+      "baseUnitCode": "km",
+      "conversionMode": "relative",
+      "displayOrder": 18,
+      "keywords": [
+        "transport",
+        "logistics",
+        "km",
+        "trip",
+        "delivery"
+      ]
+    },
+    "info": {
+      "code": "transport_logistics_units",
+      "labels": {
+        "en": "Transport & Logistics Units",
+        "hi": "परिवहन और लॉजिस्टिक्स इकाइयाँ"
+      },
+      "description": "Units for transportation, trips, and delivery services.",
+      "icon": "🚚"
+    },
+    "subunits": [
+      {
+        "code": "km",
+        "labels": {
+          "en": "Kilometre",
+          "hi": "किलोमीटर"
+        },
+        "symbol": "km",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "mile",
+        "labels": {
+          "en": "Mile",
+          "hi": "मील"
+        },
+        "symbol": "mi",
+        "toBase": 1.60934,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "trip",
+        "labels": {
+          "en": "Trip",
+          "hi": "यात्रा"
+        },
+        "symbol": "trip",
+        "toBase": 0,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "load_ton",
+        "labels": {
+          "en": "Load (Ton)",
+          "hi": "लोड (टन)"
+        },
+        "symbol": "t",
+        "toBase": 0,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "delivery_slot",
+        "labels": {
+          "en": "Delivery Slot",
+          "hi": "डिलीवरी स्लॉट"
+        },
+        "symbol": "dslot",
+        "toBase": 0,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T16:30:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T16:30:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000019",
+      "type": "utility_billing",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false
+      },
+      "system": "mixed",
+      "baseUnitCode": "unit",
+      "conversionMode": "relative",
+      "displayOrder": 19,
+      "keywords": [
+        "utility",
+        "billing",
+        "electricity",
+        "water",
+        "gas",
+        "internet"
+      ]
+    },
+    "info": {
+      "code": "utility_billing_units",
+      "labels": {
+        "en": "Utility Billing Units",
+        "hi": "यूटिलिटी बिलिंग इकाइयाँ"
+      },
+      "description": "Units for electricity, water, gas, and internet data billing.",
+      "icon": "🏭"
+    },
+    "subunits": [
+      {
+        "code": "kwh",
+        "labels": {
+          "en": "Kilowatt Hour",
+          "hi": "किलोवाट घंटा"
+        },
+        "symbol": "kWh",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "unit",
+        "labels": {
+          "en": "Electricity Unit",
+          "hi": "बिजली यूनिट"
+        },
+        "symbol": "u",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "litre",
+        "labels": {
+          "en": "Litre (Water)",
+          "hi": "लीटर (पानी)"
+        },
+        "symbol": "L",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "cubic_meter",
+        "labels": {
+          "en": "Cubic Meter (Gas)",
+          "hi": "घन मीटर (गैस)"
+        },
+        "symbol": "m³",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "gb",
+        "labels": {
+          "en": "Gigabyte (Internet Data)",
+          "hi": "गीगाबाइट (इंटरनेट डेटा)"
+        },
+        "symbol": "GB",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T16:40:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T16:40:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000020",
+      "type": "subscription_membership",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "month",
+      "conversionMode": "relative",
+      "displayOrder": 20,
+      "keywords": [
+        "subscription",
+        "membership",
+        "plan",
+        "renewal"
+      ]
+    },
+    "info": {
+      "code": "subscription_membership_units",
+      "labels": {
+        "en": "Subscription & Membership Units",
+        "hi": "सदस्यता और मेंबरशिप इकाइयाँ"
+      },
+      "description": "Units for service subscription and membership plans.",
+      "icon": "📅"
+    },
+    "subunits": [
+      {
+        "code": "day",
+        "labels": {
+          "en": "Day",
+          "hi": "दिन"
+        },
+        "symbol": "d",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "week",
+        "labels": {
+          "en": "Week",
+          "hi": "सप्ताह"
+        },
+        "symbol": "wk",
+        "toBase": 7,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "month",
+        "labels": {
+          "en": "Month",
+          "hi": "महीना"
+        },
+        "symbol": "mo",
+        "toBase": 30,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "quarter",
+        "labels": {
+          "en": "Quarter (3 Months)",
+          "hi": "तिमाही (3 महीने)"
+        },
+        "symbol": "qtr",
+        "toBase": 90,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "year",
+        "labels": {
+          "en": "Year",
+          "hi": "वर्ष"
+        },
+        "symbol": "yr",
+        "toBase": 365,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T16:45:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T16:45:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000021",
+      "type": "construction_project_work",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false
+      },
+      "system": "mixed",
+      "baseUnitCode": "sqm",
+      "conversionMode": "relative",
+      "displayOrder": 21,
+      "keywords": [
+        "construction",
+        "project",
+        "work",
+        "labor",
+        "area",
+        "structure"
+      ]
+    },
+    "info": {
+      "code": "construction_project_units",
+      "labels": {
+        "en": "Construction & Project Work Units",
+        "hi": "निर्माण और प्रोजेक्ट कार्य इकाइयाँ"
+      },
+      "description": "Units for construction, project-based work measurement and billing.",
+      "icon": "🏗️"
+    },
+    "subunits": [
+      {
+        "code": "sqm",
+        "labels": {
+          "en": "Square Meter",
+          "hi": "वर्ग मीटर"
+        },
+        "symbol": "m²",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "sqft",
+        "labels": {
+          "en": "Square Foot",
+          "hi": "वर्ग फुट"
+        },
+        "symbol": "ft²",
+        "toBase": 0.092903,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "cubic_meter",
+        "labels": {
+          "en": "Cubic Meter",
+          "hi": "घन मीटर"
+        },
+        "symbol": "m³",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "running_meter",
+        "labels": {
+          "en": "Running Meter",
+          "hi": "रनिंग मीटर"
+        },
+        "symbol": "rm",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "lot",
+        "labels": {
+          "en": "Lot (Project Package)",
+          "hi": "लॉट (प्रोजेक्ट पैकेज)"
+        },
+        "symbol": "lot",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T17:00:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T17:00:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000022",
+      "type": "education_training",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "hour",
+      "conversionMode": "relative",
+      "displayOrder": 22,
+      "keywords": [
+        "education",
+        "training",
+        "class",
+        "course",
+        "session"
+      ]
+    },
+    "info": {
+      "code": "education_training_units",
+      "labels": {
+        "en": "Education & Training Units",
+        "hi": "शिक्षा और प्रशिक्षण इकाइयाँ"
+      },
+      "description": "Units for educational courses, training sessions, and learning programs.",
+      "icon": "🎓"
+    },
+    "subunits": [
+      {
+        "code": "hour",
+        "labels": {
+          "en": "Hour",
+          "hi": "घंटा"
+        },
+        "symbol": "h",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "session",
+        "labels": {
+          "en": "Session",
+          "hi": "सत्र"
+        },
+        "symbol": "sess",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "day",
+        "labels": {
+          "en": "Day",
+          "hi": "दिन"
+        },
+        "symbol": "d",
+        "toBase": 24,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "week",
+        "labels": {
+          "en": "Week",
+          "hi": "सप्ताह"
+        },
+        "symbol": "wk",
+        "toBase": 168,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "course",
+        "labels": {
+          "en": "Course Package",
+          "hi": "कोर्स पैकेज"
+        },
+        "symbol": "course",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T17:05:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T17:05:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000023",
+      "type": "event_ticketing",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "ticket",
+      "conversionMode": "relative",
+      "displayOrder": 23,
+      "keywords": [
+        "event",
+        "ticket",
+        "seat",
+        "pass",
+        "entry"
+      ]
+    },
+    "info": {
+      "code": "event_ticketing_units",
+      "labels": {
+        "en": "Event & Ticketing Units",
+        "hi": "इवेंट और टिकट इकाइयाँ"
+      },
+      "description": "Units for events, shows, transport tickets, and passes.",
+      "icon": "🎟️"
+    },
+    "subunits": [
+      {
+        "code": "ticket",
+        "labels": {
+          "en": "Ticket",
+          "hi": "टिकट"
+        },
+        "symbol": "tkt",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "seat",
+        "labels": {
+          "en": "Seat",
+          "hi": "सीट"
+        },
+        "symbol": "seat",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "table",
+        "labels": {
+          "en": "Table",
+          "hi": "टेबल"
+        },
+        "symbol": "tbl",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "pass",
+        "labels": {
+          "en": "General Pass",
+          "hi": "साधारण पास"
+        },
+        "symbol": "pass",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "vip_pass",
+        "labels": {
+          "en": "VIP Pass",
+          "hi": "वीआईपी पास"
+        },
+        "symbol": "VIP",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T17:15:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T17:15:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000024",
+      "type": "item_count",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "pc",
+      "conversionMode": "relative",
+      "displayOrder": 24
+    },
+    "subunits": [
+      {
+        "code": "pc",
+        "symbol": "pc",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "dozen",
+        "symbol": "dz",
+        "toBase": 12,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "gross",
+        "symbol": "grs",
+        "toBase": 144,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000025",
+      "type": "service_billing",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "hour",
+      "conversionMode": "relative",
+      "displayOrder": 25
+    },
+    "subunits": [
+      {
+        "code": "hour",
+        "symbol": "/hr",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "day",
+        "symbol": "/day",
+        "toBase": 24,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "job",
+        "symbol": "/job",
+        "toBase": 0,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000026",
+      "type": "wholesale_packaging",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "carton",
+      "conversionMode": "relative",
+      "displayOrder": 26
+    },
+    "subunits": [
+      {
+        "code": "carton",
+        "symbol": "ctn",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "bundle",
+        "symbol": "bndl",
+        "toBase": 0,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "roll",
+        "symbol": "roll",
+        "toBase": 0,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ]
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000027",
+      "type": "lot_bundle",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "lot",
+      "conversionMode": "relative",
+      "displayOrder": 27,
+      "keywords": [
+        "lot",
+        "bundle",
+        "wholesale",
+        "bulk"
+      ]
+    },
+    "info": {
+      "code": "lot_bundle_units",
+      "labels": {
+        "en": "Lot & Bundle Units",
+        "hi": "लॉट और बंडल इकाइयाँ"
+      },
+      "description": "Measurement units for bulk and wholesale transactions.",
+      "icon": "📦"
+    },
+    "subunits": [
+      {
+        "code": "lot",
+        "labels": {
+          "en": "Lot",
+          "hi": "लॉट"
+        },
+        "symbol": "lot",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "bundle",
+        "labels": {
+          "en": "Bundle",
+          "hi": "बंडल"
+        },
+        "symbol": "bndl",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "carton",
+        "labels": {
+          "en": "Carton",
+          "hi": "कार्टन"
+        },
+        "symbol": "ctn",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T17:42:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T17:42:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000028",
+      "type": "transaction_fee",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "inr",
+      "conversionMode": "relative",
+      "displayOrder": 28,
+      "keywords": [
+        "transaction fee",
+        "service charge",
+        "payment fee"
+      ]
+    },
+    "info": {
+      "code": "transaction_fee_units",
+      "labels": {
+        "en": "Transaction Fee Units",
+        "hi": "लेनदेन शुल्क इकाइयाँ"
+      },
+      "description": "Units for transaction-based charges in sales and purchases.",
+      "icon": "💳"
+    },
+    "subunits": [
+      {
+        "code": "inr",
+        "labels": {
+          "en": "Rupee",
+          "hi": "रुपया"
+        },
+        "symbol": "₹",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "pct",
+        "labels": {
+          "en": "Percent",
+          "hi": "प्रतिशत"
+        },
+        "symbol": "%",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T17:44:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T17:44:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000029",
+      "type": "subscription",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "month",
+      "conversionMode": "relative",
+      "displayOrder": 29,
+      "keywords": [
+        "subscription",
+        "plan",
+        "membership"
+      ]
+    },
+    "info": {
+      "code": "subscription_units",
+      "labels": {
+        "en": "Subscription Units",
+        "hi": "सदस्यता इकाइयाँ"
+      },
+      "description": "Units for subscription-based products and services.",
+      "icon": "📅"
+    },
+    "subunits": [
+      {
+        "code": "month",
+        "labels": {
+          "en": "Per Month",
+          "hi": "प्रति माह"
+        },
+        "symbol": "/mo",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "quarter",
+        "labels": {
+          "en": "Per Quarter",
+          "hi": "प्रति तिमाही"
+        },
+        "symbol": "/qtr",
+        "toBase": 3,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "year",
+        "labels": {
+          "en": "Per Year",
+          "hi": "प्रति वर्ष"
+        },
+        "symbol": "/yr",
+        "toBase": 12,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T17:46:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T17:46:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000030",
+      "type": "delivery_logistics",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "hybrid",
+      "baseUnitCode": "km",
+      "conversionMode": "relative",
+      "displayOrder": 30,
+      "keywords": [
+        "delivery",
+        "shipping",
+        "courier",
+        "logistics"
+      ]
+    },
+    "info": {
+      "code": "delivery_units",
+      "labels": {
+        "en": "Delivery & Logistics Units",
+        "hi": "डिलीवरी और लॉजिस्टिक्स इकाइयाँ"
+      },
+      "description": "Units for delivery charges based on distance, weight, or volume.",
+      "icon": "🚚"
+    },
+    "subunits": [
+      {
+        "code": "per_km",
+        "labels": {
+          "en": "Per Kilometer",
+          "hi": "प्रति किलोमीटर"
+        },
+        "symbol": "/km",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "per_kg",
+        "labels": {
+          "en": "Per Kilogram",
+          "hi": "प्रति किलोग्राम"
+        },
+        "symbol": "/kg",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "flat_rate",
+        "labels": {
+          "en": "Flat Rate",
+          "hi": "फ्लैट रेट"
+        },
+        "symbol": "flat",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T17:55:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T17:55:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000031",
+      "type": "order_quantity_bracket",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "pc",
+      "conversionMode": "relative",
+      "displayOrder": 31,
+      "keywords": [
+        "bulk discount",
+        "tier pricing",
+        "wholesale"
+      ]
+    },
+    "info": {
+      "code": "order_quantity_bracket_units",
+      "labels": {
+        "en": "Order Quantity Bracket Units",
+        "hi": "ऑर्डर मात्रा ब्रैकेट इकाइयाँ"
+      },
+      "description": "Units for defining pricing brackets based on order quantity.",
+      "icon": "📊"
+    },
+    "subunits": [
+      {
+        "code": "upto_10",
+        "labels": {
+          "en": "Up to 10 pcs",
+          "hi": "10 पीस तक"
+        },
+        "symbol": "≤10",
+        "toBase": 10,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "11_50",
+        "labels": {
+          "en": "11 to 50 pcs",
+          "hi": "11 से 50 पीस"
+        },
+        "symbol": "11-50",
+        "toBase": 50,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "51_plus",
+        "labels": {
+          "en": "51+ pcs",
+          "hi": "51+ पीस"
+        },
+        "symbol": "51+",
+        "toBase": 100,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T17:57:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T17:57:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000032",
+      "type": "installment_payment",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "month",
+      "conversionMode": "relative",
+      "displayOrder": 32,
+      "keywords": [
+        "installment",
+        "emi",
+        "payment plan"
+      ]
+    },
+    "info": {
+      "code": "installment_payment_units",
+      "labels": {
+        "en": "Installment Payment Units",
+        "hi": "किस्त भुगतान इकाइयाँ"
+      },
+      "description": "Units for defining installment or EMI payment schedules.",
+      "icon": "💳"
+    },
+    "subunits": [
+      {
+        "code": "monthly",
+        "labels": {
+          "en": "Monthly Installment",
+          "hi": "मासिक किस्त"
+        },
+        "symbol": "/mo",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "quarterly",
+        "labels": {
+          "en": "Quarterly Installment",
+          "hi": "त्रैमासिक किस्त"
+        },
+        "symbol": "/qtr",
+        "toBase": 3,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "yearly",
+        "labels": {
+          "en": "Yearly Installment",
+          "hi": "वार्षिक किस्त"
+        },
+        "symbol": "/yr",
+        "toBase": 12,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:00:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:00:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000033",
+      "type": "service_duration",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "hour",
+      "conversionMode": "relative",
+      "displayOrder": 33,
+      "keywords": [
+        "service",
+        "duration",
+        "hourly rate"
+      ]
+    },
+    "info": {
+      "code": "service_duration_units",
+      "labels": {
+        "en": "Service Duration Units",
+        "hi": "सेवा अवधि इकाइयाँ"
+      },
+      "description": "Units for charging services based on time duration.",
+      "icon": "🕒"
+    },
+    "subunits": [
+      {
+        "code": "hour",
+        "labels": {
+          "en": "Per Hour",
+          "hi": "प्रति घंटा"
+        },
+        "symbol": "/hr",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "day",
+        "labels": {
+          "en": "Per Day",
+          "hi": "प्रति दिन"
+        },
+        "symbol": "/day",
+        "toBase": 24,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "week",
+        "labels": {
+          "en": "Per Week",
+          "hi": "प्रति सप्ताह"
+        },
+        "symbol": "/wk",
+        "toBase": 168,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:03:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:03:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000034",
+      "type": "geo_coverage",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "local",
+      "conversionMode": "relative",
+      "displayOrder": 34,
+      "keywords": [
+        "location",
+        "geo coverage",
+        "service area"
+      ]
+    },
+    "info": {
+      "code": "geo_coverage_units",
+      "labels": {
+        "en": "Geo Coverage Units",
+        "hi": "भौगोलिक कवरेज इकाइयाँ"
+      },
+      "description": "Units to define service or delivery coverage area.",
+      "icon": "🗺️"
+    },
+    "subunits": [
+      {
+        "code": "local",
+        "labels": {
+          "en": "Local Area",
+          "hi": "स्थानीय क्षेत्र"
+        },
+        "symbol": "local",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "city",
+        "labels": {
+          "en": "City",
+          "hi": "शहर"
+        },
+        "symbol": "city",
+        "toBase": 10,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "state",
+        "labels": {
+          "en": "State",
+          "hi": "राज्य"
+        },
+        "symbol": "state",
+        "toBase": 50,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "country",
+        "labels": {
+          "en": "Country",
+          "hi": "देश"
+        },
+        "symbol": "country",
+        "toBase": 500,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:07:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:07:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000035",
+      "type": "labeling_tagging",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "sku",
+      "conversionMode": "none",
+      "displayOrder": 35,
+      "keywords": [
+        "label",
+        "tag",
+        "sku",
+        "batch",
+        "lot"
+      ]
+    },
+    "info": {
+      "code": "labeling_tagging_units",
+      "labels": {
+        "en": "Labeling & Tagging Units",
+        "hi": "लेबलिंग और टैगिंग इकाइयाँ"
+      },
+      "description": "Units for product tracking and identification.",
+      "icon": "🏷️"
+    },
+    "subunits": [
+      {
+        "code": "sku",
+        "labels": {
+          "en": "Stock Keeping Unit",
+          "hi": "स्टॉक कीपिंग यूनिट"
+        },
+        "symbol": "SKU",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "batch",
+        "labels": {
+          "en": "Batch Number",
+          "hi": "बैच नंबर"
+        },
+        "symbol": "BATCH",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "lot",
+        "labels": {
+          "en": "Lot Number",
+          "hi": "लॉट नंबर"
+        },
+        "symbol": "LOT",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "serial",
+        "labels": {
+          "en": "Serial Number",
+          "hi": "सीरियल नंबर"
+        },
+        "symbol": "SERIAL",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:09:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:09:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000036",
+      "type": "service_output",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "job",
+      "conversionMode": "relative",
+      "displayOrder": 36,
+      "keywords": [
+        "service",
+        "output",
+        "deliverables"
+      ]
+    },
+    "info": {
+      "code": "service_output_units",
+      "labels": {
+        "en": "Service Output Units",
+        "hi": "सेवा आउटपुट इकाइयाँ"
+      },
+      "description": "Units for measuring service-based deliverables.",
+      "icon": "🛠️"
+    },
+    "subunits": [
+      {
+        "code": "job",
+        "labels": {
+          "en": "Per Job",
+          "hi": "प्रति कार्य"
+        },
+        "symbol": "/job",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "photo",
+        "labels": {
+          "en": "Per Photo",
+          "hi": "प्रति फोटो"
+        },
+        "symbol": "/photo",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "design",
+        "labels": {
+          "en": "Per Design",
+          "hi": "प्रति डिजाइन"
+        },
+        "symbol": "/design",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "hour_worked",
+        "labels": {
+          "en": "Per Hour Worked",
+          "hi": "प्रति घंटा कार्य"
+        },
+        "symbol": "/hr_work",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:12:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:12:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000037",
+      "type": "packaging_bundle",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "pack",
+      "conversionMode": "relative",
+      "displayOrder": 37,
+      "keywords": [
+        "packaging",
+        "bundle",
+        "box",
+        "carton",
+        "crate"
+      ]
+    },
+    "info": {
+      "code": "packaging_bundle_units",
+      "labels": {
+        "en": "Packaging & Bundle Units",
+        "hi": "पैकेजिंग और बंडल इकाइयाँ"
+      },
+      "description": "Units for selling products in packages, boxes, or bundles.",
+      "icon": "📦"
+    },
+    "subunits": [
+      {
+        "code": "pack",
+        "labels": {
+          "en": "Pack",
+          "hi": "पैक"
+        },
+        "symbol": "pack",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "box",
+        "labels": {
+          "en": "Box",
+          "hi": "डिब्बा"
+        },
+        "symbol": "box",
+        "toBase": 10,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "carton",
+        "labels": {
+          "en": "Carton",
+          "hi": "कार्टन"
+        },
+        "symbol": "ctn",
+        "toBase": 20,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "crate",
+        "labels": {
+          "en": "Crate",
+          "hi": "क्रेट"
+        },
+        "symbol": "crate",
+        "toBase": 50,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:20:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:20:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000038",
+      "type": "document",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "document",
+      "conversionMode": "relative",
+      "displayOrder": 38,
+      "keywords": [
+        "document",
+        "contract",
+        "report",
+        "invoice",
+        "certificate"
+      ]
+    },
+    "info": {
+      "code": "document_units",
+      "labels": {
+        "en": "Document Units",
+        "hi": "दस्तावेज़ इकाइयाँ"
+      },
+      "description": "Units for counting different types of documents.",
+      "icon": "📄"
+    },
+    "subunits": [
+      {
+        "code": "document",
+        "labels": {
+          "en": "Document",
+          "hi": "दस्तावेज़"
+        },
+        "symbol": "doc",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "contract",
+        "labels": {
+          "en": "Contract",
+          "hi": "अनुबंध"
+        },
+        "symbol": "contract",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "invoice",
+        "labels": {
+          "en": "Invoice",
+          "hi": "चालान"
+        },
+        "symbol": "inv",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "certificate",
+        "labels": {
+          "en": "Certificate",
+          "hi": "प्रमाणपत्र"
+        },
+        "symbol": "cert",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:22:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:22:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000039",
+      "type": "ticket",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "ticket",
+      "conversionMode": "relative",
+      "displayOrder": 39,
+      "keywords": [
+        "ticket",
+        "pass",
+        "entry",
+        "seat booking"
+      ]
+    },
+    "info": {
+      "code": "ticket_units",
+      "labels": {
+        "en": "Ticket Units",
+        "hi": "टिकट इकाइयाँ"
+      },
+      "description": "Units for ticket sales and seat bookings.",
+      "icon": "🎟️"
+    },
+    "subunits": [
+      {
+        "code": "ticket",
+        "labels": {
+          "en": "Ticket",
+          "hi": "टिकट"
+        },
+        "symbol": "tkt",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "pass",
+        "labels": {
+          "en": "Pass",
+          "hi": "पास"
+        },
+        "symbol": "pass",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "entry",
+        "labels": {
+          "en": "Entry",
+          "hi": "प्रवेश"
+        },
+        "symbol": "entry",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "seat",
+        "labels": {
+          "en": "Seat Booking",
+          "hi": "सीट बुकिंग"
+        },
+        "symbol": "seat",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:24:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:24:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000040",
+      "type": "membership",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "month",
+      "conversionMode": "relative",
+      "displayOrder": 40,
+      "keywords": [
+        "membership",
+        "subscription",
+        "plan",
+        "monthly",
+        "yearly"
+      ]
+    },
+    "info": {
+      "code": "membership_units",
+      "labels": {
+        "en": "Membership Units",
+        "hi": "सदस्यता इकाइयाँ"
+      },
+      "description": "Units for selling memberships or subscription plans.",
+      "icon": "💳"
+    },
+    "subunits": [
+      {
+        "code": "month",
+        "labels": {
+          "en": "Month",
+          "hi": "महीना"
+        },
+        "symbol": "mo",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "quarter",
+        "labels": {
+          "en": "Quarter",
+          "hi": "त्रैमासिक"
+        },
+        "symbol": "qtr",
+        "toBase": 3,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "half_year",
+        "labels": {
+          "en": "Half Year",
+          "hi": "अर्धवार्षिक"
+        },
+        "symbol": "hy",
+        "toBase": 6,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "year",
+        "labels": {
+          "en": "Year",
+          "hi": "साल"
+        },
+        "symbol": "yr",
+        "toBase": 12,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:30:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:30:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000041",
+      "type": "promotional_offer",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": true
+      },
+      "system": "standard",
+      "baseUnitCode": "offer",
+      "conversionMode": "relative",
+      "displayOrder": 41,
+      "keywords": [
+        "offer",
+        "promotion",
+        "combo",
+        "discount"
+      ]
+    },
+    "info": {
+      "code": "promotional_offer_units",
+      "labels": {
+        "en": "Promotional Offer Units",
+        "hi": "प्रचारात्मक ऑफर इकाइयाँ"
+      },
+      "description": "Units for promotional product offers and deals.",
+      "icon": "🎁"
+    },
+    "subunits": [
+      {
+        "code": "buy_x_get_y",
+        "labels": {
+          "en": "Buy X Get Y",
+          "hi": "X खरीदो Y पाओ"
+        },
+        "symbol": "bxgy",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "combo_pack",
+        "labels": {
+          "en": "Combo Pack",
+          "hi": "कॉम्बो पैक"
+        },
+        "symbol": "combo",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "discount_pack",
+        "labels": {
+          "en": "Discount Pack",
+          "hi": "डिस्काउंट पैक"
+        },
+        "symbol": "disc",
+        "toBase": 1,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:32:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:32:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "unitId": "UNT000000000042",
+      "type": "rental",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": false,
+        "isCustom": false
+      },
+      "system": "standard",
+      "baseUnitCode": "hour",
+      "conversionMode": "relative",
+      "displayOrder": 42,
+      "keywords": [
+        "rental",
+        "lease",
+        "hire",
+        "per day",
+        "per hour"
+      ]
+    },
+    "info": {
+      "code": "rental_units",
+      "labels": {
+        "en": "Rental Units",
+        "hi": "किराया इकाइयाँ"
+      },
+      "description": "Units for renting products or services by time period.",
+      "icon": "🛒"
+    },
+    "subunits": [
+      {
+        "code": "hour",
+        "labels": {
+          "en": "Hour",
+          "hi": "घंटा"
+        },
+        "symbol": "hr",
+        "toBase": 1,
+        "isBaseUnit": true,
+        "isPopular": true
+      },
+      {
+        "code": "day",
+        "labels": {
+          "en": "Day",
+          "hi": "दिन"
+        },
+        "symbol": "day",
+        "toBase": 24,
+        "isBaseUnit": false,
+        "isPopular": true
+      },
+      {
+        "code": "week",
+        "labels": {
+          "en": "Week",
+          "hi": "सप्ताह"
+        },
+        "symbol": "wk",
+        "toBase": 168,
+        "isBaseUnit": false,
+        "isPopular": false
+      },
+      {
+        "code": "month",
+        "labels": {
+          "en": "Month",
+          "hi": "महीना"
+        },
+        "symbol": "mo",
+        "toBase": 720,
+        "isBaseUnit": false,
+        "isPopular": true
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-08-06T18:34:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T18:34:00Z",
+      "updatedBy": "ADMIN"
+    }
+  }
+]

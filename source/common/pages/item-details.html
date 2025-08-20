@@ -1,0 +1,60 @@
+<!-- 
+  This is now a partial HTML file. 
+  It only contains the view's content and is meant to be dynamically loaded into index.html.
+-->
+<div class="container" id="item-details-container">
+  <div id="item-wrapper">
+    <div id="item-left">
+      <div class="image-thumb-wrapper">
+        <div class="main-image-with-btns">
+          <div class="main-image-container" id="image-zoom-container">
+            <img id="item-main-image" src="" alt="Item Image" />
+            <!-- Lens for desktop hover zoom -->
+            <div id="image-zoom-lens"></div>
+          </div>
+        </div>
+        
+        <div class="thumbnail-container" id="item-thumbnails">
+        </div>
+      </div>
+      <!-- Result box for desktop hover zoom, positioned relative to item-left -->
+      <div id="zoom-result-box"></div>
+    </div>
+
+    <div id="item-info" data-item-id="">  <!-- Add data attribute here -->
+      <h2 id="item-title">Item Name</h2>
+      <p class="price-unit">
+        ₹<span id="item-price">0</span>
+        <span id="item-unit-label"></span>
+      </p>
+      <p id="item-discount-text" style="color:#d32f2f; font-weight: bold;"></p>
+      <p class="stock" id="item-stock-status">Stock</p>
+      <p class="description-label">Description:</p>
+      <p class="description" id="item-description-text">Item description goes here.</p>
+
+      <!-- Primary Item Actions -->
+      <div class="item-actions">
+        <button class="action-btn add-to-cart-btn" id="add-to-cart-btn">
+          <i class="fas fa-shopping-cart"></i> Add to Cart
+        </button>
+        <button class="action-btn icon-btn save-item-btn" id="save-item-btn" title="Save for later">
+          <i class="far fa-heart"></i><span class="save-btn-text"></span>
+        </button>
+      </div>
+
+      <!-- Secondary Item Actions -->
+      <div class="item-secondary-actions">
+        <button class="secondary-btn" id="item-share-btn"><i class="fas fa-share-nodes"></i> Share</button>
+        <button class="secondary-btn" id="item-feedback-btn"><i class="fas fa-comment-dots"></i> Feedback</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="related-section">
+  <h3>🔥You may also like</h3>
+  <div class="items-grid" id="related-items-list"></div>
+</div>
+
+<!-- Placeholder for the dynamically loaded feedback modal -->
+<div id="feedback-modal-container"></div>

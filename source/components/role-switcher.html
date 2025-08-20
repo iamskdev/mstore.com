@@ -1,0 +1,389 @@
+<!-- developer/partials/dev-mode-switch.html -->
+<div class="dev-mode-container">
+  <button class="dev-btn guest" data-user-type="guest" title="Switch to Guest Mode">👤</button>
+  <button class="dev-btn user" data-user-type="user" title="Switch to Default User">👨</button>
+  <button class="dev-btn merchant" data-user-type="merchant" title="Switch to Default Merchant">
+    <i class="fas fa-user-tie"></i>
+  </button>
+  <button class="dev-btn admin" data-user-type="admin" data-user-id="USR000000000001" title="Switch to Admin Mode">
+    <i class="fas fa-user-shield"></i>
+  </button>
+  <button class="dev-btn impersonate" id="impersonate-btn" title="Impersonate User">
+    <i class="fas fa-users"></i>
+  </button>
+  
+  <!-- Impersonation Modal -->
+</div>
+<!-- Impersonation Modal -->
+<div id="impersonate-modal" class="impersonate-modal">
+  <div class="impersonate-modal-content">
+    <div class="impersonate-header">
+      <h3>Impersonate User</h3>
+      <button id="impersonate-close-btn">&times;</button>
+    </div>
+    <div class="impersonate-search-wrapper">
+      <i class="fas fa-search"></i>
+      <input type="search" id="impersonate-search-input" placeholder="Search by name or email..." autocomplete="off">
+    </div>
+    <div id="impersonate-user-list">
+      <!-- Example User Item (for structure reference) -->
+      <!--
+      <div class="impersonate-user-item" data-user-id="someId" data-user-type="user">
+        <div class="avatar" style="background-image: url('./source/assets/logos/app-logo.png')"></div>
+        <div class="impersonate-user-info">
+          <span class="name">John Doe</span>
+          <span class="roles">user, merchant</span>
+        </div>
+      </div> -->
+      <!-- User list will be populated here by JS -->
+    </div>
+  </div>
+</div>
+<style>
+  .dev-mode-container {
+    position: fixed;
+    bottom: 75px;
+    left: 10px;
+    margin-left: auto;
+    z-index: 9999;
+    opacity: 0.2;
+    transition: all 0.3s;
+    display: flex;
+    gap: 5px;
+  }
+  .dev-mode-container:hover {
+    opacity: 1;
+    justify-content: flex-end;
+    transform: scale(1.1);
+  }
+  .dev-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  /* FIX: Ensure clicks on the icon are registered by the parent button.
+     This prevents missed clicks, especially on mobile or during hover animations,
+     by making the icon 'transparent' to mouse events. */
+  .dev-btn i {
+    pointer-events: none;
+  }
+
+  /* --- Impersonation Modal Styles --- */
+  .impersonate-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 10000; /* Above everything */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  .impersonate-modal.visible {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* NEW: This class is added when the search input is focused to prevent the
+     on-screen keyboard from hiding the modal on mobile devices. */
+  .impersonate-modal.modal-input-focused {
+    align-items: flex-start; /* Align modal to the top */
+    padding-top: 20px;      /* Give it some breathing room from the top edge */
+  }
+
+  .impersonate-modal-content {
+    background-color: var(--bg-secondary);
+    margin: auto;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: flex;
+    gap: 15px; /* Add gap between header and list */
+    flex-direction: column;
+  }
+  .impersonate-search-wrapper {
+    position: relative;
+  }
+  .impersonate-search-wrapper .fa-search {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+  }
+  #impersonate-search-input {
+    width: 100%;
+    padding: 10px 12px 10px 36px; /* Padding for the icon */
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+  .impersonate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+  .impersonate-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+  }
+  #impersonate-close-btn {
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    line-height: 1
+  }
+  /* Ensure the user list takes available space and scrolls */
+  .impersonate-user-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px; /* For scrollbar */
+  }
+  .impersonate-user-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    width: 100%; /* Make each item take full width */
+    background-color: var(--bg-primary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  .impersonate-user-item:hover {
+    background-color: var(--bg-tertiary);
+  }
+  .impersonate-user-item .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .impersonate-user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right; /* Align text to the right */
+    flex-grow: 1; /* Allow info to take available width */
+  }
+  .dev-btn.guest { background: #f0f0f0; }
+  .dev-btn.user { background: #e3f2fd; }
+  .dev-btn.merchant { background: #ffebee; }
+  .dev-btn.impersonate { background: #fff9c4; color: #f57f17; }
+  .dev-btn.admin { background: #f3e5f5; color: #8e24aa; } /* A purple color for the Admin */
+  .dev-btn.active {
+    border: 2px solid #448aff; /* Blue border for active state */
+    box-shadow: 0 0 8px rgba(68, 138, 255, 0.5);
+    transform: scale(1.1);
+  }
+  .impersonate-user-info .name {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .impersonate-user-info .roles {
+    font-size: 0.8em;
+    color: var(--text-secondary);
+  }
+  /* Style for the new email address */
+  .impersonate-user-info .email {
+    font-size: 0.8em;
+    color: var(--text-tertiary); /* Use a more subtle color */
+  }
+</style>
+<script type="module">
+  import { viewManager } from './source/main.js';
+  import { showToast } from './source/utils/toast.js';
+  import { APP_CONFIG } from './source/utils/app-config.js';
+
+  (async function() {
+    // --- Initialization and Role Button Logic ---
+    const devContainer = document.querySelector('.dev-mode-container');
+    if (!devContainer) return;
+
+    /**
+     * Updates the active state of the role switcher buttons based on the current application state.
+     * @param {object} state - The current state from the ViewManager.
+     * @param {string} state.role - The current user role.
+     */
+    function updateActiveButton({ role }) {
+      document.querySelectorAll('.dev-btn').forEach(btn => {
+        const btnRole = btn.dataset.userType;
+        const btnId = btn.dataset.userId;
+        const currentId = localStorage.getItem('currentUserId');
+
+        let isActive = false;
+        // The button's role must match the current role.
+        if (btnRole === role) {
+            // If the button represents a SPECIFIC user (it has a userId), it's only active if the IDs also match. This is for the Admin button.
+            // Otherwise, if it's a generic role button (User, Merchant, Guest), it's active.
+            isActive = btnId ? (btnId === currentId) : true;
+        }
+        btn.classList.toggle('active', isActive);
+      });
+    }
+    const appMode = APP_CONFIG.appMode;
+    const loggedInUserType = localStorage.getItem('currentUserType');
+
+    // Switcher visible in "dev" or "promo" modes, OR if super-admin logged in
+    const isAdminLoggedIn = loggedInUserType === 'admin';
+
+    if (appMode === 'dev' || appMode === 'promo' || isAdminLoggedIn) {
+      if (isAdminLoggedIn && appMode !== 'dev' && appMode !== 'promo') {
+        console.log(`ADMIN_LOGIN_OVERRIDE: Switcher enabled because admin is logged in (AppMode: '${appMode || 'null'}').`);
+      } else {
+        console.log(`TESTING MODE ('${appMode}'): Switcher enabled.`);
+      }
+
+      // --- FIX: Ensure Admin UI is correctly loaded on login ---
+      if (isAdminLoggedIn) {
+        console.log("Admin is logged in. Forcing UI update to ensure correct state.");
+      }
+
+      const defaultUserMap = {
+        user: 'USR000000000003',     // Default User (Vivek)
+        merchant: 'USR000000000002'  // Default Merchant (Rohit)
+      };
+
+      document.querySelectorAll('.dev-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const userType = this.dataset.userType;
+          // If the button has a specific ID, use it. Otherwise, look up the default for that role.
+          const userId = this.dataset.userId || defaultUserMap[userType];
+
+          // Set or remove the user ID in localStorage.
+          if (userId && userType !== 'guest') {
+            localStorage.setItem('currentUserId', userId);
+          } else {
+            localStorage.removeItem('currentUserId');
+          }
+
+          // Directly tell the viewManager to handle the role change.
+          if (userType) {
+            viewManager.handleRoleChange(userType);
+            showToast('info', `Switched to ${userType.charAt(0).toUpperCase() + userType.slice(1)} mode`, 2000);
+            console.log(`DEV MODE: Requested role switch to '${userType}' with user ID '${userId || 'none'}'.`);
+          }
+        });
+      });
+
+      // Subscribe to the viewManager. It will provide the initial state immediately
+      // and all subsequent state changes, keeping the switcher perfectly in sync.
+      viewManager.subscribe(updateActiveButton);
+    } else {
+      console.log(`APP_MODE: '${appMode || 'production'}'. Dev switcher is hidden.`);
+      devContainer.remove();
+    }
+
+    // --- Impersonation Modal Logic ---
+    const impersonateBtn = document.getElementById('impersonate-btn');
+    const impersonateModal = document.getElementById('impersonate-modal');
+    const closeBtn = document.getElementById('impersonate-close-btn');
+    const userListContainer = document.getElementById('impersonate-user-list');
+    const searchInput = document.getElementById('impersonate-search-input');
+
+    // FIX: Add a robust guard clause. If any modal element is missing,
+    // disable the feature to prevent runtime errors.
+    if (!impersonateBtn || !impersonateModal || !closeBtn || !userListContainer || !searchInput) {
+        console.warn('RoleSwitcher: Impersonation UI elements not found. Feature disabled.');
+        if(impersonateBtn) impersonateBtn.style.display = 'none'; // Hide the button if its modal is missing
+        return; // Exit the impersonation setup
+    }
+
+    // --- Mobile Keyboard Fix ---
+    // When the search input is focused, move the modal to the top of the viewport
+    // to make space for the on-screen keyboard.
+    searchInput.addEventListener('focus', () => {
+        impersonateModal.classList.add('modal-input-focused');
+    });
+    searchInput.addEventListener('blur', () => {
+        impersonateModal.classList.remove('modal-input-focused');
+    });
+
+    // Add search listener
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const userItems = userListContainer.querySelectorAll('.impersonate-user-item');
+        
+        userItems.forEach(item => {
+            const name = item.querySelector('.name')?.textContent.toLowerCase() || '';
+            const email = item.querySelector('.email')?.textContent.toLowerCase() || '';
+            
+            // Show if name or email matches the search term
+            if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    impersonateBtn.addEventListener('click', async () => {
+      impersonateModal.classList.add('visible');
+      userListContainer.innerHTML = '<div class="spinner"></div>'; // Show loader
+      try {
+        const { fetchAllUsers } = await import('./source/utils/data-manager.js');
+        // Also cache all users in session storage for the generic buttons to use
+        const users = await fetchAllUsers(true); // Force fresh fetch
+        populateUserSelector(users);
+      } catch (error) {
+        console.error("Failed to fetch users for impersonation:", error);
+        userListContainer.innerHTML = `<p style="color: var(--accent-danger); text-align: center;">Could not load users.<br><small>Check Firestore rules.</small></p>`;
+      }
+    });
+
+    closeBtn.addEventListener('click', () => impersonateModal.classList.remove('visible'));
+    impersonateModal.addEventListener('click', (e) => {
+      if (e.target === impersonateModal) {
+        impersonateModal.classList.remove('visible');
+      }
+    });
+
+    function populateUserSelector(users) {
+      userListContainer.innerHTML = '';
+      users.forEach(user => {
+        const userItem = document.createElement('button'); // Changed to button for accessibility
+        userItem.className = 'impersonate-user-item';
+        userItem.dataset.userId = user.meta.userId;
+        userItem.dataset.userType = user.meta.primaryRole || 'user';
+        userItem.innerHTML = `
+          <div class="avatar" style="background-image: url('${user.info.avatar || './source/assets/logos/app-logo.png'}')"></div>
+          <div class="impersonate-user-info">
+            <span class="name">${user.info.fullName || 'Unknown User'}</span>
+            <span class="roles">${user.meta.roles.join(', ')}</span>
+            <span class="email">${user.info.email || ''}</span>
+          </div>
+        `;
+        userItem.addEventListener('click', () => {
+          localStorage.setItem('currentUserId', user.meta.userId);
+          viewManager.handleRoleChange(user.meta.primaryRole || 'user');
+          impersonateModal.classList.remove('visible');
+          // Show a toast to confirm the impersonation
+          showToast('info', `Now impersonating: ${user.info.fullName}`, 2500);
+        });
+        userListContainer.appendChild(userItem);
+      });
+    }
+  })();
+</script>

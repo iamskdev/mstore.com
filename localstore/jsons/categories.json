@@ -1,0 +1,615 @@
+[
+  {
+    "meta": {
+      "categoryId": "ICT000000000001",
+      "type": "product",
+      "slug": "groceries",
+      "createdAt": "2025-08-06T10:00:00Z",
+      "updatedAt": "2025-08-06T10:00:00Z",
+      "description": "ICT000000000001_DESCRIPTION",
+      "icon": "🛒",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "high",
+      "visibility": "public",
+      "displayOrder": 1
+    },
+    "seo": {
+      "title": "Buy Groceries Online at Best Prices",
+      "description": "Shop for staple foods, fresh groceries, and daily essentials online with fast delivery.",
+      "keywords": ["groceries", "online grocery", "daily essentials"]
+    },
+    "subcategories": [
+      {
+        "subCatId": "ISC000000000001",
+        "description": "ISC000000000001_DESCRIPTION",
+        "slug": "atta-rice-grains",
+        "icon": "🌾",
+        "isPopular": true,
+        "displayOrder": 1
+      },
+      {
+        "subCatId": "ISC000000000002",
+        "description": "ISC000000000002_DESCRIPTION",
+        "slug": "spices-masala",
+        "icon": "🌶️",
+        "isPopular": true,
+        "displayOrder": 2
+      },
+      {
+        "subCatId": "ISC000000000003",
+        "description": "ISC000000000003_DESCRIPTION",
+        "slug": "fruits",
+        "icon": "🍎",
+        "isPopular": false,
+        "displayOrder": 3
+      },
+      {
+        "subCatId": "ISC000000000004",
+        "description": "ISC000000000004_DESCRIPTION",
+        "slug": "dairy-products",
+        "icon": "🥛",
+        "isPopular": false,
+        "displayOrder": 4
+      },
+      {
+        "subCatId": "ISC000000000005",
+        "description": "ISC000000000005_DESCRIPTION",
+        "slug": "bakery-products",
+        "icon": "🍞",
+        "isPopular": true,
+        "displayOrder": 5
+      }
+    ]
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000002",
+      "type": "product",
+      "slug": "electronics",
+      "createdAt": "2025-08-06T10:05:00Z",
+      "updatedAt": "2025-08-06T10:05:00Z",
+      "description": "ICT000000000002_DESCRIPTION",
+      "icon": "📱",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "medium",
+      "visibility": "public",
+      "displayOrder": 2
+    },
+    "seo": {
+      "title": "Latest Electronics and Gadgets Online",
+      "description": "Explore the latest smartphones, laptops, and gadgets at unbeatable prices.",
+      "keywords": ["electronics", "gadgets", "smartphones"]
+    }
+  },
+
+  {
+    "meta": {
+      "categoryId": "ICT000000000003",
+      "type": "service",
+      "slug": "home-services",
+      "createdAt": "2025-08-06T10:10:00Z",
+      "updatedAt": "2025-08-06T10:10:00Z",
+      "description": "ICT000000000003_DESCRIPTION",
+      "icon": "🏠",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "low",
+      "visibility": "public",
+      "displayOrder": 3
+    },
+    "seo": {
+      "title": "Professional Home Services at Your Doorstep",
+      "description": "Book trusted home services like cleaning, plumbing, and electrical repairs online.",
+      "keywords": ["home services", "cleaning", "plumbing"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000004",
+      "type": "product",
+      "slug": "fashion",
+      "createdAt": "2025-08-06T10:15:00Z",
+      "updatedAt": "2025-08-06T10:15:00Z",
+      "description": "ICT000000000004_DESCRIPTION",
+      "icon": "👗",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "high",
+      "visibility": "public",
+      "displayOrder": 4
+    },
+    "seo": {
+      "title": "Trendy Fashion and Apparel Online",
+      "description": "Discover the latest fashion trends, clothing, and accessories at great prices.",
+      "keywords": ["fashion", "clothing", "accessories"]
+    }
+  },
+    {
+    "meta": {
+      "categoryId": "ICT000000000005",
+      "type": "product",
+      "slug": "books-stationery",
+      "createdAt": "2025-08-06T10:20:00Z",
+      "updatedAt": "2025-08-06T10:20:00Z",
+      "description": "ICT000000000005_DESCRIPTION",
+      "icon": "📚",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "medium",
+      "visibility": "public",
+      "displayOrder": 5
+    },
+    "seo": {
+      "title": "Books and Stationery Online",
+      "description": "Find a wide range of books, office supplies, and school stationery online.",
+      "keywords": ["books", "stationery", "office supplies"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000006",
+      "type": "service",
+      "slug": "health-fitness",
+      "createdAt": "2025-08-06T10:25:00Z",
+      "updatedAt": "2025-08-06T10:25:00Z",
+      "description": "ICT000000000006_DESCRIPTION",
+      "icon": "💪",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "low",
+      "visibility": "public",
+      "displayOrder": 6
+    },
+    "seo": {
+      "title": "Health and Fitness Services Online",
+      "description": "Access health consultations, fitness training, and wellness services online.",
+      "keywords": ["health", "fitness", "wellness"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000007",
+      "type": "product",
+      "slug": "sports-outdoors",
+      "createdAt": "2025-08-06T10:30:00Z",
+      "updatedAt": "2025-08-06T10:30:00Z",
+      "description": "ICT000000000007_DESCRIPTION",
+      "icon": "⚽",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": false,
+        "isExclusive": false
+      },
+      "priority": "medium",
+      "visibility": "public",
+      "displayOrder": 7
+    },
+    "seo": {
+      "title": "Sports and Outdoor Gear Online",
+      "description": "Shop for sports equipment, outdoor gear, and fitness accessories.",
+      "keywords": ["sports", "outdoor", "fitness gear"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000008",
+      "type": "service",
+      "slug": "automotive-services",
+      "createdAt": "2025-08-06T10:35:00Z",
+      "updatedAt": "2025-08-06T10:35:00Z",
+      "description": "ICT000000000008_DESCRIPTION",
+      "icon": "🚗",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "low",
+      "visibility": "public",
+      "displayOrder": 8
+    },
+    "seo": {
+      "title": "Automotive Services and Repairs Online",
+      "description": "Book car repairs, servicing, and maintenance services online.",
+      "keywords": ["automotive", "car service", "repairs"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000009",
+      "type": "product",
+      "slug": "beauty-personal-care",
+      "createdAt": "2025-08-06T10:40:00Z",
+      "updatedAt": "2025-08-06T10:40:00Z",
+      "description": "ICT000000000009_DESCRIPTION",
+      "icon": "💄",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "high",
+      "visibility": "public",
+      "displayOrder": 9
+    },
+    "seo": {
+      "title": "Beauty and Personal Care Products",
+      "description": "Shop for skincare, haircare, makeup, and personal hygiene products.",
+      "keywords": ["beauty", "personal care", "skincare"]
+    }
+  },
+ {
+    "meta": {
+      "categoryId": "ICT000000000010",
+      "type": "service",
+      "slug": "food-delivery",
+      "createdAt": "2025-08-06T10:45:00Z",
+      "updatedAt": "2025-08-06T10:45:00Z",
+      "description": "ICT000000000010_DESCRIPTION",
+      "icon": "🍔",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "high",
+      "visibility": "public",
+      "displayOrder": 10
+    },
+    "seo": {
+      "title": "Food Delivery Services Online",
+      "description": "Order food from your favorite restaurants and get it delivered to your doorstep.",
+      "keywords": ["food delivery", "online food", "restaurant delivery"]
+    }
+ },
+  {
+    "meta": {
+      "categoryId": "ICT000000000011",
+      "type": "product",
+      "slug": "home-kitchen",
+      "createdAt": "2025-08-06T10:50:00Z",
+      "updatedAt": "2025-08-06T10:50:00Z",
+      "description": "ICT000000000011_DESCRIPTION",
+      "icon": "🏡",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "medium",
+      "visibility": "public",
+      "displayOrder": 11
+    },
+    "seo": {
+      "title": "Home and Kitchen Appliances Online",
+      "description": "Shop for home appliances, kitchenware, and decor items online.",
+      "keywords": ["home appliances", "kitchenware", "decor"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000012",
+      "type": "product",
+      "slug": "toys-games",
+      "createdAt": "2025-08-06T10:55:00Z",
+      "updatedAt": "2025-08-06T10:55:00Z",
+      "description": "ICT000000000012_DESCRIPTION",
+      "icon": "🧸",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "low",
+      "visibility": "public",
+      "displayOrder": 12
+    },
+    "seo": {
+      "title": "Toys and Games for Kids Online",
+      "description": "Explore a wide range of toys, games, and educational products for children.",
+      "keywords": ["toys", "games", "kids"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000013",
+      "type": "product",
+      "slug": "pet-supplies",
+      "createdAt": "2025-08-06T11:00:00Z",
+      "updatedAt": "2025-08-06T11:00:00Z",
+      "description": "ICT000000000013_DESCRIPTION",
+      "icon": "🐾",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": false,
+        "isExclusive": false
+      },
+      "priority": "low",
+      "visibility": "public",
+      "displayOrder": 13
+    },
+    "seo": {
+      "title": "Pet Supplies and Accessories Online",
+      "description": "Shop for pet food, toys, and accessories for your beloved pets.",
+      "keywords": ["pet supplies", "pet food", "pet accessories"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000014",
+      "type": "service",
+      "slug": "travel-tourism",
+      "createdAt": "2025-08-06T11:05:00Z",
+      "updatedAt": "2025-08-06T11:05:00Z",
+      "description": "ICT000000000014_DESCRIPTION",
+      "icon": "✈️",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "medium",
+      "visibility": "public",
+      "displayOrder": 14
+    },
+    "seo": {
+      "title": "Travel and Tourism Services Online",
+      "description": "Book flights, hotels, and travel packages online for your next vacation.",
+      "keywords": ["travel", "tourism", "vacation"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000015",
+      "type": "product",
+      "slug": "automotive",
+      "createdAt": "2025-08-06T11:10:00Z",
+      "updatedAt": "2025-08-06T11:10:00Z",
+      "description": "ICT000000000015_DESCRIPTION",
+      "icon": "🚗",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "medium",
+      "visibility": "public",
+      "displayOrder": 15
+    },
+    "seo": {
+      "title": "Automotive Parts and Accessories Online",
+      "description": "Shop for car parts, accessories, and maintenance products.",
+      "keywords": ["automotive parts", "car accessories", "car maintenance"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000016",
+      "type": "service",
+      "slug": "education-training",
+      "createdAt": "2025-08-06T11:15:00Z",
+      "updatedAt": "2025-08-06T11:15:00Z",
+      "description": "ICT000000000016_DESCRIPTION",
+      "icon": "🎓",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "low",
+      "visibility": "public",
+      "displayOrder": 16
+    },
+    "seo": {
+      "title": "Online Education and Training Services",
+      "description": "Access online courses, training programs, and educational resources.",
+      "keywords": ["education", "online courses", "training"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000017",
+      "type": "product",
+      "slug": "gifts-flowers",
+      "createdAt": "2025-08-06T11:20:00Z",
+      "updatedAt": "2025-08-06T11:20:00Z",
+      "description": "ICT000000000017_DESCRIPTION",
+      "icon": "🎁",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "high",
+      "visibility": "public",
+      "displayOrder": 17
+    },
+    "seo": {
+      "title": "Gifts and Flowers for Every Occasion",
+      "description": "Find the perfect gifts, flowers, and personalized items for your loved ones.",
+      "keywords": ["gifts", "flowers", "personalized gifts"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000018",
+      "type": "service",
+      "slug": "legal-financial",
+      "createdAt": "2025-08-06T11:25:00Z",
+      "updatedAt": "2025-08-06T11:25:00Z",
+      "description": "ICT000000000018_DESCRIPTION",
+      "icon": "💼",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "medium",
+      "visibility": "public",
+      "displayOrder": 18
+    },
+    "seo": {
+      "title": "Legal and Financial Services Online",
+      "description": "Get legal advice, financial planning, and accounting services online.",
+      "keywords": ["legal services", "financial planning", "accounting"]
+    }
+  },
+  {
+    "meta": {
+      "categoryId": "ICT000000000019",
+      "type": "product",
+      "slug": "home-improvement",
+      "createdAt": "2025-08-06T11:30:00Z",
+      "updatedAt": "2025-08-06T11:30:00Z",
+      "description": "ICT000000000019_DESCRIPTION",
+      "icon": "🔧",
+      "bannerImage": null,
+      "thumbnail": null,
+      "version": 1.0,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false,
+        "isPopular": true,
+        "isExclusive": false
+      },
+      "priority": "low",
+      "visibility": "public",
+      "displayOrder": 19
+    },
+    "seo": {
+      "title": "Home Improvement Products and Services",
+      "description": "Shop for tools, materials, and services for home renovation and improvement.",
+      "keywords": ["home improvement", "tools", "renovation"]
+    }
+  }
+]

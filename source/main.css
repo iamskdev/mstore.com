@@ -1,0 +1,419 @@
+/*
+========================================
+  TABLE OF CONTENTS
+========================================
+
+  1. GLOBAL VARIABLES & RESETS
+  2. THEME VARIABLES (LIGHT & DARK)
+  3. CORE APP LAYOUT
+  4. LAYOUT HELPERS & OVERRIDES
+  5. APP-WIDE COMPONENTS
+      - 5.1. Full-Screen Loader
+      - 5.2. Pull-to-Refresh
+      - 5.3. Search Suggestions
+
+========================================
+*/
+
+
+/* ========================================
+   1. GLOBAL VARIABLES & RESETS
+   ========================================
+   This section defines global CSS variables for layout dimensions
+   and applies a universal box-sizing reset for predictable layout behavior.
+*/
+:root {
+  --header-height: 56px;  /* Default header height */
+  --bottom-height: 65px;  /* Default bottom bar height, matches tab-nav height */
+}
+
+/* ========================================
+   2. THEME VARIABLES (LIGHT & DARK)
+   ========================================
+   Defines color palettes and other theme-related properties for both
+   light (default) and dark modes.
+*/
+:root {
+  /* Light Theme (Default) */
+  --bg-primary: #f9f9f9;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f0f2f5;
+  --bg-hover: #e4e6e9; /* For interactive elements like tabs */
+  --bg-secondary-rgb: 255, 255, 255;
+  --text-primary: #1c1e21;
+  --text-secondary: #606770;
+  --text-tertiary: #8a8d91;
+  --border-color: #e0e0e0;
+  --accent-primary: #4361ee; /* Updated to match component styles */
+  --accent-primary-hover: #3a53c4; /* Darker shade for hover */
+  --accent-primary-rgb: 67, 97, 238;
+  --accent-secondary: #28a745;
+  --accent-secondary-hover: #218838;
+  --accent-text: #ffffff;
+  --error-color: #d93025;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  --shadow-focus-primary: rgba(0, 123, 255, 0.2);
+  --shadow-focus-secondary: rgba(40, 167, 69, 0.2);
+  --shadow-focus-error: rgba(217, 48, 37, 0.2);
+  --text-google-btn: #3c4043;
+  --page-bg-gradient: linear-gradient(to top right, #f0f2f5, #e6e9ed);
+  
+}
+
+html.dark-mode {
+  /* Dark Theme */
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2a2a3b;
+  --bg-hover: #3a3b4c; /* For interactive elements like tabs */
+  --bg-secondary-rgb: 30, 30, 30;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #7f8c8d;
+  --border-color: #333333;
+  --accent-primary: #4cc9f0; /* Updated to match component styles */
+  --accent-primary-hover: #3fb8de; /* Darker shade for hover */
+  --accent-primary-rgb: 76, 201, 240;
+  --accent-secondary: #69f0ae;
+  --accent-secondary-hover: #00bfa5;
+  --accent-text: #000000;
+  --error-color: #ff5252;
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --shadow-focus-primary: rgba(68, 138, 255, 0.25);
+  --shadow-focus-secondary: rgba(105, 240, 174, 0.25);
+  --shadow-focus-error: rgba(255, 82, 82, 0.25);
+  --text-google-btn: #e0e0e0;
+  --page-bg-gradient: linear-gradient(to top right, #1a1a2e, #16213e);
+}
+
+/* ========================================
+   3. CORE APP LAYOUT
+   ========================================
+   Styles for the main `body` and the base `.view-container` which
+   form the fundamental structure of the application.
+*/
+html {
+  /* Set box-sizing globally for more predictable layouts */
+  box-sizing: border-box;
+  height: 100%;
+}
+
+*, *::before, *::after {
+  /* Inherit box-sizing from html for all elements */
+  box-sizing: inherit;
+}
+
+body {
+  /* Flex properties for sticky footer layout */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensures body takes full viewport height for sticky footer */
+  margin: 0; /* Reset margin */
+  font-family: 'Noto Sans', sans-serif;
+  background-color: var(--bg-primary);
+  line-height: 1.6;
+  overscroll-behavior-y: contain; /* Prevents browser pull-to-refresh */
+  /* Remove the default tap highlight color on mobile WebKit browsers for a cleaner native feel. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+.view-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Use root variables to add space for the fixed header and bottom nav.
+     This prevents content from being hidden underneath them. */
+  padding-top: var(--header-height);
+  padding-bottom: var(--bottom-height);
+  box-sizing: border-box;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+  transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  background: var(--bg-secondary);
+}
+
+
+.view-container.view-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  z-index: 10;
+}
+
+/* ========================================
+   4. LAYOUT HELPERS & OVERRIDES
+   ========================================
+   Specific layout rules that modify or enhance the core layout for
+   special cases, such as views with an embedded footer.
+*/
+.view-container.view-with-embedded-footer {
+  display: flex;
+  flex-direction: column;
+  /* This is crucial. It makes the view container take up the full available
+     height of its parent (the body), allowing the flex layout to push
+     the footer to the very bottom, even on pages with little content. */
+  height: 100%;
+}
+
+/* ========================================
+   5. APP-WIDE COMPONENTS
+   ========================================
+   Styles for components that are not tied to a single view and can
+   appear globally across the application.
+*/
+
+/* --- 5.1. Full-Screen Loader --- */
+/* FIX: Replaced incorrect dropdown styles with proper full-screen overlay styles.
+   This ensures the loader covers the entire screen, has a blurred background,
+   and can correctly center its content (the spinner). */
+.full-screen-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(var(--bg-secondary-rgb), 0.8);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Highest z-index to be on top of everything */
+  opacity: 1;
+  visibility: visible;
+  /*
+    Transition opacity over 0.3s.
+    When hiding, delay the visibility change until the opacity transition is done.
+    When showing, make it visible immediately.
+  */
+  transition: opacity 0.3s ease, visibility 0s linear 0s;
+}
+
+.full-screen-loader.hidden {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.loading-spinner {
+  margin-bottom: 16px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(var(--accent-primary-rgb), 0.2);
+  border-top: 4px solid var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- 5.2. Pull-to-Refresh --- */
+#pullToRefresh {
+  position: fixed;
+  top: -60px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: top 0.3s ease;
+  z-index: 1000;
+}
+
+#pullToRefresh .material-icons {
+  font-size: 36px;
+  color: #2563eb;
+  transition: transform 0.25s ease-out;
+}
+
+/* Spinner animation */
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+/* ======================== */
+/* 🔍 SEARCH SUGGESTIONS */
+/* ======================== */
+.search-suggestions {
+  position: absolute; /* Relative to the .header-container */
+  top: 100%; /* Position it right below its parent */
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  /* The shadow has no vertical offset, making it appear directly behind the box. */
+  box-shadow: 0 0 8px var(--shadow-color);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  /* The top border is removed to prevent a "double border" effect with the header's bottom border. */
+  max-height: 60vh;
+  overflow-y: auto;
+  display: none;
+  z-index: 1002;
+  list-style: none;
+  padding: 0;
+  margin: 0; /* CRUCIAL: Resets the browser's default margin on <ul> elements, removing the visual gap. */
+}
+
+.suggestion-item {
+  /* Aligning with the search bar's container padding (16px) */
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  border: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item.active-suggestion {
+  background-color: var(--bg-tertiary);
+}
+
+/* This is the container for the icon and text on the left */
+.suggestion-item > span:first-child {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Icon for search suggestions (e.g., magnifying glass). */
+ul#search-suggestions .suggestion-item .suggestion-icon {
+  /* 
+    This margin is crucial for aligning the suggestion text with the search input text.
+    Calculation:
+    - Search Input Start = (search-mode padding-left) + (back-arrow width) + (back-arrow margin-right) + (input padding-left)
+                          = 12px + 20px + 8px + 12px = 52px
+    - Suggestion Text Start = (suggestion-item padding-left) + (icon width) + (this margin-right)
+                            = 16px + 20px + 16px = 52px
+  */
+  margin-right: 16px;
+  color: var(--text-tertiary);
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0; /* Prevents icon from shrinking */
+  display: inline-block; /* Ensure it is visible */
+}
+
+.highlight {
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+/* Action icon on the right of the suggestion */
+.suggestion-item .fa-arrow-up {
+  transform: rotate(-90deg);
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+  color: var(--text-tertiary);
+}
+
+.suggestion-item:hover .fa-arrow-up,
+.suggestion-item.active-suggestion .fa-arrow-up {
+  transform: rotate(-90deg) scale(1.15);
+  color: var(--accent-primary);
+}
+
+.suggestion-item .fa-arrow-up::before {
+  font-family: "Font Awesome 6 Free";
+  content: "\f124"; /* fa-location-arrow */
+  font-weight: 900;
+}
+
+/* --- 5.3. PWA Install Prompt Toast --- */
+.install-prompt-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(150%); /* Start off-screen */
+  width: 90%;
+  max-width: 380px;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  gap: 12px;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.install-prompt-toast.visible {
+  transform: translateX(-50%) translateY(0); /* Slide into view */
+}
+.install-toast-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-grow: 1;
+  min-width: 0;
+}
+.install-toast-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.install-toast-text {
+  display: flex;
+  flex-direction: column;
+}
+.install-toast-text strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.install-toast-text span {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.install-toast-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.install-toast-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.install-toast-btn.later {
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+.install-toast-btn.later:hover {
+  background-color: var(--bg-hover);
+}
+.install-toast-btn.install {
+  background-color: var(--accent-primary);
+  color: var(--accent-text);
+}
+.install-toast-btn.install:hover {
+  background-color: var(--accent-primary-hover);
+}

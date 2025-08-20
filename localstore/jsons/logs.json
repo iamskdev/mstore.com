@@ -1,0 +1,1758 @@
+[
+  {
+    "meta": {
+      "logId": "LOG000000000001",
+      "type": "order",
+      "action": "order_created",
+      "priority": "high",
+      "tags": [
+        "order",
+        "create",
+        "user"
+      ],
+      "note": "Order placed successfully",
+      "version": 1,
+      "links": {
+        "orderId": "ORD000000000001",
+        "userId": "USR000000000003",
+        "merchantId": "MRC000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-07-22T10:30:00Z",
+      "serverTime": "2025-07-22T10:30:05Z",
+      "status": "success",
+      "description": "Order placed via mobile app",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000003",
+        "name": "Vivek Kumar"
+      },
+      "details": {
+        "orderValue": 139.5,
+        "paymentMethod": "UPI",
+        "itemsCount": 3,
+        "transactionId": "TXN123456"
+      }
+    },
+    "source": {
+      "device": "mobile",
+      "platform": "Android",
+      "browser": "Chrome 125",
+      "appVersion": "2.5.3",
+      "address": "Ranchi, Jharkhand, India",
+      "geolocation": {
+        "lat": 23.6345,
+        "lng": 86.1679
+      },
+      "network": "Jio 4G",
+      "ipAddress": "103.25.59.45",
+      "userAgent": "Mozilla/5.0 (Linux; Android 13; SM-M127G)..."
+    },
+    "audit": {
+      "createdBy": "system",
+      "createdAt": "2025-07-22T10:30:00Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000002",
+      "type": "user",
+      "action": "user_registered",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "register",
+        "email/password"
+      ],
+      "note": "New user registered via email/password.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000005"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-08T16:26:52.454Z",
+      "serverTime": "2025-08-08T16:26:52.454Z",
+      "status": "success",
+      "description": "User account created successfully.",
+      "performedBy": {
+        "role": "system",
+        "id": "system",
+        "name": "System"
+      },
+      "details": {
+        "email": "em@gm.io",
+        "fullName": "Hi"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "system",
+      "createdAt": "2025-08-08T16:26:52.457Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000003",
+      "type": "user",
+      "action": "user_registered",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "register",
+        "email/password"
+      ],
+      "note": "New user registered via email/password.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000006"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-08T16:33:00.888Z",
+      "serverTime": "2025-08-08T16:33:00.888Z",
+      "status": "success",
+      "description": "User account created successfully.",
+      "performedBy": {
+        "role": "system",
+        "id": "system",
+        "name": "System"
+      },
+      "details": {
+        "email": "dev@apnnastore.io",
+        "fullName": "Hi"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "system",
+      "createdAt": "2025-08-08T16:33:00.889Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000004",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T06:03:56.460Z",
+      "serverTime": "2025-08-09T06:03:56.460Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T06:03:56.460Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000005",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T06:51:20.913Z",
+      "serverTime": "2025-08-09T06:51:20.913Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T06:51:20.918Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000006",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T07:36:42.102Z",
+      "serverTime": "2025-08-09T07:36:42.102Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T07:36:42.102Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000007",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T07:51:54.733Z",
+      "serverTime": "2025-08-09T07:51:54.733Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T07:51:54.733Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000008",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T07:51:55.341Z",
+      "serverTime": "2025-08-09T07:51:55.341Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T07:51:55.341Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000009",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T07:57:26.901Z",
+      "serverTime": "2025-08-09T07:57:26.901Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T07:57:26.901Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000010",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T07:57:58.615Z",
+      "serverTime": "2025-08-09T07:57:58.615Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T07:57:58.615Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000011",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T07:57:59.890Z",
+      "serverTime": "2025-08-09T07:57:59.890Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T07:57:59.890Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000012",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T07:58:00.397Z",
+      "serverTime": "2025-08-09T07:58:00.397Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T07:58:00.397Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000013",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T07:59:10.471Z",
+      "serverTime": "2025-08-09T07:59:10.471Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T07:59:10.471Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000014",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T08:00:27.777Z",
+      "serverTime": "2025-08-09T08:00:27.777Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T08:00:27.777Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000015",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T08:17:14.760Z",
+      "serverTime": "2025-08-09T08:17:14.760Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T08:17:14.760Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000016",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T08:25:56.050Z",
+      "serverTime": "2025-08-09T08:25:56.050Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T08:25:56.050Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000017",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T11:21:56.579Z",
+      "serverTime": "2025-08-09T11:21:56.579Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.103.0 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T11:21:56.580Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000018",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T11:37:14.276Z",
+      "serverTime": "2025-08-09T11:37:14.276Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T11:37:14.276Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000019",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T13:44:03.356Z",
+      "serverTime": "2025-08-09T13:44:03.356Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T13:44:03.356Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000020",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T13:57:11.277Z",
+      "serverTime": "2025-08-09T13:57:11.277Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T13:57:11.278Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000021",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T14:08:36.355Z",
+      "serverTime": "2025-08-09T14:08:36.355Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Linux armv81",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T14:08:36.355Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000022",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T14:15:58.893Z",
+      "serverTime": "2025-08-09T14:15:58.893Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T14:15:58.893Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000023",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T14:24:50.260Z",
+      "serverTime": "2025-08-09T14:24:50.260Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T14:24:50.260Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000024",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T16:20:33.648Z",
+      "serverTime": "2025-08-09T16:20:33.648Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.103.0 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T16:20:33.650Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000025",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T16:20:47.015Z",
+      "serverTime": "2025-08-09T16:20:47.015Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.103.0 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T16:20:47.015Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000026",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T16:43:56.834Z",
+      "serverTime": "2025-08-09T16:43:56.834Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T16:43:56.834Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000027",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T16:49:15.052Z",
+      "serverTime": "2025-08-09T16:49:15.052Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T16:49:15.053Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000028",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T16:56:42.444Z",
+      "serverTime": "2025-08-09T16:56:42.444Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 Edg/138.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T16:56:42.444Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000029",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-09T17:32:43.832Z",
+      "serverTime": "2025-08-09T17:32:43.832Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.103.0 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-09T17:32:43.832Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000030",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-10T06:57:46.205Z",
+      "serverTime": "2025-08-10T06:57:46.205Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Mobile Safari/537.36 Edg/139.0.0.0"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-10T06:57:46.206Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000031",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-10T07:00:09.830Z",
+      "serverTime": "2025-08-10T07:00:09.830Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Linux armv81",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-10T07:00:09.830Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000032",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-10T10:41:29.205Z",
+      "serverTime": "2025-08-10T10:41:29.205Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "android",
+      "platform": "Linux armv81",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-10T10:41:29.206Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  },
+  {
+    "meta": {
+      "logId": "LOG000000000033",
+      "type": "user",
+      "action": "user_login_success",
+      "priority": "medium",
+      "tags": [
+        "user",
+        "user",
+        "login"
+      ],
+      "note": "User logged in successfully via email.",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      }
+    },
+    "event": {
+      "timestamp": "2025-08-10T13:18:32.042Z",
+      "serverTime": "2025-08-10T13:18:32.042Z",
+      "status": "success",
+      "description": "User logged in successfully via email.",
+      "performedBy": {
+        "role": "user",
+        "id": "USR000000000001",
+        "name": "User Action"
+      },
+      "details": {
+        "method": "email",
+        "credential": "dev@apnastore.io"
+      }
+    },
+    "source": {
+      "device": "web",
+      "platform": "Win32",
+      "browser": "Netscape",
+      "appVersion": "1.0.0",
+      "address": null,
+      "geolocation": null,
+      "network": null,
+      "ipAddress": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.103.0 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36"
+    },
+    "audit": {
+      "createdBy": "USR000000000001",
+      "createdAt": "2025-08-10T13:18:32.042Z",
+      "isDeleted": false,
+      "deletedAt": null,
+      "deletedBy": null,
+      "updatedAt": null,
+      "updatedBy": null
+    }
+  }
+]

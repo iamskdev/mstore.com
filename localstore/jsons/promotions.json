@@ -1,0 +1,106 @@
+[
+  {
+    "meta": {
+      "promoId": "PRM000000000001",
+      "title": null,
+      "type": "storefront",
+      "version": 1,
+      "links": {
+        "userId": null,
+        "merchantId": "MRC000000000001"
+      },
+      "status": {
+        "isActive": true,
+        "priority": 1,
+        "visibility": "public"
+      },
+      "schedule": {
+        "start": "2025-07-22T00:00:00Z",
+        "end": "2025-07-29T23:59:59Z"
+      },
+      "createdAt": "2025-08-04T12:00:00Z",
+      "updatedAt": "2025-08-04T12:00:00Z"
+    },
+    "display": {
+      "banner": {
+        "image": "/promotions/banners/icg-banner.jpg",
+        "tagline": "Affordable groceries & fast internet!",
+        "description": "Limited time promotion for our best-selling merchant!"
+      },
+      "notification": {
+        "enabled": true,
+        "title": "Promotion Time!",
+        "message": "🔥 Exclusive offers from Internet Cafe & Grocery!",
+        "type": "info",
+        "icon": "fas fa-bullhorn"
+      }
+    },
+    "targeting": {
+      "locations": [],
+      "userGroups": [],
+      "platforms": [
+        "web",
+        "android",
+        "ios",
+        "desktop"
+      ]
+    },
+    "rules": {
+      "minOrderValue": 0,
+      "maxUsagePerUser": null,
+      "applicableItems": {
+        "type": "include",
+        "itemIds": [],
+        "categoryIds": []
+      }
+    },
+    "reward": {
+      "type": "fixed_discount",
+      "value": {
+        "amount": 0
+      },
+      "description": "",
+      "couponCode": null
+    },
+    "ui_overrides": {
+      "header": {
+        "backgroundColor": "#FF5733",
+        "textColor": "#ffffff",
+        "logo": "/admin/assets/images/merchants/logo/icg-logo.jpg",
+        "title": "Internet Cafe & Grocery"
+      },
+      "bottomNav": [
+        {
+          "label": "Home",
+          "icon": "fas fa-home",
+          "link": "/merchant/MRC000000000001"
+        },
+        {
+          "label": "Explore",
+          "icon": "fas fa-search",
+          "link": "/merchant/MRC000000000001/explore"
+        },
+        {
+          "label": "Saved",
+          "icon": "fas fa-heart",
+          "link": "/merchant/MRC000000000001/saved"
+        },
+        {
+          "label": "Cart",
+          "icon": "fas fa-shopping-cart",
+          "link": "/merchant/MRC000000000001/cart"
+        },
+        {
+          "label": "Profile",
+          "icon": "fas fa-user",
+          "link": "/merchant/MRC000000000001/profile"
+        }
+      ]
+    },
+    "analytics": {
+      "views": 0,
+      "clicks": 0,
+      "conversions": 0
+    }
+  }
+]

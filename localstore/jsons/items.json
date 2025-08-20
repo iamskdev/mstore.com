@@ -1,0 +1,1899 @@
+[
+  {
+    "meta": {
+      "itemId": "ITM000000000001",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": true,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "brandId": "BRD000000000016",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000001"
+      }
+    },
+    "info": {
+      "name": "Parle G Biscuit 80g",
+      "sku": "PARLEG-80G",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567890",
+      "note": "most trending item in the biscuits category",
+      "descriptions": {
+        "short": "Classic glucose biscuit by Parle, perfect with tea.",
+        "long": "Classic glucose biscuit by Parle, perfect with tea. Classic glucose biscuit by Parle, perfect with tea. Classic glucose biscuit by Parle, perfect with tea. Classic glucose biscuit by Parle, perfect with tea."
+      },
+      "attributes": {
+        "flavor": "original",
+        "weight": "80g",
+        "packaging": "Plastic Packet",
+        "origin": "India",
+        "shelfLife": "6 months"
+      }
+    },
+    "pricing": {
+      "mrp": 12,
+      "costPrice": 8,
+      "sellingPrice": 10,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 200,
+      "batchId": "BATCH001",
+      "expiryDate": "2025-12-31",
+      "lowStockThreshold": 20,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/parleg-cup.jpg",
+      "gallery": [
+        "./localstore/images/items/parleg-cup.jpg",
+        "./localstore/images/items/parleg-tea.jpg",
+        "./localstore/images/items/parleg-royal.jpg",
+        "./localstore/images/items/parleg-gold.jpg",
+        "./localstore/images/items/parleg-glucose.jpg",
+        "./localstore/images/items/parleg-genius.jpg",
+        "./localstore/images/items/Parleg-add.jpg",
+        "./localstore/images/items/parleg-white.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.5,
+      "numReviews": 120,
+      "views": 1500,
+      "saved": 50,
+      "carted": 0,
+      "totalSales": 450
+    },
+    "seo": {
+      "title": "Parle G Biscuit - Best Tea Time Snack",
+      "keywords": [
+        "parle g",
+        "glucose biscuit",
+        "tea snack"
+      ],
+      "description": "Original Parle-G glucose biscuit at best price online."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000002",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "brandId": "BRD000000000005",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000001"
+      }
+    },
+    "info": {
+      "name": "Tata Salt 1KG",
+      "sku": "TATASALT-1KG",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567891",
+      "note": "popular salt brand with high customer trust",
+      "descriptions": {
+        "short": "Tata Salt 1KG Pack",
+        "long": "Iodized salt by Tata for better health."
+      },
+      "attributes": {
+        "origin": "India",
+        "weight": "1kg",
+        "iodized": "Yes",
+        "packaging": "Plastic Packet"
+      }
+    },
+    "pricing": {
+      "mrp": 28,
+      "costPrice": 20,
+      "sellingPrice": 25,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 100,
+      "batchId": "BATCH002",
+      "expiryDate": null,
+      "lowStockThreshold": 10,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/tata-salt.jpg",
+      "gallery": [
+        "./localstore/images/items/tata-salt.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.6,
+      "numReviews": 90,
+      "views": 800,
+      "saved": 15,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Tata Salt - Healthy Iodized Salt",
+      "keywords": [
+        "tata salt",
+        "iodized",
+        "cooking essentials"
+      ],
+      "description": "Trusted Tata Salt for health, best kitchen companion."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000003",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "brandId": "BRD000000000002",
+        "unitId": "UNT000000000002",
+        "categoryId": "CAT000000000001"
+      }
+    },
+    "info": {
+      "name": "Fortune Mustard Oil 1L",
+      "sku": "FORTUNE-MO-1L",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567893",
+      "note": null,
+      "descriptions": {
+        "short": "Fortune Mustard Oil 1L",
+        "long": "Pure mustard oil for cooking and pickles."
+      },
+      "attributes": {
+        "origin": "India",
+        "volume": "1L",
+        "packaging": "Plastic Bottle",
+        "type": "Mustard"
+      }
+    },
+    "pricing": {
+      "mrp": 165,
+      "costPrice": 135,
+      "sellingPrice": 150,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 80,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": 10,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/mustard-oil.jpg",
+      "gallery": [
+        "./localstore/images/items/mustard-oil.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.3,
+      "numReviews": 50,
+      "views": 600,
+      "saved": 10,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Fortune Mustard Oil - Pure Mustard",
+      "keywords": [
+        "mustard oil",
+        "fortune",
+        "cooking oil"
+      ],
+      "description": "Pure mustard oil for healthy cooking."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000004",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "brandId": "BRD000000000063",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000006"
+      }
+    },
+    "info": {
+      "name": "Surf Excel Quick Wash 500g",
+      "sku": "SURF500G",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567894",
+      "note": null,
+      "descriptions": {
+        "short": "Surf Excel 500g",
+        "long": "Quick wash detergent powder for clean clothes."
+      },
+      "attributes": {
+        "origin": "India",
+        "weight": "500g",
+        "packaging": "Plastic Packet"
+      }
+    },
+    "pricing": {
+      "mrp": 72,
+      "costPrice": 58,
+      "sellingPrice": 65,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 100,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": 10,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/surf-excel.jpg",
+      "gallery": [
+        "./localstore/images/items/surf-excel.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.4,
+      "numReviews": 75,
+      "views": 450,
+      "saved": 25,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Surf Excel Quick Wash 500g",
+      "keywords": [
+        "detergent",
+        "surf excel",
+        "laundry"
+      ],
+      "description": "Quick wash detergent for tough stains."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000005",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": true,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "brandId": "BRD000000000061",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000005"
+      }
+    },
+    "info": {
+      "name": "Lux Bathing Soap 100g",
+      "sku": "LUX100G",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567895",
+      "note": null,
+      "descriptions": {
+        "short": "Lux Soap 100g",
+        "long": "Fragrant bathing soap for smooth skin."
+      },
+      "attributes": {
+        "origin": "India",
+        "weight": "100g",
+        "fragrance": "Floral"
+      }
+    },
+    "pricing": {
+      "mrp": 32,
+      "costPrice": 24,
+      "sellingPrice": 28,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 150,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": 10,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/lux-soap.jpg",
+      "gallery": [
+        "./localstore/images/items/lux-soap.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.5,
+      "numReviews": 80,
+      "views": 500,
+      "saved": 18,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Lux Bathing Soap 100g - Floral Fragrance",
+      "keywords": [
+        "lux soap",
+        "bath soap",
+        "floral fragrance"
+      ],
+      "description": "Fragrant bathing soap for clean and smooth skin."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000006",
+      "type": "service",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "unitId": "UNT000000000036",
+        "categoryId": "CAT000000000011"
+      }
+    },
+    "info": {
+      "name": "Photo Print (Glossy)",
+      "sku": "PHOTO-PRINT",
+      "hsnCode": "XXXXXX",
+      "barcode": null,
+      "note": null,
+      "descriptions": {
+        "short": "Glossy photo print service",
+        "long": "Glossy photo print service for instant passport and document photos."
+      },
+      "attributes": {
+        "mode": "Offline",
+        "includes": [
+          "Glossy paper",
+          "Photo print"
+        ],
+        "serviceTime": "5 minutes",
+        "location": "In-shop only"
+      }
+    },
+    "pricing": {
+      "mrp": 25,
+      "costPrice": 15,
+      "sellingPrice": 20,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": null,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": null,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/photo-print.jpg",
+      "gallery": [
+        "./localstore/images/items/photo-print.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.7,
+      "numReviews": 12,
+      "views": 100,
+      "saved": 10,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Photo Print (Glossy) Service",
+      "keywords": [
+        "photo print",
+        "glossy",
+        "service"
+      ],
+      "description": "Instant glossy photo print service at shop."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000007",
+      "type": "service",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "unitId": "UNT000000000005",
+        "categoryId": "CAT000000000011"
+      }
+    },
+    "info": {
+      "name": "Xerox Copy (B/W)",
+      "sku": "XEROX-BW",
+      "hsnCode": "XXXXXX",
+      "barcode": null,
+      "note": null,
+      "descriptions": {
+        "short": "B/W Xerox copy",
+        "long": "Black & white xerox copy service for documents."
+      },
+      "attributes": {
+        "mode": "Offline",
+        "includes": [
+          "Black & White Xerox"
+        ],
+        "serviceTime": "1 minute",
+        "location": "In-shop only"
+      }
+    },
+    "pricing": {
+      "mrp": 2,
+      "costPrice": 1.5,
+      "sellingPrice": 2,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": null,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": null,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/xerox-bw.jpg",
+      "gallery": [
+        "./localstore/images/items/xerox-bw.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.3,
+      "numReviews": 20,
+      "views": 150,
+      "saved": 5,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Xerox Copy (B/W) Service",
+      "keywords": [
+        "xerox",
+        "copy",
+        "bw"
+      ],
+      "description": "Black & white xerox copy service at shop."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000008",
+      "type": "service",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000002",
+        "unitId": "UNT000000000038",
+        "categoryId": "CAT000000000011"
+      }
+    },
+    "info": {
+      "name": "Lamination Aadhar Card",
+      "sku": "LAMINATE-AADHAR",
+      "hsnCode": "XXXXXX",
+      "barcode": null,
+      "note": null,
+      "descriptions": {
+        "short": "Aadhar card lamination",
+        "long": "Plastic lamination service for Aadhar and other cards."
+      },
+      "attributes": {
+        "mode": "Offline",
+        "includes": [
+          "Plastic Lamination"
+        ],
+        "serviceTime": "3 minutes",
+        "location": "In-shop only"
+      }
+    },
+    "pricing": {
+      "mrp": 15,
+      "costPrice": 10,
+      "sellingPrice": 15,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": null,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": null,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/aadhaar-lamination.jpg",
+      "gallery": [
+        "./localstore/images/items/aadhaar-lamination.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.4,
+      "numReviews": 25,
+      "views": 90,
+      "saved": 3,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Lamination Aadhar Card Service",
+      "keywords": [
+        "lamination",
+        "aadhar",
+        "card"
+      ],
+      "description": "Plastic lamination for Aadhar and other cards."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000009",
+      "type": "service",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000002",
+        "unitId": "UNT000000000038",
+        "categoryId": "CAT000000000011"
+      }
+    },
+    "info": {
+      "name": "PAN Card Apply Service",
+      "sku": "PAN-APPLY",
+      "hsnCode": "XXXXXX",
+      "barcode": null,
+      "note": null,
+      "descriptions": {
+        "short": "PAN card application service",
+        "long": "PAN card apply service for government documentation."
+      },
+      "attributes": {
+        "mode": "Online",
+        "includes": [
+          "PAN Card Application"
+        ],
+        "serviceTime": "20 minutes",
+        "location": "In-shop / Online"
+      }
+    },
+    "pricing": {
+      "mrp": 120,
+      "costPrice": 100,
+      "sellingPrice": 120,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": null,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": null,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/pan-card.jpg",
+      "gallery": [
+        "./localstore/images/items/pan-card.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.6,
+      "numReviews": 30,
+      "views": 200,
+      "saved": 7,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "PAN Card Apply Service",
+      "keywords": [
+        "pan card",
+        "application",
+        "service"
+      ],
+      "description": "PAN card application service for government documentation."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000010",
+      "type": "service",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000002",
+        "unitId": "UNT000000000036",
+        "categoryId": "CAT000000000011"
+      }
+    },
+    "info": {
+      "name": "Online Form Fill (Govt Jobs)",
+      "sku": "FORM-GOVT",
+      "hsnCode": "XXXXXX",
+      "barcode": null,
+      "note": null,
+      "descriptions": {
+        "short": "Govt job form fill service",
+        "long": "Online government job form fill and document upload service."
+      },
+      "attributes": {
+        "mode": "Online",
+        "includes": [
+          "Form Fill",
+          "Document Upload"
+        ],
+        "serviceTime": "10-15 minutes",
+        "location": "In-shop / Online"
+      }
+    },
+    "pricing": {
+      "mrp": 50,
+      "costPrice": 40,
+      "sellingPrice": 50,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": null,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": null,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/form-fill.jpg",
+      "gallery": [
+        "./localstore/images/items/form-fill.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.5,
+      "numReviews": 40,
+      "views": 180,
+      "saved": 12,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Online Form Fill (Govt Jobs) Service",
+      "keywords": [
+        "form fill",
+        "government",
+        "service"
+      ],
+      "description": "Online government job form fill and document upload service."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000011",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": true,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "brandId": "BRD000000000017",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000005"
+      }
+    },
+    "info": {
+      "name": "Dabur Red Toothpaste 200g",
+      "sku": "DABUR-RED-200G",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567896",
+      "note": null,
+      "descriptions": {
+        "short": "Dabur Red Toothpaste 200g",
+        "long": "Herbal toothpaste for healthy gums and teeth."
+      },
+      "attributes": {
+        "origin": "India",
+        "weight": "200g",
+        "packaging": "Tube",
+        "flavor": "Clove"
+      }
+    },
+    "pricing": {
+      "mrp": 105,
+      "costPrice": 80,
+      "sellingPrice": 95,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 90,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": 10,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/dabur-red.jpg",
+      "gallery": [
+        "./localstore/images/items/dabur-red.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.5,
+      "numReviews": 40,
+      "views": 500,
+      "saved": 12,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Dabur Red Toothpaste - Herbal Care 200g",
+      "keywords": [
+        "dabur",
+        "toothpaste",
+        "herbal care"
+      ],
+      "description": "Dabur Red toothpaste with natural ingredients for gums."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000012",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "brandId": "BRD000000000026",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000005"
+      }
+    },
+    "info": {
+      "name": "Colgate Tooth Paste",
+      "sku": "COLGATE-TOOTH-PASTE",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567897",
+      "note": null,
+      "descriptions": {
+        "short": "Colgate Toothpaste",
+        "long": "Colgate toothpaste for strong teeth, healthy gums, and fresh breath. Provides complete oral care."
+      },
+      "attributes": {
+        "origin": "India",
+        "weight": "100g",
+        "flavor": "Mint",
+        "packaging": "Tube"
+      }
+    },
+    "pricing": {
+      "mrp": 28,
+      "costPrice": 20,
+      "sellingPrice": 25,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 200,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": 20,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/colgate-paste.jpg",
+      "gallery": [
+        "./localstore/images/items/colgate-paste.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.4,
+      "numReviews": 25,
+      "views": 300,
+      "saved": 7,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Colgate Tooth Paste - For Strong Teeth",
+      "keywords": [
+        "colgate",
+        "toothpaste",
+        "oral care"
+      ],
+      "description": "Colgate toothpaste for complete oral care and fresh breath."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000013",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000002",
+        "brandId": "BRD000000000071",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000001"
+      }
+    },
+    "info": {
+      "name": "Good Day Cashew Cookies 200g",
+      "sku": "GOODDAY-200G",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567898",
+      "note": null,
+      "descriptions": {
+        "short": "Good Day Cashew Cookies 200g",
+        "long": "Cashew rich cookies by Britannia for tea time."
+      },
+      "attributes": {
+        "origin": "India",
+        "weight": "200g",
+        "flavor": "Cashew",
+        "packaging": "Plastic Packet"
+      }
+    },
+    "pricing": {
+      "mrp": 40,
+      "costPrice": 30,
+      "sellingPrice": 35,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 150,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": 20,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/good-day.jpg",
+      "gallery": [
+        "./localstore/images/items/good-day.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.5,
+      "numReviews": 35,
+      "views": 320,
+      "saved": 10,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Good Day Cashew Cookies 200g",
+      "keywords": [
+        "good day",
+        "britannia",
+        "cashew cookies"
+      ],
+      "description": "Crunchy cashew cookies for tea time."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000014",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000002",
+        "brandId": "BRD000000000021",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000001"
+      }
+    },
+    "info": {
+      "name": "Lijjat Papad 200g",
+      "sku": "LIJJAT-200G",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567899",
+      "note": null,
+      "descriptions": {
+        "short": "Lijjat Papad 200g",
+        "long": "Urad dal papad by Lijjat for crispy meals."
+      },
+      "attributes": {
+        "origin": "India",
+        "weight": "200g",
+        "flavor": "Urad dal",
+        "packaging": "Plastic Packet"
+      }
+    },
+    "pricing": {
+      "mrp": 65,
+      "costPrice": 50,
+      "sellingPrice": 60,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 80,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": 20,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/lijjat.jpg",
+      "gallery": [
+        "./localstore/images/items/lijjat.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.3,
+      "numReviews": 40,
+      "views": 220,
+      "saved": 12,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Lijjat Papad 200g",
+      "keywords": [
+        "lijjat papad",
+        "snacks",
+        "urad dal"
+      ],
+      "description": "Crispy Lijjat Papad made from urad dal."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000015",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": true,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "brandId": "BRD000000000001",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000001"
+      }
+    },
+    "info": {
+      "name": "Amul Butter 500g",
+      "sku": "AMUL-BUTTER-500G",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567800",
+      "note": null,
+      "descriptions": {
+        "short": "Amul Butter 500g Pack",
+        "long": "Creamy and delicious Amul Butter for your breakfast."
+      },
+      "attributes": {
+        "origin": "India",
+        "weight": "500g",
+        "packaging": "Foil Wrapped"
+      }
+    },
+    "pricing": {
+      "mrp": 290,
+      "costPrice": 250,
+      "sellingPrice": 270,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 60,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": 10,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/amul-butter.jpg",
+      "gallery": [
+        "./localstore/images/items/amul-butter.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.7,
+      "numReviews": 65,
+      "views": 700,
+      "saved": 20,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Amul Butter 500g",
+      "keywords": [
+        "amul",
+        "butter",
+        "dairy"
+      ],
+      "description": "Creamy Amul Butter for breakfast and baking."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000016",
+      "type": "product",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000002",
+        "brandId": "BRD000000000057",
+        "unitId": "UNT000000000001",
+        "categoryId": "CAT000000000001"
+      }
+    },
+    "info": {
+      "name": "Brooke Bond Red Label Tea 500g",
+      "sku": "REDLABEL-500G",
+      "hsnCode": "XXXXXX",
+      "barcode": "8901234567801",
+      "note": null,
+      "descriptions": {
+        "short": "Red Label Tea 500g",
+        "long": "Strong and refreshing tea by Brooke Bond."
+      },
+      "attributes": {
+        "origin": "India",
+        "weight": "500g",
+        "flavor": "Strong",
+        "packaging": "Poly Pack"
+      }
+    },
+    "pricing": {
+      "mrp": 275,
+      "costPrice": 230,
+      "sellingPrice": 250,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": 90,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": 20,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/redlabel-tea.jpg",
+      "gallery": [
+        "./localstore/images/items/redlabel-tea.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.5,
+      "numReviews": 35,
+      "views": 400,
+      "saved": 9,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Brooke Bond Red Label Tea 500g",
+      "keywords": [
+        "red label",
+        "tea",
+        "brooke bond"
+      ],
+      "description": "Strong refreshing tea for your mornings."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000017",
+      "type": "service",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "unitId": "UNT000000000038",
+        "categoryId": "CAT000000000011"
+      }
+    },
+    "info": {
+      "name": "Document Scanning",
+      "sku": "SCAN-PDF",
+      "hsnCode": "XXXXXX",
+      "barcode": null,
+      "note": null,
+      "descriptions": {
+        "short": "Document scanning service",
+        "long": "All type document Scanning service."
+      },
+      "attributes": {
+        "mode": "Offline",
+        "includes": [
+          "PDF Format"
+        ],
+        "serviceTime": "2 minutes",
+        "location": "In-shop only"
+      }
+    },
+    "pricing": {
+      "mrp": 8,
+      "costPrice": 3,
+      "sellingPrice": 5,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": null,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": null,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/scan-document.jpg",
+      "gallery": [
+        "./localstore/images/items/scan-document.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.6,
+      "numReviews": 18,
+      "views": 120,
+      "saved": 4,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Document Scanning",
+      "keywords": [
+        "scan",
+        "pdf",
+        "document"
+      ],
+      "description": "All type document Scanning service."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:01Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:05:01Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000018",
+      "type": "service",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000001",
+        "unitId": "UNT000000000005",
+        "categoryId": "CAT000000000011"
+      }
+    },
+    "info": {
+      "name": "Color Print A4",
+      "sku": "COLORPRINT-A4",
+      "hsnCode": "XXXXXX",
+      "barcode": null,
+      "note": null,
+      "descriptions": {
+        "short": "A4 color document print",
+        "long": "Color print service for A4 documents."
+      },
+      "attributes": {
+        "mode": "Offline",
+        "includes": [
+          "A4 Color Print"
+        ],
+        "serviceTime": "2-3 minutes",
+        "location": "In-shop only"
+      }
+    },
+    "pricing": {
+      "mrp": 15,
+      "costPrice": 7,
+      "sellingPrice": 10,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": null,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": null,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/a4-colorprint-document-thumb.jpg",
+      "gallery": [
+        "./localstore/images/items/a4-colorprint-document.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.4,
+      "numReviews": 22,
+      "views": 130,
+      "saved": 3,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Color Print A4",
+      "keywords": [
+        "print",
+        "color",
+        "document"
+      ],
+      "description": "Color print service for A4 documents."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:02Z",
+      "createdBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:05:02Z",
+      "updatedBy": {
+        "userId": "user_002",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000019",
+      "type": "service",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000002",
+        "unitId": "UNT000000000036",
+        "categoryId": "CAT000000000011"
+      }
+    },
+    "info": {
+      "name": "Photograph Studio - Passport Size",
+      "sku": "PASSPORT-PHOTO",
+      "hsnCode": "XXXXXX",
+      "barcode": null,
+      "note": null,
+      "descriptions": {
+        "short": "Passport photo studio session",
+        "long": "Passport size photograph studio service."
+      },
+      "attributes": {
+        "mode": "Offline",
+        "includes": [
+          "4 Passport Size Photos"
+        ],
+        "serviceTime": "10-15 minutes",
+        "location": "In-shop"
+      }
+    },
+    "pricing": {
+      "mrp": 110,
+      "costPrice": 80,
+      "sellingPrice": 100,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": null,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": null,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items//passport-photo-studio.jpg",
+      "gallery": [
+        "./localstore/images/items/passport-photo-studio.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.7,
+      "numReviews": 40,
+      "views": 200,
+      "saved": 5,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Photograph Studio - Passport Size",
+      "keywords": [
+        "photo",
+        "passport",
+        "studio"
+      ],
+      "description": "Passport size photograph studio service."
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:03Z",
+      "createdBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:05:03Z",
+      "updatedBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  },
+  {
+    "meta": {
+      "itemId": "ITM000000000020",
+      "type": "service",
+      "version": 1,
+      "priority": "normal",
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isArchived": false,
+        "isPopular": false,
+        "isTrending": false,
+        "isFeatured": false,
+        "isOnsite": false,
+        "isPremium": false,
+        "isVerified": false
+      },
+      "links": {
+        "merchantId": "MRC000000000002",
+        "unitId": "UNT000000000036",
+        "categoryId": "CAT000000000011"
+      }
+    },
+    "info": {
+      "name": "Resume Making Service",
+      "sku": "RESUME-SERVICE",
+      "hsnCode": "XXXXXX",
+      "barcode": null,
+      "note": null,
+      "descriptions": {
+        "short": "Professional resume making service",
+        "long": "Make your resume now"
+      },
+      "attributes": {
+        "mode": "Online",
+        "includes": [
+          "Resume Design",
+          "PDF File"
+        ],
+        "serviceTime": "1 hour",
+        "location": "In-shop / Online"
+      }
+    },
+    "pricing": {
+      "mrp": 170,
+      "costPrice": 120,
+      "sellingPrice": 150,
+      "currency": "INR",
+      "discounts": []
+    },
+    "inventory": {
+      "stockQty": null,
+      "batchId": null,
+      "expiryDate": null,
+      "lowStockThreshold": null,
+      "isLowStock": false
+    },
+    "media": {
+      "thumbnail": "./localstore/images/items/sample-service.jpg",
+      "gallery": [
+        "./localstore/images/items/sample-service.jpg"
+      ],
+      "video": null
+    },
+    "analytics": {
+      "rating": 4.8,
+      "numReviews": 25,
+      "views": 170,
+      "saved": 6,
+      "carted": 0,
+      "totalSales": null
+    },
+    "seo": {
+      "title": "Resume Making Service",
+      "keywords": [
+        "resume",
+        "cv",
+        "professional"
+      ],
+      "description": "Make your resume now"
+    },
+    "audit": {
+      "createdAt": "2024-06-10T12:00:00Z",
+      "createdBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      },
+      "updatedAt": "2024-06-10T12:00:00Z",
+      "updatedBy": {
+        "userId": "user_004",
+        "role": "unknown",
+        "name": "Unknown User"
+      }
+    }
+  }
+]

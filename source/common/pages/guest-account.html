@@ -1,0 +1,189 @@
+
+<head>
+  <title>Signin or Register</title>
+</head>
+<body>
+  <div class="guest-home-view" id="guest-home-container">
+    <div class="auth-card">
+      <!-- Header -->
+      <div class="auth-header">
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-subtitle">Manage your account with ease</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-form="loginForm">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <button class="auth-tab" data-form="registerForm">
+          <i class="fas fa-user-plus"></i> Register
+        </button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form active">
+          <!-- Email / Phone -->
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="fas fa-envelope left-icon"></i>
+              <input type="text" id="login-credential" placeholder="Email or Phone Number" required>
+            </div>
+            <div class="error-message">Invalid email or phone</div>
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="fas fa-lock left-icon"></i>
+              <input type="password" id="login-password" placeholder="Password" required>
+              <button type="button" class="pw-toggle">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="error-message">Password is required</div>
+          </div>
+
+          <!-- Options -->
+          <div class="form-options">
+            <label class="checkbox-container">
+              <input type="checkbox" checked>
+              <span>Remember me</span>
+            </label>
+            <a href="#" id="forgot-password-link" class="text-link">Forgot password?</a>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn primary">
+            <span class="btn-content">Continue</span>
+            <div class="loader"></div>
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form">
+          <!-- Full Name -->
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="fas fa-user left-icon"></i>
+              <input type="text" id="register-full-name" placeholder="Full name" required>
+            </div>
+            <div class="error-message">Full name is required</div>
+          </div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="fas fa-envelope left-icon"></i>
+              <input type="email" id="register-email" placeholder="Email address" required>
+            </div>
+            <div class="error-message">Invalid email address</div>
+          </div>
+
+          <!-- Country -->
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="fas fa-globe left-icon"></i>
+              <input type="text" id="register-country" value="India" readonly>
+            </div>
+            <!-- No error message needed for a readonly field -->
+          </div>
+
+          <!-- Phone -->
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="fas fa-phone left-icon"></i>
+              <input type="tel" id="register-phone" placeholder="Phone number" maxlength="10">
+              <!-- OTP Send Button (Initially Hidden) -->
+              <button type="button" id="phone-otp-btn" class="otp-send-btn hidden" title="Send OTP">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+            <div class="error-message">Invalid phone number</div>
+            <!-- OTP Input Section (Initially Hidden) -->
+            <div class="otp-input-section hidden" id="phone-otp-section">
+              <input type="text" id="phone-otp-input" placeholder="Enter 6-digit OTP" maxlength="6">
+              <button type="button" id="phone-otp-verify-btn" class="btn primary small">Verify</button>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="fas fa-lock left-icon"></i>
+              <input type="password" id="register-password" placeholder="Create password" required autocomplete="new-password">
+              <button type="button" class="pw-toggle">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="error-message">Password must be at least 8 characters</div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="fas fa-lock left-icon"></i>
+              <input type="password" id="register-confirm-password" placeholder="Confirm password" required autocomplete="new-password">
+              <button type="button" class="pw-toggle">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="error-message">Passwords do not match</div>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn primary">
+            <span class="btn-content">Create Account</span>
+            <div class="loader"></div>
+          </button>
+        </form>
+
+        <!-- Forgot Password Form -->
+        <form id="resetForm" class="auth-form">
+          <!-- Email -->
+          <div class="input-group">
+            <div class="input-wrapper">
+              <i class="fas fa-envelope left-icon"></i>
+              <input type="email" id="reset-email" placeholder="Enter your registered email" required>
+            </div>
+            <div class="error-message">Please enter a valid email</div>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn primary">
+            <span class="btn-content">Send Reset Link</span>
+            <div class="loader"></div>
+          </button>
+
+          <!-- Back to Login -->
+          <div class="form-options" style="justify-content: center; margin-top: 1rem;">
+            <a href="#" class="text-link back-to-login-link"><i class="fas fa-arrow-left"></i> Back to Login</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Divider -->
+      <div class="auth-divider">
+        <span>Continue with</span>
+      </div>
+
+      <!-- Social -->
+      <div class="social-auth">
+        <button class="social-btn google">
+          <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google">
+          Google
+        </button>
+        <button class="social-btn apple">
+          <img src="https://cdn-icons-png.flaticon.com/512/0/747.png" alt="Apple">
+          Apple
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- reCAPTCHA container (invisible but required by Firebase) -->
+  <div id="recaptcha-container"></div>
+</div>
+</body>

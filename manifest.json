@@ -1,0 +1,48 @@
+{
+  "name": "Apna Store",
+  "short_name": "Apna Store",
+  "description": "A modern PWA for local shops and services.",
+  "start_url": "./",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "./source/assets/logos/app-logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./source/assets/logos/app-logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./source/assets/screenshots/guest-home.jpg",
+      "sizes": "720x1600",
+      "type": "image/jpg",
+      "form_factor": "narrow",
+      "label": "Welcome to Apna Store"
+    },
+    {
+      "src": "./source/assets/screenshots/guest-account.jpg",
+      "sizes": "720x1600",
+      "type": "image/jpg",
+      "form_factor": "narrow",
+      "label": "Welcome to Apna Store"
+    },    
+    {
+      "src": "./source/assets/screenshots/desktop-guest-home.png",
+      "sizes": "1920x1080",
+      "type": "image/jpg",
+      "form_factor": "wide",
+      "label": "Apna Store on Desktop"
+    }
+  ]
+}

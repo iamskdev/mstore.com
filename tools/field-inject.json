@@ -1,0 +1,7 @@
+{
+  "collections": ["items", "users", "merchants", "promotions", "orders", "units", "price-logs"],
+  "fields": {
+    "isMock": true
+  },
+  "applyTo": "all"
+}

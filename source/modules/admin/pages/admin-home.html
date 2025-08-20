@@ -1,0 +1,83 @@
+  <!-- 1. ADMIN POWER TOOLS HEADER -->
+  <div class="admin-header">
+    <h1><i class="fas fa-user-shield"></i> Admin Console</h1>
+    <div class="admin-actions">
+      <button class="btn-danger" id="maintenance-toggle">
+        <i class="fas fa-power-off"></i> Maintenance Mode
+      </button>
+      <button class="btn-dark" id="flush-cache">
+        <i class="fas fa-broom"></i> Flush Cache
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. CRITICAL SYSTEM ALERTS -->
+  <div class="alerts-section" id="admin-alerts-container"></div>
+
+  <!-- 3. ADMIN-ONLY STATS -->
+  <div class="stats-grid">
+    <!-- Stat 1: Total Revenue -->
+    <div class="stat-card bg-admin">
+      <h3 id="admin-stat-revenue">--</h3>
+      <p>Total Revenue</p>
+      <small>All-time sales</small>
+    </div>
+    
+    <!-- Stat 2: Fraud Orders -->
+    <div class="stat-card bg-fraud">
+      <h3 id="admin-stat-users">--</h3>
+      <p>Total Users</p>
+      <small>All registered users</small>
+    </div>
+    
+    <!-- Stat 3: System Health -->
+    <div class="stat-card bg-tech">
+      <h3 id="admin-stat-orders">--</h3>
+      <p>Total Orders</p>
+      <small>All-time orders</small>
+    </div>
+  </div>
+
+  <!-- 4. VISUAL ANALYTICS -->
+  <div class="admin-charts-section">
+    <div class="chart-container">
+      <h3>Users by Role</h3>
+      <canvas id="user-roles-chart"></canvas>
+    </div>
+    <div class="chart-container">
+      <h3>Orders by Status</h3>
+      <canvas id="order-status-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- 5. ADMIN QUICK LINKS -->
+  <div class="admin-quick-links">
+    <h3><i class="fas fa-bolt"></i> Power Actions</h3>
+    <div class="links-grid">
+      <a href="#" class="link-card feature-not-implemented">
+        <i class="fas fa-user-slash"></i> Ban User
+      </a>
+      <a href="#" class="link-card feature-not-implemented">
+        <i class="fas fa-undo-alt"></i> Force Refund
+      </a>
+      <a href="#" class="link-card feature-not-implemented">
+        <i class="fas fa-database"></i> Backup DB
+      </a>
+      <a href="#" class="link-card feature-not-implemented">
+        <i class="fas fa-search"></i> Audit Logs
+      </a>
+    </div>
+  </div>
+
+  <!-- 6. LIVE ADMIN ACTIVITY LOG -->
+  <div class="activity-log">
+    <h3><i class="fas fa-history"></i> Admin Activity Stream</h3>
+    <table class="log-table">
+      <thead>
+        <th>Time</th>
+        <th>User</th>
+        <th>Action</th>
+      </thead>
+      <tbody id="admin-log-table-body"></tbody>
+    </table>
+  </div>

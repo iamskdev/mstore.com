@@ -1,0 +1,514 @@
+<style>
+    /* --- Component-Scoped Theming Variables --- */
+    :root {
+      /* Banners */
+      --header-banner-dev-bg: #ffc107;
+      --header-banner-dev-text: #000;
+      --header-banner-promo-bg: #2196F3;
+      --header-banner-promo-text: #fff;
+      --header-banner-admin-bg: #455A64;
+      --header-banner-admin-text: #fff;
+      --header-badge-bg: #FF5722;
+      --header-badge-text: #fff;
+    }
+    .header-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      /* This container will hold the banner and the header bar */
+    }
+
+    /* Banners for different modes */
+    .mode-banner {
+      text-align: center;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      display: none; /* Hidden by default */
+    }
+    .dev-banner { background-color: var(--header-banner-dev-bg); color: var(--header-banner-dev-text); }
+    .admin-storefront-banner { background-color: var(--header-banner-promo-bg); color: var(--header-banner-promo-text); }
+    .admin-panel-banner { background-color: var(--header-banner-admin-bg); color: var(--header-banner-admin-text); }
+
+    .apna-header-content {
+      /* Updated height to accommodate banner space */
+      min-height: 56px;
+      height: auto;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      padding: 0 12px; /* Reduced horizontal padding */
+      /* Added padding to top and bottom to vertically center content when banner is active */
+      padding-top: 8px;
+      padding-bottom: 8px;
+      /* This is CRUCIAL for positioning the suggestions box correctly */
+      box-shadow: 0 1px 3px var(--shadow-color);
+      position: relative; /* This is CRUCIAL for positioning the suggestions box correctly */
+    }
+
+    /* This class is toggled by JS to show/hide search elements */
+    .apna-header-content.search-active .header-branding,
+    .apna-header-content.search-active .pwa-install-button,
+    .apna-header-content.search-active #search-toggle,
+    .apna-header-content.search-active #notification-icon {
+      display: none;
+    }
+
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%; /* ALWAYS a circle to prevent shape-shifting flash */
+      background-color: transparent;
+      border: 1px solid transparent; /* Placeholder border to prevent layout shift */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: pointer; /* Make only the logo clickable */
+      transition: all 0.2s ease-in-out;
+    }
+
+    /* NEW: A placeholder style for when an avatar is being fetched. */
+    /* This prevents a "square-to-circle" flash. */
+    .brand-logo.is-loading-avatar {
+      background-color: var(--bg-tertiary);
+      animation: pulse-bg 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      border-color: var(--border-color); /* Make border visible during load */
+    }
+    @keyframes pulse-bg {
+      0%, 100% { background-color: var(--bg-tertiary); }
+      50% { background-color: var(--bg-hover); }
+    }
+
+    /* This class is added by JS only when a user/merchant avatar is loaded */
+    .brand-logo.is-avatar {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-color); /* Make border visible for avatars */
+    }
+
+    .brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Use 'contain' for app logo to prevent cropping */
+    }
+
+    .brand-logo.is-avatar img {
+      object-fit: cover; /* Use 'cover' for avatars to fill the circle */
+    }
+
+    .brand-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 20px; /* Increased gap for better spacing */
+      align-items: center; /* This will vertically align the icons */
+      margin-left: auto;
+    }
+
+    .header-icon, .pwa-install-button {
+      font-size: 1.2rem;
+      color: var(--text-secondary); /* आइकन के लिए डिफ़ॉल्ट रंग */
+      cursor: pointer;
+      position: relative;
+    }
+
+    /* Flip the search icon to face right */
+    #search-toggle i {
+      transform: scaleX(-1); /* Target the icon inside the wrapper */
+    }
+
+    #search-back {
+      display: none; /* Hidden by default */
+      margin-right: 8px;
+    }
+    .apna-header-content.search-active #search-back {
+      display: block; /* Visible in search mode */
+    }
+
+    .header-search-input-container {
+      display: none; /* Hidden by default */
+      flex: 1;
+      position: relative;
+    }
+    .header-search-input {
+      width: 100%;
+      padding: 10px 36px 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      background: var(--bg-tertiary);
+      font-size: 0.95rem;
+      outline: none;
+      /* Explicitly set box-sizing to prevent layout breaks from other stylesheets */
+      box-sizing: border-box;
+    }
+
+    .apna-header-content.search-active .header-search-input-container {
+      display: block; /* Visible in search mode */
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      display: none;
+      cursor: pointer;
+    }
+
+    #notification-icon .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--header-badge-bg);
+      color: var(--header-badge-text);
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    /* Special style for the badge when used as a storefront/system indicator */
+    #notification-icon .notification-badge.storefront-indicator {
+      background: var(--header-banner-promo-bg); /* Use promo banner color for consistency */
+    }
+    /* New style for dev mode indicator */
+    #notification-icon .notification-badge.dev-indicator {
+      background: var(--header-banner-dev-bg); /* Use dev banner color for consistency */
+      color: var(--header-banner-dev-text);
+      font-weight: bold;
+    }
+
+    .hidden { display: none !important; }
+    .visible { display: flex !important; }
+
+    @keyframes bellShake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(15deg); }
+      50% { transform: rotate(-15deg); }
+      75% { transform: rotate(5deg); }
+    }
+
+    .bell-shake { animation: bellShake 0.5s ease-in-out; }
+  </style>
+  <div class="header-container">
+    <div id="mode-banner" class="mode-banner"></div>
+    <header class="apna-header-content" id="main-header">
+      <i class="fas fa-arrow-left header-icon" id="search-back"></i>
+      <div class="header-branding">
+      <i class="fas fa-bars header-icon" id="header-menu-icon" style="display: none; font-size: 1.4rem; cursor: pointer; margin-right: 4px;"></i>
+      <span class="brand-logo" id="header-logo-container">
+                <img src="./source/assets/logos/app-header-logo.png" alt="App Logo">
+        </span>
+        <span class="brand-name" id="header-name">Apna Store</span>
+      </div>
+      <div class="header-search-input-container">
+        <input type="text" class="header-search-input" id="header-search-input" placeholder="Search anything...">
+        <i class="fas fa-times search-clear" id="search-clear"></i>
+      </div>
+      <div class="header-actions">
+        <div class="header-icon" id="search-toggle">
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="header-icon" id="notification-icon">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge hidden">3</span>
+        </div>
+      </div>
+      <!-- Search Suggestions Box: Moved INSIDE the header content for correct positioning. -->
+      <ul id="search-suggestions" class="search-suggestions"></ul>
+    </header>
+  </div>
+
+  <!--
+  Root cause: 
+  - Header is loaded as a partial in every page, but its JS runs only once per page load.
+  - When you navigate (SPA-style) between views (Home, Explore, Saved, etc.), the header stays, but when you open item-details.html (a new HTML page), the header partial is reloaded and re-initialized.
+  - Also, if header partial is loaded after DOMContentLoaded, its script may not run as expected (especially if using dynamic partial loader).
+
+  **Fixes:**
+  1. Always ensure header partial is loaded and its script runs after DOM is ready, and after .page-content is present.
+  2. In header.html script, always select `.page-content` dynamically (not at top-level), and always update padding and badge visibility on every load.
+  3. If using dynamic partial loader, make sure it executes <script> tags inside partials (your partial-loader.js already does this).
+  4. Make sure every page (home, explore, item-details, etc.) has a `.page-content` element directly after header, so header JS can find and pad it.
+  5. If you use SPA navigation, do NOT reload header partial, just update its content/state.
+
+  **Below is a robust header script that works for all pages and always updates padding, search, and notification badge.**
+  -->
+  <script type="module">
+    import { fetchUserById, fetchMerchantById } from './source/utils/data-manager.js';
+    import { viewManager } from './source/main.js';
+
+    // --- Static Header Style Logic ---
+    // This runs once when the header is loaded to set the initial style (logo vs. menu).
+    // It reads the configuration from app-config.js.
+    const headerStyle = window.APP_CONFIG?.headerStyle || 'logo';
+    const logoContainer = document.getElementById('header-logo-container');
+    const menuIconEl = document.getElementById('header-menu-icon');
+
+    if (logoContainer && menuIconEl) {
+      if (headerStyle === 'menu') {
+        logoContainer.style.display = 'none';
+        menuIconEl.style.display = 'flex'; // Use flex to align with other header items
+      } else { // 'logo' or default
+        logoContainer.style.display = 'flex';
+        menuIconEl.style.display = 'none';
+      }
+    }
+    function updateHeaderUI({ role }) {
+      const userType = role;
+      const modeBanner = document.getElementById('mode-banner');
+      const notificationIcon = document.getElementById('notification-icon');
+      const bellIcon = notificationIcon?.querySelector('i');
+      const badge = notificationIcon?.querySelector('.notification-badge');
+      const appMode = window.APP_CONFIG?.appMode;
+      const mainContent = document.querySelector('.page-content');
+
+      // 1. Update header branding (logo and name) by fetching live data
+      const logoEl = document.querySelector('#header-logo-container img');
+      const nameEl = document.getElementById('header-name');
+      const logoContainer = document.getElementById('header-logo-container');
+      
+      // --- Dynamic Branding Logic ---
+      const defaultLogo = './source/assets/logos/app-logo.png';
+      const defaultName = 'Apna Store';
+      const userId = localStorage.getItem('currentUserId');
+
+      // Helper function to set the logo and apply the correct style.
+      // It adds the 'is-avatar' class for user/merchant logos, which applies the circular border.
+      const setLogo = (logoUrl) => {
+        const finalLogoUrl = logoUrl || defaultLogo;
+        logoEl.src = finalLogoUrl;
+
+        // Check if the final logo is the default app logo.
+        if (finalLogoUrl.includes('app-logo.png')) {
+          logoContainer.classList.remove('is-avatar');
+          logoContainer.classList.remove('is-loading-avatar'); // Ensure loading state is removed
+        } else {
+          logoContainer.classList.add('is-avatar');
+          logoContainer.classList.remove('is-loading-avatar'); // Remove loading state once avatar is set
+        }
+      };
+
+      if (userType === 'user' && userId) {
+        // Show loading state for user avatar to prevent flash
+        logoContainer.classList.add('is-loading-avatar');
+        nameEl.textContent = 'Loading...';
+        // Standard User: Fetch their profile data
+        fetchUserById(userId).then(userData => {
+          if (userData) {
+            nameEl.textContent = userData.info?.nickName || userData.info?.fullName || 'Apna User';
+            setLogo(userData.info?.avatar);
+          }
+        });
+      } else if (userType === 'merchant' && userId) {
+        // For merchants, show a loading state to prevent flashing the wrong name.
+        logoContainer.classList.add('is-loading-avatar');
+        nameEl.textContent = 'Loading...';
+
+        // Use an async IIFE for cleaner, non-blocking data fetching.
+        (async () => {
+          try {
+            const userData = await fetchUserById(userId);
+            if (!userData) throw new Error("User data not found for merchant.");
+
+            // CORRECTED: Fetch merchantId from the correct path in the user's data.
+            const merchantId = userData.meta?.links?.merchantId;
+            if (merchantId) {
+              const merchantData = await fetchMerchantById(merchantId);
+              if (merchantData) {
+                // CORRECTED: Use the correct paths for business name and logo from merchants.json.
+                nameEl.textContent = merchantData.meta?.info?.name || 'Merchant Store';
+                setLogo(merchantData.meta?.info?.logo);
+              } else {
+                // Fallback if merchant data is missing (e.g., invalid ID).
+                nameEl.textContent = userData.info?.fullName || 'Merchant Panel';
+                setLogo(userData.info?.avatar);
+              }
+            } else {
+              // Fallback if user has no linked merchant business.
+              nameEl.textContent = userData.info?.fullName || 'Merchant Panel';
+              setLogo(userData.info?.avatar);
+            }
+          } catch (error) {
+            console.error("Header: Failed to fetch merchant branding.", error);
+            nameEl.textContent = 'Merchant Panel'; // Fallback on error
+            setLogo(defaultLogo);
+          }
+        })();
+      } else {
+        // For 'guest', 'admin', or any other case, reset to default app branding.
+        setLogo(defaultLogo);
+        nameEl.textContent = defaultName;
+      }
+      // 2. Reset all indicators (banners and icons) to their default state first.
+      modeBanner.style.display = 'none';
+      modeBanner.textContent = ''; // Clear previous banner content
+      if (bellIcon && badge) {
+        bellIcon.className = 'fas fa-bell';
+        badge.className = 'notification-badge hidden';
+        badge.textContent = '3';
+        notificationIcon.title = '';
+      }
+
+      // 3. Set the correct banner AND/OR icon indicator based on mode/role
+      if (appMode === 'dev') {
+        modeBanner.textContent = 'Developer Mode';
+        modeBanner.className = 'mode-banner dev-banner';
+        // modeBanner.style.display = 'block'; // Banner disabled by request
+        // Also show dev indicator on the bell icon
+        if (bellIcon && badge) {
+          badge.textContent = '!';
+          badge.className = 'notification-badge dev-indicator';
+          notificationIcon.title = 'Developer mode is active.';
+        }
+      } else if (appMode === 'promo') {
+        modeBanner.textContent = 'Featured Store Preview';
+        modeBanner.className = 'mode-banner admin-storefront-banner';
+        // modeBanner.style.display = 'block'; // Banner disabled by request
+        // Also show storefront indicator on the bell icon
+        if (bellIcon && badge) {
+          badge.textContent = '★';
+          badge.className = 'notification-badge storefront-indicator';
+          notificationIcon.title = 'You are viewing a featured store.';
+        }
+      } else if (userType === 'admin') {
+        modeBanner.textContent = 'Admin Panel';
+        modeBanner.className = 'mode-banner admin-panel-banner';
+        // modeBanner.style.display = 'block'; // Banner disabled by request
+      }
+
+     // 4. Adjust main header padding to vertically center content based on banner visibility
+      const apnaHeader = document.querySelector('.apna-header-content');
+      if (apnaHeader) {
+        const hasBanner = modeBanner.style.display === 'block';
+        // These paddings seem to be static regardless of the banner, which is fine.
+        apnaHeader.style.paddingTop = '8px';
+        apnaHeader.style.paddingBottom = '8px';
+      }
+
+      // 5. Adjust main content padding to prevent overlap
+      // Always select .page-content dynamically (in case DOM changes)
+      setTimeout(() => {
+        const headerContainer = document.querySelector('.header-container');
+        const mainContent = document.querySelector('.page-content');
+        if (headerContainer && mainContent) {
+          const headerHeight = headerContainer.offsetHeight;
+          mainContent.style.paddingTop = `${headerHeight}px`;
+          // Set a global CSS variable for other components to use (like the footer)
+          document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+          // Set a global CSS variable for other components to use
+        }
+      }, 0);
+    }
+
+    // Listen for a promotion to be activated
+    window.addEventListener('promotionActivated', (e) => {
+        const promo = e.detail;
+        if (!promo || !promo.header) return;
+
+        console.log('Header responding to promotion:', promo.header);
+
+        const logoEl = document.querySelector('#header-logo-container img');
+        const nameEl = document.getElementById('header-name');
+        const headerContent = document.getElementById('main-header');
+
+        logoEl.src = promo.header.logo;
+        nameEl.textContent = promo.header.title;
+        
+        // Apply custom styles
+        if (promo.header.backgroundColor) {
+            headerContent.style.background = promo.header.backgroundColor;
+        }
+        if (promo.header.textColor) {
+            nameEl.style.color = promo.header.textColor;
+        }
+    });
+
+    // Add click listener to the logo or menu icon to open the drawer.
+    document.querySelectorAll('#header-logo-container, #header-menu-icon').forEach(el => {
+      el.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('toggleDrawerRequest'));
+      });
+    });
+
+    // --- Search Toggle Logic ---
+    const searchToggleBtn = document.getElementById('search-toggle');
+    const searchBackBtn = document.getElementById('search-back');
+    const searchInput = document.getElementById('header-search-input');
+    const searchClearBtn = document.getElementById('search-clear');
+    const mainHeader = document.getElementById('main-header');
+
+    function openSearchView() {
+      mainHeader.classList.add('search-active');
+      searchInput.value = '';
+      searchInput.focus();
+      // Always show notification icon and badge in search mode
+      document.getElementById('notification-icon')?.classList.remove('hidden');
+    }
+
+    function closeSearchView() {
+      mainHeader.classList.remove('search-active');
+      searchClearBtn.style.display = 'none';
+      // Also hide suggestions if they are open
+      const suggestionsBox = document.getElementById('search-suggestions');
+      if (suggestionsBox) {
+        suggestionsBox.style.display = 'none';
+        suggestionsBox.innerHTML = '';
+      }
+      // Always show notification icon and badge after closing search
+      document.getElementById('notification-icon')?.classList.remove('hidden');
+    }
+
+    // --- Event Listeners ---
+    if (searchToggleBtn) searchToggleBtn.addEventListener('click', openSearchView);
+    if (searchBackBtn) searchBackBtn.addEventListener('click', closeSearchView);
+
+    // Allow other components to request closing the search view
+    window.addEventListener('closeSearchViewRequest', closeSearchView);
+
+    // Show/hide clear button and reset suggestion selection on input
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        searchClearBtn.style.display = searchInput.value ? 'block' : 'none';
+      });
+    }
+
+    if (searchClearBtn) {
+      searchClearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        searchInput.focus();
+        searchClearBtn.style.display = 'none';
+        const suggestionsBox = document.getElementById('search-suggestions');
+        if (suggestionsBox) suggestionsBox.style.display = 'none';
+      });
+    }
+
+    // Subscribe to the viewManager for state changes. This is the single source of truth.
+    // It will provide the initial state immediately and all subsequent state changes.
+    viewManager.subscribe(updateHeaderUI);
+    console.log("✅ Header: Subscribed to ViewManager for state updates.");
+
+  </script>

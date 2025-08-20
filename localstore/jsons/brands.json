@@ -1,0 +1,3722 @@
+[
+  {
+    "meta": {
+      "brandId": "BRD000000000001",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "grocery",
+        "amul",
+        "milk",
+        "dairy"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Amul",
+        "hi": "अमूल"
+      },
+      "description": "Amul is India's largest dairy brand, offering milk, butter, cheese, and more.",
+      "logo": "https://www.amul.com/images/amul-logo.png",
+      "website": "https://www.amul.com",
+      "originCountry": "India",
+      "foundedYear": 1946,
+      "tagline": "The Taste of India"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:10:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:10:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000002",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "grocery",
+        "fortune",
+        "oil",
+        "atta",
+        "rice"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Fortune",
+        "hi": "फॉर्च्यून"
+      },
+      "description": "Fortune is a leading brand for edible oils, atta, and rice products in India.",
+      "logo": "https://www.adaniwilmar.com/assets/images/logo.png",
+      "website": "https://www.adaniwilmar.com",
+      "originCountry": "India",
+      "foundedYear": 2000,
+      "tagline": "Ghar ka Khana, Fortune se"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:11:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:11:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000003",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "grocery",
+        "patanjali",
+        "ayurvedic",
+        "herbal",
+        "foods"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Patanjali",
+        "hi": "पतंजलि"
+      },
+      "description": "Patanjali offers a wide range of ayurvedic, herbal, and natural food products.",
+      "logo": "https://patanjaliayurved.org/assets/images/logo.png",
+      "website": "https://patanjaliayurved.org",
+      "originCountry": "India",
+      "foundedYear": 2006,
+      "tagline": "Prakriti ka Ashirwad"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:12:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:12:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000004",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": false,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "grocery",
+        "aashirvaad",
+        "atta",
+        "flour"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Aashirvaad",
+        "hi": "आशीर्वाद"
+      },
+      "description": "Aashirvaad is a leading atta and flour brand from ITC.",
+      "logo": "https://www.aashirvaad.com/images/logo.png",
+      "website": "https://www.aashirvaad.com",
+      "originCountry": "India",
+      "foundedYear": 2002,
+      "tagline": "Pureness in Every Grain"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:13:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:13:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000005",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": false,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "grocery",
+        "tata",
+        "salt",
+        "tea"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Tata",
+        "hi": "टाटा"
+      },
+      "description": "Tata offers salt, tea, pulses, and other grocery staples in India.",
+      "logo": "https://www.tata.com/content/dam/tata/images/logo.png",
+      "website": "https://www.tata.com",
+      "originCountry": "India",
+      "foundedYear": 1868,
+      "tagline": "Leadership with Trust"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:14:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:14:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000006",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "electronics",
+        "samsung",
+        "mobile",
+        "tv",
+        "appliances"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Samsung",
+        "hi": "सैमसंग"
+      },
+      "description": "Samsung is a global leader in electronics, including smartphones, TVs, and home appliances.",
+      "logo": "https://images.samsung.com/is/image/samsung/assets/global/about-us/brand/logo/256_144_1.png?$FB_TYPE_B_PNG$",
+      "website": "https://www.samsung.com/in/",
+      "originCountry": "South Korea",
+      "foundedYear": 1938,
+      "tagline": "Do What You Can't"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:15:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:15:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000007",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "fashion",
+        "manyavar",
+        "ethnic wear",
+        "menswear"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Manyavar",
+        "hi": "मान्यवर"
+      },
+      "description": "Manyavar is a popular Indian brand for men's ethnic wear.",
+      "logo": "https://www.manyavar.com/on/demandware.static/-/Library-Sites-ManyavarSharedLibrary/default/dw12345678/images/logo.svg",
+      "website": "https://www.manyavar.com",
+      "originCountry": "India",
+      "foundedYear": 1999,
+      "tagline": "Pehno Apni Pehchaan"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:16:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:16:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000008",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beauty",
+        "lakme",
+        "cosmetics",
+        "makeup"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Lakmé",
+        "hi": "लक्मे"
+      },
+      "description": "Lakmé is a leading Indian cosmetics brand, offering a wide range of makeup and skincare products.",
+      "logo": "https://www.lakmeindia.com/themes/lakme/images/logo.png",
+      "website": "https://www.lakmeindia.com",
+      "originCountry": "India",
+      "foundedYear": 1952,
+      "tagline": "The Showstopper"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:17:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:17:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000009",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "home appliances",
+        "lg",
+        "refrigerator",
+        "washing machine"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "LG",
+        "hi": "एलजी"
+      },
+      "description": "LG is a South Korean multinational electronics company that produces a wide range of home appliances.",
+      "logo": "https://www.lg.com/content/dam/channel/wcms/in/images/common/logo/LG_logo_D.png",
+      "website": "https://www.lg.com/in",
+      "originCountry": "South Korea",
+      "foundedYear": 1958,
+      "tagline": "Life's Good"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:18:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:18:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000010",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "sports",
+        "nike",
+        "shoes",
+        "apparel"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Nike",
+        "hi": "नाइके"
+      },
+      "description": "Nike is a global leader in athletic footwear, apparel, equipment, accessories, and services.",
+      "logo": "https://www.nike.com/assets/experience/images/v2/nike_logo_white.png",
+      "website": "https://www.nike.com/in/",
+      "originCountry": "USA",
+      "foundedYear": 1964,
+      "tagline": "Just Do It"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:19:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:19:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000011",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "biscuits",
+        "confectionery",
+        "snacks"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Britannia",
+        "hi": "ब्रिटानिया"
+      },
+      "description": "Britannia is one of India's leading food companies, known for its biscuits, bread, and dairy products.",
+      "logo": "https://www.britannia.co.in/themes/custom/britannia/logo.svg",
+      "website": "https://www.britannia.co.in",
+      "originCountry": "India",
+      "foundedYear": 1892,
+      "tagline": "Eat Healthy, Think Better"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:20:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:20:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000012",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "food",
+        "beverages",
+        "chocolate",
+        "coffee"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Nestle",
+        "hi": "नेस्ले"
+      },
+      "description": "Nestle is a Swiss multinational food and drink processing conglomerate corporation.",
+      "logo": "https://www.nestle.in/sites/g/files/pydnoa461/files/asset-public/styles/brand_logo/public/nestle-logo.png?itok=12345",
+      "website": "https://www.nestle.in",
+      "originCountry": "Switzerland",
+      "foundedYear": 1866,
+      "tagline": "Good Food, Good Life"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:21:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:21:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000013",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "fmcg",
+        "personal care",
+        "home care",
+        "food"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Hindustan Unilever",
+        "hi": "हिंदुस्तान यूनिलीवर"
+      },
+      "description": "Hindustan Unilever Limited (HUL) is an Indian consumer goods company.",
+      "logo": "https://www.hul.co.in/images/hul-logo.svg",
+      "website": "https://www.hul.co.in",
+      "originCountry": "India",
+      "foundedYear": 1931,
+      "tagline": "Making Sustainable Living Commonplace"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:22:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:22:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000014",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "personal care",
+        "home care",
+        "health"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Procter & Gamble",
+        "hi": "प्रॉक्टर एंड गैंबल"
+      },
+      "description": "Procter & Gamble (P&G) is an American multinational consumer goods corporation.",
+      "logo": "https://us.pg.com/images/pg-logo.svg",
+      "website": "https://us.pg.com",
+      "originCountry": "USA",
+      "foundedYear": 1837,
+      "tagline": "Touching Lives, Improving Life"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:23:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:23:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000015",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "fmcg",
+        "food",
+        "personal care",
+        "stationery"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "ITC Limited",
+        "hi": "आईटीसी लिमिटेड"
+      },
+      "description": "ITC Limited is an Indian conglomerate company with diversified presence across FMCG, Hotels, Packaging, Paperboards & Specialty Papers, Agri-Business and Information Technology.",
+      "logo": "https://www.itcportal.com/assets/images/logo.png",
+      "website": "https://www.itcportal.com",
+      "originCountry": "India",
+      "foundedYear": 1910,
+      "tagline": "Enduring Value"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:24:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:24:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000016",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "biscuits",
+        "confectionery",
+        "snacks"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Parle",
+        "hi": "पारले"
+      },
+      "description": "Parle Products is an Indian multinational food company, best known for its biscuits and confectionery.",
+      "logo": "https://www.parleproducts.com/images/logo.png",
+      "website": "https://www.parleproducts.com",
+      "originCountry": "India",
+      "foundedYear": 1929,
+      "tagline": "Har Dil Ki Dhadkan"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:25:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:25:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000017",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "ayurvedic",
+        "healthcare",
+        "personal care",
+        "food"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Dabur",
+        "hi": "डाबर"
+      },
+      "description": "Dabur India Ltd is one of India's leading FMCG companies with a strong heritage in Ayurveda.",
+      "logo": "https://www.dabur.com/sites/default/files/Dabur-Logo.png",
+      "website": "https://www.dabur.com",
+      "originCountry": "India",
+      "foundedYear": 1884,
+      "tagline": "Science-based Ayurveda"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:26:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:26:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000018",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "edible oil",
+        "personal care",
+        "food"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Marico",
+        "hi": "मैरिको"
+      },
+      "description": "Marico is a leading Indian consumer goods company operating in the global beauty and wellness categories.",
+      "logo": "https://www.marico.com/images/logo.png",
+      "website": "https://www.marico.com",
+      "originCountry": "India",
+      "foundedYear": 1990,
+      "tagline": "Make a Difference"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:27:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:27:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000019",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "fmcg",
+        "appliances",
+        "furniture"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Godrej",
+        "hi": "गोदरेज"
+      },
+      "description": "Godrej Group is an Indian conglomerate whose operations include real estate, consumer products, industrial engineering, appliances, furniture, security and agricultural products.",
+      "logo": "https://www.godrej.com/images/logo.png",
+      "website": "https://www.godrej.com",
+      "originCountry": "India",
+      "foundedYear": 1897,
+      "tagline": "Brighter Living"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:28:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:28:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000020",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "fmcg",
+        "lighting",
+        "furniture"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Wipro",
+        "hi": "विप्रो"
+      },
+      "description": "Wipro Consumer Care and Lighting is a leading FMCG company in India.",
+      "logo": "https://wiproconsumercare.com/wp-content/uploads/2020/07/wipro-logo-new.png",
+      "website": "https://wiproconsumercare.com",
+      "originCountry": "India",
+      "foundedYear": 1945,
+      "tagline": "Applying Thought"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:29:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:29:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000021",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "snacks",
+        "sweets",
+        "namkeen"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Haldiram's",
+        "hi": "हल्दीराम्स"
+      },
+      "description": "Haldiram's is a major Indian sweets and snacks manufacturer.",
+      "logo": "https://www.haldirams.com/images/logo.png",
+      "website": "https://www.haldirams.com",
+      "originCountry": "India",
+      "foundedYear": 1937,
+      "tagline": "Taste of Tradition"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:30:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:30:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000022",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "ready to eat",
+        "spices",
+        "food"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "MTR Foods",
+        "hi": "एमटीआर फूड्स"
+      },
+      "description": "MTR Foods is an Indian food products company, known for its ready-to-eat curries, spices, and breakfast mixes.",
+      "logo": "https://www.mtrfoods.com/sites/default/files/MTR-Logo.png",
+      "website": "https://www.mtrfoods.com",
+      "originCountry": "India",
+      "foundedYear": 1924,
+      "tagline": "Taste the Tradition"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:31:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:31:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000023",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "spices",
+        "masala"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Everest",
+        "hi": "एवरेस्ट"
+      },
+      "description": "Everest is a popular Indian brand for spices and masalas.",
+      "logo": "https://www.everestspices.com/images/logo.png",
+      "website": "https://www.everestspices.com",
+      "originCountry": "India",
+      "foundedYear": 1967,
+      "tagline": "Taste Mein Best, Mummy Aur Everest"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:32:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:32:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000024",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "spices",
+        "masala"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "MDH",
+        "hi": "एमडीएच"
+      },
+      "description": "MDH is a well-known Indian brand for ground spices and spice blends.",
+      "logo": "https://www.mdhspices.com/images/logo.png",
+      "website": "https://www.mdhspices.com",
+      "originCountry": "India",
+      "foundedYear": 1919,
+      "tagline": "Asli Masale Sach Sach"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:33:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:33:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000025",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "noodles",
+        "sauces",
+        "food"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Maggi",
+        "hi": "मैगी"
+      },
+      "description": "Maggi is an international brand of instant noodles, soups, and sauces, owned by Nestlé.",
+      "logo": "https://www.maggi.in/sites/g/files/pydnoa461/files/asset-public/styles/brand_logo/public/Maggi-Logo.png",
+      "website": "https://www.maggi.in",
+      "originCountry": "Switzerland",
+      "foundedYear": 1884,
+      "tagline": "2 Minute Noodles"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:34:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:34:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000026",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "oral care",
+        "toothpaste",
+        "toothbrush"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Colgate",
+        "hi": "कोलगेट"
+      },
+      "description": "Colgate is a global brand of oral hygiene products, including toothpastes, toothbrushes, and mouthwashes.",
+      "logo": "https://www.colgate.com/content/dam/cp-sites/oral-care/colgate-com/en-us/logos/colgate-logo.svg",
+      "website": "https://www.colgate.com/en-in",
+      "originCountry": "USA",
+      "foundedYear": 1806,
+      "tagline": "Trusted by Millions"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:35:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:35:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000027",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "antiseptic",
+        "disinfectant",
+        "first aid"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Dettol",
+        "hi": "डेटॉल"
+      },
+      "description": "Dettol is a brand of cleaning supplies and antiseptic products.",
+      "logo": "https://www.dettol.co.in/assets/Image/Dettol_Logo.png",
+      "website": "https://www.dettol.co.in",
+      "originCountry": "UK",
+      "foundedYear": 1932,
+      "tagline": "Be 100% Sure"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:36:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:36:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000028",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "skincare",
+        "body lotion",
+        "sunscreen"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Nivea",
+        "hi": "निविया"
+      },
+      "description": "Nivea is a global skincare brand, offering a wide range of body lotions, creams, and sunscreens.",
+      "logo": "https://www.nivea.in/-/media/local/in/nivea-logo.png",
+      "website": "https://www.nivea.in",
+      "originCountry": "Germany",
+      "foundedYear": 1882,
+      "tagline": "Care For Your Skin"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:37:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:37:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000029",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "paints",
+        "coatings",
+        "home decor"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Asian Paints",
+        "hi": "एशियन पेंट्स"
+      },
+      "description": "Asian Paints is India's largest paint company and Asia's third largest.",
+      "logo": "https://www.asianpaints.com/content/dam/asian_paints/logo.png",
+      "website": "https://www.asianpaints.com",
+      "originCountry": "India",
+      "foundedYear": 1942,
+      "tagline": "Har Ghar Kuch Kehta Hai"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:38:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:38:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000030",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "motorcycles",
+        "bikes",
+        "two wheelers"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Hero MotoCorp",
+        "hi": "हीरो मोटोकॉर्प"
+      },
+      "description": "Hero MotoCorp is the world's largest manufacturer of two-wheelers.",
+      "logo": "https://www.heromotocorp.com/en-in/assets/images/logo.png",
+      "website": "https://www.heromotocorp.com/en-in/",
+      "originCountry": "India",
+      "foundedYear": 1984,
+      "tagline": "Hum Main Hai Hero"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:39:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:39:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000031",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "motorcycles",
+        "scooters",
+        "auto rickshaws"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Bajaj Auto",
+        "hi": "बजाज ऑटो"
+      },
+      "description": "Bajaj Auto is an Indian multinational two-wheeler and three-wheeler manufacturing company.",
+      "logo": "https://www.bajajauto.com/assets/img/bajaj-auto-logo.png",
+      "website": "https://www.bajajauto.com",
+      "originCountry": "India",
+      "foundedYear": 1945,
+      "tagline": "The World's Favourite Indian"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:40:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:40:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000032",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "grocery",
+        "supermarket",
+        "fresh produce"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Reliance Fresh",
+        "hi": "रिलायंस फ्रेश"
+      },
+      "description": "Reliance Fresh is a chain of neighborhood retail stores operated by Reliance Retail, specializing in fresh fruits, vegetables, and groceries.",
+      "logo": "https://www.relianceretail.com/images/reliance-fresh-logo.png",
+      "website": "https://www.relianceretail.com/brands/reliance-fresh.html",
+      "originCountry": "India",
+      "foundedYear": 2006,
+      "tagline": "Freshness You Can Trust"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:41:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:41:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000033",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "retail",
+        "supermarket",
+        "hypermarket"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Big Bazaar",
+        "hi": "बिग बाजार"
+      },
+      "description": "Big Bazaar is an Indian retail chain of hypermarkets, discount department stores, and grocery stores.",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/d/d1/Big_Bazaar_logo.svg/1200px-Big_Bazaar_logo.svg.png",
+      "website": "https://www.bigbazaar.com",
+      "originCountry": "India",
+      "foundedYear": 2001,
+      "tagline": "Naye India Ka Bazaar"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:42:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:42:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000034",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "food delivery",
+        "restaurant delivery",
+        "online food"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Zomato",
+        "hi": "ज़ोमैटो"
+      },
+      "description": "Zomato is an Indian multinational restaurant aggregator and food delivery company.",
+      "logo": "https://b.zmtcdn.com/data/o2_assets/zomato_logo_2021.png",
+      "website": "https://www.zomato.com",
+      "originCountry": "India",
+      "foundedYear": 2008,
+      "tagline": "Never Have a Bad Meal"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:43:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:43:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000035",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "food delivery",
+        "grocery delivery",
+        "online delivery"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Swiggy",
+        "hi": "स्विगी"
+      },
+      "description": "Swiggy is an Indian online food ordering and delivery platform.",
+      "logo": "https://content.swiggy.com/assets/images/logo.png",
+      "website": "https://www.swiggy.com",
+      "originCountry": "India",
+      "foundedYear": 2014,
+      "tagline": "Order Food Online"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:44:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:44:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000036",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "ecommerce",
+        "online shopping",
+        "electronics",
+        "fashion"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Flipkart",
+        "hi": "फ्लिपकार्ट"
+      },
+      "description": "Flipkart is an Indian e-commerce company, headquartered in Bengaluru, Karnataka, India, and incorporated in Singapore as a private limited company.",
+      "logo": "https://static-assets-web.flixcart.com/fk-p-static/2023/01/fk-logo_336x336.png",
+      "website": "https://www.flipkart.com",
+      "originCountry": "India",
+      "foundedYear": 2007,
+      "tagline": "Ab Har Wish Hogi Poori"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:45:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:45:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000037",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "ecommerce",
+        "online shopping",
+        "global retail"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Amazon India",
+        "hi": "अमेज़न इंडिया"
+      },
+      "description": "Amazon India is the Indian arm of the American e-commerce giant Amazon.",
+      "logo": "https://m.media-amazon.com/images/G/01/gc/designs/livepreview/amazon_logo_rgb_blue_1500x1500._CB640066836_.png",
+      "website": "https://www.amazon.in",
+      "originCountry": "USA",
+      "foundedYear": 2012,
+      "tagline": "Aur Dikhao"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:46:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:46:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000038",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "personal care",
+        "ayurvedic",
+        "herbal"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Himalaya Herbals",
+        "hi": "हिमालय हर्बल्स"
+      },
+      "description": "Himalaya Herbals is an Indian multinational pharmaceutical company that produces health care products.",
+      "logo": "https://www.himalayawellness.in/pub/media/logo/stores/1/himalaya-logo.png",
+      "website": "https://www.himalayawellness.in",
+      "originCountry": "India",
+      "foundedYear": 1930,
+      "tagline": "Happiness Through Wellness"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:47:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:47:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000039",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "cement",
+        "construction",
+        "building material"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Ambuja Cement",
+        "hi": "अंबुजा सीमेंट"
+      },
+      "description": "Ambuja Cement is a major Indian cement producer.",
+      "logo": "https://www.ambujacement.com/assets/images/logo.png",
+      "website": "https://www.ambujacement.com",
+      "originCountry": "India",
+      "foundedYear": 1983,
+      "tagline": "Giant Compressive Strength"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:48:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:48:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000040",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "chocolate",
+        "confectionery",
+        "sweets"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Cadbury",
+        "hi": "कैडबरी"
+      },
+      "description": "Cadbury is a British multinational confectionery company owned by Mondelez International.",
+      "logo": "https://www.cadbury.co.uk/themes/custom/cadbury/logo.svg",
+      "website": "https://www.cadbury.co.uk",
+      "originCountry": "UK",
+      "foundedYear": 1824,
+      "tagline": "A Glass and a Half Full of Joy"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:49:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:49:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000041",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "beverages",
+        "soft drinks",
+        "cola"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Coca-Cola",
+        "hi": "कोका-कोला"
+      },
+      "description": "The Coca-Cola Company is an American multinational beverage corporation.",
+      "logo": "https://www.coca-colacompany.com/content/dam/journey/us/en/private/global/logos/coca-cola-logo.svg",
+      "website": "https://www.coca-colacompany.com",
+      "originCountry": "USA",
+      "foundedYear": 1886,
+      "tagline": "Taste the Feeling"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:50:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:50:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000042",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "beverages",
+        "snacks",
+        "chips"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "PepsiCo",
+        "hi": "पेप्सिको"
+      },
+      "description": "PepsiCo is an American multinational food, snack, and beverage corporation.",
+      "logo": "https://www.pepsico.com/images/default-source/default-image/pepsico-logo-white.png",
+      "website": "https://www.pepsico.com",
+      "originCountry": "USA",
+      "foundedYear": 1965,
+      "tagline": "Live For Now"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:51:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:51:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000043",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "automobiles",
+        "cars",
+        "vehicles"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Maruti Suzuki",
+        "hi": "मारुति सुजुकी"
+      },
+      "description": "Maruti Suzuki India Limited is an Indian automobile manufacturer, a subsidiary of Japanese multinational Suzuki Motor Corporation.",
+      "logo": "https://www.marutisuzuki.com/assets/images/logo.png",
+      "website": "https://www.marutisuzuki.com",
+      "originCountry": "India",
+      "foundedYear": 1981,
+      "tagline": "Way of Life!"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:52:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:52:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000044",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "automobiles",
+        "cars",
+        "vehicles"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Hyundai",
+        "hi": "हुंडई"
+      },
+      "description": "Hyundai Motor Company is a South Korean multinational automotive manufacturer.",
+      "logo": "https://www.hyundai.com/content/dam/hyundai/ww/en/images/logo.png",
+      "website": "https://www.hyundai.com/in/en",
+      "originCountry": "South Korea",
+      "foundedYear": 1967,
+      "tagline": "New Thinking. New Possibilities."
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:53:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:53:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000045",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "retail",
+        "supermarket",
+        "grocery"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "D-Mart",
+        "hi": "डी-मार्ट"
+      },
+      "description": "D-Mart is an Indian hypermarket chain that offers a wide range of home and personal products.",
+      "logo": "https://dmartindia.com/images/logo.png",
+      "website": "https://dmartindia.com",
+      "originCountry": "India",
+      "foundedYear": 2002,
+      "tagline": "Daily Discounts, Daily Savings"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:54:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:54:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000046",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "dairy",
+        "milk",
+        "milk products"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Mother Dairy",
+        "hi": "मदर डेयरी"
+      },
+      "description": "Mother Dairy is an Indian dairy company that manufactures, markets and sells milk, milk products and other edible products.",
+      "logo": "https://www.motherdairy.com/images/logo.png",
+      "website": "https://www.motherdairy.com",
+      "originCountry": "India",
+      "foundedYear": 1974,
+      "tagline": "Happy Healthy Family"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:55:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:55:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000047",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "adhesives",
+        "construction chemicals",
+        "art supplies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Pidilite",
+        "hi": "पिडिलाइट"
+      },
+      "description": "Pidilite Industries Limited is an Indian multinational conglomerate that manufactures adhesives, sealants, construction chemicals, arts and crafts products, and other specialty chemicals.",
+      "logo": "https://www.pidilite.com/images/logo.png",
+      "website": "https://www.pidilite.com",
+      "originCountry": "India",
+      "foundedYear": 1959,
+      "tagline": "Har Ghar Kuch Kehta Hai"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:56:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:56:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000048",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beverages",
+        "fruit drinks",
+        "juices"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Parle Agro",
+        "hi": "पारले एग्रो"
+      },
+      "description": "Parle Agro is an Indian company that owns popular beverage brands like Frooti, Appy Fizz, and Bailley.",
+      "logo": "https://www.parleagro.com/images/logo.png",
+      "website": "https://www.parleagro.com",
+      "originCountry": "India",
+      "foundedYear": 1985,
+      "tagline": "Right to Refresh"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:57:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:57:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000049",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "electrical appliances",
+        "lighting",
+        "fans"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Bajaj Electricals",
+        "hi": "बजाज इलेक्ट्रिकल्स"
+      },
+      "description": "Bajaj Electricals is an Indian consumer electrical equipment manufacturing company.",
+      "logo": "https://www.bajajelectricals.com/images/logo.png",
+      "website": "https://www.bajajelectricals.com",
+      "originCountry": "India",
+      "foundedYear": 1938,
+      "tagline": "Inspiring Confidence"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:58:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:58:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000050",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "banking",
+        "financial services",
+        "loans"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "ICICI Bank",
+        "hi": "आईसीआईसीआई बैंक"
+      },
+      "description": "ICICI Bank is a leading private sector bank in India.",
+      "logo": "https://www.icicibank.com/assets/images/logo.png",
+      "website": "https://www.icicibank.com",
+      "originCountry": "India",
+      "foundedYear": 1994,
+      "tagline": "Hum Hain Na, Khayal Aapka"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T19:59:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T19:59:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000051",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "banking",
+        "financial services",
+        "loans"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "HDFC Bank",
+        "hi": "एचडीएफसी बैंक"
+      },
+      "description": "HDFC Bank is one of India's largest private sector banks.",
+      "logo": "https://www.hdfcbank.com/assets/images/logo.png",
+      "website": "https://www.hdfcbank.com",
+      "originCountry": "India",
+      "foundedYear": 1994,
+      "tagline": "We Understand Your World"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:00:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:00:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000052",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "telecom",
+        "mobile network",
+        "internet"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Airtel",
+        "hi": "एयरटेल"
+      },
+      "description": "Bharti Airtel Limited is an Indian multinational telecommunications services company.",
+      "logo": "https://www.airtel.in/assets/images/airtel-logo.png",
+      "website": "https://www.airtel.in",
+      "originCountry": "India",
+      "foundedYear": 1995,
+      "tagline": "Express Yourself"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:01:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:01:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000053",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "telecom",
+        "mobile network",
+        "internet"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Jio",
+        "hi": "जियो"
+      },
+      "description": "Reliance Jio Infocomm Limited, doing business as Jio, is an Indian telecommunications company and a subsidiary of Reliance Industries.",
+      "logo": "https://www.jio.com/assets/images/jio-logo.png",
+      "website": "https://www.jio.com",
+      "originCountry": "India",
+      "foundedYear": 2007,
+      "tagline": "Digital Life"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:02:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:02:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000054",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "telecom",
+        "mobile network",
+        "internet"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Vodafone Idea",
+        "hi": "वोडाफोन आइडिया"
+      },
+      "description": "Vodafone Idea Limited, doing business as Vi, is an Indian telecommunications company.",
+      "logo": "https://www.myvi.in/assets/images/Vi-logo.png",
+      "website": "https://www.myvi.in",
+      "originCountry": "India",
+      "foundedYear": 2018,
+      "tagline": "Together For Tomorrow"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:03:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:03:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000055",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "grocery",
+        "dairy",
+        "milk",
+        "paneer",
+        "ghee"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Gowardhan",
+        "hi": "गोवर्धन"
+      },
+      "description": "Gowardhan is a popular Indian dairy brand known for its milk, paneer, and ghee products.",
+      "logo": "https://www.paragmilkfoods.com/images/logo.png",
+      "website": "https://www.paragmilkfoods.com/brands/gowardhan",
+      "originCountry": "India",
+      "foundedYear": 1992,
+      "tagline": "Pure Goodness"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:04:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:04:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000056",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "grocery",
+        "dairy",
+        "milk",
+        "curd",
+        "butter"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Nandini",
+        "hi": "नंदिनी"
+      },
+      "description": "Nandini is a leading dairy brand from Karnataka Milk Federation, offering milk, curd, and butter.",
+      "logo": "https://kmfnandini.coop/wp-content/uploads/2020/07/Nandini-Logo.png",
+      "website": "https://kmfnandini.coop",
+      "originCountry": "India",
+      "foundedYear": 1974,
+      "tagline": "Goodness of Nature"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:05:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:05:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000057",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "high",
+      "keywords": [
+        "grocery",
+        "tea",
+        "coffee"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Brooke Bond",
+        "hi": "ब्रुक बॉन्ड"
+      },
+      "description": "Brooke Bond is a well-known tea brand in India, part of Hindustan Unilever.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/food_and_drink/brooke_bond/brooke_bond_logo.png",
+      "website": "https://www.hul.co.in/brands/foods-refreshment/brooke-bond.html",
+      "originCountry": "India",
+      "foundedYear": 1869,
+      "tagline": "Taste of Togetherness"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:06:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:06:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000058",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "grocery",
+        "spices",
+        "masala"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Catch",
+        "hi": "कैच"
+      },
+      "description": "Catch is a popular Indian brand for spices, salt, and other food ingredients.",
+      "logo": "https://www.dsgroup.com/images/brands/catch-logo.png",
+      "website": "https://www.dsgroup.com/brands/catch",
+      "originCountry": "India",
+      "foundedYear": 1987,
+      "tagline": "Taste the Purity"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:07:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:07:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000059",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "grocery",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Sunfeast",
+        "hi": "सनफीस्ट"
+      },
+      "description": "Sunfeast is a brand of food products from ITC, known for its biscuits, pasta, and instant noodles.",
+      "logo": "https://www.itcportal.com/assets/images/brands/sunfeast-logo.png",
+      "website": "https://www.itcportal.com/brands/foods/sunfeast.aspx",
+      "originCountry": "India",
+      "foundedYear": 2003,
+      "tagline": "Spread the Smile"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:08:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:08:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000060",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "grocery",
+        "snacks",
+        "chips"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Lay's",
+        "hi": "लेज़"
+      },
+      "description": "Lay's is a brand of potato chips, part of PepsiCo.",
+      "logo": "https://www.lays.com/sites/lays.com/files/2020-09/Lays_Logo_2020.png",
+      "website": "https://www.lays.com",
+      "originCountry": "USA",
+      "foundedYear": 1932,
+      "tagline": "No One Can Eat Just One"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:09:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:09:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000061",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "personal care",
+        "soap",
+        "shampoo"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Lux",
+        "hi": "लक्स"
+      },
+      "description": "Lux is a global brand of beauty soaps and body washes, part of Hindustan Unilever.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/personal_care/lux/lux_logo.png",
+      "website": "https://www.hul.co.in/brands/personal-care/lux.html",
+      "originCountry": "UK",
+      "foundedYear": 1925,
+      "tagline": "Film Stars' Beauty Soap"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:10:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:10:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000062",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "personal care",
+        "soap",
+        "handwash"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Lifebuoy",
+        "hi": "लाइफबॉय"
+      },
+      "description": "Lifebuoy is a brand of soap and handwash, part of Hindustan Unilever, known for its germ protection.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/personal_care/lifebuoy/lifebuoy_logo.png",
+      "website": "https://www.hul.co.in/brands/personal-care/lifebuoy.html",
+      "originCountry": "UK",
+      "foundedYear": 1895,
+      "tagline": "Where There's Lifebuoy, There's Health"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:11:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:11:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000063",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "home care",
+        "detergent",
+        "washing powder"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Surf Excel",
+        "hi": "सर्फ एक्सेल"
+      },
+      "description": "Surf Excel is a popular detergent brand in India, part of Hindustan Unilever.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/home_care/surf_excel/surf_excel_logo.png",
+      "website": "https://www.hul.co.in/brands/home-care/surf-excel.html",
+      "originCountry": "India",
+      "foundedYear": 1959,
+      "tagline": "Daag Acche Hain"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:12:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:12:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000064",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "home care",
+        "dishwash",
+        "cleaning"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Vim",
+        "hi": "विम"
+      },
+      "description": "Vim is a brand of dishwashing liquid and bar, part of Hindustan Unilever.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/home_care/vim/vim_logo.png",
+      "website": "https://www.hul.co.in/brands/home-care/vim.html",
+      "originCountry": "UK",
+      "foundedYear": 1885,
+      "tagline": "Shine That Lasts"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:13:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:13:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000065",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "home care",
+        "toilet cleaner",
+        "disinfectant"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Harpic",
+        "hi": "हार्पिक"
+      },
+      "description": "Harpic is a brand of toilet cleaner, part of Reckitt Benckiser.",
+      "logo": "https://www.harpic.co.in/assets/images/harpic-logo.png",
+      "website": "https://www.harpic.co.in",
+      "originCountry": "UK",
+      "foundedYear": 1920,
+      "tagline": "10x Better Clean"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:14:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:14:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000066",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "home care",
+        "floor cleaner",
+        "disinfectant"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Lizol",
+        "hi": "लाइज़ोल"
+      },
+      "description": "Lizol is a brand of disinfectant floor cleaner, part of Reckitt Benckiser.",
+      "logo": "https://www.lizol.co.in/assets/images/lizol-logo.png",
+      "website": "https://www.lizol.co.in",
+      "originCountry": "USA",
+      "foundedYear": 1889,
+      "tagline": "10x Better Germ Kill"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:15:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:15:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000067",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "sauces",
+        "ketchup"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Kissan",
+        "hi": "किसान"
+      },
+      "description": "Kissan is a brand of jams, ketchups, and squashes, part of Hindustan Unilever.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/food_and_drink/kissan/kissan_logo.png",
+      "website": "https://www.hul.co.in/brands/foods-refreshment/kissan.html",
+      "originCountry": "India",
+      "foundedYear": 1934,
+      "tagline": "Real Fruit, Real Fun"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:16:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:16:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000068",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "chocolates",
+        "confectionery"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Dairy Milk",
+        "hi": "डेयरी मिल्क"
+      },
+      "description": "Cadbury Dairy Milk is a brand of milk chocolate manufactured by Cadbury.",
+      "logo": "https://www.cadbury.co.uk/themes/custom/cadbury/logo.svg",
+      "website": "https://www.cadbury.co.uk/products/dairy-milk",
+      "originCountry": "UK",
+      "foundedYear": 1905,
+      "tagline": "A Glass and a Half Full of Joy"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:17:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:17:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000069",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Oreo",
+        "hi": "ओरियो"
+      },
+      "description": "Oreo is a brand of sandwich cookie manufactured by Nabisco, a subsidiary of Mondelez International.",
+      "logo": "https://www.oreo.com/sites/default/files/2020-09/Oreo_Logo_2020.png",
+      "website": "https://www.oreo.com",
+      "originCountry": "USA",
+      "foundedYear": 1912,
+      "tagline": "Twist, Lick, Dunk"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:18:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:18:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000070",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "snacks",
+        "chips"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Kurkure",
+        "hi": "कुरकुरे"
+      },
+      "description": "Kurkure is a brand of puffed, corn-based snacks, part of PepsiCo India.",
+      "logo": "https://www.pepsicoindia.co.in/images/brands/kurkure-logo.png",
+      "website": "https://www.pepsicoindia.co.in/brands/kurkure.html",
+      "originCountry": "India",
+      "foundedYear": 1999,
+      "tagline": "Tedha Hai Par Mera Hai"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:19:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:19:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000071",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Good Day",
+        "hi": "गुड डे"
+      },
+      "description": "Good Day is a popular biscuit brand from Britannia, known for its rich, buttery taste.",
+      "logo": "https://www.britannia.co.in/themes/custom/britannia/logo.svg",
+      "website": "https://www.britannia.co.in/brands/good-day",
+      "originCountry": "India",
+      "foundedYear": 1987,
+      "tagline": "It's a Good Day"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:20:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:20:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000072",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Marie Gold",
+        "hi": "मैरी गोल्ड"
+      },
+      "description": "Marie Gold is a light and crispy biscuit brand from Britannia, often paired with tea.",
+      "logo": "https://www.britannia.co.in/themes/custom/britannia/logo.svg",
+      "website": "https://www.britannia.co.in/brands/marie-gold",
+      "originCountry": "India",
+      "foundedYear": 1939,
+      "tagline": "My Tea's Best Friend"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:21:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:21:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000073",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Tiger",
+        "hi": "टाइगर"
+      },
+      "description": "Tiger is a glucose biscuit brand from Britannia, popular among children.",
+      "logo": "https://www.britannia.co.in/themes/custom/britannia/logo.svg",
+      "website": "https://www.britannia.co.in/brands/tiger",
+      "originCountry": "India",
+      "foundedYear": 1997,
+      "tagline": "Tiger Power"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:22:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:22:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000074",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "NutriChoice",
+        "hi": "न्यूट्रिचॉइस"
+      },
+      "description": "NutriChoice is a range of healthy biscuits from Britannia, focusing on wellness.",
+      "logo": "https://www.britannia.co.in/themes/custom/britannia/logo.svg",
+      "website": "https://www.britannia.co.in/brands/nutrichoice",
+      "originCountry": "India",
+      "foundedYear": 2006,
+      "tagline": "Health ka Naya Taste"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:23:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:23:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000075",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Bourbon",
+        "hi": "बर्बन"
+      },
+      "description": "Bourbon is a chocolate cream biscuit brand from Britannia, known for its rich chocolate flavor.",
+      "logo": "https://www.britannia.co.in/themes/custom/britannia/logo.svg",
+      "website": "https://www.britannia.co.in/brands/bourbon",
+      "originCountry": "India",
+      "foundedYear": 1955,
+      "tagline": "The Original Chocolatey Treat"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:24:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:24:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000076",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Hide & Seek",
+        "hi": "हाइड एंड सीक"
+      },
+      "description": "Hide & Seek is a chocolate chip cookie brand from Parle, known for its delicious chocolate chips.",
+      "logo": "https://www.parleproducts.com/images/logo.png",
+      "website": "https://www.parleproducts.com/brands/hide-seek",
+      "originCountry": "India",
+      "foundedYear": 1996,
+      "tagline": "The Original Chocolate Chip Cookies"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:25:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:25:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000077",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Monaco",
+        "hi": "मोनाको"
+      },
+      "description": "Monaco is a salty biscuit brand from Parle, perfect for snacking.",
+      "logo": "https://www.parleproducts.com/images/logo.png",
+      "website": "https://www.parleproducts.com/brands/monaco",
+      "originCountry": "India",
+      "foundedYear": 1942,
+      "tagline": "The Original Salty Biscuit"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:26:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:26:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000078",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "KrackJack",
+        "hi": "क्रैकजैक"
+      },
+      "description": "KrackJack is a sweet and salty biscuit brand from Parle, offering a unique taste.",
+      "logo": "https://www.parleproducts.com/images/logo.png",
+      "website": "https://www.parleproducts.com/brands/krackjack",
+      "originCountry": "India",
+      "foundedYear": 1972,
+      "tagline": "Sweet and Salty"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:27:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:27:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000079",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "20-20",
+        "hi": "20-20"
+      },
+      "description": "20-20 is a popular cashew butter cookie brand from Parle.",
+      "logo": "https://www.parleproducts.com/images/logo.png",
+      "website": "https://www.parleproducts.com/brands/20-20",
+      "originCountry": "India",
+      "foundedYear": 1999,
+      "tagline": "The Cashew Butter Cookies"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:28:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:28:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000080",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "biscuits",
+        "cookies"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Fab!",
+        "hi": "फैब!"
+      },
+      "description": "Fab! is a range of premium cookies from Parle, offering various flavors.",
+      "logo": "https://www.parleproducts.com/images/logo.png",
+      "website": "https://www.parleproducts.com/brands/fab",
+      "originCountry": "India",
+      "foundedYear": 2010,
+      "tagline": "Simply Fab!"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:29:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:29:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000081",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "snacks",
+        "chips"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Bingo!",
+        "hi": "बिंगो!"
+      },
+      "description": "Bingo! is a popular snack brand from ITC, offering a variety of chips and namkeens.",
+      "logo": "https://www.itcportal.com/assets/images/brands/bingo-logo.png",
+      "website": "https://www.itcportal.com/brands/foods/bingo.aspx",
+      "originCountry": "India",
+      "foundedYear": 2007,
+      "tagline": "No Lamba Chamba, Only Bingo!"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:30:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:30:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000082",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "snacks",
+        "chips"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Uncle Chipps",
+        "hi": "अंकल चिप्स"
+      },
+      "description": "Uncle Chipps is a classic potato chip brand from PepsiCo India.",
+      "logo": "https://www.pepsicoindia.co.in/images/brands/uncle-chipps-logo.png",
+      "website": "https://www.pepsicoindia.co.in/brands/uncle-chipps.html",
+      "originCountry": "India",
+      "foundedYear": 1992,
+      "tagline": "Bole Mere Lips, I Love Uncle Chipps"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:31:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:31:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000083",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "snacks",
+        "chips"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Doritos",
+        "hi": "डोरिटोस"
+      },
+      "description": "Doritos is a brand of flavored tortilla chips produced by Frito-Lay, a subsidiary of PepsiCo.",
+      "logo": "https://www.doritos.com/sites/doritos.com/files/2020-09/Doritos_Logo_2020.png",
+      "website": "https://www.doritos.com",
+      "originCountry": "USA",
+      "foundedYear": 1964,
+      "tagline": "For the Bold"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:32:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:32:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000084",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "snacks",
+        "chips"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Cheetos",
+        "hi": "चीटोस"
+      },
+      "description": "Cheetos is a brand of cheese puff snack, part of Frito-Lay, a subsidiary of PepsiCo.",
+      "logo": "https://www.cheetos.com/sites/cheetos.com/files/2020-09/Cheetos_Logo_2020.png",
+      "website": "https://www.cheetos.com",
+      "originCountry": "USA",
+      "foundedYear": 1948,
+      "tagline": "It's Not Easy Being Cheesy"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:33:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:33:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000085",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "food",
+        "snacks",
+        "chips"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Pringles",
+        "hi": "प्रिंगल्स"
+      },
+      "description": "Pringles is a brand of potato and wheat-based stackable snack chips, owned by Kellogg's.",
+      "logo": "https://www.pringles.com/content/dam/pringles/global/logo.png",
+      "website": "https://www.pringles.com",
+      "originCountry": "USA",
+      "foundedYear": 1967,
+      "tagline": "Once You Pop, The Fun Don't Stop"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:34:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:34:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000086",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beverages",
+        "soft drinks",
+        "cola"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Thums Up",
+        "hi": "थम्स अप"
+      },
+      "description": "Thums Up is an Indian multinational brand of cola, owned by The Coca-Cola Company.",
+      "logo": "https://www.coca-colaindia.com/content/dam/journey/in/en/private/brands/thums-up/thums-up-logo.png",
+      "website": "https://www.coca-colaindia.com/brands/thums-up",
+      "originCountry": "India",
+      "foundedYear": 1977,
+      "tagline": "Taste the Thunder"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:35:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:35:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000087",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beverages",
+        "soft drinks",
+        "lemon-lime"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Sprite",
+        "hi": "स्प्राइट"
+      },
+      "description": "Sprite is a colorless, caffeine-free, lemon and lime-flavored soft drink produced by The Coca-Cola Company.",
+      "logo": "https://www.coca-colacompany.com/content/dam/journey/us/en/private/global/logos/sprite-logo.png",
+      "website": "https://www.sprite.com",
+      "originCountry": "USA",
+      "foundedYear": 1961,
+      "tagline": "Clear Hai"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:36:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:36:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000088",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beverages",
+        "soft drinks",
+        "orange"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Fanta",
+        "hi": "फैंटा"
+      },
+      "description": "Fanta is a brand of fruit-flavored carbonated soft drinks created by The Coca-Cola Company.",
+      "logo": "https://www.coca-colacompany.com/content/dam/journey/us/en/private/global/logos/fanta-logo.png",
+      "website": "https://www.fanta.com",
+      "originCountry": "Germany",
+      "foundedYear": 1940,
+      "tagline": "Wanna Fanta?"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:37:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:37:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000089",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beverages",
+        "soft drinks",
+        "lemon"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Limca",
+        "hi": "लिम्का"
+      },
+      "description": "Limca is an Indian brand of lemon- and lime-flavored carbonated soft drink made by The Coca-Cola Company.",
+      "logo": "https://www.coca-colaindia.com/content/dam/journey/in/en/private/brands/limca/limca-logo.png",
+      "website": "https://www.coca-colaindia.com/brands/limca",
+      "originCountry": "India",
+      "foundedYear": 1971,
+      "tagline": "Lime 'n' Lemoni"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:38:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:38:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000090",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beverages",
+        "soft drinks",
+        "mango"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Maaza",
+        "hi": "माज़ा"
+      },
+      "description": "Maaza is a Coca-Cola fruit drink brand, popular in India for its mango flavor.",
+      "logo": "https://www.coca-colaindia.com/content/dam/journey/in/en/private/brands/maaza/maaza-logo.png",
+      "website": "https://www.coca-colaindia.com/brands/maaza",
+      "originCountry": "India",
+      "foundedYear": 1976,
+      "tagline": "Har Mausam Aam"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:39:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:39:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000091",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beverages",
+        "fruit drinks",
+        "mango"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Frooti",
+        "hi": "फ्रूटी"
+      },
+      "description": "Frooti is a popular mango-flavored drink from Parle Agro.",
+      "logo": "https://www.parleagro.com/images/logo.png",
+      "website": "https://www.parleagro.com/brands/frooti",
+      "originCountry": "India",
+      "foundedYear": 1985,
+      "tagline": "Fresh and Juicy"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:40:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:40:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000092",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beverages",
+        "fruit drinks",
+        "apple"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Appy Fizz",
+        "hi": "एप्पी फिज़"
+      },
+      "description": "Appy Fizz is a sparkling apple juice drink from Parle Agro.",
+      "logo": "https://www.parleagro.com/images/logo.png",
+      "website": "https://www.parleagro.com/brands/appy-fizz",
+      "originCountry": "India",
+      "foundedYear": 2005,
+      "tagline": "Feel the Fizz"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:41:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:41:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000093",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "beverages",
+        "water",
+        "packaged water"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Bailley",
+        "hi": "बैली"
+      },
+      "description": "Bailley is a brand of packaged drinking water from Parle Agro.",
+      "logo": "https://www.parleagro.com/images/logo.png",
+      "website": "https://www.parleagro.com/brands/bailley",
+      "originCountry": "India",
+      "foundedYear": 1993,
+      "tagline": "Pure and Safe"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:42:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:42:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000094",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "personal care",
+        "shampoo",
+        "hair care"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Clinic Plus",
+        "hi": "क्लिनिक प्लस"
+      },
+      "description": "Clinic Plus is a shampoo brand from Hindustan Unilever, known for its strength and shine benefits.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/personal_care/clinic_plus/clinic_plus_logo.png",
+      "website": "https://www.hul.co.in/brands/personal-care/clinic-plus.html",
+      "originCountry": "India",
+      "foundedYear": 1971,
+      "tagline": "Stronger Hair, Stronger You"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:43:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:43:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000095",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "personal care",
+        "shampoo",
+        "hair care"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Dove",
+        "hi": "डोव"
+      },
+      "description": "Dove is a personal care brand from Unilever, offering a wide range of products including soaps, shampoos, and deodorants.",
+      "logo": "https://www.dove.com/content/dam/unilever/dove/global/logo/dove_logo.png",
+      "website": "https://www.dove.com/in/home.html",
+      "originCountry": "USA",
+      "foundedYear": 1957,
+      "tagline": "Real Beauty"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:44:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:44:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000096",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "personal care",
+        "shampoo",
+        "hair care"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Sunsilk",
+        "hi": "सनसिल्क"
+      },
+      "description": "Sunsilk is a hair care brand from Unilever, offering shampoos and conditioners for various hair needs.",
+      "logo": "https://www.sunsilk.in/content/dam/unilever/sunsilk/india/logo/sunsilk_logo.png",
+      "website": "https://www.sunsilk.in",
+      "originCountry": "UK",
+      "foundedYear": 1954,
+      "tagline": "Hair On Your Side"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:45:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:45:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000097",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "personal care",
+        "soap",
+        "body wash"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Pears",
+        "hi": "पियर्स"
+      },
+      "description": "Pears is a transparent soap brand from Hindustan Unilever, known for its gentle formula.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/personal_care/pears/pears_logo.png",
+      "website": "https://www.hul.co.in/brands/personal-care/pears.html",
+      "originCountry": "UK",
+      "foundedYear": 1789,
+      "tagline": "Pure and Gentle"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:46:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:46:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000098",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "personal care",
+        "soap",
+        "body wash"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Hamam",
+        "hi": "हमाम"
+      },
+      "description": "Hamam is a soap brand from Hindustan Unilever, known for its natural ingredients and traditional appeal.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/personal_care/hamam/hamam_logo.png",
+      "website": "https://www.hul.co.in/brands/personal-care/hamam.html",
+      "originCountry": "India",
+      "foundedYear": 1934,
+      "tagline": "Prakriti Ka Suraksha Kawach"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:47:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:47:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000099",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "home care",
+        "detergent",
+        "washing powder"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Rin",
+        "hi": "रिन"
+      },
+      "description": "Rin is a popular detergent bar and powder brand from Hindustan Unilever, known for its cleaning power.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/home_care/rin/rin_logo.png",
+      "website": "https://www.hul.co.in/brands/home-care/rin.html",
+      "originCountry": "India",
+      "foundedYear": 1969,
+      "tagline": "Chamke Kapde, Chamke Life"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:48:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:48:00Z",
+      "updatedBy": "ADMIN"
+    }
+  },
+  {
+    "meta": {
+      "brandId": "BRD000000000100",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isPopular": true,
+        "isVerified": true,
+        "isCustom": false
+      },
+      "priority": "medium",
+      "keywords": [
+        "home care",
+        "detergent",
+        "washing powder"
+      ]
+    },
+    "info": {
+      "name": {
+        "en": "Wheel",
+        "hi": "व्हील"
+      },
+      "description": "Wheel is an affordable detergent powder brand from Hindustan Unilever, widely used in Indian households.",
+      "logo": "https://www.hul.co.in/content/dam/unilever/global/brands/home_care/wheel/wheel_logo.png",
+      "website": "https://www.hul.co.in/brands/home-care/wheel.html",
+      "originCountry": "India",
+      "foundedYear": 1988,
+      "tagline": "Safedi Ka Champion"
+    },
+    "audit": {
+      "createdAt": "2025-08-06T20:49:00Z",
+      "createdBy": "SYSTEM",
+      "updatedAt": "2025-08-06T20:49:00Z",
+      "updatedBy": "ADMIN"
+    }
+  }
+]

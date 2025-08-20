@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Apna Store</title>
+  <script>
+    // FOUC Prevention Script
+    (function() {
+      const preference = localStorage.getItem('app-theme');
+      const systemIsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = preference || (systemIsDark ? 'dark' : 'light');
+      document.documentElement.classList.add(`${theme}-mode`);
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="stylesheet" href="/source/common/styles/theme.css">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--page-bg-gradient);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+      color: var(--text-primary);
+    }
+
+    .auth-container {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      background-color: var(--bg-secondary);
+      padding: 1.5rem 1.8rem;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px var(--shadow-color);
+      text-align: center;
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    /* --- Dynamic Accent Colors --- */
+    .auth-container[data-view="login"] {
+      --accent-color: var(--accent-primary);
+      --accent-color-hover: var(--accent-primary-hover);
+      --shadow-focus-color: var(--shadow-focus-primary);
+    }
+
+    .auth-container[data-view="signup"] {
+      --accent-color: var(--accent-secondary);
+      --accent-color-hover: var(--accent-secondary-hover);
+      --shadow-focus-color: var(--shadow-focus-secondary);
+    }
+
+    .back-icon {
+      position: absolute;
+      top: 1.8rem;
+      left: 1.2rem;
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .back-icon:hover {
+      color: var(--accent-color);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .auth-header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .tab-container {
+      display: flex;
+      margin-bottom: 1.2rem;
+      background-color: var(--bg-tertiary);
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+      background-color: var(--bg-secondary);
+      color: var(--accent-color);
+      box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .input-with-icon {
+      position: relative;
+      width: 100%;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem 0.75rem 0.75rem 52px; /* Left padding for icon */
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .input-with-icon > i:first-of-type {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-size: 0.9rem;
+    }
+
+    .icon-separator {
+      position: absolute;
+      left: 38px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 20px;
+      width: 1px;
+      background-color: var(--border-color);
+    }
+
+    .password-toggle-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .password-toggle-icon:hover {
+      color: var(--accent-color);
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px var(--shadow-focus-color);
+      outline: none;
+    }
+
+    .form-group input.invalid {
+      border-color: var(--error-color) !important;
+    }
+
+    .form-group input.invalid:focus {
+      box-shadow: 0 0 0 2px var(--shadow-focus-error);
+    }
+
+    .error-message {
+      color: var(--error-color) !important;
+      font-size: 0.85rem;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-top: -0.5rem;
+      margin-bottom: 1.2rem;
+      padding: 0 0.25rem;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .remember-me input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    .form-options .forgot-password {
+      font-size: 0.9rem;
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    .submit-btn {
+      padding: 0.8rem;
+      border: none;
+      border-radius: 10px;
+      background-color: var(--accent-color);
+      color: var(--accent-text);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover {
+      background-color: var(--accent-color-hover);
+      transform: translateY(-1px);
+    }
+
+    .separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: var(--text-tertiary);
+      margin: 1.1rem 0;
+    }
+
+    .separator::before, .separator::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .separator span {
+      padding: 0 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .google-btn {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background-color: var(--bg-secondary);
+      color: var(--text-google-btn);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .google-btn:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    .google-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (min-width: 768px) {
+      .auth-container {
+        padding: 2rem;
+      }
+
+      .auth-header h1 {
+        font-size: 2.2rem;
+      }
+
+      .auth-header p {
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="auth-container" class="auth-container" data-view="login">
+    <!-- Back Icon -->
+    <a href="/index.html" class="back-icon" aria-label="Go back to home"><i class="fas fa-arrow-left"></i></a>
+
+    <div class="auth-header">
+      <h1 id="auth-title">Welcome Back!</h1>
+      <p id="auth-subtitle">Please enter your details to log in.</p>
+    </div>
+
+    <div class="tab-container">
+      <button id="login-tab-btn" class="tab-btn active">Login</button>
+      <button id="signup-tab-btn" class="tab-btn">Sign Up</button>
+    </div>
+
+    <!-- Login Form Container -->
+    <div id="login-form-container">
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <div class="input-with-icon">
+            <i class="fas fa-user"></i>
+            <span class="icon-separator"></span>
+            <input type="text" id="login-credential" placeholder="Email or Phone Number" required autocomplete="username">
+          </div>
+          <small class="error-message"></small>
+        </div>
+        <div class="form-group">
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <span class="icon-separator"></span>
+            <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+            <i class="fas fa-eye password-toggle-icon"></i>
+          </div>
+          <small class="error-message"></small>
+        </div>
+        <div class="form-options">
+          <div class="remember-me">
+            <input type="checkbox" id="remember-me" checked>
+            <label for="remember-me">Remember Me</label>
+          </div>
+          <a href="#" class="forgot-password">Forgot Password?</a>
+        </div>
+        <button type="submit" class="submit-btn">Login</button>
+      </form>
+    </div>
+
+    <!-- Signup Form Container -->
+    <div id="signup-form-container" class="hidden">
+      <form id="signup-form" class="auth-form">
+        <div class="form-group">
+          <div class="input-with-icon">
+            <i class="fas fa-user-edit"></i>
+            <span class="icon-separator"></span>
+            <input type="text" id="signup-fullname" placeholder="Enter your full name" required autocomplete="name">
+          </div>
+          <small class="error-message"></small>
+        </div>
+        <div class="form-group">
+          <div class="input-with-icon">
+            <i class="fas fa-envelope"></i>
+            <span class="icon-separator"></span>
+            <input type="email" id="signup-email" placeholder="Enter your email" required autocomplete="email">
+          </div>
+          <small class="error-message"></small>
+        </div>
+        <div class="form-group">
+          <div class="input-with-icon">
+            <i class="fas fa-phone"></i>
+            <span class="icon-separator"></span>
+            <input type="tel" id="signup-phone" placeholder="Enter your phone number" autocomplete="tel">
+          </div>
+          <!-- Phone is optional, so no error message needed by default -->
+        </div>
+        <div class="form-group">
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <span class="icon-separator"></span>
+            <input type="password" id="signup-password" placeholder="Create a password" required autocomplete="new-password">
+          </div>
+          <small class="error-message"></small>
+        </div>
+        <button type="submit" class="submit-btn">Create Account</button>
+      </form>
+    </div>
+
+    <div class="separator"><span>OR</span></div>
+
+    <button id="google-btn" class="google-btn">
+      <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/><path d="M1 1h22v22H1z" fill="none"/></svg>
+      <span id="google-btn-text">Continue with Google</span>
+    </button>
+
+  </div>
+
+  <!-- Firebase CDN scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <!-- Firebase config -->
+  <script src="/source/firebase/firebase-config.js"></script>
+  <!-- App config -->
+  <script src="/source/utils/app-config.js"></script>
+  <!-- Baaki scripts (auth.js, etc.) -->
+  <script src="/source/firebase/auth/auth.js"></script>
+</body>
+</html>

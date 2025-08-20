@@ -1,0 +1,351 @@
+[
+  {
+    "info": {
+      "fullName": "Santosh Kumar",
+      "nickName": "Mr. Santosh",
+      "gender": "male",
+      "dob": "2000-04-15",
+      "avatar": "./localstore/images/users/dev.png",
+      "tagline": "Top Contributor",
+      "bio": "Passionate developer & tech enthusiast",
+      "email": "dev@apnastore.io",
+      "phone": "+91 9634557007"
+    },
+    "address": [
+      {
+        "label": "Home",
+        "isPrimary": true,
+        "street": "Durgapur",
+        "city": "Chas",
+        "district": "Bokaro",
+        "state": "Jharkhand",
+        "country": "India",
+        "zipCode": "827013",
+        "geoLocation": {
+          "lat": 23.6345,
+          "lng": 86.1679
+        }
+      }
+    ],
+    "subscription": {
+      "plan": "Premium",
+      "type": "Monthly",
+      "startDate": "2025-08-1T00:00:00Z",
+      "endDate": "2025-09-01T00:00:00Z",
+      "status": "active",
+      "autoRenew": true,
+      "amount": 499
+    },
+    "meta": {
+      "userId": "USR000000000001",
+      "version": 1,
+      "primaryRole": "admin",
+      "links": {
+        "accountId": "ACC000000000001"
+      },
+      "flags": {
+        "isActive": true,
+        "isSuspended": false,
+        "isVerified": true,
+        "isMerchant": false,
+        "isCustomer": false,
+        "isAgent": false,
+        "isStaff": false,
+        "isAdmin": true
+      },
+      "roles": [
+        "user",
+        "admin"
+      ]
+    },
+    "auth": {
+      "login": {
+        "attempts": 1,
+        "method": "email/password",
+        "password": {
+          "hash": "hash_here",
+          "updatedAt": "2024-06-01T12:00:00Z"
+        }
+      },
+      "flags": {
+        "twoFactorEnabled": false,
+        "emailVerified": false,
+        "phoneVerified": false,
+        "accountLocked": false,
+        "tempPasswordUsed": false
+      },
+      "recovery": {
+        "email": "recovery@example.com",
+        "phone": "+91 9876543210",
+        "securityQuestions": [
+          {
+            "question": "Your first pet's name?",
+            "answerHash": "hash_here"
+          }
+        ]
+      },
+      "provider": {
+        "name": "firebase",
+        "fcmToken": "abcdef123456",
+        "lastUpdated": "2025-08-07T14:23:00Z",
+        "uid": "YdeQseJVzYgYw7GpZMYgDsMVVMf1"
+      }
+    }
+  },
+  {
+    "meta": {
+      "userId": "USR000000000002",
+      "version": 1,
+      "primaryRole": "merchant",
+      "roles": [
+        "user",
+        "merchant"
+      ],
+      "links": {
+        "accountId": "ACC000000000002",
+        "merchantId": "MRC000000000001"
+      },
+      "flags": {
+        "isActive": true,
+        "isSuspended": false,
+        "isVerified": false,
+        "isAdmin": false,
+        "isMerchant": true,
+        "isCustomer": false,
+        "isAgent": false,
+        "isStaff": false
+      }
+    },
+    "info": {
+      "fullName": "Rohit Kumar",
+      "nickName": "Rohit Kumar",
+      "gender": "male",
+      "dob": null,
+      "avatar": "./localstore/images/users/rohit.jpg",
+      "tagline": "Premium seller",
+      "bio": null,
+      "email": "mycafe@outlook.in",
+      "phone": "+91 1234567890"
+    },
+    "address": [
+      {
+        "label": "Home",
+        "isPrimary": true,
+        "street": "Durgapur",
+        "city": "Chas",
+        "district": "Bokaro",
+        "state": "Jharkhand",
+        "country": "India",
+        "zipCode": "827013",
+        "geoLocation": null
+      }
+    ],
+    "subscription": {
+      "plan": "Free",
+      "type": "Monthly",
+      "startDate": null,
+      "endDate": null,
+      "status": "inactive",
+      "autoRenew": false,
+      "amount": 0
+    },
+    "auth": {
+      "login": {
+        "attempts": 0,
+        "method": null,
+        "password": {
+          "hash": null,
+          "updatedAt": null
+        }
+      },
+      "flags": {
+        "twoFactorEnabled": false,
+        "emailVerified": true,
+        "phoneVerified": true,
+        "accountLocked": false,
+        "tempPasswordUsed": false
+      },
+      "recovery": {
+        "email": null,
+        "phone": null,
+        "securityQuestions": []
+      },
+      "provider": {
+        "name": null,
+        "fcmToken": null,
+        "lastUpdated": null,
+        "uid": "sN5ajjPcYcctBfPspN8kqjtTKWx2"
+      }
+    }
+  },
+  {
+    "meta": {
+      "userId": "USR000000000003",
+      "version": 1,
+      "primaryRole": "user",
+      "roles": [
+        "user"
+      ],
+      "links": {
+        "accountId": "ACC000000000003"
+      },
+      "flags": {
+        "isActive": true,
+        "isSuspended": false,
+        "isVerified": false,
+        "isAdmin": false,
+        "isMerchant": false,
+        "isCustomer": true,
+        "isAgent": false,
+        "isStaff": false
+      }
+    },
+    "address": [
+      {
+        "label": "Home",
+        "isPrimary": true,
+        "street": "Durgapur",
+        "city": "Chas",
+        "district": "Bokaro",
+        "state": "Jharkhand",
+        "country": "India",
+        "zipCode": "827013",
+        "geoLocation": null
+      }
+    ],
+    "subscription": {
+      "plan": "Free",
+      "type": null,
+      "startDate": null,
+      "endDate": null,
+      "status": "inactive",
+      "autoRenew": false,
+      "amount": 0
+    },
+    "info": {
+      "fullName": "Vivek Kumar",
+      "nickName": "Vivek Kumar",
+      "gender": null,
+      "dob": null,
+      "avatar": "./localstore/images/users/vivek.jpg",
+      "tagline": "Premium User",
+      "bio": null,
+      "email": "vivekkumar@outlook.in",
+      "phone": "+919876543210"
+    },
+    "auth": {
+      "login": {
+        "attempts": 0,
+        "method": null,
+        "password": {
+          "hash": null,
+          "updatedAt": null
+        }
+      },
+      "flags": {
+        "twoFactorEnabled": false,
+        "emailVerified": false,
+        "phoneVerified": false,
+        "accountLocked": false,
+        "tempPasswordUsed": false
+      },
+      "recovery": {
+        "email": null,
+        "phone": null,
+        "securityQuestions": []
+      },
+      "provider": {
+        "name": null,
+        "fcmToken": null,
+        "lastUpdated": null,
+        "uid": "oxSL4dxnJBX1aPomPryMmQXhRP52"
+      }
+    }
+  },
+  {
+    "meta": {
+      "userId": "USR000000000004",
+      "version": 1,
+      "primaryRole": "merchant",
+      "roles": [
+        "user",
+        "merchant"
+      ],
+      "links": {
+        "accountId": "ACC000000000004",
+        "merchantId": "MRC000000000002"
+      },
+      "flags": {
+        "isActive": true,
+        "isSuspended": false,
+        "isVerified": false,
+        "isAdmin": false,
+        "isMerchant": true,
+        "isCustomer": false,
+        "isAgent": false,
+        "isStaff": false
+      }
+    },
+    "info": {
+      "fullName": "Anita Kumari",
+      "nickName": "Anita Kumari",
+      "gender": null,
+      "dob": null,
+      "avatar": "./localstore/images/users/anita.jpg",
+      "tagline": "General store owner",
+      "bio": null,
+      "email": "anita.store@gmail.com",
+      "phone": "+91 98765 43210"
+    },
+    "address": [
+      {
+        "label": "Home",
+        "isPrimary": true,
+        "street": "B-56, Shivaji Nagar",
+        "city": "Kanpur",
+        "district": "Kanpur",
+        "state": "Uttar Pradesh",
+        "country": "India",
+        "zipCode": "208001",
+        "geoLocation": null
+      }
+    ],
+    "subscription": {
+      "plan": "Free",
+      "type": "Monthly",
+      "startDate": null,
+      "endDate": null,
+      "status": "inactive",
+      "autoRenew": false,
+      "amount": 0
+    },
+    "auth": {
+      "login": {
+        "attempts": 0,
+        "method": null,
+        "password": {
+          "hash": null,
+          "updatedAt": null
+        }
+      },
+      "flags": {
+        "twoFactorEnabled": false,
+        "emailVerified": true,
+        "phoneVerified": true,
+        "accountLocked": false,
+        "tempPasswordUsed": false
+      },
+      "recovery": {
+        "email": null,
+        "phone": null,
+        "securityQuestions": []
+      },
+      "provider": {
+        "name": null,
+        "fcmToken": null,
+        "lastUpdated": null,
+        "uid": "jA7uyYv7xnOsU4KmX1QqUdrpLUe2"
+      }
+    }
+  }
+]

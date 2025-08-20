@@ -1,0 +1,161 @@
+[
+  {
+    "meta": {
+      "orderId": "ORD000000000001",
+      "platform": "android",
+      "device": "mobile",
+      "orderDate": "2025-07-22T10:30:00Z",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000003",
+        "agentId": null
+      }
+    },
+    "orderItems": {
+      "ITM000000000001": {
+        "quantity": 3,
+        "priceAtOrder": 10,
+        "snapshot": {
+          "name": "Parle G Biscuit 80g",
+          "thumbnail": "./localstore/images/items/parleg-cup.jpg"
+        }
+      },
+      "ITM000000000002": {
+        "quantity": 2,
+        "priceAtOrder": 150,
+        "snapshot": {
+          "name": "Amul Butter 500g",
+          "thumbnail": "./localstore/images/items/amul-butter.jpg"
+        }
+      },
+      "ITM000000000003": {
+        "quantity": 1,
+        "priceAtOrder": 50,
+        "snapshot": {
+          "name": "Colgate Paste 100g",
+          "thumbnail": "./localstore/images/items/colgate-paste.jpg"
+        }
+      }
+    },
+    "delivery": {
+      "type": "Home Delivery",
+      "slot": {
+        "date": "2025-07-23",
+        "time": "10:00 AM - 12:00 PM"
+      },
+      "instruction": null,
+      "address": {
+        "name": "Santosh Kumar",
+        "label": "Home",
+        "isPrimary": true,
+        "phone": "9876543210",
+        "street": "Main Bazar",
+        "area": "Durgapur",
+        "city": "Chas",
+        "state": "Jharkhand",
+        "zipCode": "827013",
+        "landmark": "Near SBI ATM",
+        "geoLocation": {
+          "lat": 23.6345,
+          "lng": 86.1679
+        }
+      },
+      "changedAddress": [
+        {
+          "changedAt": "2025-07-22T15:00:00Z",
+          "reason": "Customer updated delivery address after placing the order.",
+          "previousAddress": {
+            "name": "Santosh Kumar",
+            "label": "Home",
+            "willPrimary": true,
+            "phone": "9876543210",
+            "street": "Old Market Road",
+            "area": "Durgapur",
+            "city": "Chas",
+            "state": "Jharkhand",
+            "zipCode": "827013",
+            "landmark": "Near Bus Stand",
+            "geoLocation": {
+              "lat": 23.635,
+              "lng": 86.1685
+            }
+          }
+        }
+      ]
+    },
+    "logistics": {
+      "shipmentId": "SHM000000000001",
+      "packaging": {
+        "type": "standard",
+        "material": "corrugated_box",
+        "sealed": true,
+        "tamperEvident": true,
+        "fragile": false,
+        "waterResistant": false
+      },
+      "handling": {
+        "requiresSignature": false,
+        "priorityHandling": false,
+        "temperatureControlled": false
+      },
+      "shipmentRisk": {
+        "score": 10,
+        "flags": [
+          "highValue"
+        ]
+      },
+      "charges": {
+        "delivery": 20,
+        "packaging": 5,
+        "handling": 0,
+        "insurance": 0,
+        "total": 25
+      },
+      "courier": {
+        "provider": "Delhivery",
+        "serviceLevel": "Standard",
+        "trackingNumber": "DLV123456789",
+        "estimatedDelivery": "2025-07-23T12:00:00Z"
+      }
+    },
+    "orderStatus": {
+      "current": "pending",
+      "timeline": {
+        "placedAt": "2025-07-22T10:30:00Z",
+        "confirmedAt": "2025-07-22T11:00:00Z",
+        "packedAt": "2025-07-22T12:00:00Z",
+        "dispatchedAt": null,
+        "deliveredAt": null,
+        "cancelledAt": null
+      },
+      "tracking": {
+        "lat": 23.6345,
+        "lng": 86.1679,
+        "time": "2025-07-22T12:30:00Z"
+      },
+      "flags": {
+        "isCancelled": false,
+        "isReturned": false,
+        "isPriority": false
+      }
+    },
+    "payment": {
+      "status": "unpaid",
+      "transactionId": "TXN123456",
+      "paymentDate": null,
+      "pricing": {
+        "subtotal": 120,
+        "tax": 9.5,
+        "discount": 10,
+        "deliveryCharge": 20,
+        "totalAmount": 139.5
+      }
+    },
+    "comments": {
+      "customerNote": "Please deliver between 10–11AM",
+      "merchantNote": "Pack biscuits carefully",
+      "rating": 4.5,
+      "review": "Good service, fast delivery"
+    }
+  }
+]

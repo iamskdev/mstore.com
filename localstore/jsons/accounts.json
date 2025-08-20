@@ -1,0 +1,295 @@
+[
+  {
+    "meta": {
+      "accountId": "ACC000000000001",
+      "isGuest": false,
+      "createdOn": "2025-08-06T10:30:00Z",
+      "lastUpdated": "2025-08-07T14:23:00Z",
+      "links": {
+        "userId": "USR000000000001"
+      },
+      "note": "Account created on login, synced across devices."
+    },
+    "deviceInfo": [
+      {
+        "status": "active",
+        "isLoggedIn": true,
+        "deviceId": "DEV-abc001-mob-sm127g",
+        "device": "mobile",
+        "model": "SM-M127G",
+        "platform": "android",
+        "browser": "chrome",
+        "name": "Samsung Galaxy M12",
+        "ipAddress": "103.254.25.54",
+        "location": "Chas, Bokaro, India",
+        "loginTime": "2025-08-06T10:30:00Z",
+        "lastActive": "2025-08-07T05:30:00Z",
+        "sessionToken": "SST-xyz123-session-token",
+        "userAgent": "Mozilla/5.0 (Linux; Android 11; SM-M127G) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
+      },
+      {
+        "status": "logged_out",
+        "isLoggedIn": false,
+        "deviceId": "DEV-abc002-mob-sm127g",
+        "device": "mobile",
+        "model": "SM-M127G",
+        "platform": "android",
+        "browser": "chrome",
+        "name": "Samsung Galaxy M12",
+        "ipAddress": "103.254.25.54",
+        "location": "Chas, Bokaro, India",
+        "loginTime": "2025-08-06T10:30:00Z",
+        "lastActive": "2025-08-07T08:00:00Z",
+        "sessionToken": "SST-xyz456-session-token",
+        "userAgent": "Mozilla/5.0 (Linux; Android 11; SM-M127G) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
+      }
+    ],
+    "cart": {
+      "items": [
+        {
+          "itemId": "ITM000000000001",
+          "quantity": 2,
+          "addedAt": "2025-08-07T14:00:00Z"
+        },
+        {
+          "itemId": "ITM000000000002",
+          "quantity": 1,
+          "addedAt": "2025-08-07T14:05:00Z"
+        }
+      ]
+    },
+    "saved": {
+      "items": [
+        {
+          "itemId": "ITM000000000003",
+          "note": null,
+          "savedAt": "2025-08-06T10:00:00Z"
+        },
+        {
+          "itemId": "ITM000000000004",
+          "note": "Gift idea",
+          "savedAt": "2025-08-06T12:30:00Z"
+        }
+      ]
+    },
+    "Alerts": {
+      "alertId": [
+        "ALT000000000001",
+        "ALT000000000002",
+        "ALT000000000003"
+      ],
+      "isCleared": false,
+      "updatedAt": "2025-08-07T13:55:00Z"
+    },
+    "privacy": {
+      "showOnline": true,
+      "personalizedAds": false
+    },
+    "autoClear": {
+      "recentlyViewed": false,
+      "saved": false,
+      "notifications": false
+    },
+    "searchHistory": [
+      {
+        "query": "men's t-shirts",
+        "timestamp": "2025-08-07T14:10:00Z"
+      },
+      {
+        "query": "running shoes",
+        "timestamp": "2025-08-07T14:05:00Z"
+      }
+    ],
+    "personalized": {
+      "enabled": false,
+      "isCleared": false,
+      "users": [],
+      "merchants": [],
+      "brands": [],
+      "items": [],
+      "activeHours": []
+    },
+    "recentlyViewed": {
+      "items": [
+        {
+          "itemId": "ITM000000000005",
+          "viewedAt": "2025-08-07T14:12:00Z"
+        },
+        {
+          "itemId": "ITM000000000006",
+          "viewedAt": "2025-08-07T14:11:00Z"
+        }
+      ]
+    },
+    "settings": {
+      "language": "en",
+      "push": true,
+      "email": false,
+      "sms": false,
+      "clearSettings": false,
+      "theme": "light"
+    }
+  },
+  {
+    "meta": {
+      "accountId": "ACC000000000002",
+      "isGuest": false,
+      "createdOn": "2025-08-06T10:30:00Z",
+      "lastUpdated": "2025-08-07T14:23:00Z",
+      "links": {
+        "userId": "USR000000000002"
+      },
+      "note": "Account created on login, synced across devices."
+    },
+    "deviceInfo": [],
+    "cart": {
+      "items": []
+    },
+    "saved": {
+      "items": []
+    },
+    "Alerts": {
+      "alertId": [],
+      "isCleared": false,
+      "updatedAt": "2025-08-07T14:23:00Z"
+    },
+    "settings": {
+      "language": "en",
+      "theme": "dark",
+      "push": true,
+      "email": false,
+      "sms": false,
+      "clearSettings": false
+    },
+    "privacy": {
+      "showOnline": true,
+      "personalizedAds": false
+    },
+    "autoClear": {
+      "recentlyViewed": false,
+      "saved": false,
+      "notifications": false
+    },
+    "searchHistory": [],
+    "personalized": {
+      "enabled": false,
+      "isCleared": false,
+      "users": [],
+      "merchants": [],
+      "brands": [],
+      "items": [],
+      "activeHours": []
+    },
+    "recentlyViewed": {
+      "items": []
+    }
+  },
+  {
+    "meta": {
+      "accountId": "ACC000000000003",
+      "isGuest": false,
+      "createdOn": "2025-08-06T10:30:00Z",
+      "lastUpdated": "2025-08-07T14:23:00Z",
+      "links": {
+        "userId": "USR000000000003"
+      },
+      "note": "Account created on login, synced across devices."
+    },
+    "deviceInfo": [],
+    "cart": {
+      "items": []
+    },
+    "saved": {
+      "items": []
+    },
+    "Alerts": {
+      "alertId": [],
+      "isCleared": false,
+      "updatedAt": "2025-08-07T14:23:00Z"
+    },
+    "settings": {
+      "language": "en",
+      "theme": "dark",
+      "push": true,
+      "email": false,
+      "sms": false,
+      "clearSettings": false
+    },
+    "privacy": {
+      "showOnline": true,
+      "personalizedAds": false
+    },
+    "autoClear": {
+      "recentlyViewed": false,
+      "saved": false,
+      "notifications": false
+    },
+    "searchHistory": [],
+    "personalized": {
+      "enabled": false,
+      "isCleared": false,
+      "users": [],
+      "merchants": [],
+      "brands": [],
+      "items": [],
+      "activeHours": []
+    },
+    "recentlyViewed": {
+      "items": []
+    }
+  },
+  {
+    "meta": {
+      "accountId": "ACC000000000004",
+      "isGuest": false,
+      "createdOn": "2025-08-06T10:30:00Z",
+      "lastUpdated": "2025-08-07T14:23:00Z",
+      "links": {
+        "userId": "USR000000000004"
+      },
+      "note": "Account created on login, synced across devices."
+    },
+    "deviceInfo": [],
+    "cart": {
+      "items": []
+    },
+    "saved": {
+      "items": []
+    },
+    "Alerts": {
+      "alertId": [],
+      "isCleared": false,
+      "updatedAt": "2025-08-07T14:23:00Z"
+    },
+    "settings": {
+      "language": "en",
+      "theme": "dark",
+      "push": true,
+      "email": false,
+      "sms": false,
+      "clearSettings": false
+    },
+    "privacy": {
+      "showOnline": true,
+      "personalizedAds": false
+    },
+    "autoClear": {
+      "recentlyViewed": false,
+      "saved": false,
+      "notifications": false
+    },
+    "searchHistory": [],
+    "personalized": {
+      "enabled": false,
+      "isCleared": false,
+      "users": [],
+      "merchants": [],
+      "brands": [],
+      "items": [],
+      "activeHours": []
+    },
+    "recentlyViewed": {
+      "items": []
+    }
+  }
+]

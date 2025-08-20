@@ -1,0 +1,422 @@
+<style>
+/*
+ * 🎨 TAB NAVIGATION STYLES
+ * This block contains all the CSS for the bottom navigation bar,
+ * including general layout, button styles, states, dark mode, and responsiveness.
+ */
+
+/* --- Component-Scoped Theming Variables --- */
+:root {
+  /* Light Mode/Default Variables */
+  --nav-border-top: 1px solid rgba(0, 0, 0, 0.08);
+  --nav-box-shadow: 0 1px 3px var(--shadow-color);
+  --nav-btn-color: #888;
+  --nav-btn-color-active: var(--accent-primary);
+  --nav-btn-bg-active: rgba(var(--accent-primary-rgb), 0.12); /* Background for active tab */
+  --nav-btn-color-hover: #3a0ca3;
+  --nav-ripple-bg: rgba(var(--accent-primary-rgb), 0.1);
+}
+
+html.dark-mode {
+  /* Dark Mode Variable Overrides */
+  --nav-border-top: 1px solid rgba(255, 255, 255, 0.1);
+  --nav-box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
+  --nav-btn-color: #9e9e9e;
+  --nav-btn-color-active: var(--accent-primary); /* Uses dark mode accent: #4cc9f0 */
+  --nav-btn-bg-active: rgba(var(--accent-primary-rgb), 0.2); /* More visible in dark mode */
+  --nav-btn-color-hover: var(--accent-primary);
+  --nav-ripple-bg: rgba(var(--accent-primary-rgb), 0.1);
+}
+
+/* --- 1. Main Container & Theming Variables --- */
+.bottom-tab-bar {
+  /* Applying the variables */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65px; /* Slightly taller for better ergonomics */
+  background: var(--bg-secondary); /* Use global theme variable */
+  backdrop-filter: blur(10px); /* Subtle blur for depth */
+  box-shadow: var(--nav-box-shadow);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  border-top: var(--nav-border-top);
+  padding: 0 8px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Smoothly slide up/down with footer */
+}
+
+/* --- 2. General Button Styles --- */
+.nav-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 8px 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--nav-btn-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 56px;
+  max-width: 96px;
+  height: 100%;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 0;
+  overflow: visible;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-btn .icon-container {
+  position: relative;
+  width: 40px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.nav-btn i {
+  font-size: 22px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+}
+
+
+.nav-btn-add i {
+  font-size: 35px; /* Larger icon */
+}
+
+.nav-btn-add span { display: none; } /* Hide text label */
+
+/*
+  FIX: The 'add' button is unique. Its icon container should not be constrained
+  in height, allowing the larger icon to display correctly. We also remove
+  the bottom margin as there's no text label below it.
+*/
+.nav-btn-add .icon-container {
+  height: auto;
+  margin-bottom: 0;
+}
+
+/*
+  FIX: The 'add' button is unique. Its icon container should not be constrained
+  in height, allowing the larger icon to display correctly. We also remove
+  the bottom margin as there's no text label below it.
+*/
+.nav-btn-add .icon-container {
+  height: auto;
+  margin-bottom: 0;
+}
+
+/* --- 4. Button States & Effects --- */
+
+/* Active State */
+.nav-btn.active {
+  color: var(--nav-btn-color-active);
+  font-weight: 600; /* Make active tab text slightly bolder for emphasis */
+  background-color: transparent;
+  border-radius: 12px; /* Rounded corners for the background highlight */
+}
+
+.nav-btn-add.active {
+  color: var(--nav-btn-color-active);
+  transform: none; /* Remove any scaling effect */
+  background-color: transparent; /* 'Add' button should not have a background */
+}
+
+/* Ripple Effect */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--nav-ripple-bg);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Hover State (for devices that support it) */
+@media (hover: hover) {
+  .nav-btn:not(.active):hover {
+    color: var(--nav-btn-color-hover);
+    background: transparent;
+  }
+}
+
+
+
+/* --- 7. Utility Classes --- */
+.bottom-tab-bar.dev-mode {
+  border: 2px dashed rgba(255, 59, 48, 0.3);
+  background: rgba(255, 59, 48, 0.05);
+}
+
+</style>
+
+<!-- 🔻 Enhanced Bottom Navigation -->
+<nav class="bottom-tab-bar">
+
+  <!-- 🌐 Guest Tabs -->
+  <button class="nav-btn" data-role="guest" data-path="home">
+    <div class="icon-container">
+      <i class="fas fa-home"></i>
+    </div>
+    <span>Home</span>
+  </button>
+
+  <button class="nav-btn" data-role="guest" data-path="explore">
+    <div class="icon-container">
+      <i class="fas fa-store"></i>
+    </div>
+    <span>Explore</span>
+  </button>
+
+  <button class="nav-btn" data-role="guest" data-path="saved">
+    <div class="icon-container">
+      <i class="fas fa-heart"></i>
+    </div>
+    <span>Saved</span>
+  </button>
+
+  <button class="nav-btn" data-role="guest" data-path="cart">
+    <div class="icon-container">
+      <i class="fas fa-shopping-cart"></i>
+    </div>
+    <span>Cart</span>
+  </button>
+
+  <button class="nav-btn" data-role="guest" data-path="account">
+    <div class="icon-container">
+      <i class="fas fa-user"></i>
+    </div>
+    <span>Account</span>
+  </button>
+
+  <!-- 👤 User Tabs -->
+  <button class="nav-btn hidden" data-role="user" data-path="home">
+    <div class="icon-container">
+      <i class="fas fa-home"></i>
+    </div>
+    <span>Home</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="user" data-path="explore">
+    <div class="icon-container">
+      <i class="fas fa-store"></i>
+    </div>
+    <span>Explore</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="user" data-path="saved">
+    <div class="icon-container">
+      <i class="fas fa-heart"></i>
+    </div>
+    <span>Saved</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="user" data-path="cart">
+    <div class="icon-container">
+      <i class="fas fa-shopping-cart"></i>
+    </div>
+    <span>Cart</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="user" data-path="account">
+    <div class="icon-container">
+      <i class="fas fa-user"></i>
+    </div>
+    <span>Account</span>
+  </button>
+
+  <!-- 🛍️ Merchant Tabs -->
+  <button class="nav-btn hidden" data-role="merchant" data-path="home">
+    <div class="icon-container">
+      <i class="fas fa-store"></i>
+    </div>
+    <span>Home</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="merchant" data-path="explore">
+    <div class="icon-container">
+      <i class="fas fa-box-open"></i>
+    </div>
+    <span>Inventory</span>
+  </button>
+
+  <button class="nav-btn hidden nav-btn-add" data-role="merchant" data-path="add">
+    <div class="icon-container">
+      <i class="fa fa-plus-circle"></i>
+    </div>
+  
+  </button>
+
+  <button class="nav-btn hidden" data-role="merchant" data-path="analytics">
+    <div class="icon-container">
+      <i class="fas fa-chart-bar"></i>
+    </div>
+    <span>Analytics</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="merchant" data-path="account">
+    <div class="icon-container">
+      <i class="fas fa-user-cog"></i>
+    </div>
+    <span>Account</span>
+  </button>
+
+  <!-- 🛡️ Admin Tabs -->
+  <button class="nav-btn hidden" data-role="admin" data-path="home">
+    <div class="icon-container">
+      <i class="fas fa-shield-alt"></i>
+    </div>
+    <span>Home</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="admin" data-path="data">
+    <div class="icon-container">
+      <i class="fas fa-database"></i>
+    </div>
+    <span>Data</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="admin" data-path="logs">
+    <div class="icon-container">
+      <i class="fas fa-file-alt"></i>
+    </div>
+    <span>Logs</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="admin" data-path="promo">
+    <div class="icon-container">
+      <i class="fas fa-bullhorn"></i>
+    </div>
+    <span>Promo</span>
+  </button>
+
+  <button class="nav-btn hidden" data-role="admin" data-path="account">
+    <div class="icon-container">
+      <i class="fas fa-user-shield"></i>
+    </div>
+    <span>Account</span>
+  </button>
+
+</nav>
+
+<script type="module">
+  import { viewManager } from './source/main.js';
+
+  /**
+   * @file Tab Navigation Component Script
+   * This script manages the state and behavior of the bottom tab navigation bar.
+   * It listens to the central ViewManager to update its UI and handles user clicks
+*/
+  (function() {
+    // --- Initialization Guard ---
+    if (window.tabNavInitialized) {
+      return;
+    }
+    window.tabNavInitialized = true;
+
+    const navBar = document.querySelector('.bottom-tab-bar');
+
+    // --- UI Update Function ---
+    function updateNavUI({ role, view }) {
+      console.log(`TabNav: updateNavUI called with role: ${role}, view: ${view}`); // ADDED LOG
+      // If promo is active, don't run the standard UI update logic.
+      if (navBar.dataset.promoActive === "true") {
+        // The promo buttons are already set. We could highlight one if the path matches.
+        // Note: Promo links are external, so they won't match internal view states.
+        return;
+      }
+
+      // Standard UI update logic
+      // REMOVED setTimeout for testing
+      navBar.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.toggle('hidden', btn.dataset.role !== role);
+        const isCorrectRole = btn.dataset.role === role;
+        const isCorrectView = btn.dataset.path === view;
+        btn.classList.toggle('active', isCorrectRole && isCorrectView);
+      });
+      navBar.classList.toggle('dev-mode', role === 'admin');
+    }
+
+    // Listen for a promotion to be activated
+    window.addEventListener('promotionActivated', (e) => {
+        const promo = e.detail;
+        if (!promo || !promo.bottomNav) return;
+
+        console.log('Tab-nav responding to promotion:', promo.bottomNav);
+        navBar.dataset.promoActive = "true";
+        navBar.innerHTML = ''; // Clear existing buttons
+
+        promo.bottomNav.forEach(item => {
+            const btn = document.createElement('button');
+            btn.className = 'nav-btn';
+            btn.dataset.role = 'guest'; // Promo view is always for the public
+            btn.dataset.path = item.link; // Store the link for potential internal routing
+            btn.innerHTML = `<div class="icon-container"><i class="${item.icon}"></i></div><span>${item.label}</span>`;
+            
+            // Handle promo link clicks
+            btn.addEventListener('click', (clickEvent) => {
+                clickEvent.preventDefault();
+                // For now, we assume promo links open in a new tab.
+                window.open(item.link, '_blank');
+            });
+
+            navBar.appendChild(btn);
+        });
+    });
+
+    // --- Event Listeners ---
+
+    // 1. Handle clicks on the nav buttons using event delegation
+    navBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.nav-btn');
+      if (!btn) return;
+
+      // a. Ripple effect
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple');
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+      ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+      // FIX: Append ripple to the button itself, not the icon container.
+      // This ensures the ripple's position (calculated relative to the button) is correct.
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+
+      // b. Tell the view manager to switch views
+      const role = btn.dataset.role;
+      const viewId = btn.dataset.path;
+      viewManager.switchView(role, viewId);
+    });
+
+    // 2. Listen for view changes FROM the viewManager to keep the UI in sync
+    // This subscription model is robust and eliminates race conditions.
+    // The viewManager will immediately call updateNavUI with the current state upon subscription,
+    // and then for every subsequent view change.
+    viewManager.subscribe(updateNavUI);
+    console.log("✅ TabNav: Subscribed to ViewManager for state updates.");
+
+    // The 'userTypeChanged' listener is no longer needed here. The viewManager handles that
+    // event and will notify this component of the state change via the subscription.
+  })();
+</script>

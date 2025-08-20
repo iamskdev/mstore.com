@@ -1,0 +1,50 @@
+[
+  {
+    "meta": {
+      "campaignId": "CMP000000000001",
+      "name": "Diwali Sale Announcement 2025",
+      "type": "promotional",
+      "status": "active",
+      "createdAt": "2025-10-15T10:00:00Z",
+      "createdBy": "USR000000000001",
+      "scheduledAt": "2025-10-20T09:00:00Z"
+    },
+    "targeting": {
+      "audience": {
+        "roles": [
+          "customer",
+          "user"
+        ],
+        "platforms": [
+          "android",
+          "ios",
+          "web"
+        ],
+        "userGroups": [
+          "new_users"
+        ]
+      }
+    },
+    "content": {
+      "title": "🪔 Happy Diwali! Special Offers Inside!",
+      "message": "Celebrate the festival of lights with up to 50% off on electronics and fashion. Tap to see the deals!",
+      "richContent": {
+        "image": "/notifications/images/diwali-sale.jpg",
+        "icon": "fas fa-gift"
+      },
+      "cta": [
+        {
+          "label": "Shop Now",
+          "url": "/promotions/diwali-sale-2025",
+          "type": "primary"
+        }
+      ]
+    },
+    "delivery": {
+      "strategy": {
+        "primary": "in_app",
+        "fallback": ["device_alert"]
+      }
+    }
+  }
+]

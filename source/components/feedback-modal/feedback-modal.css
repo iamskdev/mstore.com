@@ -1,0 +1,248 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1005; /* Header/Nav (1000) aur Search (1002) se upar rakhein */
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #aaa;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+.modal-close-btn:hover {
+  color: #fff;
+}
+
+.modal-content {
+  background: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  color: #fff;
+  position: relative;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.modal-content label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  color: #ccc;
+}
+.modal-content textarea, .modal-content input[type="text"] {
+  width: 100%;
+  diplay
+  padding: 0.65rem 0.9rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Remove old standard select styling */
+#type-select {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.phone-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  position: relative; /* Make this the positioning context for the dropdown */
+}
+
+.phone-group input {
+  flex-grow: 1;
+  margin-bottom: 0;
+  height: 44px; /* Match the height of the custom select */
+}
+
+/* --- Custom Select Dropdown --- */
+.custom-select-wrapper {
+  user-select: none;
+  position: relative; /* Dropdown options ko iske andar position karne ke liye zaroori hai */
+  flex-shrink: 0;
+}
+
+.custom-select-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.9rem;
+  font-size: 1rem;
+  color: #fff;
+  background: #2a2a2a;
+  border-radius: 6px;
+  border: 1px solid #444;
+  cursor: pointer;
+  height: 44px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  width: 100%;
+}
+
+#country-code-select .custom-select-trigger {
+  width: 85px; /* Specific width for country code */
+}
+
+.custom-select-search-wrapper {
+  padding: 8px;
+  background: #2a2a2a;
+  position: sticky;
+  top: 0;
+  z-index: 11;
+}
+
+.custom-select-search {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #333;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.custom-select-search:focus {
+  outline: none;
+  border-color: #03a9f4;
+}
+/* Dropdown list Type */
+.custom-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #2a2a2a;
+  margin-top: 4px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  visibility: hidden;
+  max-height: 220px; /* Scroll after this height */
+  overflow-y: auto;
+}
+
+#country-code-select .custom-options {
+  /* Yahi fix hai. 100% width (jo 85px trigger ka 100% tha) ke bajaye,
+     'width: auto' dropdown ko apne content (desh ke naam) ke hisab se failne dega.
+     'min-width: 100%' yeh sunishchit karta hai ki yeh kam se kam trigger button jitna chauda ho. */
+  width: auto;
+  min-width: 100%;
+}
+
+.custom-options::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-options::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+.custom-options::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 6px;
+}
+
+.custom-select-wrapper.open .custom-options {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.custom-option {
+  display: flex;
+  align-items: center;
+  padding: 0.65rem 0.9rem;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.custom-option:hover {
+  background-color: #333;
+}
+
+.custom-option::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid #888;
+  border-radius: 50%;
+  margin-right: 12px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.custom-option.selected {
+  background-color: transparent;
+}
+
+.custom-option.selected::before {
+  border-color: #03a9f4;
+  box-shadow: inset 0 0 0 4px #03a9f4;
+}
+
+.flag-emoji {
+  font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  margin-left: 8px;
+}
+
+.arrow {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #fff;
+  transition: transform 0.2s ease;
+}
+
+.custom-select-wrapper.open .arrow {
+  transform: rotate(180deg);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.submit-btn {
+  background: #03a9f4;
+  color: white;
+  font-weight: bold;
+}
+
+.cancel-btn {
+  background: #444;
+  color: #ccc;
+}

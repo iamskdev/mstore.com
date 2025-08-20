@@ -1,0 +1,828 @@
+<style>
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 80%;
+      max-width: 320px;
+      height: 100%;
+      background: var(--bg-secondary);
+      box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+      z-index: 1101; /* HIGHEST: Above header, nav, and overlay */
+      transition: left 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* Prevent the whole drawer from scrolling */
+    }
+    .drawer.open { left: 0; }
+
+    .drawer-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0; /* Prevent header from shrinking */
+    }
+
+    .greeting {
+      font-weight: bold;
+      font-size: 1.1rem;
+      line-height: 1.3; /* Reduce line height to tighten vertical space */
+      color: var(--text-primary); /* Ensure text color respects the current theme */
+    }
+    .subtext {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.3; /* Reduce line height to tighten vertical space */
+    }
+
+    /* Ensure long text (name, email) truncates with '...' on small screens */
+    .greeting, .subtext {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .phone-number {
+      color: var(--accent-primary); /* Standard blue for links/actions */
+      font-weight: 500;
+    }
+
+    .avatar-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .user-info {
+      /* flex: 1; */ /* This was causing the extra space, so it's removed. */
+      min-width: 0; /* Crucial for allowing text to truncate inside a flex container */
+      display: flex;
+      flex-direction: column;
+      gap: 2px; /* Control spacing between name, email, phone */
+    }
+
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      flex-shrink: 0; /* Prevent the avatar from shrinking on small screens */
+      border: 2px solid var(--border-color); /* Consistent border for all avatars */
+
+      /* Use background properties for better control over image fitting. */
+      /* This method works well even if the source image has extra whitespace. */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      
+      /* A light background provides a better look for logos with transparency */
+      background-color: var(--bg-tertiary);
+    }
+
+    /* Fallback style for when an avatar image fails to load */
+    .avatar.fallback-icon {
+      background-image: none !important; /* Remove broken background image */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar.fallback-icon::before {
+      font-family: "Font Awesome 6 Free";
+      content: "\f2bd"; /* Font Awesome user-circle icon */
+      font-weight: 900;
+      font-size: 3rem; /* Large icon to fill the space */
+      color: var(--border-color); /* A light grey color for the icon */
+    }
+
+    .drawer-section {
+      padding: 0; /* Padding removed to make sections more compact */
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Remove the border from the last section to prevent a double-divider with the footer */
+    .drawer-body .drawer-section:last-child {
+      border-bottom: none;
+    }
+
+    .drawer-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px; /* Apply padding here */
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    a.drawer-item, a.drawer-item:visited {
+      text-decoration: none;
+      /* Explicitly set color to override browser defaults for visited links */
+      color: var(--text-primary);
+    }
+
+    .drawer-item:hover {
+      background-color: var(--bg-tertiary); /* Highlight on hover */
+    }
+
+    .drawer-item-content {
+      display: flex;
+      align-items: center;
+      gap: 16px; /* Icon aur text ke beech mein space */
+      /* These properties ensure the container can shrink and allow text inside to truncate */
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Ensure long text in drawer items truncates with '...' */
+    .drawer-item-content span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .drawer-item .drawer-item-content i {
+      width: 20px; /* Icon ko ek fixed width di gayi hai taaki text aapas mein align rahe */
+      text-align: center;
+      color: inherit; /* Let the icon color match the text color for a cleaner look */
+      font-size: 1rem;
+      opacity: 0.8; /* Slightly less prominent than text */
+    }
+    /* The right arrow icon should remain subtle */
+    .drawer-item > .fa-chevron-right {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Special styling for the PWA install button in the drawer */
+    .drawer-install-btn .drawer-item-content {
+      color: var(--accent-primary);
+      font-weight: 600;
+    }
+
+    .drawer-section-header {
+      padding: 10px 16px 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      background-color: var(--bg-primary); /* Slightly different from item background */
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .drawer-body {
+      flex: 1; /* Takes up all available space between header and footer */
+      overflow-y: auto; /* Becomes scrollable if content is too long */
+    }
+
+    .drawer-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 0;
+      background: var(--bg-secondary);
+      flex-shrink: 0; /* Prevent footer from shrinking */
+    }
+
+    .drawer-view {
+      display: flex;
+      flex-direction: column;
+      flex: 1; /* Make view fill the drawer */
+      min-height: 0; /* Crucial for flex children with overflow */
+    }
+
+    .hidden { display: none !important; }
+
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.3);
+      z-index: 1100; /* Above header and nav, but below drawer */
+      display: none;
+    }
+    .drawer-overlay.visible {
+      display: block;
+    }
+
+    /* --- Theme Toggle Switch --- */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; }
+    input:checked + .slider { background-color: var(--accent-primary); }
+    input:checked + .slider:before { transform: translateX(26px); }
+    .slider.round { border-radius: 24px; }
+    .slider.round:before { border-radius: 50%; }
+
+    .theme-toggle-switch .fa-moon { color: var(--text-secondary); }
+    .theme-toggle-switch .fa-sun {
+      color: var(--text-secondary);
+    }
+  </style>
+<!-- Overlay -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<!-- Drawer -->
+<div class="drawer" id="app-drawer">
+
+  <!-- GUEST DRAWER -->
+  <div id="drawer-guest" class="drawer-view">
+    <div class="drawer-header">
+      <div class="greeting" id="guest-greeting">Good Morning 👋</div>
+      <div class="subtext">Welcome! Please login or Sign Up…</div>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-section">
+        <div class="drawer-item drawer-install-btn hidden"> <!-- Hidden by default, shown by main.js -->
+          <div class="drawer-item-content"><i class="fas fa-download"></i><span>Install App</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item" id="drawer-login-btn">
+          <div class="drawer-item-content"><i class="fas fa-sign-in-alt"></i><span>Login</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item" id="drawer-signup-btn">
+          <div class="drawer-item-content"><i class="fas fa-user-plus"></i><span>Sign Up</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented" id="drawer-language-btn">
+          <div class="drawer-item-content"><i class="fas fa-language"></i><span>Language</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item">
+          <div class="drawer-item-content"><i class="fas fa-moon"></i><span>Dark Mode</span></div>
+          <div class="theme-toggle-switch">
+            <label class="switch">
+              <input type="checkbox" class="theme-toggle-checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-info-circle"></i><span>About Us</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-file-contract"></i><span>Terms & Privacy</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <div class="drawer-item app-share-btn">
+        <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- USER DRAWER -->
+  <div id="drawer-user" class="drawer-view hidden">
+    <div class="drawer-header">
+      <!-- This structure will be used for both User and Admin -->
+      <!-- FIX: Using unique IDs for user-specific elements -->
+      <div class="avatar-wrapper">
+        <div id="drawer-user-avatar" class="avatar" role="img" aria-label="User Avatar"></div>
+        <div class="user-info">
+          <div id="drawer-user-name" class="greeting"></div>
+          <div id="drawer-user-email" class="subtext"></div>
+          <div id="drawer-user-phone" class="subtext phone-number"></div>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <!-- Install App button for all logged-in users -->
+      <div class="drawer-section">
+        <div class="drawer-item drawer-install-btn hidden"> <!-- Hidden by default, shown by main.js -->
+          <div class="drawer-item-content"><i class="fas fa-download"></i><span>Install App</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+      <!-- A prominent CTA for users to become merchants -->
+      <div class="drawer-section">
+        <div class="drawer-item feature-not-implemented" id="become-seller-btn">
+          <div class="drawer-item-content"><i class="fas fa-store"></i><span>Start Online Business</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+      <!-- User-specific account management -->
+      <div class="drawer-section">
+        <a class="drawer-item" data-role="user" data-path="account">
+          <div class="drawer-item-content"><i class="fas fa-user-circle"></i><span>My Account</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-box"></i><span>My Orders</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-file-invoice"></i><span>My Invoices</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-star"></i><span>My Reviews</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+      <div class="drawer-section">
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-language"></i><span>Language</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item">
+          <div class="drawer-item-content"><i class="fas fa-moon"></i><span>Dark Mode</span></div>
+          <div class="theme-toggle-switch">
+            <label class="switch">
+              <input type="checkbox" class="theme-toggle-checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-headset"></i><span>Support</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item drawer-logout-btn">
+          <div class="drawer-item-content"><i class="fas fa-sign-out-alt"></i><span>Logout</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <div class="drawer-item app-share-btn">
+        <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- MERCHANT DRAWER -->
+  <div id="drawer-merchant" class="drawer-view hidden">
+    <div class="drawer-header">
+      <div class="avatar-wrapper">
+        <div id="drawer-merchant-avatar" class="avatar" role="img" aria-label="Merchant Avatar"></div>
+        <div class="user-info">
+          <div id="drawer-merchant-name" class="greeting"></div>
+          <div id="drawer-merchant-email" class="subtext"></div>
+          <div id="drawer-merchant-phone" class="subtext phone-number"></div>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <!-- Install App button for all logged-in users -->
+      <div class="drawer-section">
+        <div class="drawer-item drawer-install-btn hidden"> <!-- Hidden by default, shown by main.js -->
+          <div class="drawer-item-content"><i class="fas fa-download"></i><span>Install App</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+      <div class="drawer-section">
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-cog"></i><span>Settings</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-store"></i><span>Shop Profile</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-balance-scale"></i><span>Units</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-truck"></i><span>Suppliers</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-list"></i><span>Categories</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-tags"></i><span>Offers & Banners</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-rupee-sign"></i><span>Sales / Income</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+      <div class="drawer-section">
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-users"></i><span>Followers</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-user-friends"></i><span>Staff</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-language"></i><span>Language</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item">
+          <div class="drawer-item-content"><i class="fas fa-moon"></i><span>Dark Mode</span></div>
+          <div class="theme-toggle-switch">
+            <label class="switch">
+              <input type="checkbox" class="theme-toggle-checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-cog"></i><span>Settings</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-headset"></i><span>Support</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item drawer-logout-btn">
+          <div class="drawer-item-content"><i class="fas fa-sign-out-alt"></i><span>Logout</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <div class="drawer-item app-share-btn">
+        <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin DRAWER (Refactored to be distinct from Merchant) -->
+  <div id="drawer-admin" class="drawer-view hidden">
+    <div class="drawer-header">
+      <div class="avatar-wrapper">
+        <div id="drawer-admin-avatar" class="avatar" role="img" aria-label="Admin Avatar"></div>
+        <div class="user-info">
+          <div id="drawer-admin-name" class="greeting">Admin</div>
+          <div id="drawer-admin-email" class="subtext"></div>
+          <div id="drawer-admin-phone" class="subtext phone-number"></div>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <!-- Install App button for all logged-in users -->
+      <div class="drawer-section">
+        <div class="drawer-item drawer-install-btn hidden"> <!-- Hidden by default, shown by main.js -->
+          <div class="drawer-item-content"><i class="fas fa-download"></i><span>Install App</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+      <!-- Section 1: Analytics & Reports -->
+      <div class="drawer-section">
+        <a href="#" class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div><i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="#" class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-chart-pie"></i><span>Analytics</span></div><i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="#" class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-file-alt"></i><span>View Logs</span></div><i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <!-- Section 2: Management -->
+      <div class="drawer-section">
+        <a href="#" class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-users-cog"></i><span>User Management</span></div><i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="#" class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-store-alt-slash"></i><span>Merchant Approvals</span></div><i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="#" class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-edit"></i><span>Content Management</span></div><i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <!-- Section 3: System & Tools -->
+      <div class="drawer-section">
+        <a href="#" class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-bullhorn"></i><span>Broadcast Message</span></div><i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="#" class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-cogs"></i><span>System Config</span></div><i class="fas fa-chevron-right"></i>
+        </a>
+        <div class="drawer-item" id="dev-clear-storage">
+          <div class="drawer-item-content"><i class="fas fa-trash-alt"></i><span>Clear Storage</span></div>
+        </div>
+        <div class="drawer-item" id="dev-force-reload">
+          <div class="drawer-item-content"><i class="fas fa-sync-alt"></i><span>Force Reload</span></div>
+        </div>
+      </div>
+      <!-- Section 4: General -->
+      <div class="drawer-section">
+        <div class="drawer-item">
+          <div class="drawer-item-content"><i class="fas fa-moon"></i><span>Dark Mode</span></div>
+          <div class="theme-toggle-switch">
+            <label class="switch">
+              <input type="checkbox" class="theme-toggle-checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div class="drawer-item feature-not-implemented">
+          <div class="drawer-item-content"><i class="fas fa-headset"></i><span>Support</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="drawer-item drawer-logout-btn">
+          <div class="drawer-item-content"><i class="fas fa-sign-out-alt"></i><span>Logout</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <div class="drawer-item app-share-btn">
+        <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { setTheme, getCurrentTheme } from './source/utils/theme-switcher.js';
+  import { fetchUserById } from './source/utils/data-manager.js';
+  import { formatPhoneNumberWithSpace } from './source/utils/formatters.js';
+  import { showToast } from './source/utils/toast.js';
+  import { AuthService } from './source/firebase/auth/auth.js'; 
+  import { viewManager } from './source/main.js';
+  import { getDeferredPrompt, initializePwaInstall } from './source/utils/pwa-manager.js';
+
+  /**
+   * Checks if the app is installable and updates the visibility of all install buttons in the drawer.
+   */
+  function manageInstallButtonVisibility() {
+    const isInstallable = !!getDeferredPrompt();
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    const installButtons = document.querySelectorAll('.drawer-install-btn');
+
+    if (isInstallable && !isInstalled) {
+      installButtons.forEach(btn => btn.classList.remove('hidden'));
+    } else {
+      installButtons.forEach(btn => btn.classList.add('hidden'));
+    }
+  }
+
+  /**
+   * Updates the entire drawer UI based on the current user's role.
+   * It fetches user data and displays the correct view (Guest, User, Merchant, etc.).
+   * @param {object} state - The current state from the ViewManager.
+   * @param {string} state.role - The current user role.
+   */
+  async function updateDrawerUI({ role }) {
+    console.log("Drawer: updateDrawerUI called with role:", role);
+    const userType = role;
+    const userId = localStorage.getItem('currentUserId');
+
+    // Get all drawer views
+    const guestView = document.getElementById('drawer-guest');
+    const userView = document.getElementById('drawer-user');
+    const merchantView = document.getElementById('drawer-merchant');
+    const adminView = document.getElementById('drawer-admin');
+
+    // Hide all views first to ensure a clean state
+    guestView.classList.add('hidden');
+    userView.classList.add('hidden');
+    merchantView.classList.add('hidden');
+    adminView.classList.add('hidden');
+
+    if (userType === 'guest' || !userId) {
+      guestView.classList.remove('hidden');
+      
+      // Get the current hour in Indian Standard Time (IST) for accurate greetings
+      const now = new Date();
+      const options = { timeZone: 'Asia/Kolkata', hour: 'numeric', hour12: false };
+      const hour = parseInt(new Intl.DateTimeFormat('en-IN', options).format(now), 10);
+
+      const greetingEl = document.getElementById('guest-greeting');
+      if (greetingEl) {
+        if (hour < 12) greetingEl.textContent = 'Good Morning 👋';
+        else if (hour < 17) greetingEl.textContent = 'Good Afternoon 👋'; // Adjusted for typical Indian afternoon
+        else greetingEl.textContent = 'Good Evening 👋';
+      }
+    } else {
+      // This logic handles all logged-in users (user, merchant, super-admin)
+      let userData = null; // Initialize userData to null
+      try {
+        // Attempt to fetch user data. This might fail if not authenticated (e.g., using dev switcher after logout).
+        userData = await fetchUserById(userId);
+      } catch (error) {
+        console.error(`Drawer: Failed to fetch user data for ID ${userId}. This can happen if you are not logged in and Firestore rules require authentication.`, error);
+        // userData remains null, and the UI will gracefully use fallback values below.
+      }
+      
+      // A helper function to populate the user info sections
+      const populateUserInfo = (prefix) => {
+        const avatarEl = document.getElementById(`drawer-${prefix}-avatar`);
+        const nameEl = document.getElementById(`drawer-${prefix}-name`);
+        const emailEl = document.getElementById(`drawer-${prefix}-email`);
+        const phoneEl = document.getElementById(`drawer-${prefix}-phone`);
+
+        // Updated to use the new user schema
+        if (avatarEl) avatarEl.style.backgroundImage = `url('${userData?.info?.avatar || '../../assets/logos/app-logo.png'}')`;
+                if (nameEl) nameEl.textContent = userData?.info?.nickName || userData?.info?.fullName || 'Apna User';
+        if (emailEl) emailEl.textContent = userData?.info?.email || 'No email provided';
+        if (phoneEl) {
+            const formattedPhone = formatPhoneNumberWithSpace(userData?.info?.phone);
+            phoneEl.textContent = formattedPhone || 'No phone number provided';
+        }
+      };
+
+      // --- Refactored View Switching Logic ---
+      // This data-driven approach is cleaner and more scalable than a long if-else chain.
+      const roleToViewMap = {
+        'user': userView,
+        'merchant': merchantView,
+        'admin': adminView
+      };
+
+      const viewToShow = roleToViewMap[userType];
+
+      if (viewToShow) {
+        viewToShow.classList.remove('hidden');
+        populateUserInfo(userType); // The prefix is the same as the userType/role.
+      } else {
+        // Fallback to guest view if the role is unknown or doesn't have a specific drawer.
+        guestView.classList.remove('hidden');
+      }
+    }
+
+    // After updating the main drawer view, always check and manage the install button visibility.
+    manageInstallButtonVisibility();
+  }
+
+  // Drawer open/close logic
+  const drawer = document.getElementById('app-drawer');
+  const overlay = document.getElementById('drawerOverlay');
+
+  function toggleDrawer() {
+    drawer.classList.toggle('open');
+    overlay.classList.toggle('visible');
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('visible');
+  }
+  overlay.addEventListener('click', closeDrawer);
+
+  // Listen for the request from the header to toggle the drawer
+  window.addEventListener('toggleDrawerRequest', toggleDrawer);
+
+  // --- Auth Modal Triggers ---
+  // This function dispatches an event to request the auth modal.
+  function requestAuth(formType) {
+    sessionStorage.setItem('initialAuthTab', formType); // Use sessionStorage to reliably set the initial tab
+    viewManager.switchView('guest', 'account');
+    closeDrawer();
+  }
+
+  // Guest: Login button
+  document.getElementById('drawer-login-btn')?.addEventListener('click', () => requestAuth('login'));
+  // Guest: Sign Up button
+  document.getElementById('drawer-signup-btn')?.addEventListener('click', () => requestAuth('register'));
+
+  // Logout logic (sabhi roles ke liye)
+  function logout() {
+    showToast('logout');
+
+    // Directly tell the viewManager to handle the role change to 'guest'.
+    // The viewManager will handle clearing localStorage and updating all subscribers.
+    viewManager.handleRoleChange('guest');
+    
+    // Close the drawer
+    closeDrawer();
+  }
+  document.querySelectorAll('.drawer-logout-btn').forEach(btn => {
+    btn.addEventListener('click', logout);
+  });
+
+  // --- Dev Quick Actions for Admin ---
+  document.getElementById('dev-clear-storage')?.addEventListener('click', () => {
+    if (confirm('Are you sure you want to clear all local and session storage? This will log you out.')) {
+      localStorage.clear();
+      sessionStorage.clear();
+      location.reload();
+    }
+  });
+
+  document.getElementById('dev-force-reload')?.addEventListener('click', () => {
+    location.reload(true);
+  });
+
+  document.getElementById('dev-test-toast')?.addEventListener('click', () => {
+    // Use the imported showToast function for consistency
+    showToast('info', 'This is a test toast! 🚀', 3000);
+    closeDrawer();
+  });
+
+  // --- "Coming Soon" Feature Toasts ---
+  // This adds a listener to all drawer items that are not yet implemented.
+  // It provides user feedback instead of the button doing nothing.
+  function setupComingSoonListeners() {
+    document.querySelectorAll('.feature-not-implemented').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default action, especially for <a> tags
+        e.stopPropagation(); // Stop the event from bubbling up
+        showToast('info', 'New festure arrival soon ✨', 3000);
+        closeDrawer();
+      });
+    });
+  }
+  // Call this function once the DOM is ready.
+  // It's safe to call it here as the script runs after the HTML.
+  setupComingSoonListeners()
+
+  // --- Web Share API for the "Share App" button ---
+  // This modern PWA feature provides a native sharing experience.
+  function setupShareButton() {
+    const shareButtons = document.querySelectorAll('.app-share-btn');
+    
+    shareButtons.forEach(button => {
+      // Check if the Web Share API is supported by the browser
+      if (navigator.share) {
+        button.addEventListener('click', async () => {
+          try {
+            await navigator.share({
+              title: 'Apna Store - Local Shopping',
+              text: 'Check out Apna Store, the best app for local shopping!',
+              url: window.location.origin, // Shares the main URL of the app
+            });
+            console.log('App shared successfully!');
+          } catch (error) {
+            // Show a toast only if the error is not an AbortError (user cancelled the share)
+            if (error.name !== 'AbortError') {
+              showToast('error', 'Could not share the app.');
+            }
+          }
+          closeDrawer(); // Close the drawer after the share action
+        });
+      }
+    });
+  }
+  setupShareButton();
+
+  // --- Drawer Navigation Logic ---
+  // This handles clicks on any drawer item that has data-role and data-path attributes.
+  function setupDrawerNavigation() {
+    const drawerElement = document.getElementById('app-drawer');
+    if (!drawerElement) return;
+
+    drawerElement.addEventListener('click', (e) => {
+      // Find the closest ancestor that is a drawer-item with the required data attributes
+      const navItem = e.target.closest('.drawer-item[data-role][data-path]');
+      if (navItem) {
+        e.preventDefault(); // Prevent default action for <a> tags
+        const role = navItem.dataset.role;
+        const viewId = navItem.dataset.path;
+        
+        // Tell the view manager to switch views
+        viewManager.switchView(role, viewId);
+        closeDrawer(); // Close the drawer after navigation
+      }
+    });
+  }
+  setupDrawerNavigation();
+
+  // --- Theme Toggle Logic ---
+  // This logic needs to run for all drawers (guest, user, etc.)
+  function setupThemeToggles() {
+    const currentTheme = getCurrentTheme();
+    const checkboxes = document.querySelectorAll('.theme-toggle-checkbox');
+
+    checkboxes.forEach(checkbox => {
+      // Set initial state of the checkbox
+      checkbox.checked = currentTheme === 'dark';
+
+      // Add event listener
+      checkbox.addEventListener('change', () => {
+        const newTheme = checkbox.checked ? 'dark' : 'light';
+        setTheme(newTheme);
+      });
+    });
+
+    // Also, listen for theme changes from other sources to keep all toggles in sync.
+    window.addEventListener('themeChanged', (event) => {
+      const theme = event.detail.theme;
+      checkboxes.forEach(checkbox => { checkbox.checked = theme === 'dark'; });
+    });
+  }
+  setupThemeToggles();
+
+  // --- PWA Install Button Management ---
+  // Listen for the events from the PWA manager to update button visibility in real-time.
+  window.addEventListener('pwaInstallReady', manageInstallButtonVisibility);
+  window.addEventListener('pwaAlreadyInstalled', manageInstallButtonVisibility);
+  // Initialize the PWA install logic which sets up the click handlers for the buttons.
+  initializePwaInstall();
+
+  // Subscribe to the viewManager for state changes. This is the single source of truth.
+  // It will provide the initial state immediately and all subsequent state changes.
+  viewManager.subscribe(updateDrawerUI);
+  console.log("✅ Drawer: Subscribed to ViewManager for state updates.");
+</script>

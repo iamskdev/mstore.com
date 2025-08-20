@@ -1,0 +1,38 @@
+.explore-page {
+  padding: 16px;
+  width: 100%;
+  height: 100%;
+}
+
+.explore-page .section-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#explore-title {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--text-primary);
+}
+
+#item-count {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Re-use the product grid styles from user-home.css or define them here */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+/* Placeholder for when no items are found */
+.no-items-placeholder {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  grid-column: 1 / -1; /* Span across all grid columns */
+}

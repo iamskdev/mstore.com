@@ -1,0 +1,74 @@
+<!-- File: /source/modules/consumer/pages/user-home.html -->
+<div class="user-home-page">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 id="greetingText">Welcome!</h1>
+      <p class="hero-subtext">Your daily specials are ready</p>
+    </div>
+    <div class="hero-avatar">
+      <!-- Avatar will be set by user-home.js -->
+      <img src= './localstore/images/users/vivek.jpg' alt="User" class="user-avatar" id="user-avatar-img">
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <div class="action-card" data-view-target="explore">
+      <div class="action-icon" style="background: #e3f2fd;">
+        <i class="fas fa-store"></i>
+      </div>
+      <span>Shop Now</span>
+    </div>
+    <div class="action-card" data-view-target="cart"> <!-- Assuming orders are in cart/account view -->
+      <div class="action-icon" style="background: #e8f5e9;">
+        <i class="fas fa-box-open"></i>
+      </div>
+      <span>My Orders</span>
+      <div class="order-badge">2</div>
+    </div>
+    <div class="action-card" data-view-target="saved">
+      <div class="action-icon" style="background: #fce4ec;">
+        <i class="fas fa-heart"></i>
+      </div>
+      <span>Wishlist</span>
+    </div>
+    <div class="action-card" data-view-target="explore"> <!-- Assuming offers are in explore view -->
+      <div class="action-icon" style="background: #fff8e1;">
+        <i class="fas fa-tag"></i>
+      </div>
+      <span>Offers</span>
+      <div class="offer-badge">New</div>
+    </div>
+  </div>
+
+  <!-- Special Offers Banner -->
+  <div class="offer-banner">
+    <div class="offer-content">
+      <h3>Weekend Special!</h3>
+      <p>20% off on all snacks</p>
+      <button class="offer-button" data-view-target="explore">Shop Now</button>
+    </div>
+    <img src="./localstore/images/items/kurkure.jpg" alt="Special Offer" class="offer-image">
+  </div>
+
+  <!-- Recommended Products -->
+  <div class="section-header">
+    <h2>Recommended For You</h2>
+    <a href="#" class="see-all" data-view-target="explore">See All</a>
+  </div>
+  
+  <div id="recommended-products-grid" class="products-grid">
+    <!-- Skeletons will be injected here by JS -->
+  </div>
+
+  <!-- Services Section -->
+  <div class="section-header">
+    <h2>Popular Services</h2>
+    <a href="#" class="see-all" data-view-target="explore">See All</a>
+  </div>
+  
+  <div id="popular-services-grid" class="services-grid">
+    <!-- Skeletons will be injected here by JS -->
+  </div>
+</div>

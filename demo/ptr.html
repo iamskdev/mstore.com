@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pull to Refresh with Spinner</title>
+
+  <!-- Google Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #f9fafb;
+      height: 200vh;
+    }
+
+    #pullToRefresh {
+      position: fixed;
+      top: -60px;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: top 0.3s ease;
+      z-index: 1000;
+    }
+
+    #pullToRefresh .material-icons {
+      font-size: 36px;
+      color: #2563eb;
+      transition: transform 0.25s ease-out;
+    }
+
+    /* Spinner animation */
+    .spinning {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="pullToRefresh">
+    <!-- Arrow icon -->
+    <span class="material-icons" id="arrowIcon">refresh</span>
+    <!-- Spinner icon (hidden by default) -->
+    <span class="material-icons" id="spinnerIcon" style="display:none;">autorenew</span>
+  </div>
+
+  <div id="content">
+    <h1>Pull to Refresh Demo</h1>
+    <p>खींचो 👉 arrow दिखेगा, छोड़ते ही arrow गायब होकर smooth spinner आ जाएगा।</p>
+    <p>यह Chrome जैसा effect देगा।</p>
+    <p>Scroll down for content...</p>
+  </div>
+
+  <script>
+    const ptr = document.getElementById("pullToRefresh");
+    const arrow = document.getElementById("arrowIcon");
+    const spinner = document.getElementById("spinnerIcon");
+
+    let startY = 0;
+    let isPulling = false;
+
+    window.addEventListener("touchstart", e => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        isPulling = true;
+      }
+    });
+
+    window.addEventListener("touchmove", e => {
+      if (!isPulling) return;
+      let currentY = e.touches[0].clientY;
+      let diff = currentY - startY;
+
+      if (diff > 0) {
+        let pull = Math.min(diff, 120);
+        ptr.style.top = (pull - 60) + "px";
+
+        // Rotate arrow only (spinner hidden)
+        let rotation = Math.min(pull * 1.5, 180);
+        arrow.style.transform = `rotate(${rotation}deg)`;
+      }
+    });
+
+    window.addEventListener("touchend", () => {
+      if (!isPulling) return;
+      isPulling = false;
+
+      if (parseInt(ptr.style.top) > 30) {
+        ptr.style.top = "0px";
+
+        // Switch arrow -> spinner
+        arrow.style.display = "none";
+        spinner.style.display = "inline-block";
+        spinner.classList.add("spinning");
+
+        // Simulate loading
+        setTimeout(() => {
+          location.reload(); // Or fetch new data
+        }, 1500);
+
+      } else {
+        ptr.style.top = "-60px";
+        arrow.style.transform = "rotate(0deg)";
+      }
+    });
+  </script>
+</body>
+</html>

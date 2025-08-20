@@ -1,0 +1,547 @@
+/* Base Styles */
+/* Add horizontal padding to the main content sections */
+.container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+#item-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+}
+
+.main-image-container {
+  aspect-ratio: 1/1;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--border-color); /* Cleaned up border-radius */
+  box-shadow: 0 0 10px var(--accent-primary-translucent);
+  overflow: hidden;
+}
+
+.main-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+#item-info {
+  /* Use flexbox for consistent spacing on mobile too */
+  border-top: 1px;
+  flex-direction: column;
+  gap: 0.4rem; /* Consistent gap between all direct children */
+  text-align: left;
+  align-self: auto;
+  padding-top: 0rem; /* Add padding to maintain space */
+  border-top: 1px solid var(--border-color); /* Add a divider above the product name */
+  padding-top: 0.3rem; /* Adjust padding below the divider */
+  margin-bottom: 1rem;
+  /* Padding is now handled by the parent .container for consistent alignment */
+  line-height: 1.5; /* Even more compact line spacing */
+  display: flex;
+}
+
+.thumbnail-container img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+}
+
+.thumbnail-container {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  margin-bottom: 0rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  padding: 0.5rem 0;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.thumbnail-container::-webkit-scrollbar {
+  height: 3px;
+}
+.thumbnail-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.main-image-with-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#item-info h2 {
+  font-size: 1.5rem;
+  margin: 0; /* Rely on parent's gap for spacing */
+  color: var(--text-primary);
+  line-height: 1.3; /* Tighter line height for a compact look */
+}
+
+#item-info p {
+  margin: 0; /* Rely on parent's gap for spacing */
+}
+
+/* Ensure text in the info section is always left-aligned for readability */
+
+.description {
+  line-height: 1.4;
+}
+
+.price-unit {
+  font-size: 1.3rem;
+  line-height: 0.5;
+  color: var(--text-primary); /* Use primary text color for emphasis, similar to card palette */
+  font-weight: 600; /* Slightly less bold than default h2 bold */
+}
+
+#item-unit-label {
+  font-weight: normal;
+  color: var(--text-tertiary); /* A dimmer color for the unit label */
+  font-size: 1rem; /* Adjust size to be slightly smaller than price */
+}
+
+#item-stock-status {
+  font-size: 1rem;
+  font-weight: bold;
+}
+#item-stock-status.in { color: var(--accent-secondary); }
+#item-stock-status.out { color: var(--error-color); }
+
+.description-label {
+  font-weight: bold;
+  margin-top: 0.8rem; /* Add a bit more space before the description section */
+  font-size: 1rem;
+}
+
+#item-description-text {
+  color: var(--text-tertiary); /* De-emphasize to match card's description color */
+  line-height: 1.5;
+  font-size: 0.95rem;
+  max-height: 120px; /* Makes description scrollable on mobile */
+  overflow-y: auto; /* Enables vertical scrolling */
+  border-top: 1px solid var(--border-color); /* Visual separator */
+  padding-top: 0.5rem; /* Tighter spacing */
+  margin-top: 0.5rem;  /* Tighter spacing */
+  padding-right: 5px; /* Space for scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+#item-description-text::-webkit-scrollbar {
+  width: 4px;
+}
+#item-description-text::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+/* Main action buttons container */
+.item-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem; /* Space above buttons */
+}
+
+.action-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+/* Primary "Add to Cart" button */
+.add-to-cart-btn {
+  flex-grow: 1; /* Take up most of the space */
+  background-color: var(--accent-primary);
+  color: var(--accent-text);
+}
+.add-to-cart-btn:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+/* Style for the "Notify Me" button when a notification is active */
+.add-to-cart-btn.notifying {
+  background-color: var(--accent-secondary);
+  color: var(--accent-text);
+}
+.add-to-cart-btn.notifying:hover {
+  background-color: var(--accent-secondary-hover);
+}
+
+/* Secondary icon-only button (Save) */
+.icon-btn {
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 0.8rem;
+  width: 50px; /* Square button */
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+.icon-btn:hover {
+  background-color: var(--border-color);
+}
+.icon-btn i {
+  font-size: 1.2rem;
+}
+
+/* Add a span for the text inside the save button */
+.save-btn-text {
+  display: none; /* Hide text by default, only show icon */
+}
+
+/* Style for the saved state */
+.save-item-btn.saved {
+  background-color: #ffe0e6; /* Light pink */
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+.save-item-btn.saved i {
+  font-weight: 900; /* Makes the heart solid (fas) */
+}
+
+/* Container for less important actions */
+.item-secondary-actions {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+.secondary-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.secondary-btn:hover {
+  color: var(--accent-primary);
+}
+
+/* ======================== */
+/* Related Items Section header */
+/* ======================== */
+.related-section > h3 {
+  text-align: left;
+  margin: 0 0.5rem 0.5rem 0.5rem;
+  padding-bottom: 0.5rem; /* Space between text and border */
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+
+.related-section {
+  margin-bottom: -1.6rem;
+} 
+.thumbnail-img.active {
+  border: 2px solid var(--accent-primary);
+  box-shadow: 0 0 8px var(--accent-primary-translucent-heavy);
+}
+
+/* =========================== */
+/* 🌙 DARK MODE ENHANCEMENTS   */
+/* =========================== */
+.dark-mode .price-unit {
+  /* In dark mode, price color should not be red, but primary text color */
+  color: var(--text-primary); 
+}
+
+.dark-mode .description-label {
+  color: var(--text-secondary); /* Make "Description:" label less prominent */
+}
+
+.dark-mode #item-description-text {
+  /* Make description text readable but less prominent than titles */
+  color: var(--text-secondary); /* Matches card description color */
+}
+
+.dark-mode .save-item-btn.saved {
+    background-color: #4d1a24;
+    border-color: var(--error-color);
+}
+
+/* Landscape or Tablet View */
+@media screen and (min-width: 600px) and (max-width: 1023px) {
+  .container#item-details-container {
+    background: var(--bg-secondary);
+    border-radius: 0;
+    height: auto; /* Let content define height */
+    padding: 1rem;
+    box-shadow: 0 2px 8px var(--shadow-color);
+  }
+
+  #item-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    gap: 1.5rem; /* Standardized gap */
+  }
+
+  .image-thumb-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+
+  .main-image-container {
+    max-width: 300px;
+    min-width: 250px; /* Adjusted for better fit */
+    aspect-ratio: 1/1;
+  }
+
+  .main-image-container img {
+    width: 100%;
+    object-fit: cover;
+    margin-top: 0;
+  }
+
+  .thumbnail-container {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    gap: 5px;
+    height: 100%; /* Match the height of the main image container */
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 75px;
+    /* FIX: Reset mobile padding (top/bottom) and add padding only for the scrollbar */
+    padding: 0 10px 0 0;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+  }
+
+  .thumbnail-container::-webkit-scrollbar {
+    width: 4px;
+  }
+  .thumbnail-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+
+  .thumbnail-container img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+  }
+
+  #item-info {
+    min-width: 280px;
+    align-self: flex-start;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  #item-description-text {
+    color: var(--text-tertiary);
+    line-height: 1.5;
+    font-size: 0.95rem;
+    max-height: 50px;
+    overflow-y: auto;
+    border-top: 1px solid var(--border-color);
+    padding-right: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+  }
+}
+/* End Landscape or Tablet View */
+
+
+/* Full Desktop View */
+@media screen and (min-width: 1024px) {
+  /* Give the main content area a "card" look on desktop for better visual separation */
+  .container#item-details-container {
+    background: var(--bg-secondary);
+    border-radius: 8px; /* Add a slight radius for a card-like feel */
+    height: auto;
+    padding: 1.5rem; /* More padding on desktop */
+    margin: 1rem auto; /* Center the container */
+    max-width: 1200px; /* Set a max-width for very large screens */
+    box-shadow: 0 2px 8px var(--shadow-color);
+  }
+
+  #item-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; /* Align items to the top */
+    flex-wrap: nowrap;
+    gap: 1.5rem; /* Standardized gap */
+    margin: 0; /* Remove extra margins, padding is on the parent */
+  }
+
+  .image-thumb-wrapper {
+    display: flex;
+    flex-direction: row; /* Ensure it's row */
+    gap: 1rem; 
+    flex-wrap: nowrap;
+    align-items: stretch;
+}
+  .main-image-container {
+    width: 500px;
+    max-width: 500px;
+    min-width: 500px;
+    aspect-ratio: 1/1;
+  }
+  .main-image-container img {
+    width: 100%;
+    object-fit: cover;
+  }
+
+.thumbnail-container {
+  display: flex;
+  flex-shrink: 0; /* Prevent thumbnails from shrinking */
+  flex-direction: column;
+  gap: 5px; /* Increased gap */
+  height: 500px; /* Match main image height */
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100px; /* Slightly wider thumbnails */
+  margin-top: 0;
+  padding-top: 0rem;
+  align-self: flex-start;
+  padding-right: 10px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+
+.thumbnail-container::-webkit-scrollbar {
+  width: 4px;
+}
+.thumbnail-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+  .thumbnail-container img {
+    width: 100%; /* Fill the container */
+    height: auto;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+  }
+
+#item-info {
+  flex: 1 1 0; /* Allow info to take remaining space, proper flex shorthand */
+  min-width: 280px;
+  align-self: flex-start;
+  /* Padding is now handled by the parent .container for consistent alignment */
+  line-height: auto; /* Even more compact line spacing */
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  gap: 1rem; /* Tighter gap, closer to item-card */
+}
+#item-description-text {
+  color: var(--text-tertiary); /* De-emphasize to match card's description color */
+  line-height: 1.5;
+  font-size: 0.95rem;
+  min-height: 160px; /* Makes description scrollable on mobile */
+  overflow-y: auto; /* Enables vertical scrolling */
+  border-top: 1px solid var(--border-color); /* Visual separator */
+  
+  padding-right: 5px; /* Space for scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+}
+/* ======================== */
+
+#image-zoom-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  /* touch-action is managed by image-zoom.js for dynamic control */
+}
+
+#image-zoom-container img {
+  transform-origin: center center;
+  transition: transform 0.2s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- Desktop Hover Zoom Styles --- */
+/* These styles only apply on desktop where a hover is possible */
+@media screen and (min-width: 600px) {
+  #item-left {
+    /* New positioning context for the result box */
+    position: relative;
+  }
+
+  #image-zoom-container {
+    /* This is needed for positioning the lens */
+    position: relative;
+    cursor: crosshair;
+  }
+
+  #image-zoom-lens {
+    position: absolute;
+    display: none; /* Hidden by default */
+    border: 2px solid var(--accent-primary);
+    background-color: rgba(68, 138, 255, 0.25); /* Semi-transparent blue */
+    pointer-events: none; /* So it doesn't interfere with mouse events on the image */
+    z-index: 10;
+  }
+
+  #zoom-result-box {
+    display: none; /* Hidden by default */
+    position: absolute;
+    left: calc(100% + 1.5rem); /* Position it right next to the image, accounting for the gap */
+    top: 0;
+    /* Width and height are now set dynamically by cursor-zoom.js */
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-secondary); /* Fallback color while image loads */
+  }
+}
+/* ======================== */

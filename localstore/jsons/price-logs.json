@@ -1,0 +1,36 @@
+[
+  {
+    "meta": {
+      "priceLogId": "PLG000000000001",
+      "version": 1,
+      "currency": "INR",
+      "links": {
+        "itemId": "ITM000000000001",
+        "merchantId": "MRC000000000001"
+      }
+    },
+    "price": {
+      "mrp": 14,
+      "costPrice": 9,
+      "sellingPrice": 11
+    },
+    "changeContext": {
+      "changeType": "manual_update",
+      "reason": "Festival discount",
+      "notes": "Special Diwali offer applied"
+    },
+    "audit": {
+      "changedAt": "2025-08-05T14:30:00Z",
+      "changedBy": {
+        "userId": "MRC000000000001",
+        "role": "merchant",
+        "name": "Rajesh Kumar"
+      },
+      "previousPrice": {
+        "mrp": 12,
+        "costPrice": 8,
+        "sellingPrice": 10
+      }
+    }
+  }
+]

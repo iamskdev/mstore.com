@@ -1,0 +1,137 @@
+================================================
+📋 Future Files & Configuration Checklist 📋
+================================================
+Last Updated: 18/07/2025, 15:30 IST
+
+This document lists the necessary files and configurations required to implement all planned features for the Apna Store application.
+
+---
+
+### ⚙️ 1. Global & Core System
+
+-   **`settings.json`**
+    -   **Location:** `/firebase/data/settings.json`
+    -   **Purpose:** To store global application settings that can be fetched from a single place.
+    -   **Example Content:** `{ "currency": "INR", "taxRate": 0.18, "featuredShopId": "shop_1", "allowSignups": true }`
+
+-   **`units.json`**
+    -   **Location:** `/firebase/data/units.json`
+    -   **Purpose:** To define standard units for products (e.g., kg, g, litre, piece). This will be used in the admin panel for consistency.
+    -   **Example Content:** `[ { "id": "unit_kg", "name": "Kilogram", "symbol": "kg" }, { "id": "unit_pc", "name": "Piece", "symbol": "pc" } ]`
+
+-   **`language-switcher.js`**
+    -   **Location:** `/shared/utils/language-switcher.js`
+    -   **Purpose:** To handle language changes (EN/HI) across the app by loading the correct JSON from `/shared/langs/`.
+
+-   **`api-service.js`**
+    -   **Location:** `/shared/utils/api-service.js`
+    -   **Purpose:** To replace `data-service.js` for handling all real-time communication with the Firebase backend (Firestore).
+
+---
+
+### 👤 2. User Account & Profile Management
+
+-   **`auth.js`**
+    -   **Location:** `/shared/utils/auth/auth.js`
+    -   **Purpose:** A dedicated module for all Firebase Authentication logic (login, logout, signup, password reset, checking user state).
+
+-   **`forgot-password.html` & `forgot-password.js`**
+    -   **Location:** `/public/pages/` & `/public/scripts/`
+    -   **Purpose:** A standalone page for users to reset their password.
+
+-   **`profile.html` & `profile.js`**
+    -   **Location:** `/public/pages/` & `/public/scripts/`
+    -   **Purpose:** A new standalone page for users to view and edit their profile information (name, photo).
+
+-   **`my-orders.html` & `my-orders.js`**
+    -   **Location:** `/public/pages/` & `/public/scripts/`
+    -   **Purpose:** A page for users to view their order history.
+
+-   **`manage-addresses.html` & `manage-addresses.js`**
+    -   **Location:** `/public/pages/` & `/public/scripts/`
+    -   **Purpose:** A page for users to add, edit, and delete their delivery addresses.
+
+---
+
+### 🛒 3. E-commerce & Checkout Flow
+
+-   **`cart-view.js`**
+    -   **Location:** `/public/scripts/views/cart-view.js`
+    -   **Purpose:** To be enhanced with quantity controls, item removal, and a dynamic total calculation.
+
+-   **`checkout.html` & `checkout.js`**
+    -   **Location:** `/public/pages/` & `/public/scripts/`
+    -   **Purpose:** A multi-step page for the user to complete their purchase (select address, review order, confirm).
+
+-   **`order-confirmation.html` & `order-confirmation.js`**
+    -   **Location:** `/public/pages/` & `/public/scripts/`
+    -   **Purpose:** A page to show the user that their order has been successfully placed.
+
+-   **`orders.json`**
+    -   **Location:** `/firebase/data/orders.json`
+    -   **Purpose:** Mock data for customer orders, which will later become a Firestore collection.
+
+---
+
+### 🧑‍💼 4. Admin Panel (Shop Management)
+
+-   **`admin.html` & `admin-main.js`**
+    -   **Location:** `/admin/` & `/admin/scripts/`
+    -   **Purpose:** The main SPA entry point for the entire admin panel.
+
+#### 4.1 Admin Views (Tabs)
+-   **`dashboard-view.js`**: `/admin/scripts/views/dashboard-view.js` (Sales summary, quick stats)
+-   **`inventory-view.js`**: `/admin/scripts/views/inventory-view.js` (List, add, edit items)
+-   **`orders-view.js`**: `/admin/scripts/views/orders-view.js` (View and manage customer orders)
+-   **`customers-view.js`**: `/admin/scripts/views/customers-view.js` (View customer list)
+-   **`analytics-view.js`**: `/admin/scripts/views/analytics-view.js` (Detailed reports)
+
+#### 4.2 Admin Standalone Pages & Components
+-   **`add-edit-item.html` & `add-edit-item.js`**: `/admin/pages/` & `/admin/scripts/` (Form for adding/editing a product)
+-   **`shop-profile.html` & `shop-profile.js`**: `/admin/pages/` & `/admin/scripts/` (Edit shop name, logo, address)
+-   **`staff-management.html` & `staff-management.js`**: `/admin/pages/` & `/admin/scripts/`
+-   **`table-component/`**: `/shared/components/table/` (Reusable table for admin panel)
+
+---
+
+### 💰 5. Sales, Purchases & Reports (Admin) - "Vyapar" Features
+
+-   **`suppliers.json` & `purchases.json`**
+    -   **Location:** `/firebase/data/`
+    -   **Purpose:** Mock data for suppliers and stock purchases.
+
+-   **`suppliers-view.js` & `purchases-view.js`**
+    -   **Location:** `/admin/scripts/views/`
+    -   **Purpose:** To manage suppliers and log stock purchases.
+
+-   **`reports-generator.js`**
+    -   **Location:** `/admin/utils/reports-generator.js`
+    -   **Purpose:** Utility to create PDF/CSV reports for daily sales, stock levels, etc.
+
+-   **`daily-book.html` & `daily-book.js`**
+    -   **Location:** `/admin/pages/` & `/admin/scripts/`
+    -   **Purpose:** A page to view all daily transactions (sales, purchases, expenses) in a ledger format.
+
+-   **`expenses.json` & `expenses-view.js`**
+    -   **Location:** `/firebase/data/` & `/admin/scripts/views/`
+    -   **Purpose:** To log and manage daily business expenses (rent, electricity, etc.).
+
+---
+
+### 🚀 6. Advanced PWA & UI/UX
+
+-   **`notifications.js`**
+    -   **Location:** `/shared/utils/notifications.js`
+    -   **Purpose:** A module to handle Firebase Cloud Messaging (FCM) for push notifications (e.g., "Notify Me" feature).
+
+-   **`service-worker.js`**
+    -   **Location:** `/service-worker.js`
+    -   **Purpose:** (Already exists) To be enhanced with offline caching strategies for data and images.
+
+-   **`loading-skeleton/`**
+    -   **Location:** `/shared/components/loading-skeleton/`
+    -   **Purpose:** A component to show placeholder UI while data is being fetched, improving perceived performance.
+
+-   **`image-uploader.js`**
+    -   **Location:** `/shared/utils/image-uploader.js`
+    -   **Purpose:** A helper function to handle image uploads to Cloud Storage for item images and profile pictures.
