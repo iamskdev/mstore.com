@@ -694,8 +694,7 @@ function initializePullToRefresh() {
 
   window.addEventListener("touchstart", e => {
     // Only activate if at the very top of the scrollable content
-    const mainContent = document.querySelector('.main-page-content');
-    if (mainContent && mainContent.scrollTop === 0) {
+    if (window.scrollY === 0) {
       startY = e.touches[0].clientY;
       isPulling = true;
       // Reset icons
@@ -712,25 +711,25 @@ function initializePullToRefresh() {
     let diff = currentY - startY;
 
     if (diff > 0) {
-      // Prevent default scroll behavior only when pulling down from top
-      e.preventDefault();
+      // Only prevent default scroll behavior and show PTR UI if pull distance exceeds a small threshold
+      if (diff > 10) { // A small threshold to differentiate from accidental scrolls
+        e.preventDefault();
+        let pull = Math.min(diff, 120); // Max pull distance
+        // Position PTR just below the header
+        ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight + pull}px`;
 
-      let pull = Math.min(diff, 120); // Max pull distance
-      // Position PTR just below the header
-      ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight + pull}px`;
+        // Rotate arrow based on pull distance
+        let rotation = Math.min(pull * 2, 180); // Rotate faster
+        arrow.style.transform = `rotate(${rotation}deg)`;
 
-      // Rotate arrow based on pull distance
-      let rotation = Math.min(pull * 2, 180); // Rotate faster
-      arrow.style.transform = `rotate(${rotation}deg)`;
-
-      // Show/hide arrow based on pull direction (for visual feedback)
-      if (diff > 0) {
-        arrow.style.display = "inline-block";
-        spinner.style.display = "none";
-      } else {
-        arrow.style.display = "none";
+        // Show/hide arrow based on pull direction (for visual feedback)
+        if (diff > 0) {
+          arrow.style.display = "inline-block";
+          spinner.style.display = "none";
+        } else {
+          arrow.style.display = "none";
+        }
       }
-
     } else {
       // If pulling up, hide PTR
       ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;

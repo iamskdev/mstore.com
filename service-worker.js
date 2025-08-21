@@ -1,5 +1,5 @@
 // --- Resilient Service Worker with Fallback Support ---
-const CACHE_NAME = 'APNA_STORE_CACHE_V7.1.6'; // Cache version updated for new path strategy
+const CACHE_NAME = 'APNA_STORE_CACHE_V7.1.7'; // Cache version updated for new path strategy
 const OFFLINE_PAGE = './source/common/pages/offline.html'; // Path from root
 const RUNTIME_CACHE = 'runtime-cache';
 const MAX_RUNTIME_CACHE_AGE = 24 * 60 * 60; // 24 hours in seconds
