@@ -112,7 +112,7 @@ async function populateGrid(gridId, itemType, cardCreator, limit = 4) {
 
     try {
         // 2. Fetch data
-        const { allItems } = await fetchAllItems();
+        const allItems = await fetchAllItems();
         const items = allItems.filter(item => item.type === itemType).slice(0, limit);
 
         // 3. Clear skeletons and populate real data

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="hi"> 
 <head>
-  <!-- Meta tags aura links waise hi rahenge -->
+  <!-- Set theme color for browser UI -->
   <meta charset="UTF-8"/>
   <!-- Dynamic Base URL for GitHub Pages (Adaptive) -->
   <base href="/apnastore.com/"> 
@@ -10,7 +10,6 @@
   <link rel="icon" href="./source/assets/logos/app-logo.png" type="image/jpeg">
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="./source/main.css" />
-
   <!-- Set theme color for browser UI -->
   <meta name="theme-color" id="theme-color-meta" content="#4361ee">
   <script>
@@ -29,42 +28,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
-<body id="main-body">
-  <div id="pullToRefresh">
+ </head>
+ <body id="main-body">
+ 
+ <!-- Full-screen Loader -->
+ <div class="full-screen-loader hidden">
+  <div class="spinner"></div>
+</div>
+
+<!-- Header Partial -->
+<header id="main-header-placeholder"></header>
+
+<!-- Drawer Partial -->
+<aside id="drawer-placeholder"></aside>  
+
+<div id="pullToRefresh">
     <!-- Arrow icon -->
     <span class="material-icons" id="arrowIcon">refresh</span>
     <!-- Spinner icon (hidden by default) -->
     <span class="material-icons" id="spinnerIcon" style="display:none;">autorenew</span>
   </div>
 
-  <!-- Toast notifications are now handled by a JS module and will be appended here dynamically. -->
-  <!-- No placeholder is needed. -->
+ 
+<!-- Page Main Content -->
+<main class="main-page-content">
 
-  <!-- 🌀 Full Screen Loader -->
-  <div id="full-screen-loader" class="full-screen-loader hidden">
-    <div class="spinner"></div>
-  </div>
-
-  <!-- 1. Header Partial -->
-<header id="main-header-placeholder"></header>
-  <!-- 3. Drawer Partial -->
-<aside id="drawer-placeholder"></aside>  
- <!-- 5. Bottom Navigation Partial (should be last for stacking context) -->
-<nav id="bottom-nav-placeholder"></nav>
-
-
-<!-- 8. Scripts -->
-  <!-- Use a modular script to keep the HTML clean -->
-<!-- 4. Page Main Content -->
-<main class="page-content">
-
-<!-- 🌟 Filter Bar Placeholder 🌟 -->
+<!-- Filter Bar Placeholder -->
 <div id="filter-bar-placeholder"></div>
 
-<!-- 🌟 Enhanced View Containers with State Management 🌟 -->
-<div class="spa-view-area">
-  
   <!-- Guest Views -->
   <div id="guest-home-view" class="page-view-area" data-view="home" data-role="guest"></div>
   <div id="guest-explore-view" class="page-view-area" data-view="explore" data-role="guest"></div>
@@ -84,32 +75,25 @@
   <div id="merchant-inventory-view" class="page-view-area" data-view="explore" data-role="merchant"></div>
   <div id="merchant-add-view" class="page-view-area" data-view="add" data-role="merchant"></div>
   <div id="merchant-analytics-view" class="page-view-area" data-view="analytics" data-role="merchant"></div>
-  <div id="merchant-account-view" class="page-view-area" data-view="account" data-role="merchant"></div>
+  <div id="merchant-account-view" class="page-view-area" data-view="account" data-role="merchant"></div></div>
 
-  <!-- Admin Views -->
-  <div id="admin-home-view" class="page-view-area" data-view="home" data-role="admin"></div>
-  <div id="admin-data-view" class="page-view-area" data-view="data" data-role="admin"></div>
-  <div id="admin-logs-view" class="page-view-area" data-view="logs" data-role="admin"></div>
-  <div id="admin-promo-view" class="page-view-area" data-view="promo" data-role="admin"></div>
-  <div id="admin-account-view" class="page-view-area" data-view="account" data-role="admin"></div>
-</div>
-</main>
-
-
-  <!-- 7. Dev Mode Switcher (should be last) -->
+  <!-- Dev Mode Switcher (should be last) -->
   <div id="role-switcher-placeholder"></div>
+
+ <!-- Bottom Navigation Partial (should be last for stacking context) -->
+<nav id="bottom-nav-placeholder"></nav>
+
+</main>
 
   <!-- 8. Scripts -->
   <!-- This single module is the main entry point for the application's logic. -->
   <!-- It handles loading all other necessary components and scripts in the correct order. -->
-<!-- Chart.js for data visualization -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script type="module">
   // ✅ Import critical modules at the top.
   import { APP_CONFIG } from './source/utils/app-config.js';
   import { initializePwaInstall, setDeferredPrompt, getDeferredPrompt } from './source/utils/pwa-manager.js';
     import './source/firebase/firebase-config.js';
-  import { loadSmartPartials } from './source/utils/partial-loader.js';
   // Import the main app initializer, but don't run it yet.
   import { initializeApp } from './source/main.js';
 
@@ -167,13 +151,8 @@
   }
 
 
-  // 2. Load all HTML partials.
-  loadSmartPartials()
-    .then(() => {
-      // 3. Partials are loaded. NOW we can initialize the app logic that depends on them.
-      console.log("✅ All partials loaded. Initializing main application script...");
-      return initializeApp(); // Call initializeApp and return its promise
-    })
+  // 2. Initialize the main application.
+  initializeApp()
     .then(() => {
       console.log("✅ Application initialized successfully.");
     })
