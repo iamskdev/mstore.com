@@ -25,5 +25,5 @@ export const APP_CONFIG = {
    * - 'logo': Shows the dynamic logo/avatar in the header.
    * - 'menu': Shows a static 3-line menu icon (hamburger menu).
    */
-  headerStyle: 'logo',
+  headerStyle: 'menu',
 };

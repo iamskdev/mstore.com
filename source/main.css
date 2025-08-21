@@ -137,6 +137,12 @@ html {
   /* Set box-sizing globally for more predictable layouts */
   box-sizing: border-box;
   height: 100%; /* Should fill the viewport */
+  font-family: 'Noto Sans', sans-serif;
+
+  background-color: var(--bg-primary);
+  overscroll-behavior-y: contain; /* Prevents browser pull-to-refresh */
+  /* Remove the default tap highlight color on mobile WebKit browsers for a cleaner native feel. */
+  -webkit-tap-highlight-color: transparent;  
 }
 
 *, *::before, *::after {
@@ -144,18 +150,6 @@ html {
   box-sizing: inherit;
 }
 
-body {
-  /* Flex properties for sticky footer layout */
-  display: flex;
-  flex-direction: column;
-  height: 100%; 
-  font-family: 'Noto Sans', sans-serif;
-  background-color: var(--bg-primary);
-  line-height: 1.6;
-  overscroll-behavior-y: contain; /* Prevents browser pull-to-refresh */
-  /* Remove the default tap highlight color on mobile WebKit browsers for a cleaner native feel. */
-  -webkit-tap-highlight-color: transparent;
-}
 
 
 .page-view-area {
@@ -165,6 +159,7 @@ body {
   width: 100%;
   left: 0;
   right: 0;
+  overflow: hidden; /* Prevents overflow issues */
   box-sizing: border-box;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -268,16 +263,18 @@ body {
   right: 0;
   height: 60px;
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* Align content to the bottom */
   justify-content: center;
+  padding-bottom: 10px; /* Add some padding from the bottom */
   transition: top 0.3s ease;
-  z-index: 1000;
+  z-index: 999;
 }
 
 #pullToRefresh .material-icons {
   font-size: 36px;
   color: #2563eb;
   transition: transform 0.25s ease-out;
+  transform: rotate(0deg); /* Initial state for arrow */
 }
 
 /* Spinner animation */
@@ -289,6 +286,7 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
 
 
 /* ======================== */

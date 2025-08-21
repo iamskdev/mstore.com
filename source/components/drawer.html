@@ -121,8 +121,10 @@
       color: var(--text-primary);
     }
 
-    .drawer-item:hover {
-      background-color: var(--bg-tertiary); /* Highlight on hover */
+    .drawer-item.active {
+      background-color: var(--accent-primary-translucent);
+      color: var(--accent-primary);
+      font-weight: 600;
     }
 
     .drawer-item-content {
@@ -575,8 +577,8 @@
    * @param {object} state - The current state from the ViewManager.
    * @param {string} state.role - The current user role.
    */
-  async function updateDrawerUI({ role }) {
-    console.log("Drawer: updateDrawerUI called with role:", role);
+  async function updateDrawerUI({ role, view }) {
+    console.log("Drawer: updateDrawerUI called with role:", role, "view:", view);
     const userType = role;
     const userId = localStorage.getItem('currentUserId');
 
@@ -653,6 +655,12 @@
       }
     }
 
+    // Highlight the active navigation item in the drawer
+    const navItems = document.querySelectorAll('.drawer-item[data-path]');
+    navItems.forEach(item => {
+      item.classList.toggle('active', item.dataset.path === view && item.dataset.role === role);
+    });
+
     // After updating the main drawer view, always check and manage the install button visibility.
     manageInstallButtonVisibility();
   }
@@ -689,11 +697,8 @@
 
   // Logout logic (sabhi roles ke liye)
   function logout() {
-    showToast('logout');
-
-    // Directly tell the viewManager to handle the role change to 'guest'.
-    // The viewManager will handle clearing localStorage and updating all subscribers.
-    viewManager.handleRoleChange('guest');
+    AuthService.handleLogout(); // Call the centralized logout handler
+    // The AuthService.handleLogout will now manage viewManager.handleRoleChange and showToast
     
     // Close the drawer
     closeDrawer();

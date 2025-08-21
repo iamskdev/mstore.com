@@ -1,12 +1,19 @@
 // --- Resilient Service Worker with Fallback Support ---
-const CACHE_NAME = 'APNA_STORE_CACHE_V7.1.5'; // Cache version updated for new path strategy
+const CACHE_NAME = 'APNA_STORE_CACHE_V7.1.6'; // Cache version updated for new path strategy
 const OFFLINE_PAGE = './source/common/pages/offline.html'; // Path from root
 const RUNTIME_CACHE = 'runtime-cache';
 const MAX_RUNTIME_CACHE_AGE = 24 * 60 * 60; // 24 hours in seconds
 
 // Import necessary configurations from other modules
-import { partialsMap } from './source/utils/partial-loader.js';
 import { viewConfig } from './source/utils/view-config.js';
+
+// Centralized configuration for all static partials.
+const partialsMap = {
+  'main-header-placeholder': { path: './source/components/header.html' },
+  'drawer-placeholder': { path: './source/components/drawer.html' },
+  'bottom-nav-placeholder': { path: './source/components/tab-nav.html' },
+  'role-switcher-placeholder': { path: './source/components/role-switcher.html', devOnly: true }
+};
 
 // Helper to normalize URLs by removing query parameters and hash.
 // This is crucial for caching assets that might have cache-busting parameters (e.g., ?v=timestamp).
@@ -40,7 +47,6 @@ const APP_SHELL_URLS_STATIC = [
   { url: './source/utils/filter-helper.js', priority: 3 },
   { url: './source/utils/footer-helper.js', priority: 3 },
   { url: './source/utils/formatters.js', priority: 3 },
-  { url: './source/utils/partial-loader.js', priority: 3 },
   { url: './source/utils/pwa-manager.js', priority: 3 },
   { url: './source/utils/theme-switcher.js', priority: 4 },
   { url: './source/utils/toast.js', priority: 3 },

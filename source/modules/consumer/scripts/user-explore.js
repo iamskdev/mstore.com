@@ -29,7 +29,7 @@ async function populateExploreView(filter = 'all') {
     for (let i = 0; i < 8; i++) {
         grid.appendChild(createSkeletonCard());
     }
-    titleEl.textContent = 'Loading...';
+    titleEl.textContent = 'User Panel';
     countEl.textContent = '';
 
     try {

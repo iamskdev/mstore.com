@@ -21,7 +21,8 @@ const viewConfig = {
       cssPath: './source/common/styles/guest-home.css',
       jsPath: './source/common/scripts/guest-home.js',
       showFilterBar: false, // No filter bar on the welcome page
-      embedFooter: true
+      embedFooter: true,
+      title: 'Home'
     },
     explore: {
       id: 'guest-explore-view',
@@ -29,15 +30,17 @@ const viewConfig = {
       path: './source/modules/consumer/pages/user-explore.html',
       cssPath: './source/modules/consumer/styles/user-explore.css',
       jsPath: './source/modules/consumer/scripts/user-explore.js',
-      showFilterBar: true
+      showFilterBar: true,
+      title: 'Explore'
     },
-    saved: { id: 'guest-saved-view', path: null },
-    cart: { id: 'guest-cart-view', path: null },
+    saved: { id: 'guest-saved-view', path: null, title: 'Saved' },
+    cart: { id: 'guest-cart-view', path: null, title: 'Cart' },
     account: {
       id: 'guest-account-view',
       path: './source/common/pages/guest-account.html',
       cssPath: './source/common/styles/guest-account.css',
-      jsPath: './source/common/scripts/guest-account.js'
+      jsPath: './source/common/scripts/guest-account.js',
+      title: 'Account'
     }
   },
   user: {
@@ -47,25 +50,27 @@ const viewConfig = {
       cssPath: './source/modules/consumer/styles/user-home.css',
       jsPath: './source/modules/consumer/scripts/user-home.js',
       showFilterBar: true,
-      embedFooter: true // Embed it directly into the view content
+      embedFooter: true, // Embed it directly into the view content
+      title: 'Home'
     },
     explore: {
       id: 'user-explore-view',
       path: './source/modules/consumer/pages/user-explore.html',
       cssPath: './source/modules/consumer/styles/user-explore.css',
       jsPath: './source/modules/consumer/scripts/user-explore.js',
-      showFilterBar: true
+      showFilterBar: true,
+      title: 'Explore'
     },
-    saved: { id: 'user-saved-view', path: null },
-    cart: { id: 'user-cart-view', path: null },
-    account: { id: 'user-account-view', path: null }
+    saved: { id: 'user-saved-view', path: null, title: 'Saved' },
+    cart: { id: 'user-cart-view', path: null, title: 'Cart' },
+    account: { id: 'user-account-view', path: null, title: 'Account' }
   },
   merchant: {
-    home: { id: 'merchant-home-view', path: null, embedFooter: true },
-    explore: { id: 'merchant-inventory-view', path: null },
-    add: { id: 'merchant-add-view', path: null },
-    analytics: { id: 'merchant-analytics-view', path: null },
-    account: { id: 'merchant-account-view', path: null }
+    home: { id: 'merchant-home-view', path: null, embedFooter: true, title: 'Home' },
+    explore: { id: 'merchant-inventory-view', path: null, title: 'Inventory' },
+    add: { id: 'merchant-add-view', path: null, title: 'Add' },
+    analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics' },
+    account: { id: 'merchant-account-view', path: null, title: 'Account' }
   },
   admin: {
     home: {
@@ -74,12 +79,13 @@ const viewConfig = {
       cssPath: "./source/modules/admin/pages/admin-home.css",
       jsPath: "./source/modules/admin/pages/admin-home.js",
       showFooter: false,
-      embedFooter: true
+      embedFooter: true,
+      title: 'Home'
     },
-    data: { id: 'admin-data-view', path: null },
-    logs: { id: 'admin-logs-view', path: null },
-    promo: { id: 'admin-promo-view', path: null },
-    account: { id: 'admin-account-view', path: null }
+    data: { id: 'admin-data-view', path: null, title: 'Data' },
+    logs: { id: 'admin-logs-view', path: null, title: 'Logs' },
+    promo: { id: 'admin-promo-view', path: null, title: 'Promo' },
+    account: { id: 'admin-account-view', path: null, title: 'Account' }
   }
 };
 

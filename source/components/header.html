@@ -237,10 +237,10 @@
   - Also, if header partial is loaded after DOMContentLoaded, its script may not run as expected (especially if using dynamic partial loader).
 
   **Fixes:**
-  1. Always ensure header partial is loaded and its script runs after DOM is ready, and after .page-content is present.
-  2. In header.html script, always select `.page-content` dynamically (not at top-level), and always update padding and badge visibility on every load.
-  3. If using dynamic partial loader, make sure it executes <script> tags inside partials (your partial-loader.js already does this).
-  4. Make sure every page (home, explore, item-details, etc.) has a `.page-content` element directly after header, so header JS can find and pad it.
+  1. Always ensure header partial is loaded and its script runs after DOM is ready, and after .main-page-content is present.
+  2. In header.html script, always select `.main-page-content` dynamically (not at top-level), and always update padding and badge visibility on every load.
+  3. If using dynamic partial loader, make sure it executes <script> tags inside partials.
+  4. Make sure every page (home, explore, item-details, etc.) has a `.main-page-content` element directly after header, so header JS can find and pad it.
   5. If you use SPA navigation, do NOT reload header partial, just update its content/state.
 
   **Below is a robust header script that works for all pages and always updates padding, search, and notification badge.**
@@ -265,14 +265,14 @@
         menuIconEl.style.display = 'none';
       }
     }
-    function updateHeaderUI({ role }) {
+    function updateHeaderUI({ role, view, config }) {
       const userType = role;
       const modeBanner = document.getElementById('mode-banner');
       const notificationIcon = document.getElementById('notification-icon');
       const bellIcon = notificationIcon?.querySelector('i');
       const badge = notificationIcon?.querySelector('.notification-badge');
       const appMode = window.APP_CONFIG?.appMode;
-      const mainContent = document.querySelector('.page-content');
+      const mainContent = document.querySelector('.main-page-content');
 
       // 1. Update header branding (logo and name) by fetching live data
       const logoEl = document.querySelector('#header-logo-container img');
@@ -303,7 +303,7 @@
       if (userType === 'user' && userId) {
         // Show loading state for user avatar to prevent flash
         logoContainer.classList.add('is-loading-avatar');
-        nameEl.textContent = 'Loading...';
+        nameEl.textContent = 'User Panel';
         // Standard User: Fetch their profile data
         fetchUserById(userId).then(userData => {
           if (userData) {
@@ -314,7 +314,7 @@
       } else if (userType === 'merchant' && userId) {
         // For merchants, show a loading state to prevent flashing the wrong name.
         logoContainer.classList.add('is-loading-avatar');
-        nameEl.textContent = 'Loading...';
+        nameEl.textContent = 'User Panel';
 
         // Use an async IIFE for cleaner, non-blocking data fetching.
         (async () => {
@@ -398,10 +398,10 @@
       }
 
       // 5. Adjust main content padding to prevent overlap
-      // Always select .page-content dynamically (in case DOM changes)
+      // Always select .main-page-content dynamically (in case DOM changes)
       setTimeout(() => {
         const headerContainer = document.querySelector('.header-container');
-        const mainContent = document.querySelector('.page-content');
+        const mainContent = document.querySelector('.main-page-content');
         if (headerContainer && mainContent) {
           const headerHeight = headerContainer.offsetHeight;
           mainContent.style.paddingTop = `${headerHeight}px`;

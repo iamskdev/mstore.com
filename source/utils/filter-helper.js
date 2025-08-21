@@ -3,7 +3,7 @@
  * This module encapsulates the logic for loading, displaying, and interacting with the filter bar and advanced panel.
  */
 
-import { loadComponent } from './partial-loader.js';
+import { loadComponent } from '../main.js';
 import { fetchAllCategories, fetchAllBrands } from './data-manager.js';
 import { showToast } from './toast.js'; // Import the toast utility
 

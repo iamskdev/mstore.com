@@ -1,7 +1,7 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Up-to-Date`
-> - **Last Reviewed:** August 20, 2025, 8:30 PM IST
-> - **Reviewer:** Gemini
+> - **Last Reviewed:** August 21, 2025, 07:25 PM IST
+> - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides step-by-step instructions for testing the application using various methods, including admin-driven setup, UI-driven flows, and advanced developer tools. It is essential for quality assurance.
 
 ---
@@ -42,10 +42,10 @@
 
 1.  **व्यवस्थापक-संचालित परीक्षण (Admin-Driven Testing):** यह विधि पहले से परिभाषित मॉक उपयोगकर्ताओं (जैसे `super-admin` या `merchant`) के साथ लॉगिन और सुविधाओं का परीक्षण करने के लिए सबसे अच्छी है।
 2.  **UI-संचालित परीक्षण (UI-Driven Testing):** यह विधि एक सामान्य उपयोगकर्ता की तरह सीधे ऐप के साइन-अप और लॉगिन प्रवाह का परीक्षण करने के लिए है।
-3.  **त्वरित भूमिका स्विचिंग (Quick Role Switching):** यह डेवलपर मोड में विभिन्न भूमिकाओं के UI का तुरंत परीक्षण करने का सबसे तेज़ तरीका है।
-4.  **उपयोगकर्ता प्रतिरूपण (User Impersonation):** यह किसी भी उपयोगकर्ता के दृष्टिकोण से ऐप का परीक्षण करने के लिए सबसे शक्तिशाली डेवलपर सुविधा है।
-5.  **PWA सुविधाओं का परीक्षण (Testing PWA Features):** ऐप इंस्टॉलेशन और ऑफ़लाइन क्षमताओं का परीक्षण कैसे करें।
-6.  **UI कंपोनेंट्स का परीक्षण (Testing UI Components):** अलग-अलग UI टुकड़ों को स्वतंत्र रूप से कैसे जांचें।
+3.  **त्वरित भूमिका स्विचिंग और उपयोगकर्ता प्रतिरूपण (Developer Mode):** यह विभिन्न भूमिका-आधारित UI और सुविधाओं का परीक्षण करने का सबसे तेज़ और सबसे शक्तिशाली तरीका है।
+4.  **PWA सुविधाओं का परीक्षण (Testing PWA Features):** ऐप इंस्टॉलेशन और ऑफ़लाइन क्षमताओं का परीक्षण कैसे करें।
+5.  **UI कंपोनेंट्स का परीक्षण (Testing UI Components):** अलग-अलग UI टुकड़ों को स्वतंत्र रूप से कैसे जांचें।
+6.  **विभिन्न कॉन्फ़िगरेशन का परीक्षण (Testing Different Configurations):** आप `/source/utils/app-config.js` फ़ाइल को संपादित करके ऐप के व्यवहार को बदल सकते हैं।
 ---
 
 ### 1. व्यवस्थापक-संचालित परीक्षण (Admin-Driven Testing)
@@ -155,7 +155,7 @@
 
 ---
 
-### 5. PWA सुविधाओं का परीक्षण (Testing PWA Features)
+### 4. PWA सुविधाओं का परीक्षण (Testing PWA Features)
 
 यह सुनिश्चित करना महत्वपूर्ण है कि ऐप एक प्रोग्रेसिव वेब ऐप (PWA) के रूप में सही ढंग से काम करता है।
 
@@ -178,7 +178,7 @@
 
 ---
 
-### 6. UI कंपोनेंट्स का परीक्षण (Testing UI Components)
+### 5. UI कंपोनेंट्स का परीक्षण (Testing UI Components)
 
 कभी-कभी आपको पूरे ऐप को चलाए बिना एक अकेले UI कंपonent (जैसे एक कार्ड या एक बटन) का परीक्षण करने की आवश्यकता होती है। इसके लिए `developer/pages/ui-preview.html` पेज बनाया गया है।
 
@@ -206,7 +206,7 @@
 
 ---
 
-### 3. विभिन्न कॉन्फ़िगरेशन का परीक्षण (Testing Different Configurations)
+### 6. विभिन्न कॉन्फ़िगरेशन का परीक्षण (Testing Different Configurations)
 आप `/source/utils/app-config.js` फ़ाइल को संपादित करके ऐप के व्यवहार को बदल सकते हैं।
 
 *   **`DATA_SOURCE`**:

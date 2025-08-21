@@ -325,7 +325,10 @@
     // Listen for a promotion to be activated
     window.addEventListener('promotionActivated', (e) => {
         const promo = e.detail;
-        if (!promo || !promo.bottomNav) return;
+        // FIX: Also check if promo.bottomNav is a non-empty array before clearing the nav.
+        if (!promo || !promo.bottomNav || !Array.isArray(promo.bottomNav) || promo.bottomNav.length === 0) {
+            return; // Do nothing if there are no valid promo buttons
+        }
 
         console.log('Tab-nav responding to promotion:', promo.bottomNav);
         navBar.dataset.promoActive = "true";

@@ -1,7 +1,7 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Active & Essential`
-> - **Last Reviewed:** August 20, 2025, 01:39 PM IST
-> - **Reviewer:** Gemini
+> - **Last Reviewed:** August 21, 2025, 07:10 PM IST
+> - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides a mandatory guide for developers on how to create new pages and views within the "Apna Store" project, ensuring consistency, performance, and adherence to the established architecture.
 
 ---
@@ -39,9 +39,9 @@
             └── merchant-profile-edit.css   <-- (नई CSS)
 ```
 
-### चरण 2: व्यू को कॉन्फ़िगर करें (`viewManager`)
+### चरण 2: व्यू को कॉन्फ़िगर करें (`viewConfig` in `main.js`)
 
-`/source/utils/viewManager` खोलें और `viewConfig` ऑब्जेक्ट में अपने नए व्यू के लिए एक एंट्री जोड़ें।
+`source/main.js` खोलें और `viewConfig` ऑब्जेक्ट में अपने नए व्यू के लिए एक एंट्री जोड़ें।
 
 ```javascript
 const viewConfig = {
@@ -54,7 +54,8 @@ const viewConfig = {
             // JS और CSS पथ वैकल्पिक हैं, लेकिन अनुशंसित हैं
             jsPath: './source/modules/merchant/scripts/merchant-profile-edit.js',
             cssPath: './source/modules/merchant/styles/merchant-profile-edit.css',
-            embedFooter: false // इस पेज पर फुटर की आवश्यकता नहीं है
+            embedFooter: false, // इस पेज पर फुटर की आवश्यकता नहीं है
+            title: 'प्रोफाइल एडिट' // नया: पेज का शीर्षक
         }
     }
     // ... other roles
@@ -67,14 +68,14 @@ const viewConfig = {
 
 ```html
 <!-- Merchant Views -->
-<div id="merchant-home-view" class="page-view-area" data-view="home" data-role="merchant"></div>
+<div id="merchant-home-view" class="main-page-content" data-view="home" data-role="merchant"></div>
 <!-- ... other merchant views ... -->
-<div id="merchant-profile-edit-view" class="page-view-area" data-view="profile-edit" data-role="merchant"></div>
+<div id="merchant-profile-edit-view" class="main-page-content" data-view="profile-edit" data-role="merchant"></div>
 ```
 
 ### चरण 4: पेज का लॉजिक लिखें (JS फाइल)
 
-अपनी नई `.js` फ़ाइल (`merchant-profile-edit.js`) में, एक `init()` फ़ंक्शन बनाएँ। `view-manager` इस फ़ंक्शन को स्वचालित रूप से कॉल करेगा जब आपका पेज पहली बार लोड होगा।
+अपनी नई `.js` फ़ाइल (`merchant-profile-edit.js`) में, एक `init()` फ़ंक्शन बनाएँ। `main.js` में `loadComponent` फ़ंक्शन इस `init()` फ़ंक्शन को स्वचालित रूप से कॉल करेगा जब आपका पेज पहली बार लोड होगा।
 
 ```javascript
 import { fetchMerchantById } from './source/utils/data-manager.js';
@@ -123,4 +124,4 @@ editProfileBtn.addEventListener('click', () => {
 
 ## Audit Section (ऑडिट सेक्शन)
 
-- **Last Audited:** August 20, 2025, 01:39 PM IST by Gemini.
+- **Last Audited:** August 21, 2025, 07:10 PM IST by Santosh (with Gemini).

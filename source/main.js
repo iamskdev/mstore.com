@@ -204,6 +204,18 @@ class ViewManager {
       if (!htmlResponse.ok) throw new Error(`HTML fetch failed: ${htmlResponse.status}`);
       let viewHtml = await htmlResponse.text();
 
+      // FIX: Add a safeguard to prevent loading a full HTML document into a view.
+      // This can break the entire DOM structure.
+      if (viewHtml.trim().toLowerCase().startsWith('<html') || viewHtml.trim().toLowerCase().includes('<body')) {
+        throw new Error(`Content from ${config.path} appears to be a full HTML document, not a view fragment. Aborting load.`);
+      }
+
+      // FIX: Add a safeguard to prevent loading a full HTML document into a view.
+      // This can break the entire DOM structure.
+      if (viewHtml.trim().toLowerCase().startsWith('<html') || viewHtml.trim().toLowerCase().includes('<body')) {
+        throw new Error(`Content from ${config.path} appears to be a full HTML document, not a view fragment. Aborting load.`);
+      }
+
       // If the view config requests an embedded footer, fetch and append it.
       // This is used for views where the footer should be part of the scrollable content.
       if (config.embedFooter) {
@@ -291,6 +303,7 @@ class ViewManager {
   }
 
   async init() {
+    console.log("[Debug] D. viewManager.init() started.");
     // --- STEP 1: CRITICAL - Synchronize Auth State First ---
     // This is the most important step to prevent the "logout on refresh" bug.
     // We `await` the `initializeAuthListener`. This function returns a promise that
@@ -378,6 +391,30 @@ class ViewManager {
        }
       if (e.state && e.state.role && e.state.view) { this.switchView(e.state.role, e.state.view); } // This call in an event handler doesn't need to be awaited.
     });
+    // --- FORCE LOAD TEST START ---
+    try {
+        console.log('--- FORCE LOAD TEST: Attempting to force load guest-home-view ---');
+        const homeView = document.getElementById('guest-home-view');
+        if (homeView) {
+            const response = await fetch('./source/common/pages/guest-home.html');
+            if (response.ok) {
+                const html = await response.text();
+                homeView.innerHTML = html;
+                console.log('--- FORCE LOAD TEST: Content injected successfully. ---');
+            } else {
+                homeView.innerHTML = `--- FORCE LOAD TEST: Fetch failed with status ${response.status}. ---`;
+                console.error('--- FORCE LOAD TEST: Fetch failed. ---', response);
+            }
+        } else {
+            console.error('--- FORCE LOAD TEST: #guest-home-view element not found in DOM. ---');
+        }
+    } catch (e) {
+        console.error('--- FORCE LOAD TEST: An error occurred ---', e);
+        const homeView = document.getElementById('guest-home-view');
+        if(homeView) homeView.innerHTML = `--- FORCE LOAD TEST: An error occurred: ${e.message} ---`;
+    }
+    // --- FORCE LOAD TEST END ---
+
     console.log("👁️ View Manager Initialized.");
   }
 }
@@ -408,9 +445,8 @@ getScrollbarWidth();
  * Shows the full-screen loader.
  */
 function showFullScreenLoader() {
-  const loader = document.getElementById('full-screen-loader');
+  const loader = document.querySelector('.full-screen-loader');
   if (loader) {
-    loader.style.display = 'flex'; // Ensure it's displayed before removing 'hidden'
     loader.classList.remove('hidden');
   }
   originalBodyPaddingRight = document.documentElement.style.paddingRight;
@@ -422,14 +458,9 @@ function showFullScreenLoader() {
  * Hides the full-screen loader with a fade-out animation.
  */
 function hideFullScreenLoader() {
-  const loader = document.getElementById('full-screen-loader');
+  const loader = document.querySelector('.full-screen-loader');
   if (loader) {
     loader.classList.add('hidden');
-    // After the transition, set display to none to completely remove it from layout and rendering.
-    // The transition duration is 0.3s (300ms).
-    setTimeout(() => {
-      loader.style.display = 'none';
-    }, 300);
   }
   document.documentElement.style.overflow = '';
   document.documentElement.style.paddingRight = originalBodyPaddingRight;
@@ -449,18 +480,116 @@ window.addEventListener('requestViewChange', (e) => {
   }
 });
 
+// Centralized configuration for all static partials.
+const partialsMap = {
+  'main-header-placeholder': { path: './source/components/header.html' },
+  'drawer-placeholder': { path: './source/components/drawer.html' },
+  'bottom-nav-placeholder': { path: './source/components/tab-nav.html' },
+  'role-switcher-placeholder': { path: './source/components/role-switcher.html', devOnly: true }
+};
+
+/**
+ * A reusable function to load an HTML partial into a given element
+ * and correctly execute any scripts within it.
+ * @param {HTMLElement} element - The placeholder element to inject content into.
+ * @param {string} path - The path to the HTML partial file.
+ */
+export async function loadComponent(element, path) {
+  try {
+    console.log(`Attempting to fetch partial from: ${new URL(path, window.location.origin).href}`);
+    const res = await fetch(`${path}?v=${new Date().getTime()}`); // Cache bust
+    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+    const html = await res.text();
+
+    const tempContainer = document.createElement('div');
+    tempContainer.innerHTML = html;
+
+    // Separate scripts from the rest of the content
+    const scripts = Array.from(tempContainer.querySelectorAll('script'));
+    scripts.forEach(s => s.remove());
+
+    // Inject the HTML content without the scripts
+    element.innerHTML = tempContainer.innerHTML;
+
+    // Execute scripts sequentially and wait for them to complete
+    for (const script of scripts) {
+      await new Promise((resolve, reject) => {
+        const newScript = document.createElement('script');
+        // Copy all attributes (like type="module")
+        script.getAttributeNames().forEach(attr => newScript.setAttribute(attr, script.getAttribute(attr)));
+        newScript.textContent = script.textContent;
+
+        // For external scripts, we wait for the 'load' event.
+        if (script.src) {
+          newScript.onload = resolve;
+          newScript.onerror = reject;
+        }
+
+        element.appendChild(newScript);
+
+        // For inline scripts (both classic and module), they execute immediately upon
+        // being added to the DOM. There is no 'load' event. So, we can resolve right away.
+        if (!script.src) {
+          resolve();
+        }
+      });
+    }
+  } catch (err) {
+    console.error(`❌ Failed to load component from: ${path}`, err);
+    element.innerHTML = `<div style="color:red; padding:10px;">Failed to load ${path}.</div>`;
+    throw err;
+  }
+}
+
+/**
+ * Finds all elements with a `data-partial` attribute and loads them using the loadComponent helper.
+ */
+export async function loadCoreComponents() {
+    // Show dev-only partials if appMode is 'dev' or 'promo'
+    const allowDevOnly = APP_CONFIG.appMode === 'dev' || APP_CONFIG.appMode === 'promo';
+
+    const promises = [];
+
+    for (const [id, config] of Object.entries(partialsMap)) {
+        const element = document.getElementById(id);
+
+        if (!element) {
+            // It's okay if a dev-only placeholder is not found in production.
+            if (!config.devOnly) {
+                console.warn(`Partial loader: Element with ID #${id} not found.`);
+            }
+            continue;
+        }
+
+        // Skip dev-only partials if not in the correct mode
+        if (config.devOnly && !allowDevOnly) {
+            element.remove(); // Clean up the placeholder
+            continue;
+        }
+
+        // Use the reusable function for each partial
+        promises.push(loadComponent(element, config.path));
+    }
+
+    // Wait for all partials to finish loading and executing their scripts
+    await Promise.all(promises);
+    // Dispatch a global event to notify that all initial partials are ready.
+    window.dispatchEvent(new CustomEvent('partialsLoaded'));
+}
+
+
 // Main application initialization function
 export async function initializeApp() {
   console.log("🚀 🚀 Initializing App...");
   showFullScreenLoader();
 
-  // 1. Initialize the View Manager first. This sets up the core navigation.
-  // FIX: Await the viewManager's initialization. This is CRITICAL.
-  // It ensures that the correct view is determined and rendered *before* the rest of the
-  // app logic runs and before the full-screen loader is hidden, preventing a blank screen flash.
+  // 1. Load core static components like header and navigation first.
+  await loadCoreComponents();
+
+  // 2. Initialize the View Manager. This sets up the dynamic content views.
   await viewManager.init();
   
-  // Set up ResizeObservers to automatically adjust layout variables.
+  // 3. Set up ResizeObservers to automatically adjust layout variables.
   initializeLayoutObservers();
 
   // Log the current configuration for easy debugging.
@@ -507,7 +636,7 @@ export async function initializeApp() {
     // A small delay to make the transition smoother and prevent jarring flashes
     // Hide the loader regardless of success or failure.
     initializePullToRefresh(); // Initialize pull-to-refresh
-    setTimeout(hideFullScreenLoader, 300);
+    hideFullScreenLoader();
   }
 
   // 6. Initialize cart and saved items in sessionStorage if they don't exist
@@ -545,11 +674,35 @@ function initializePullToRefresh() {
 
   let startY = 0;
   let isPulling = false;
+  let pullThreshold = 60; // Minimum pull distance to trigger refresh
+  let currentHeaderHeight = 0; // Will be set dynamically from CSS variable
+
+  // Get header height dynamically
+  const updateHeaderHeight = () => {
+    currentHeaderHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
+    console.log("PTR Debug: currentHeaderHeight", currentHeaderHeight);
+    console.log("PTR Debug: ptr.offsetHeight (before setting top)", ptr.offsetHeight);
+    // Ensure PTR is hidden initially, or snaps back to hidden position if already visible
+    ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
+    console.log("PTR Debug: ptr.style.top (after setting)", ptr.style.top);
+  };
+
+  // Update height on initial load and whenever header height changes
+  updateHeaderHeight();
+  window.addEventListener('partialsLoaded', updateHeaderHeight); // Listen for header load
+  window.addEventListener('resize', updateHeaderHeight); // Listen for window resize
 
   window.addEventListener("touchstart", e => {
-    if (window.scrollY === 0) {
+    // Only activate if at the very top of the scrollable content
+    const mainContent = document.querySelector('.main-page-content');
+    if (mainContent && mainContent.scrollTop === 0) {
       startY = e.touches[0].clientY;
       isPulling = true;
+      // Reset icons
+      arrow.style.display = "inline-block";
+      spinner.style.display = "none";
+      spinner.classList.remove("spinning");
+      arrow.style.transform = `rotate(0deg)`; // Ensure initial state
     }
   });
 
@@ -559,12 +712,29 @@ function initializePullToRefresh() {
     let diff = currentY - startY;
 
     if (diff > 0) {
-      let pull = Math.min(diff, 120);
-      ptr.style.top = (pull - 60) + "px";
+      // Prevent default scroll behavior only when pulling down from top
+      e.preventDefault();
 
-      // Rotate arrow only (spinner hidden)
-      let rotation = Math.min(pull * 1.5, 180);
+      let pull = Math.min(diff, 120); // Max pull distance
+      // Position PTR just below the header
+      ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight + pull}px`;
+
+      // Rotate arrow based on pull distance
+      let rotation = Math.min(pull * 2, 180); // Rotate faster
       arrow.style.transform = `rotate(${rotation}deg)`;
+
+      // Show/hide arrow based on pull direction (for visual feedback)
+      if (diff > 0) {
+        arrow.style.display = "inline-block";
+        spinner.style.display = "none";
+      } else {
+        arrow.style.display = "none";
+      }
+
+    } else {
+      // If pulling up, hide PTR
+      ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
+      arrow.style.transform = `rotate(0deg)`;
     }
   });
 
@@ -572,22 +742,31 @@ function initializePullToRefresh() {
     if (!isPulling) return;
     isPulling = false;
 
-    if (parseInt(ptr.style.top) > 30) {
-      ptr.style.top = "0px";
+    // Calculate the actual visible pull distance
+    let currentPullVisible = parseInt(ptr.style.top) - (currentHeaderHeight - ptr.offsetHeight);
 
-      // Switch arrow -> spinner
+    if (currentPullVisible >= pullThreshold) {
+      // Trigger refresh
+      ptr.style.top = `${currentHeaderHeight}px`; // Snap to visible position (just below header)
       arrow.style.display = "none";
       spinner.style.display = "inline-block";
       spinner.classList.add("spinning");
 
-      // Simulate loading
+      // Dispatch custom event for app content refresh
+      window.dispatchEvent(new CustomEvent('appRefreshRequested'));
+
+      // Hide PTR after a delay (or when refresh is complete)
       setTimeout(() => {
-        location.reload(); // Or fetch new data
-      }, 1500);
+        ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`; // Hide it above header
+        spinner.classList.remove("spinning");
+      }, 1500); // Simulate refresh time
 
     } else {
-      ptr.style.top = "-60px";
-      arrow.style.transform = "rotate(0deg)";
+      // Snap back to hidden position
+      ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
+      arrow.style.transform = `rotate(0deg)`;
+      arrow.style.display = "inline-block";
+      spinner.style.display = "none";
     }
   });
 }
