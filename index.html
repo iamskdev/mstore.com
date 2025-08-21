@@ -63,34 +63,35 @@
 <div id="filter-bar-placeholder"></div>
 
 <!-- 🌟 Enhanced View Containers with State Management 🌟 -->
-<div class="views-wrapper">
+<div class="spa-view-area">
+  
   <!-- Guest Views -->
-  <div id="guest-home-view" class="view-container" data-view="home" data-role="guest"></div>
-  <div id="guest-explore-view" class="view-container" data-view="explore" data-role="guest"></div>
-  <div id="guest-saved-view" class="view-container" data-view="saved" data-role="guest"></div>
-  <div id="guest-cart-view" class="view-container" data-view="cart" data-role="guest"></div>
-  <div id="guest-account-view" class="view-container" data-view="account" data-role="guest"></div>
+  <div id="guest-home-view" class="page-view-area" data-view="home" data-role="guest"></div>
+  <div id="guest-explore-view" class="page-view-area" data-view="explore" data-role="guest"></div>
+  <div id="guest-saved-view" class="page-view-area" data-view="saved" data-role="guest"></div>
+  <div id="guest-cart-view" class="page-view-area" data-view="cart" data-role="guest"></div>
+  <div id="guest-account-view" class="page-view-area" data-view="account" data-role="guest"></div>
 
   <!-- User Views -->
-  <div id="user-home-view" class="view-container" data-view="home" data-role="user"></div>
-  <div id="user-explore-view" class="view-container" data-view="explore" data-role="user"></div>
-  <div id="user-saved-view" class="view-container" data-view="saved" data-role="user"></div>
-  <div id="user-cart-view" class="view-container" data-view="cart" data-role="user"></div>
-  <div id="user-account-view" class="view-container" data-view="account" data-role="user"></div>
+  <div id="user-home-view" class="page-view-area" data-view="home" data-role="user"></div>
+  <div id="user-explore-view" class="page-view-area" data-view="explore" data-role="user"></div>
+  <div id="user-saved-view" class="page-view-area" data-view="saved" data-role="user"></div>
+  <div id="user-cart-view" class="page-view-area" data-view="cart" data-role="user"></div>
+  <div id="user-account-view" class="page-view-area" data-view="account" data-role="user"></div>
 
   <!-- Merchant Views -->
-  <div id="merchant-home-view" class="view-container" data-view="home" data-role="merchant"></div>
-  <div id="merchant-inventory-view" class="view-container" data-view="explore" data-role="merchant"></div>
-  <div id="merchant-add-view" class="view-container" data-view="add" data-role="merchant"></div>
-  <div id="merchant-analytics-view" class="view-container" data-view="analytics" data-role="merchant"></div>
-  <div id="merchant-account-view" class="view-container" data-view="account" data-role="merchant"></div>
+  <div id="merchant-home-view" class="page-view-area" data-view="home" data-role="merchant"></div>
+  <div id="merchant-inventory-view" class="page-view-area" data-view="explore" data-role="merchant"></div>
+  <div id="merchant-add-view" class="page-view-area" data-view="add" data-role="merchant"></div>
+  <div id="merchant-analytics-view" class="page-view-area" data-view="analytics" data-role="merchant"></div>
+  <div id="merchant-account-view" class="page-view-area" data-view="account" data-role="merchant"></div>
 
   <!-- Admin Views -->
-  <div id="admin-home-view" class="view-container" data-view="home" data-role="admin"></div>
-  <div id="admin-data-view" class="view-container" data-view="data" data-role="admin"></div>
-  <div id="admin-logs-view" class="view-container" data-view="logs" data-role="admin"></div>
-  <div id="admin-promo-view" class="view-container" data-view="promo" data-role="admin"></div>
-  <div id="admin-account-view" class="view-container" data-view="account" data-role="admin"></div>
+  <div id="admin-home-view" class="page-view-area" data-view="home" data-role="admin"></div>
+  <div id="admin-data-view" class="page-view-area" data-view="data" data-role="admin"></div>
+  <div id="admin-logs-view" class="page-view-area" data-view="logs" data-role="admin"></div>
+  <div id="admin-promo-view" class="page-view-area" data-view="promo" data-role="admin"></div>
+  <div id="admin-account-view" class="page-view-area" data-view="account" data-role="admin"></div>
 </div>
 </main>
 
@@ -107,9 +108,10 @@
   // ✅ Import critical modules at the top.
   import { APP_CONFIG } from './source/utils/app-config.js';
   import { initializePwaInstall, setDeferredPrompt, getDeferredPrompt } from './source/utils/pwa-manager.js';
-  import './source/firebase/firebase-config.js';
+    import './source/firebase/firebase-config.js';
   import { loadSmartPartials } from './source/utils/partial-loader.js';
-  import './source/main.js'; // Import main.js first to ensure viewManager is available
+  // Import the main app initializer, but don't run it yet.
+  import { initializeApp } from './source/main.js';
 
   // Log the current configuration for easy debugging.
   if (APP_CONFIG.appMode) {
@@ -168,8 +170,12 @@
   // 2. Load all HTML partials.
   loadSmartPartials()
     .then(() => {
-      // 3. Partials are successfully loaded. main.js is already imported and initialized.
-      console.log("✅ All partials loaded and main application script initialized.");
+      // 3. Partials are loaded. NOW we can initialize the app logic that depends on them.
+      console.log("✅ All partials loaded. Initializing main application script...");
+      return initializeApp(); // Call initializeApp and return its promise
+    })
+    .then(() => {
+      console.log("✅ Application initialized successfully.");
     })
     .catch(error => {
       // This is a critical error. The app cannot start.

@@ -1,10 +1,12 @@
+.admin-home-view {
+  /* This class is the main container for the admin home page. */
+}
 
-  #admin-home-view {
-    background: var(--bg-primary);
-    padding: 5px;
-    color: var(--text-primary);
-  }
-
+/*
+  FIX: Restored the background color classes for the statistics cards.
+  These were missing, causing the cards to be invisible in dark mode as their
+  text color (var(--accent-text)) is black on a dark background.
+*/
   /* ADMIN HEADER */
   .admin-header {
     display: flex;
@@ -28,18 +30,18 @@
   /* Generic button styles - can be moved to a global CSS if needed */
   .btn-danger {
     background-color: var(--accent-danger);
-    color: white;
+    color: var(--accent-text);
   }
 
   .btn-dark {
     background-color: var(--text-secondary);
-    color: white;
+    color: var(--bg-primary); /* Use primary background color for text for better contrast */
   }
 
   /* CRITICAL ALERTS */
   .alert-critical {
-    background: var(--accent-danger-light);
-    color: var(--accent-danger-dark);
+    background: rgba(var(--accent-danger-rgb), 0.1);
+    color: var(--accent-danger);
     padding: 15px;
     border-radius: 5px;
     margin-bottom: 20px;
@@ -63,13 +65,24 @@
   .stat-card {
     padding: 20px;
     border-radius: 8px;
-    color: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    color: var(--accent-text); /* Use theme variable for text on accent backgrounds */
+    box-shadow: 0 4px 8px var(--shadow-color);
   }
-  .bg-admin { background: #4e73df; }
-  .bg-fraud { background: #e74a3b; }
-  .bg-tech { background: #36b9cc; }
 
+  /*
+    IMPROVEMENT: Instead of using utility classes like .bg-admin in the HTML,
+    we apply colors directly based on the card's position. This keeps the
+    HTML cleaner and centralizes styling logic within the CSS.
+  */
+  .stats-grid .stat-card:nth-of-type(1) {
+    background: var(--accent-primary); /* Corresponds to former .bg-admin */
+  }
+  .stats-grid .stat-card:nth-of-type(2) {
+    background: var(--accent-danger);  /* Corresponds to former .bg-fraud */
+  }
+  .stats-grid .stat-card:nth-of-type(3) {
+    background: var(--accent-info);    /* Corresponds to former .bg-tech */
+  }
   /* VISUAL ANALYTICS CHARTS */
   .admin-charts-section {
     display: grid;
@@ -82,7 +95,7 @@
     background: var(--bg-secondary);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px var(--shadow-color);
   }
 
   .chart-container h3 {
@@ -109,7 +122,7 @@
     padding: 15px;
     text-align: center;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px var(--shadow-color);
     transition: transform 0.2s;
   }
   .link-card:hover {
@@ -129,7 +142,7 @@
     border-collapse: collapse;
     margin-top: 25px;
     background: var(--bg-secondary);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px var(--shadow-color);
   }
   .log-table th, .log-table td {
     padding: 12px 15px;

@@ -5,32 +5,8 @@
  * including general layout, button styles, states, dark mode, and responsiveness.
  */
 
-/* --- Component-Scoped Theming Variables --- */
-:root {
-  /* Light Mode/Default Variables */
-  --nav-border-top: 1px solid rgba(0, 0, 0, 0.08);
-  --nav-box-shadow: 0 1px 3px var(--shadow-color);
-  --nav-btn-color: #888;
-  --nav-btn-color-active: var(--accent-primary);
-  --nav-btn-bg-active: rgba(var(--accent-primary-rgb), 0.12); /* Background for active tab */
-  --nav-btn-color-hover: #3a0ca3;
-  --nav-ripple-bg: rgba(var(--accent-primary-rgb), 0.1);
-}
-
-html.dark-mode {
-  /* Dark Mode Variable Overrides */
-  --nav-border-top: 1px solid rgba(255, 255, 255, 0.1);
-  --nav-box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
-  --nav-btn-color: #9e9e9e;
-  --nav-btn-color-active: var(--accent-primary); /* Uses dark mode accent: #4cc9f0 */
-  --nav-btn-bg-active: rgba(var(--accent-primary-rgb), 0.2); /* More visible in dark mode */
-  --nav-btn-color-hover: var(--accent-primary);
-  --nav-ripple-bg: rgba(var(--accent-primary-rgb), 0.1);
-}
-
 /* --- 1. Main Container & Theming Variables --- */
 .bottom-tab-bar {
-  /* Applying the variables */
   position: fixed;
   bottom: 0;
   left: 0;
@@ -38,12 +14,13 @@ html.dark-mode {
   height: 65px; /* Slightly taller for better ergonomics */
   background: var(--bg-secondary); /* Use global theme variable */
   backdrop-filter: blur(10px); /* Subtle blur for depth */
-  box-shadow: var(--nav-box-shadow);
+  /* Use global shadow variable for consistency. The dark mode shadow is now consistent with the rest of the app. */
+  box-shadow: 0 1px 3px var(--shadow-color);
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 1000;
-  border-top: var(--nav-border-top);
+  border-top: 1px solid var(--border-color);
   padding: 0 8px;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Smoothly slide up/down with footer */
 }
@@ -53,10 +30,11 @@ html.dark-mode {
   background: transparent;
   border: none;
   outline: none;
-  padding: 8px 4px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--nav-btn-color);
+  padding: 6px 4px 10px; /* Adjusted padding for new font size */
+  font-size: 13px; /* Increased font size for better readability */
+  letter-spacing: 0.2px; /* Added subtle letter spacing for a cleaner look */
+  font-weight: 700; /* BOLD: Set a bolder font weight for all tabs for better visibility. */
+  color: var(--text-secondary); /* Use global variable for inactive icon color */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,9 +65,8 @@ html.dark-mode {
   font-size: 22px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  z-index: 2;
+  /* REMOVED: z-index was causing the icon to render on top of the ripple effect. */
 }
-
 
 .nav-btn-add i {
   font-size: 35px; /* Larger icon */
@@ -107,28 +84,17 @@ html.dark-mode {
   margin-bottom: 0;
 }
 
-/*
-  FIX: The 'add' button is unique. Its icon container should not be constrained
-  in height, allowing the larger icon to display correctly. We also remove
-  the bottom margin as there's no text label below it.
-*/
-.nav-btn-add .icon-container {
-  height: auto;
-  margin-bottom: 0;
-}
-
 /* --- 4. Button States & Effects --- */
 
 /* Active State */
 .nav-btn.active {
-  color: var(--nav-btn-color-active);
-  font-weight: 600; /* Make active tab text slightly bolder for emphasis */
+  color: var(--accent-primary); /* Use global variable for active icon color */
   background-color: transparent;
   border-radius: 12px; /* Rounded corners for the background highlight */
 }
 
 .nav-btn-add.active {
-  color: var(--nav-btn-color-active);
+  color: var(--accent-primary); /* FIX: Use global theme variable for consistency. */
   transform: none; /* Remove any scaling effect */
   background-color: transparent; /* 'Add' button should not have a background */
 }
@@ -137,7 +103,7 @@ html.dark-mode {
 .ripple {
   position: absolute;
   border-radius: 50%;
-  background: var(--nav-ripple-bg);
+  background: rgba(var(--accent-primary-rgb), 0.1); /* Use global variable directly */
   transform: scale(0);
   animation: ripple 0.6s linear;
   pointer-events: none;
@@ -154,7 +120,7 @@ html.dark-mode {
 /* Hover State (for devices that support it) */
 @media (hover: hover) {
   .nav-btn:not(.active):hover {
-    color: var(--nav-btn-color-hover);
+    color: var(--accent-primary-hover); /* Use global variable for hover color */
     background: transparent;
   }
 }
@@ -390,18 +356,28 @@ html.dark-mode {
       const btn = e.target.closest('.nav-btn');
       if (!btn) return;
 
-      // a. Ripple effect
-      const ripple = document.createElement('span');
-      ripple.classList.add('ripple');
-      const rect = btn.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height);
-      ripple.style.width = ripple.style.height = `${size}px`;
-      ripple.style.left = `${e.clientX - rect.left - size/2}px`;
-      ripple.style.top = `${e.clientY - rect.top - size/2}px`;
-      // FIX: Append ripple to the button itself, not the icon container.
-      // This ensures the ripple's position (calculated relative to the button) is correct.
-      btn.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
+      // a. Ripple effect - Centered on Icon
+      const iconContainer = btn.querySelector('.icon-container');
+      if (iconContainer) {
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+
+        // We want the ripple to originate from the center of the icon container.
+        const rect = iconContainer.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height) * 1.5; // Make it a bit larger than the icon
+
+        // Set the ripple's size
+        ripple.style.width = ripple.style.height = `${size}px`;
+
+        // Position the ripple in the center of the icon container.
+        // The ripple's position is relative to its parent, which will be the icon container.
+        // The icon container has `position: relative`, so this works.
+        ripple.style.left = `${(iconContainer.offsetWidth - size) / 2}px`;
+        ripple.style.top = `${(iconContainer.offsetHeight - size) / 2}px`;
+
+        iconContainer.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600); // Remove after animation
+      }
 
       // b. Tell the view manager to switch views
       const role = btn.dataset.role;

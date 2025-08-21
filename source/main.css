@@ -34,68 +34,109 @@
    light (default) and dark modes.
 */
 :root {
-  /* Light Theme (Default) */
+  /* --- 1. Backgrounds & Surfaces --- */
   --bg-primary: #f9f9f9;
   --bg-secondary: #ffffff;
   --bg-tertiary: #f0f2f5;
-  --bg-hover: #e4e6e9; /* For interactive elements like tabs */
+  --bg-hover: #e4e6e9;
   --bg-secondary-rgb: 255, 255, 255;
+  --page-bg-gradient: linear-gradient(to top right, #f0f2f5, #e6e9ed);
+
+  /* --- 2. Typography & Text --- */
   --text-primary: #1c1e21;
   --text-secondary: #606770;
   --text-tertiary: #8a8d91;
-  --border-color: #e0e0e0;
-  --accent-primary: #4361ee; /* Updated to match component styles */
-  --accent-primary-hover: #3a53c4; /* Darker shade for hover */
+  --accent-text: #ffffff; /* Text on colored accent backgrounds */
+  --text-google-btn: #3c4043;
+
+  /* --- 3. Accents & Actions --- */
+  --accent-primary: #4361ee;
+  --accent-primary-hover: #3a53c4;
   --accent-primary-rgb: 67, 97, 238;
   --accent-secondary: #28a745;
   --accent-secondary-hover: #218838;
-  --accent-text: #ffffff;
+  --accent-danger: #e74a3b;
+  --accent-danger-rgb: 231, 74, 59;
+  --accent-info: #36b9cc;
+
+  /* --- 4. Borders & States --- */
+  --border-color: #e0e0e0;
   --error-color: #d93025;
+
+  /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.05);
   --shadow-focus-primary: rgba(0, 123, 255, 0.2);
   --shadow-focus-secondary: rgba(40, 167, 69, 0.2);
   --shadow-focus-error: rgba(217, 48, 37, 0.2);
-  --text-google-btn: #3c4043;
-  --page-bg-gradient: linear-gradient(to top right, #f0f2f5, #e6e9ed);
-  
+
+  /* --- 6. Component-Specific: Header --- */
+  --header-banner-dev-bg: #ffc107;
+  --header-banner-dev-text: #000;
+  --header-banner-promo-bg: #2196F3;
+  --header-banner-promo-text: #fff;
+  --header-banner-admin-bg: #455A64;
+  --header-banner-admin-text: #fff;
+  --header-badge-bg: #FF5722;
+  --header-badge-text: #fff;
 }
 
 html.dark-mode {
-  /* Dark Theme */
+  /* --- 1. Backgrounds & Surfaces --- */
   --bg-primary: #121212;
   --bg-secondary: #1e1e1e;
   --bg-tertiary: #2a2a3b;
-  --bg-hover: #3a3b4c; /* For interactive elements like tabs */
+  --bg-hover: #3a3b4c;
   --bg-secondary-rgb: 30, 30, 30;
+  --page-bg-gradient: linear-gradient(to top right, #1a1a2e, #16213e);
+
+  /* --- 2. Typography & Text --- */
   --text-primary: #e0e0e0;
   --text-secondary: #a0a0a0;
   --text-tertiary: #7f8c8d;
-  --border-color: #333333;
-  --accent-primary: #4cc9f0; /* Updated to match component styles */
-  --accent-primary-hover: #3fb8de; /* Darker shade for hover */
-  --accent-primary-rgb: 76, 201, 240;
+  --accent-text: #ffffff; /* Text on colored accent backgrounds */
+  --text-google-btn: #e0e0e0;
+
+  /* --- 3. Accents & Actions --- */
+  --accent-primary: #0077b6;
+  --accent-primary-hover: #005f9e;
+  --accent-primary-rgb: 0, 119, 182;
   --accent-secondary: #69f0ae;
   --accent-secondary-hover: #00bfa5;
-  --accent-text: #000000;
+  --accent-danger: #d00000;
+  --accent-danger-rgb: 208, 0, 0;
+  --accent-info: #0081a7;
+
+  /* --- 4. Borders & States --- */
+  --border-color: #333333;
   --error-color: #ff5252;
+
+  /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.2);
   --shadow-focus-primary: rgba(68, 138, 255, 0.25);
   --shadow-focus-secondary: rgba(105, 240, 174, 0.25);
   --shadow-focus-error: rgba(255, 82, 82, 0.25);
-  --text-google-btn: #e0e0e0;
-  --page-bg-gradient: linear-gradient(to top right, #1a1a2e, #16213e);
+
+  /* --- 6. Component-Specific: Header --- */
+  --header-banner-dev-bg: #f39c12;
+  --header-banner-dev-text: #fff;
+  --header-banner-promo-bg: #3498db;
+  --header-banner-promo-text: #fff;
+  --header-banner-admin-bg: #7f8c8d;
+  --header-banner-admin-text: #000;
+  --header-badge-bg: #e74c3c;
+  --header-badge-text: #fff;
 }
 
 /* ========================================
    3. CORE APP LAYOUT
    ========================================
-   Styles for the main `body` and the base `.view-container` which
+   Styles for the main `body` and the base `.page-view-area` which
    form the fundamental structure of the application.
 */
 html {
   /* Set box-sizing globally for more predictable layouts */
   box-sizing: border-box;
-  height: 100%;
+  height: 100%; /* Should fill the viewport */
 }
 
 *, *::before, *::after {
@@ -107,8 +148,7 @@ body {
   /* Flex properties for sticky footer layout */
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensures body takes full viewport height for sticky footer */
-  margin: 0; /* Reset margin */
+  height: 100%; 
   font-family: 'Noto Sans', sans-serif;
   background-color: var(--bg-primary);
   line-height: 1.6;
@@ -118,16 +158,13 @@ body {
 }
 
 
-.view-container {
+.page-view-area {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: var(--header-height); /* Position below the fixed header */
+  bottom: var(--bottom-height); /* Position above the fixed bottom bar */
   width: 100%;
-  height: 100%;
-  /* Use root variables to add space for the fixed header and bottom nav.
-     This prevents content from being hidden underneath them. */
-  padding-top: var(--header-height);
-  padding-bottom: var(--bottom-height);
+  left: 0;
+  right: 0;
   box-sizing: border-box;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -140,7 +177,7 @@ body {
 }
 
 
-.view-container.view-active {
+.page-view-area.view-active {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
@@ -153,14 +190,18 @@ body {
    Specific layout rules that modify or enhance the core layout for
    special cases, such as views with an embedded footer.
 */
-.view-container.view-with-embedded-footer {
+.page-view-area.view-with-embedded-footer {
   display: flex;
   flex-direction: column;
-  /* This is crucial. It makes the view container take up the full available
-     height of its parent (the body), allowing the flex layout to push
-     the footer to the very bottom, even on pages with little content. */
-  height: 100%;
+  flex: 1;
+
+  /*
+    The height is now correctly controlled by the `top` and `bottom` properties
+    on the base `.page-view-area` rule. We remove the conflicting `height: 100%`
+    which was causing the view to overlap the bottom navigation bar.
+  */
 }
+
 
 /* ========================================
    5. APP-WIDE COMPONENTS

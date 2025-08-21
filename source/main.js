@@ -94,7 +94,7 @@ class ViewManager {
     }
 
     const config = this.viewConfig[role][viewId];
-    const currentViewElement = document.querySelector('.view-container.view-active');
+    const currentViewElement = document.querySelector('.page-view-area.view-active');
     const newViewElement = document.getElementById(config.id);
 
     if (!newViewElement) {
@@ -282,7 +282,7 @@ class ViewManager {
     const defaultView = this.defaultViews[newRole] || 'home';
 
     // --- NEW: Explicitly hide all view containers before switching ---
-    document.querySelectorAll('.view-container').forEach(container => {
+    document.querySelectorAll('.page-view-area').forEach(container => {
       container.classList.remove('view-active');
     });
     // --- END NEW ---
@@ -450,7 +450,7 @@ window.addEventListener('requestViewChange', (e) => {
 });
 
 // Main application initialization function
-async function initializeApp() {
+export async function initializeApp() {
   console.log("🚀 🚀 Initializing App...");
   showFullScreenLoader();
 
@@ -519,11 +519,6 @@ async function initializeApp() {
   }
 }
 
-/**
- * Sets up ResizeObservers to dynamically update layout CSS variables (--header-height, --bottom-height)
- * whenever the header or bottom navigation bar changes size. This is more efficient and reliable
- * than using window.resize or custom events, as it reacts to content changes (like banners).
- */
 function initializeLayoutObservers() {
   const header = document.querySelector('.header-container');
   const bottomBar = document.querySelector('.bottom-tab-bar');
@@ -542,9 +537,6 @@ function initializeLayoutObservers() {
   if (header) observer.observe(header);
   if (bottomBar) observer.observe(bottomBar);
 }
-
-/* app intialization */
-initializeApp();
 
 function initializePullToRefresh() {
   const ptr = document.getElementById("pullToRefresh");

@@ -160,7 +160,7 @@ function updateHeroSection(user) {
 /**
  * Main initialization function for the User Home Page.
  */
-async function initializeUserHomePage() {
+export async function init() {
     const container = document.getElementById('user-home-view'); // Correctly target the main view container
     if (!container || container.dataset.initialized === 'true') return;
 
@@ -194,5 +194,3 @@ async function initializeUserHomePage() {
     container.dataset.initialized = 'true';
     console.log('✨ User Home Page Initialized.');
 }
-
-initializeUserHomePage();

@@ -1,5 +1,5 @@
 /* 🖼️ Base Styles & Scoped Theme */
-.user-home-page {
+.user-home-view {
   /* 🎨 Component-Scoped Color Scheme */
   /* These variables are scoped to this view to avoid conflicts with global styles. */
   --primary: #4361ee;
@@ -355,7 +355,7 @@
 
 /* Smaller mobile devices */
 @media (max-width: 480px) {
-  .user-home-page {
+  .user-home-view {
     padding: 12px; /* Tighter padding */
   }
 

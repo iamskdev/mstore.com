@@ -60,7 +60,7 @@ Here's how to structure the development for the main tabs:
 
 These are "views" within the main `index.html` SPA.
 
-1.  **HTML Structure:** The container `div` for the view is in `index.html` (e.g., `<div id="saved-view" class="page-view hidden"></div>`).
+1.  **HTML Structure:** The container `div` for the view is in `index.html` (e.g., `<div id="saved-view" class="page-view-area hidden"></div>`).
 2.  **JavaScript Logic:** All logic for fetching data and rendering the UI for a view goes into its own file in `public/scripts/views/`.
     -   **Example:** To build the "Saved" items page, all your code should go into `public/scripts/views/saved-view.js`.
 3.  **Initialization:** The `initializeSavedView()` function is called from `public/scripts/main.js` to load it into the app.

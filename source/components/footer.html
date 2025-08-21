@@ -16,7 +16,7 @@
 
     /* --- Embedded Footer Layout Fix --- */
     /* This class is added by the ViewManager to views that have a footer embedded in their content. */
-    .view-container.has-embedded-footer {
+    .page-view-area.has-embedded-footer {
       display: flex;
       flex-direction: column;
       /* This is crucial to make the view take up all available space,
@@ -74,7 +74,7 @@
       max-height: 2000px; /* A large value to ensure it can expand fully. */
       /* FIX: Changed from 'auto' to 'visible'. This is the key change.
          It prevents the footer from having its own internal scrollbar. The content will now
-         overflow naturally, and the parent '.view-container' will handle all scrolling. */
+         overflow naturally, and the parent '.page-view-area' will handle all scrolling. */
       overflow: visible;
     }
     

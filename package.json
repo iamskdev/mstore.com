@@ -4,7 +4,7 @@
   "description": "A modern PWA for local shops and services.",
   "main": "index.js",
   "scripts": {
-    "start": "npx live-server . --port=8181 --mount=/apnastore.com/:.",
+    "start": "npx live-server . --port=8181 --host=0.0.0.0 --mount=/apnastore.com/:.",
     "tunnel": "ngrok http 8181",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"npm start\" \"wait-on http://localhost:8181/apnastore.com/ && npm run tunnel\""

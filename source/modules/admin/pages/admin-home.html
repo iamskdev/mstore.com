@@ -1,5 +1,7 @@
-  <!-- 1. ADMIN POWER TOOLS HEADER -->
-  <div class="admin-header">
+<!-- This view is for the admin dashboard, showing stats, alerts, and quick actions -->
+<div class="admin-home-view">
+  <!-- 1. Admin Header -->
+<div class="admin-header">
     <h1><i class="fas fa-user-shield"></i> Admin Console</h1>
     <div class="admin-actions">
       <button class="btn-danger" id="maintenance-toggle">
@@ -17,21 +19,21 @@
   <!-- 3. ADMIN-ONLY STATS -->
   <div class="stats-grid">
     <!-- Stat 1: Total Revenue -->
-    <div class="stat-card bg-admin">
+    <div class="stat-card">
       <h3 id="admin-stat-revenue">--</h3>
       <p>Total Revenue</p>
       <small>All-time sales</small>
     </div>
     
     <!-- Stat 2: Fraud Orders -->
-    <div class="stat-card bg-fraud">
+    <div class="stat-card">
       <h3 id="admin-stat-users">--</h3>
       <p>Total Users</p>
       <small>All registered users</small>
     </div>
     
     <!-- Stat 3: System Health -->
-    <div class="stat-card bg-tech">
+    <div class="stat-card">
       <h3 id="admin-stat-orders">--</h3>
       <p>Total Orders</p>
       <small>All-time orders</small>
@@ -81,3 +83,4 @@
       <tbody id="admin-log-table-body"></tbody>
     </table>
   </div>
+</div>

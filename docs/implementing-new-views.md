@@ -67,9 +67,9 @@ const viewConfig = {
 
 ```html
 <!-- Merchant Views -->
-<div id="merchant-home-view" class="view-container" data-view="home" data-role="merchant"></div>
+<div id="merchant-home-view" class="page-view-area" data-view="home" data-role="merchant"></div>
 <!-- ... other merchant views ... -->
-<div id="merchant-profile-edit-view" class="view-container" data-view="profile-edit" data-role="merchant"></div>
+<div id="merchant-profile-edit-view" class="page-view-area" data-view="profile-edit" data-role="merchant"></div>
 ```
 
 ### चरण 4: पेज का लॉजिक लिखें (JS फाइल)
