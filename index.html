@@ -14,15 +14,26 @@
   <meta name="theme-color" id="theme-color-meta" content="#4361ee">
   <script>
     // This inline script runs before rendering to prevent a "flash of unstyled content" (FOUC).
-    // It sets the theme class on the <html> element based on user preference or system settings.
+    // It sets the theme class on the <html> element and updates the theme-color meta tag.
     (function() {
       const preference = localStorage.getItem('app-theme');
       const systemIsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      // Use saved preference; otherwise, fall back to system setting.
       const theme = preference || (systemIsDark ? 'dark' : 'light');
       
       document.documentElement.classList.add(`${theme}-mode`);
       document.documentElement.dataset.theme = theme;
+
+      // Define theme colors to avoid waiting for CSS. These must match --bg-primary in main.css.
+      const themeColors = {
+        light: '#f9f9f9',
+        dark: '#121212'
+      };
+
+      // Update the meta tag immediately to ensure the status bar color is correct on initial load.
+      const themeColorMeta = document.getElementById('theme-color-meta');
+      if (themeColorMeta) {
+        themeColorMeta.setAttribute('content', themeColors[theme]);
+      }
     })();
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">

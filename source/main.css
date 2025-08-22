@@ -162,6 +162,7 @@ html {
   overflow: hidden; /* Prevents overflow issues */
   box-sizing: border-box;
   overflow-y: auto;
+  overscroll-behavior-y: contain; /* Prevents browser pull-to-refresh on this element */
   -webkit-overflow-scrolling: touch;
   opacity: 0;
   transform: translateY(10px);

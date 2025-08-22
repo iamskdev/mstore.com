@@ -141,3 +141,28 @@ export function initializePwaInstall() {
     setDeferredPrompt(null);
   });
 }
+
+export function setupPwaRefreshBlockers() {
+  // Check if the app is running in standalone mode (installed PWA)
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    console.log("PWA is in standalone mode. Disabling browser refresh.");
+
+    // 1. Block keyboard refresh shortcuts (F5, Ctrl+R)
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+        console.log("Blocked Ctrl+R refresh.");
+        e.preventDefault();
+      }
+      if (e.key === 'F5') {
+        console.log("Blocked F5 refresh.");
+        e.preventDefault();
+      }
+    });
+
+    // 2. Block context menu (which contains the reload option)
+    window.addEventListener('contextmenu', (e) => {
+      console.log("Blocked context menu.");
+      e.preventDefault();
+    });
+  }
+}

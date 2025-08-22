@@ -9,7 +9,7 @@
 import { APP_CONFIG } from './utils/app-config.js';
 import { AuthService } from './firebase/auth/auth.js';
 import { viewConfig, defaultViews } from './utils/view-config.js';
-import { setDeferredPrompt } from './utils/pwa-manager.js';
+import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.js';
 
 class ViewManager {
   constructor() {
@@ -581,6 +581,7 @@ export async function loadCoreComponents() {
 // Main application initialization function
 export async function initializeApp() {
   console.log("🚀 🚀 Initializing App...");
+  setupPwaRefreshBlockers();
   showFullScreenLoader();
 
   // 1. Load core static components like header and navigation first.
@@ -671,101 +672,88 @@ function initializePullToRefresh() {
   const ptr = document.getElementById("pullToRefresh");
   const arrow = document.getElementById("arrowIcon");
   const spinner = document.getElementById("spinnerIcon");
+  // Listen on the main content area, which contains the scrollable views.
+  const mainContent = document.querySelector('.main-page-content');
+
+  if (!mainContent) {
+    console.error("PTR Error: .main-page-content container not found.");
+    return;
+  }
 
   let startY = 0;
   let isPulling = false;
-  let pullThreshold = 60; // Minimum pull distance to trigger refresh
-  let currentHeaderHeight = 0; // Will be set dynamically from CSS variable
+  const pullThreshold = 60;
+  let currentHeaderHeight = 0;
 
-  // Get header height dynamically
   const updateHeaderHeight = () => {
     currentHeaderHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
-    console.log("PTR Debug: currentHeaderHeight", currentHeaderHeight);
-    console.log("PTR Debug: ptr.offsetHeight (before setting top)", ptr.offsetHeight);
-    // Ensure PTR is hidden initially, or snaps back to hidden position if already visible
-    ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
-    console.log("PTR Debug: ptr.style.top (after setting)", ptr.style.top);
+    if (ptr.offsetHeight > 0) {
+        ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
+    }
   };
 
-  // Update height on initial load and whenever header height changes
+  window.addEventListener('partialsLoaded', updateHeaderHeight);
+  window.addEventListener('resize', updateHeaderHeight);
   updateHeaderHeight();
-  window.addEventListener('partialsLoaded', updateHeaderHeight); // Listen for header load
-  window.addEventListener('resize', updateHeaderHeight); // Listen for window resize
 
-  window.addEventListener("touchstart", e => {
-    // Only activate if at the very top of the scrollable content
-    if (window.scrollY === 0) {
-      startY = e.touches[0].clientY;
+  mainContent.addEventListener('touchstart', e => {
+    startY = e.touches[0].clientY;
+    isPulling = false; // Reset on every touch.
+  }, { passive: true });
+
+  mainContent.addEventListener('touchmove', e => {
+    const activeView = mainContent.querySelector('.page-view-area.view-active');
+    if (!activeView) return; // Exit if no active view.
+
+    const isAtTop = activeView.scrollTop === 0;
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+
+    // Condition to START a pull: active view is at the top, user is pulling down, and not already in a pull.
+    if (isAtTop && diff > 5 && !isPulling) {
       isPulling = true;
-      // Reset icons
-      arrow.style.display = "inline-block";
-      spinner.style.display = "none";
-      spinner.classList.remove("spinning");
-      arrow.style.transform = `rotate(0deg)`; // Ensure initial state
+      ptr.style.transition = 'none'; // Disable transition during pull for direct mapping.
     }
-  });
 
-  window.addEventListener("touchmove", e => {
-    if (!isPulling) return;
-    let currentY = e.touches[0].clientY;
-    let diff = currentY - startY;
-
-    if (diff > 0) {
-      // Only prevent default scroll behavior and show PTR UI if pull distance exceeds a small threshold
-      if (diff > 10) { // A small threshold to differentiate from accidental scrolls
-        e.preventDefault();
-        let pull = Math.min(diff, 120); // Max pull distance
-        // Position PTR just below the header
-        ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight + pull}px`;
-
-        // Rotate arrow based on pull distance
-        let rotation = Math.min(pull * 2, 180); // Rotate faster
-        arrow.style.transform = `rotate(${rotation}deg)`;
-
-        // Show/hide arrow based on pull direction (for visual feedback)
-        if (diff > 0) {
-          arrow.style.display = "inline-block";
-          spinner.style.display = "none";
-        } else {
-          arrow.style.display = "none";
-        }
-      }
-    } else {
-      // If pulling up, hide PTR
-      ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
-      arrow.style.transform = `rotate(0deg)`;
+    if (isPulling) {
+      e.preventDefault(); // Take control from browser.
+      const pullDistance = Math.max(0, diff);
+      ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight + Math.min(pullDistance, 120)}px`;
+      
+      const rotation = Math.min((pullDistance / pullThreshold) * 180, 180);
+      arrow.style.transform = `rotate(${rotation}deg)`;
     }
-  });
+  }, { passive: false });
 
-  window.addEventListener("touchend", () => {
+  mainContent.addEventListener('touchend', e => {
     if (!isPulling) return;
+
+    const currentY = e.changedTouches[0].clientY;
+    const diff = currentY - startY;
+    
     isPulling = false;
+    ptr.style.transition = 'top 0.3s ease'; // Restore animation.
 
-    // Calculate the actual visible pull distance
-    let currentPullVisible = parseInt(ptr.style.top) - (currentHeaderHeight - ptr.offsetHeight);
-
-    if (currentPullVisible >= pullThreshold) {
-      // Trigger refresh
-      ptr.style.top = `${currentHeaderHeight}px`; // Snap to visible position (just below header)
+    if (diff > pullThreshold) {
+      // Trigger Refresh
+      ptr.style.top = `${currentHeaderHeight}px`;
       arrow.style.display = "none";
       spinner.style.display = "inline-block";
       spinner.classList.add("spinning");
 
-      // Dispatch custom event for app content refresh
       window.dispatchEvent(new CustomEvent('appRefreshRequested'));
 
-      // Hide PTR after a delay (or when refresh is complete)
       setTimeout(() => {
-        ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`; // Hide it above header
+        ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
+        arrow.style.display = "inline-block";
+        spinner.style.display = "none";
         spinner.classList.remove("spinning");
-      }, 1500); // Simulate refresh time
-
+        arrow.style.transform = 'rotate(0deg)';
+      }, 1500);
     } else {
-      // Snap back to hidden position
+      // Cancel pull, snap back.
       ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
-      arrow.style.transform = `rotate(0deg)`;
-      arrow.style.display = "inline-block";
-      spinner.style.display = "none";
+      arrow.style.transform = 'rotate(0deg)';
     }
   });
 }

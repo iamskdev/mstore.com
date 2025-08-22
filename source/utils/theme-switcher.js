@@ -31,7 +31,7 @@ export function setTheme(theme) {
   setTimeout(() => {
     const themeColorMeta = document.getElementById('theme-color-meta');
     // Use the accent color for the theme-color meta tag.
-    const newThemeColor = getComputedStyle(root).getPropertyValue('--accent-primary').trim();
+    const newThemeColor = getComputedStyle(root).getPropertyValue('--bg-primary').trim();
     
     if (themeColorMeta && newThemeColor) {
       themeColorMeta.setAttribute('content', newThemeColor);
