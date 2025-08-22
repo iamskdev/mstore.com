@@ -1,19 +1,4 @@
 <style>
-    /* --- Component-Scoped Theming Variables --- */
-    :root {
-      --footer-subtle-bg: rgba(0,0,0,0.05);
-      --footer-compact-bar-bg: rgba(0,0,0,0.03);
-      --footer-compact-bar-bg-hover: rgba(0,0,0,0.05);
-      --footer-btn-text-on-accent: #fff; /* Text color on top of accent-primary buttons */
-    }
-
-    html.dark-mode {
-      --footer-subtle-bg: rgba(255,255,255,0.05);
-      --footer-compact-bar-bg: rgba(255,255,255,0.03);
-      --footer-compact-bar-bg-hover: rgba(255,255,255,0.05);
-      --footer-btn-text-on-accent: var(--accent-text); /* Uses global dark mode variable */
-    }
-
     /* --- Embedded Footer Layout Fix --- */
     /* This class is added by the ViewManager to views that have a footer embedded in their content. */
     .page-view-area.has-embedded-footer {
@@ -93,7 +78,7 @@
     */
 
     .footer-wrapper { /* Default fixed footer styles */
-      background-color: var(--bg-secondary);
+      background-color: var(--bg-primary);
       border-top: 1px solid var(--border-color);
       box-shadow: 0 -2px 10px rgba(0,0,0,0.05); /* Subtle shadow for fixed footer */ 
       color: var(--text-primary);

@@ -78,6 +78,29 @@
   --header-banner-admin-text: #fff;
   --header-badge-bg: #FF5722;
   --header-badge-text: #fff;
+
+  /* --- 7. Component-Specific: Footer --- */
+    --header-badge-bg: #e74c3c;
+  --header-badge-text: #fff;
+
+  /* --- 7. Component-Specific: Footer --- */
+    --header-badge-bg: #FF5722;
+  --header-badge-text: #fff;
+
+  /* --- 7. Component-Specific: Footer --- */
+  --footer-compact-bar-bg: rgba(0,0,0,0.03);
+  --footer-compact-bar-bg-hover: rgba(0,0,0,0.05);
+
+  /* --- 8. Component-Specific: User Home Colors --- */
+  --color-primary-user: #4361ee;
+  --color-primary-light-user: #4895ef;
+  --color-secondary-user: #3f37c9;
+  --color-accent-user: #f72585;
+  --color-success-user: #4cc9f0;
+  --color-warning-user: #f8961e;
+  --color-danger-user: #ef233c;
+
+
 }
 
 html.dark-mode {
@@ -133,7 +156,7 @@ html.dark-mode {
    Styles for the main `body` and the base `.page-view-area` which
    form the fundamental structure of the application.
 */
-html {
+html, body {
   /* Set box-sizing globally for more predictable layouts */
   box-sizing: border-box;
   height: 100%; /* Should fill the viewport */
@@ -169,7 +192,7 @@ html {
   transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
   transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
 }
 
 

@@ -23,7 +23,7 @@
     }
 
     .auth-card {
-      background: var(--bg-secondary);
+      background: var(--bg-primary);
       margin: 1rem;
       margin-top: 0rem;
       height: auto;
