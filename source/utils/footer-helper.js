@@ -7,11 +7,16 @@ import { showToast } from './toast.js';
  * @param {string} role - The current user role ('guest', 'user', 'merchant', 'admin').
  */
 export function initializeFooter(containerElement, role) {
+    console.log('initializeFooter called for:', containerElement.id); // ADDED LOG
     const footerWrapper = containerElement.querySelector(".footer-wrapper");
     if (!footerWrapper) {
         console.warn(`Footer Helper: Could not find '.footer-wrapper' in`, containerElement);
         return;
     }
+
+    // Add the footer-wrapper-active class to the container element (page-view-area)
+    // This class is used by main.css to adjust the bottom padding of the page-view-area
+    containerElement.classList.add('footer-wrapper-active');
 
     // --- 1. Set Correct Footer Content Visibility ---
     const appFooter = footerWrapper.querySelector('#app-footer');
@@ -36,7 +41,9 @@ export function initializeFooter(containerElement, role) {
 
     // --- 2. Initialize Interactivity (Expand/Collapse, Scroll, etc.) ---
     // Prevent re-attaching listeners if already initialized.
+    console.log('footerWrapper.dataset.initialized:', footerWrapper.dataset.initialized); // ADDED LOG
     if (footerWrapper.dataset.initialized === 'true') {
+        console.log('Footer already initialized. Skipping.'); // ADDED LOG
         return;
     }
 
@@ -44,6 +51,14 @@ export function initializeFooter(containerElement, role) {
     let isAnimating = false;
 
     const compactBar = footerWrapper.querySelector('.footer-compact-bar');
+    // NEW: Set a CSS variable for the compact footer height
+    if (compactBar) {
+        const compactFooterHeight = compactBar.offsetHeight;
+        containerElement.style.setProperty('--compact-footer-height', `${compactFooterHeight}px`);
+
+        // Set a CSS variable on the containerElement for the additional bottom offset
+        containerElement.style.setProperty('--footer-bottom-offset', `${compactFooterHeight}px`);
+    }
     const collapseTriggers = footerWrapper.querySelectorAll('.footer-collapse-trigger');
 
     // Function to expand the embedded footer
@@ -55,33 +70,44 @@ export function initializeFooter(containerElement, role) {
         // After adding the class, the footer's height changes. We need to wait for the next
         // animation frame for the browser to calculate the new layout before we can scroll to it.
         requestAnimationFrame(() => {
+            // Get CSS variable values at the top of the function
+        const headerHeightCSS = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
+        const filterBarHeightCSS = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--filter-bar-height')) || 0;
+
+        requestAnimationFrame(() => {
             const header = document.querySelector('.header-container');
-            const headerHeight = header?.offsetHeight || 0; // Get current header height
+            const filterBar = document.querySelector('#filter-bar'); // Updated selector
+
+            let targetOffset = 0; // Initialize to 0
+
+            if (filterBar && filterBar.offsetHeight > 0) { // If filter bar exists and is visible
+                targetOffset = headerHeightCSS + filterBarHeightCSS;
+
+            } else { // If filter bar is not present or not visible
+                targetOffset = headerHeightCSS;
+
+            }
 
             // Calculate the target scroll position. We want the top of the footer
-            // to be just below the header. `offsetTop` gives the position relative to the
-            // scrollable container.
-            const targetScrollTop = footerWrapper.offsetTop - headerHeight;
+            // to be just below the calculated offset.
+            // Using getBoundingClientRect().top for more accurate viewport-relative position
+            const currentFooterTopInViewport = footerWrapper.getBoundingClientRect().top;
+            const targetScrollTop = containerElement.scrollTop + currentFooterTopInViewport - targetOffset;
 
-            // Ensure targetScrollTop is not negative, as we can't scroll above the top.
-            // Also, ensure we don't scroll past the maximum scrollable height.
+
             const maxScrollTop = containerElement.scrollHeight - containerElement.clientHeight;
             const finalScrollTop = Math.min(Math.max(0, targetScrollTop), maxScrollTop);
 
-            // Use `scrollTo` to move to the absolute calculated position within the view.
-            // This is more reliable than `scrollBy` with viewport-relative calculations.
-            // FIX: The scroll was using the raw `targetScrollTop`, which could be out of bounds.
-            // Using `finalScrollTop` ensures we never try to scroll past the content's end.
             containerElement.scrollTo({
                 top: finalScrollTop,
                 behavior: 'smooth'
             });
  
-            // Unlock after a safe delay that accounts for CSS transition (0.5s) and smooth scroll.
             setTimeout(() => {
                 isAnimating = false;
             }, 700);
         });
+    });
     };
 
     // Function to collapse the embedded footer
@@ -105,44 +131,9 @@ export function initializeFooter(containerElement, role) {
         collapseTriggers.forEach(btn => btn.addEventListener('click', collapseFooter));
     }
 
-    // --- Auto-collapse on Scroll Up ---
-    // This logic is attached once per footer instance to prevent duplicates.
-    if (!footerWrapper.dataset.scrollListenerAttached) {
-        let lastScrollTop = 0; // Variable to track the last scroll position
+    
 
-        const handleScrollCollapse = () => {
-            // Check if the footer is expanded and if there's an animation in progress
-            if (!footerWrapper.classList.contains('is-expanded') || isAnimating) {
-                lastScrollTop = window.scrollY; // Update lastScrollTop even when not expanded
-                return;
-            }
-
-            const currentScrollTop = window.scrollY; // Use window's scroll position
-
-            // Only proceed if scrolling UP
-            if (currentScrollTop > lastScrollTop) {
-                lastScrollTop = currentScrollTop;
-                return;
-            }
-
-            // If we reach here, the user is scrolling UP.
-            // Collapse the footer only when its top edge is scrolled past the vertical midpoint of the viewport.
-            const footerRect = footerWrapper.getBoundingClientRect();
-            const viewportMidpoint = window.innerHeight / 2;
-
-            // If the top of the footer is now below the middle of the screen, collapse it.
-            if (footerRect.top > viewportMidpoint) {
-                collapseFooter();
-            }
-
-            lastScrollTop = currentScrollTop;
-        };
-
-        window.addEventListener('scroll', handleScrollCollapse, { passive: true }); // FIX: Attach listener to the window
-        footerWrapper.dataset.scrollListenerAttached = 'true';
-    }
-
-    // --- Overscroll/Overswipe to Expand or Notify ---
+    // --- Overscroll/Overswipe to Expand or Notify ----
     // This logic is attached once per footer instance to prevent duplicates.
     if (!footerWrapper.dataset.overscrollListenerAttached) {
         let touchStartY = 0;
@@ -213,6 +204,33 @@ export function initializeFooter(containerElement, role) {
         containerElement.addEventListener('touchend', handleTouchEnd);
         containerElement.addEventListener('wheel', handleWheel, { passive: false });
         footerWrapper.dataset.overscrollListenerAttached = 'true';
+    }
+
+    // --- New Auto-collapse/Expand Logic on Scroll ---
+    if (!footerWrapper.dataset.newScrollListenerAttached) {
+        let lastScrollTop = containerElement.scrollTop;
+
+        const handleNewScrollLogic = () => {
+            const currentScrollTop = containerElement.scrollTop;
+            const isExpanded = footerWrapper.classList.contains('is-expanded');
+            const footerRect = footerWrapper.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+
+            
+
+            // Auto-Collapse Logic:
+            // If expanded, and scrolling down, and footer is moving out of view and not animating
+            if (isExpanded && currentScrollTop > lastScrollTop && !isAnimating && footerRect.top >= window.innerHeight) { // Scrolling down and entire expanded footer is out of view at the bottom
+
+                    collapseFooter();
+
+                }
+
+            lastScrollTop = currentScrollTop;
+        };
+
+        containerElement.addEventListener('scroll', handleNewScrollLogic, { passive: true });
+        footerWrapper.dataset.newScrollListenerAttached = 'true';
     }
 
     footerWrapper.dataset.initialized = 'true';

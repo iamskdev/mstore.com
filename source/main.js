@@ -124,7 +124,7 @@ class ViewManager {
       console.log(`Dynamically created view element: #${config.id}`);
     }
     console.log(`DEBUG: switchView - Attempting to switch to role: ${role}, viewId: ${viewId}, config.id: ${config.id}`);
-    console.log(`DEBUG: newViewElement:`, newViewElement);
+  
 
     // If the requested view is already active, we don't need to re-render it.
     // However, we MUST re-dispatch the 'viewChanged' event. This allows components

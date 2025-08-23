@@ -26,7 +26,8 @@
   --header-height: 56px;  /* Default header height */
   --nav-tab-height: 65px;  /* Default bottom bar height, matches tab-nav height */
   --filter-bar-height: 36px; /* Default filter bar height */
-}
+ }
+
 
 /* ========================================
    2. THEME VARIABLES (LIGHT & DARK)
@@ -158,16 +159,13 @@ html.dark-mode {
    form the fundamental structure of the application.
 */
 html, body {
-  /* Set box-sizing globally for more predictable layouts */
   box-sizing: border-box;
-  height: 100%; /* Should fill the viewport */
-    /* Set default top offset for the page view */
-  --page-view-top-offset: var(--header-height);
   font-family: 'Noto Sans', sans-serif;
-
+  height: 100%;
+  margin: 0;
+  padding: 0;
   background-color: var(--bg-primary);
-  overscroll-behavior-y: contain; /* Prevents browser pull-to-refresh */
-  /* Remove the default tap highlight color on mobile WebKit browsers for a cleaner native feel. */
+  overscroll-behavior-y: contain;
   -webkit-tap-highlight-color: transparent;  
 }
 
@@ -177,19 +175,13 @@ html, body {
 }
 
 
-
-body.filter-bar-active {
-  /* Adjust top offset when filter bar is visible */
-  --page-view-top-offset: calc(var(--header-height) + var(--filter-bar-height));
-}
-
 .page-view-area {
   position: absolute;
-  top: var(--page-view-top-offset);
-  bottom: var(--nav-tab-height);
-  width: 100%;
   left: 0;
   right: 0;
+  width: 100%;
+  top: var(--header-height);
+  bottom: var(--nav-tab-height);  
   overflow: hidden; /* Prevents overflow issues */
   box-sizing: border-box;
   overflow-y: auto;
@@ -198,36 +190,24 @@ body.filter-bar-active {
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
-  transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+              transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              top 0.3s ease, height 0.3s ease; /* Add transition for smooth size changes */
   pointer-events: none;
   background: var(--bg-primary);
 }
 
 
-
 .page-view-area.view-active {
-  opacity: 1 ;
+  opacity: 1 ; 
   transform: translateY(0);
   pointer-events: auto;
 }
 
-/* ========================================
-   4. LAYOUT HELPERS & OVERRIDES
-   ========================================
-   Specific layout rules that modify or enhance the core layout for
-   special cases, such as views with an embedded footer.
-*/
-.page-view-area.view-with-embedded-footer {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+/* Adjust the top position of the main content area when the filter bar is active */
+.page-view-area.filter-bar-active {
+  top: calc(var(--header-height) + var(--filter-bar-height));
 }
 
-.page-view-area.view-with-embedded-filter-bar {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
 
 .full-screen-loader {
   position: fixed;

@@ -48,10 +48,13 @@ class FilterManager {
             }
         }
 
-        // Toggle visibility using a class for better CSS control and adjust body class
+        // Toggle visibility using a class for better CSS control and adjust page-view-area class
         if (this.placeholder) {
             this.placeholder.style.visibility = shouldShow ? 'visible' : 'hidden';
-            document.body.classList.toggle('filter-bar-active', shouldShow);
+            const pageViewArea = document.querySelector('.page-view-area');
+            if (pageViewArea) {
+                pageViewArea.classList.toggle('filter-bar-active', shouldShow);
+            }
         }
     }
 

@@ -21,7 +21,6 @@ const viewConfig = {
       cssPath: './source/common/styles/guest-home.css',
       jsPath: './source/common/scripts/guest-home.js',
       showFilterBar: false, // No filter bar on the welcome page
-      embedFooter: true,
       title: 'Home'
     },
     explore: {
