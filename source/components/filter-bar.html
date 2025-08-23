@@ -103,11 +103,14 @@
 <style>
   .filter-bar-container {
     background-color: var(--bg-primary);
-    padding: 5px 0.5rem; /* Use padding for horizontal spacing */
+    padding: 3px 0.5rem;
+    align-items: center;
+    left: 0;
+    height: var(--filter-bar-height); /* Use the dynamic --filter-bar-height variable */
     display: flex;
-    gap: 8px;
+    gap: 5px; /* Space between tabs */
     border-bottom: 1px solid var(--border-color);
-    position: sticky;
+    position: fixed; /* Changed from sticky to fixed */
     /* FIX: Use the dynamic --header-height variable set by the header component.
        This ensures the filter bar is always positioned correctly below the header,
        even if the header's height changes (e.g., due to a mode banner). */
@@ -126,7 +129,7 @@
   /* Base style for ALL tabs (icon, normal, skeleton) */
   .filter-bar-tab {
     flex: 0 0 auto;
-    padding: 4px 8px;
+    padding: 2px 8px;
     height: 30px;
     border: 1px solid transparent;
     background: var(--bg-tertiary);

@@ -24,7 +24,8 @@
 */
 :root {
   --header-height: 56px;  /* Default header height */
-  --bottom-height: 65px;  /* Default bottom bar height, matches tab-nav height */
+  --nav-tab-height: 65px;  /* Default bottom bar height, matches tab-nav height */
+  --filter-bar-height: 36px; /* Default filter bar height */
 }
 
 /* ========================================
@@ -160,6 +161,8 @@ html, body {
   /* Set box-sizing globally for more predictable layouts */
   box-sizing: border-box;
   height: 100%; /* Should fill the viewport */
+    /* Set default top offset for the page view */
+  --page-view-top-offset: var(--header-height);
   font-family: 'Noto Sans', sans-serif;
 
   background-color: var(--bg-primary);
@@ -175,10 +178,15 @@ html, body {
 
 
 
+body.filter-bar-active {
+  /* Adjust top offset when filter bar is visible */
+  --page-view-top-offset: calc(var(--header-height) + var(--filter-bar-height));
+}
+
 .page-view-area {
   position: absolute;
-  top: var(--header-height); /* Position below the fixed header */
-  bottom: var(--bottom-height); /* Position above the fixed bottom bar */
+  top: var(--page-view-top-offset);
+  bottom: var(--nav-tab-height);
   width: 100%;
   left: 0;
   right: 0;
@@ -196,11 +204,11 @@ html, body {
 }
 
 
+
 .page-view-area.view-active {
-  opacity: 1;
+  opacity: 1 ;
   transform: translateY(0);
   pointer-events: auto;
-  z-index: 10;
 }
 
 /* ========================================
@@ -213,26 +221,14 @@ html, body {
   display: flex;
   flex-direction: column;
   flex: 1;
-
-  /*
-    The height is now correctly controlled by the `top` and `bottom` properties
-    on the base `.page-view-area` rule. We remove the conflicting `height: 100%`
-    which was causing the view to overlap the bottom navigation bar.
-  */
 }
 
+.page-view-area.view-with-embedded-filter-bar {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 
-/* ========================================
-   5. APP-WIDE COMPONENTS
-   ========================================
-   Styles for components that are not tied to a single view and can
-   appear globally across the application.
-*/
-
-/* --- 5.1. Full-Screen Loader --- */
-/* FIX: Replaced incorrect dropdown styles with proper full-screen overlay styles.
-   This ensures the loader covers the entire screen, has a blurred background,
-   and can correctly center its content (the spinner). */
 .full-screen-loader {
   position: fixed;
   top: 0;

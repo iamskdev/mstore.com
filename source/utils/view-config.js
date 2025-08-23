@@ -3,7 +3,7 @@
 const defaultViews = {
   guest: 'home',
   user: 'home',
-  merchant: 'add',
+  merchant: 'home',
   admin: 'home'
 };
 
@@ -66,7 +66,7 @@ const viewConfig = {
     account: { id: 'user-account-view', path: null, title: 'Account' }
   },
   merchant: {
-    home: { id: 'merchant-home-view', path: null, embedFooter: true, title: 'Home' },
+    home: { id: 'merchant-home-view', path: './source/modules/merchant/pages/merchant-home.html', embedFooter: true, title: 'Home' },
     explore: { id: 'merchant-inventory-view', path: null, title: 'Inventory' },
     add: { id: 'merchant-add-view', path: null, title: 'Add' },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics' },

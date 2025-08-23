@@ -1,4 +1,3 @@
-
 /**
  * @file View Manager
  * This module is the single source of truth for managing application views.
@@ -81,6 +80,25 @@ class ViewManager {
   }
 
   /**
+   * @private Loads and embeds the filter bar into a view element, then initializes its logic.
+   * @param {HTMLElement} viewElement - The view container element.
+   * @param {string} [existingHtml=''] - The existing HTML content of the view to prepend.
+   */
+  async _loadAndEmbedFilterBar(viewElement, existingHtml = '') {
+    try {
+      const filterBarResponse = await fetch('./source/components/filter-bar.html');
+      if (!filterBarResponse.ok) throw new Error('Filter Bar HTML not found');
+
+      const filterBarHtml = await filterBarResponse.text();
+      // Prepend the filter bar HTML and wrap existing content
+      viewElement.innerHTML = filterBarHtml + `<div class="view-content-wrapper">${existingHtml}</div>`;
+      viewElement.classList.add('view-with-embedded-filter-bar'); // Add class for CSS layout targeting
+    } catch (e) {
+      console.warn(`ViewManager: Could not embed filter bar for ${viewElement.id}`, e);
+    }
+  }
+
+  /**
    * Switches the active view with a transition.
    * @param {string} role The user role for the view.
    * @param {string} viewId The ID of the view to switch to.
@@ -95,12 +113,18 @@ class ViewManager {
 
     const config = this.viewConfig[role][viewId];
     const currentViewElement = document.querySelector('.page-view-area.view-active');
-    const newViewElement = document.getElementById(config.id);
+    let newViewElement = document.getElementById(config.id);
 
+    // If the view element doesn't exist, create it dynamically
     if (!newViewElement) {
-      console.error(`View element not found in DOM: #${config.id}`);
-      return;
+      newViewElement = document.createElement('div');
+      newViewElement.id = config.id;
+      newViewElement.classList.add('page-view-area'); // Add the class for styling and identification
+      document.getElementById('page-view-area').appendChild(newViewElement);
+      console.log(`Dynamically created view element: #${config.id}`);
     }
+    console.log(`DEBUG: switchView - Attempting to switch to role: ${role}, viewId: ${viewId}, config.id: ${config.id}`);
+    console.log(`DEBUG: newViewElement:`, newViewElement);
 
     // If the requested view is already active, we don't need to re-render it.
     // However, we MUST re-dispatch the 'viewChanged' event. This allows components
@@ -117,8 +141,12 @@ class ViewManager {
 
     if (currentViewElement) currentViewElement.classList.remove('view-active');
 
+    console.log(`DEBUG: switchView - Current loadedViews:`, this.loadedViews);
     if (config.path && !this.loadedViews.has(config.id)) {
+      console.log(`DEBUG: switchView - Calling loadViewContent for ${config.id}`);
       await this.loadViewContent(newViewElement, config, role);
+    } else if (config.path && this.loadedViews.has(config.id)) {
+      console.log(`DEBUG: switchView - Content for ${config.id} already loaded, skipping loadViewContent.`);
     }
 
     // Handle embedding the footer for views that don't have a content path but need a footer.
@@ -218,7 +246,18 @@ class ViewManager {
 
       // If the view config requests an embedded footer, fetch and append it.
       // This is used for views where the footer should be part of the scrollable content.
-      if (config.embedFooter) {
+      // If the view config requests an embedded filter bar, fetch and prepend it.
+      if (config.embedFilterBar) {
+        await this._loadAndEmbedFilterBar(viewElement, viewHtml);
+        // After embedding, initialize the filter bar logic for this specific view element
+        // Lazy-load FilterManager if not already loaded
+        if (!this.filterManager) {
+          const { filterManager } = await import('./utils/filter-helper.js');
+          this.filterManager = filterManager;
+        }
+        // Call a new method on filterManager to initialize the embedded filter bar
+        this.filterManager.initializeEmbeddedFilterBar(viewElement);
+      } else if (config.embedFooter) { // Existing footer embedding logic
         await this._loadAndEmbedFooter(viewElement, role, viewHtml);
       }
       else {
@@ -304,6 +343,8 @@ class ViewManager {
 
   async init() {
     console.log("[Debug] D. viewManager.init() started.");
+      this.loadedViews.clear(); // Clear loaded views on init to ensure fresh content load
+  
     // --- STEP 1: CRITICAL - Synchronize Auth State First ---
     // This is the most important step to prevent the "logout on refresh" bug.
     // We `await` the `initializeAuthListener`. This function returns a promise that
@@ -391,29 +432,7 @@ class ViewManager {
        }
       if (e.state && e.state.role && e.state.view) { this.switchView(e.state.role, e.state.view); } // This call in an event handler doesn't need to be awaited.
     });
-    // --- FORCE LOAD TEST START ---
-    try {
-        console.log('--- FORCE LOAD TEST: Attempting to force load guest-home-view ---');
-        const homeView = document.getElementById('guest-home-view');
-        if (homeView) {
-            const response = await fetch('./source/common/pages/guest-home.html');
-            if (response.ok) {
-                const html = await response.text();
-                homeView.innerHTML = html;
-                console.log('--- FORCE LOAD TEST: Content injected successfully. ---');
-            } else {
-                homeView.innerHTML = `--- FORCE LOAD TEST: Fetch failed with status ${response.status}. ---`;
-                console.error('--- FORCE LOAD TEST: Fetch failed. ---', response);
-            }
-        } else {
-            console.error('--- FORCE LOAD TEST: #guest-home-view element not found in DOM. ---');
-        }
-    } catch (e) {
-        console.error('--- FORCE LOAD TEST: An error occurred ---', e);
-        const homeView = document.getElementById('guest-home-view');
-        if(homeView) homeView.innerHTML = `--- FORCE LOAD TEST: An error occurred: ${e.message} ---`;
-    }
-    // --- FORCE LOAD TEST END ---
+    
 
     console.log("👁️ View Manager Initialized.");
   }
@@ -465,7 +484,6 @@ function hideFullScreenLoader() {
   document.documentElement.style.overflow = '';
   document.documentElement.style.paddingRight = originalBodyPaddingRight;
 }
-
 
 
 
@@ -587,9 +605,41 @@ export async function initializeApp() {
   // 1. Load core static components like header and navigation first.
   await loadCoreComponents();
 
+  // Set --header-height immediately after core components are loaded
+  const headerContainer = document.querySelector('.header-container');
+  if (headerContainer) {
+    document.documentElement.style.setProperty('--header-height', `${headerContainer.offsetHeight}px`);
+  }
+
   // 2. Initialize the View Manager. This sets up the dynamic content views.
   await viewManager.init();
   
+  // Adjust main content padding after view manager initializes and potentially loads filter bar
+  // Use requestAnimationFrame to ensure layout is updated before calculating offsetHeight
+  window.requestAnimationFrame(() => {
+    const mainContent = document.getElementById('page-view-area');
+    const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
+
+    if (mainContent) {
+      const currentViewConfig = viewManager.viewConfig[viewManager.currentRole]?.[viewManager.currentView];
+      let effectiveFilterBarHeight = 0;
+
+      // Get the actual rendered height of the filter bar if it's supposed to be shown
+      if (currentViewConfig && currentViewConfig.showFilterBar) {
+        // Get the intended height from the CSS variable directly
+        const filterBarCssHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--filter-bar-height')) || 0;
+        effectiveFilterBarHeight = filterBarCssHeight;
+      }
+
+      console.log(`DEBUG: Header Height: ${headerHeight}`);
+      console.log(`DEBUG: Effective Filter Bar Height: ${effectiveFilterBarHeight}`);
+      const newTop = `${headerHeight + effectiveFilterBarHeight}px`;
+      console.log(`DEBUG: Setting page-view-area top to: ${newTop}`);
+      mainContent.style.top = newTop;
+      console.log(`DEBUG: Actual page-view-area computed top: ${getComputedStyle(mainContent).top}`);
+    }
+  });
+
   // 3. Set up ResizeObservers to automatically adjust layout variables.
   initializeLayoutObservers();
 
@@ -659,7 +709,7 @@ function initializeLayoutObservers() {
       if (entry.target.matches('.header-container')) {
         document.documentElement.style.setProperty('--header-height', `${height}px`);
       } else if (entry.target.matches('.bottom-tab-bar')) {
-        document.documentElement.style.setProperty('--bottom-height', `${height}px`);
+        document.documentElement.style.setProperty('--nav-tab-height', `${height}px`);
       }
     }
   });
@@ -673,10 +723,10 @@ function initializePullToRefresh() {
   const arrow = document.getElementById("arrowIcon");
   const spinner = document.getElementById("spinnerIcon");
   // Listen on the main content area, which contains the scrollable views.
-  const mainContent = document.querySelector('.main-page-content');
+  const mainContent = document.getElementById('page-view-area');
 
   if (!mainContent) {
-    console.error("PTR Error: .main-page-content container not found.");
+    console.error("PTR Error: .page-view-area container not found.");
     return;
   }
 
@@ -703,7 +753,7 @@ function initializePullToRefresh() {
 
   mainContent.addEventListener('touchmove', e => {
     const activeView = mainContent.querySelector('.page-view-area.view-active');
-    if (!activeView) return; // Exit if no active view.
+    if (!activeView) return; // Exit if no active view. 
 
     const isAtTop = activeView.scrollTop === 0;
     const currentY = e.touches[0].clientY;

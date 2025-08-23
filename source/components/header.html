@@ -237,10 +237,10 @@
   - Also, if header partial is loaded after DOMContentLoaded, its script may not run as expected (especially if using dynamic partial loader).
 
   **Fixes:**
-  1. Always ensure header partial is loaded and its script runs after DOM is ready, and after .main-page-content is present.
-  2. In header.html script, always select `.main-page-content` dynamically (not at top-level), and always update padding and badge visibility on every load.
+  1. Always ensure header partial is loaded and its script runs after DOM is ready, and after .page-view-area is present.
+  2. In header.html script, always select `.page-view-area` dynamically (not at top-level), and always update padding and badge visibility on every load.
   3. If using dynamic partial loader, make sure it executes <script> tags inside partials.
-  4. Make sure every page (home, explore, item-details, etc.) has a `.main-page-content` element directly after header, so header JS can find and pad it.
+  4. Make sure every page (home, explore, item-details, etc.) has a `.page-view-area` element directly after header, so header JS can find and pad it.
   5. If you use SPA navigation, do NOT reload header partial, just update its content/state.
 
   **Below is a robust header script that works for all pages and always updates padding, search, and notification badge.**
@@ -272,7 +272,7 @@
       const bellIcon = notificationIcon?.querySelector('i');
       const badge = notificationIcon?.querySelector('.notification-badge');
       const appMode = window.APP_CONFIG?.appMode;
-      const mainContent = document.querySelector('.main-page-content');
+      const mainContent = document.getElementById('page-view-area');
 
       // 1. Update header branding (logo and name) by fetching live data
       const logoEl = document.querySelector('#header-logo-container img');
@@ -398,18 +398,8 @@
       }
 
       // 5. Adjust main content padding to prevent overlap
-      // Always select .main-page-content dynamically (in case DOM changes)
-      setTimeout(() => {
-        const headerContainer = document.querySelector('.header-container');
-        const mainContent = document.querySelector('.main-page-content');
-        if (headerContainer && mainContent) {
-          const headerHeight = headerContainer.offsetHeight;
-          mainContent.style.paddingTop = `${headerHeight}px`;
-          // Set a global CSS variable for other components to use (like the footer)
-          document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
-          // Set a global CSS variable for other components to use
-        }
-      }, 0);
+      // Always select .page-view-area dynamically (in case DOM changes)
+
     }
 
     // Listen for a promotion to be activated

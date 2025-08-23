@@ -30,6 +30,7 @@ class FilterManager {
      * @param {boolean} shouldShow - True to show the filter bar, false to hide it.
      */
     async manageVisibility(shouldShow) {
+        console.log(`DEBUG: FilterManager.manageVisibility called with shouldShow: ${shouldShow}`);
         if (!this.placeholder) return;
 
         // If it should be shown, load it if it hasn't been already.
@@ -47,9 +48,10 @@ class FilterManager {
             }
         }
 
-        // Toggle visibility using a class for better CSS control
+        // Toggle visibility using a class for better CSS control and adjust body class
         if (this.placeholder) {
-            this.placeholder.style.display = shouldShow ? '' : 'none';
+            this.placeholder.style.visibility = shouldShow ? 'visible' : 'hidden';
+            document.body.classList.toggle('filter-bar-active', shouldShow);
         }
     }
 
@@ -425,6 +427,33 @@ class FilterManager {
         maxLabel.textContent = maxVal;
         track.style.left = `${(minVal / minSlider.max) * 100}%`;
         track.style.right = `${100 - (maxVal / maxSlider.max) * 100}%`;
+    }
+
+    /**
+     * Initializes the logic for an embedded filter bar within a specific view element.
+     * This is used when the filter bar is part of the view's HTML content, not a global fixed element.
+     * @param {HTMLElement} viewElement - The parent element containing the embedded filter bar.
+     */
+    async initializeEmbeddedFilterBar(viewElement) {
+        console.log(`DEBUG: FilterManager.initializeEmbeddedFilterBar called for viewElement:`, viewElement);
+        // Temporarily set the placeholder to the viewElement to reuse existing logic
+        const originalPlaceholder = this.placeholder;
+        this.placeholder = viewElement;
+
+        try {
+            // Re-use the component initialization logic, but target the embedded filter bar
+            await this._initializeComponentLogic();
+            await this._initializeAdvancedPanelLogic();
+            // Mark as initialized for this specific embedded instance if needed,
+            // though the main isInitialized flag might be sufficient if only one embedded instance is active at a time.
+            // For now, we'll rely on the logic within _initializeComponentLogic and _initializeAdvancedPanelLogic
+            // to handle re-initialization if called multiple times on the same element.
+        } catch (error) {
+            console.error('FilterManager: Failed to initialize embedded filter bar logic.', error);
+        } finally {
+            // Restore the original placeholder
+            this.placeholder = originalPlaceholder;
+        }
     }
 }
 
