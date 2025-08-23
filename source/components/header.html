@@ -8,6 +8,17 @@
       /* This container will hold the banner and the header bar */
     }
 
+    /* New classes for header toggle items */
+    .header-toggle-item {
+      display: none; /* Default to flex, then hidden class will override */
+    }
+    .header-toggle-item.show-logo {
+      display: flex; /* Show logo */
+    }
+    .header-toggle-item.show-menu-icon {
+      display: flex; /* Show menu icon */
+    }
+
     /* Banners for different modes */
     .mode-banner {
       text-align: center;
@@ -206,8 +217,8 @@
     <header class="apna-header-content" id="main-header">
       <i class="fas fa-arrow-left header-icon" id="search-back"></i>
       <div class="header-branding">
-      <i class="fas fa-bars header-icon" id="header-menu-icon" style="display: none; font-size: 1.4rem; cursor: pointer; margin-right: 4px;"></i>
-      <span class="brand-logo" id="header-logo-container">
+      <i class="fas fa-bars header-icon header-toggle-item menu-icon" font-size: 1.4rem; cursor: pointer; margin-right: 4px;"></i>
+      <span class="brand-logo header-toggle-item logo-container">
                 <img src="./source/assets/logos/app-header-logo.png" alt="App Logo">
         </span>
         <span class="brand-name" id="header-name">Apna Store</span>
@@ -252,19 +263,25 @@
     // --- Static Header Style Logic ---
     // This runs once when the header is loaded to set the initial style (logo vs. menu).
     // It reads the configuration from app-config.js.
-    const headerStyle = window.APP_CONFIG?.headerStyle || 'logo';
-    const logoContainer = document.getElementById('header-logo-container');
-    const menuIconEl = document.getElementById('header-menu-icon');
+    function initializeHeaderStyle() {
+      const headerStyle = window.APP_CONFIG?.headerStyle || 'logo';
+      const logoContainer = document.querySelector('.logo-container');
+      const menuIconEl = document.querySelector('.menu-icon');
 
-    if (logoContainer && menuIconEl) {
-      if (headerStyle === 'menu') {
-        logoContainer.style.display = 'none';
-        menuIconEl.style.display = 'flex'; // Use flex to align with other header items
-      } else { // 'logo' or default
-        logoContainer.style.display = 'flex';
-        menuIconEl.style.display = 'none';
+      if (logoContainer && menuIconEl) {
+        if (headerStyle === 'menu') {
+          logoContainer.style.display = 'none';
+          menuIconEl.style.display = 'flex';
+        } else { // 'logo' or default
+          logoContainer.style.display = 'flex';
+          menuIconEl.style.setProperty('display', 'none', 'important');
+        }
       }
     }
+
+    // Listen for partialsLoaded event to ensure APP_CONFIG and DOM are ready
+    window.addEventListener('partialsLoaded', initializeHeaderStyle);
+
     function updateHeaderUI({ role, view, config }) {
       const userType = role;
       const modeBanner = document.getElementById('mode-banner');
@@ -275,9 +292,9 @@
       const mainContent = document.getElementById('page-view-area');
 
       // 1. Update header branding (logo and name) by fetching live data
-      const logoEl = document.querySelector('#header-logo-container img');
+      const logoEl = document.querySelector('.logo-container img');
       const nameEl = document.getElementById('header-name');
-      const logoContainer = document.getElementById('header-logo-container');
+      const logoContainer = document.querySelector('.logo-container');
       
       // --- Dynamic Branding Logic ---
       const defaultLogo = './source/assets/logos/app-logo.png';
@@ -409,7 +426,7 @@
 
         console.log('Header responding to promotion:', promo.header);
 
-        const logoEl = document.querySelector('#header-logo-container img');
+        const logoEl = document.querySelector('.logo-container img');
         const nameEl = document.getElementById('header-name');
         const headerContent = document.getElementById('main-header');
 
@@ -490,3 +507,4 @@
     console.log("✅ Header: Subscribed to ViewManager for state updates.");
 
   </script>
+

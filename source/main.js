@@ -6,6 +6,7 @@
  * Forced update to bypass caching. (2025-08-17)
  */
 import { APP_CONFIG } from './utils/app-config.js';
+window.APP_CONFIG = APP_CONFIG;
 import { AuthService } from './firebase/auth/auth.js';
 import { viewConfig, defaultViews } from './utils/view-config.js';
 import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.js';
