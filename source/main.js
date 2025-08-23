@@ -66,7 +66,7 @@ class ViewManager {
       const footerHtml = await footerResponse.text();
       // NEW: Wrap content in a div that can grow, ensuring the footer is pushed down.
       viewElement.innerHTML = `<div class="view-content-wrapper">${existingHtml}</div>` + footerHtml;
-      viewElement.classList.add('view-with-embedded-footer'); // Add class for CSS layout targeting
+      viewElement.classList.add('embedded-footer'); // Add class for CSS layout targeting
 
       // Lazy-load and initialize footer logic
       if (!this.footerHelper) {
@@ -614,31 +614,7 @@ export async function initializeApp() {
   // 2. Initialize the View Manager. This sets up the dynamic content views.
   await viewManager.init();
   
-  // Adjust main content padding after view manager initializes and potentially loads filter bar
-  // Use requestAnimationFrame to ensure layout is updated before calculating offsetHeight
-  window.requestAnimationFrame(() => {
-    const mainContent = document.getElementById('page-view-area');
-    const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
-
-    if (mainContent) {
-      const currentViewConfig = viewManager.viewConfig[viewManager.currentRole]?.[viewManager.currentView];
-      let effectiveFilterBarHeight = 0;
-
-      // Get the actual rendered height of the filter bar if it's supposed to be shown
-      if (currentViewConfig && currentViewConfig.showFilterBar) {
-        // Get the intended height from the CSS variable directly
-        const filterBarCssHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--filter-bar-height')) || 0;
-        effectiveFilterBarHeight = filterBarCssHeight;
-      }
-
-      console.log(`DEBUG: Header Height: ${headerHeight}`);
-      console.log(`DEBUG: Effective Filter Bar Height: ${effectiveFilterBarHeight}`);
-      const newTop = `${headerHeight + effectiveFilterBarHeight}px`;
-      console.log(`DEBUG: Setting page-view-area top to: ${newTop}`);
-      mainContent.style.top = newTop;
-      console.log(`DEBUG: Actual page-view-area computed top: ${getComputedStyle(mainContent).top}`);
-    }
-  });
+  
 
   // 3. Set up ResizeObservers to automatically adjust layout variables.
   initializeLayoutObservers();

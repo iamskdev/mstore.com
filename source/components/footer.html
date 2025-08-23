@@ -1,21 +1,21 @@
 <style>
     /* --- Embedded Footer Layout Fix --- */
     /* This class is added by the ViewManager to views that have a footer embedded in their content. */
-    .page-view-area.has-embedded-footer {
+    .page-view-area.embedded-footer {
       display: flex;
       flex-direction: column;
       /* This is crucial to make the view take up all available space,
          allowing the footer to be pushed to the bottom. */
-      height: 100%; 
+      
     }
 
     /* This new wrapper will hold the main view content and grow to fill space. */
-    .has-embedded-footer .view-content-wrapper {
+    .embedded-footer .view-content-wrapper {
       flex-grow: 1;
     }
 
     /* The footer wrapper inside an embedded view */
-    .has-embedded-footer .footer-wrapper {
+    .embedded-footer .footer-wrapper {
       position: relative;
       transform: none;
       visibility: visible;
@@ -29,7 +29,7 @@
     
     /* --- Embedded Footer Styles --- */
     /* These styles apply when the footer is part of the page content (not fixed at the bottom of the viewport) */
-    .view-with-embedded-footer .footer-wrapper { /* Default for embedded footer */
+    .embedded-footer .footer-wrapper { /* Default for embedded footer */
       position: relative;
       transform: none;
       visibility: visible;
@@ -43,7 +43,7 @@
     /* NEW: Ensure the main content area of a view with an embedded footer
        stretches to fill available space. This is crucial for the `margin-top: auto`
        on the footer to work correctly and push the footer to the bottom. */
-    .view-with-embedded-footer > div:first-of-type {
+    .embedded-footer > div:first-of-type {
         flex-grow: 1;
     }
 
@@ -63,12 +63,12 @@
       overflow: visible;
     }
     
-    .view-with-embedded-footer .footer-wrapper .footer-compact-bar {
+    .embedded-footer .footer-wrapper .footer-compact-bar {
       cursor: pointer; /* The compact bar is clickable */
       background: transparent; /* No background for the compact bar in embedded mode */
     }
     
-    .view-with-embedded-footer .footer-wrapper.is-expanded .footer-compact-bar {
+    .embedded-footer .footer-wrapper.is-expanded .footer-compact-bar {
       display: none; 
     }
 
