@@ -1,22 +1,27 @@
+.admin-home-view {
+  padding: 0.5rem;
+  /* Add padding to the main container */
+}
 
   /* ADMIN HEADER */
   .admin-header {
     display: flex;
+    max-width: 480px;
+    width: 100%;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-color);
+
   }
 
-  .admin-header h1 {
-    font-size: 1.5rem;
-    margin: 0;
-    color: var(--text-primary);
-  }
 
   .admin-actions {
     display: flex;
     gap: 10px;
+    height: 30px;
+    overflow: hidden;
+    padding: 0.25 0.25;
+    white-space: nowrap;
+
   }
 
   /* Generic button styles - can be moved to a global CSS if needed */
@@ -47,55 +52,106 @@
     font-size: 0.8rem;
   }
 
-  /* STAT CARDS */
-  .stats-grid {
+  /* CARDS (Adapted from demo) */
+  .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-    margin: 25px 0;
+    gap: 15px;
+    margin-bottom: 20px;
   }
-  .stat-card {
-    padding: 20px;
-    border-radius: 8px;
-    color: var(--accent-text); /* Use theme variable for text on accent backgrounds */
-    box-shadow: 0 4px 8px var(--shadow-color);
+  .card {
+    background: var(--bg-primary);
+    padding: 15px;
+    border-radius: 12px; /* Changed from 8px */
+    box-shadow: 0 4px 12px var(--shadow-color); /* Adjusted shadow */
+    text-align: center;
+    border: 1px solid var(--border-color); /* Added border */
+    transition: all 0.3s ease; /* Added transition */
+  }
+  .card h3 {
+    margin: 0 0 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  .card p {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 0;
+    color: var(--text-primary);
   }
 
-  /*
-    IMPROVEMENT: Instead of using utility classes like .bg-admin in the HTML,
-    we apply colors directly based on the card's position. This keeps the
-    HTML cleaner and centralizes styling logic within the CSS.
-  */
-  .stats-grid .stat-card:nth-of-type(1) {
-    background: var(--accent-primary); /* Corresponds to former .bg-admin */
+  /* ADMIN HEADER */
+  .admin-header {
+    display: flex;
+    max-width: 480px;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem; /* Add gap below header */
   }
-  .stats-grid .stat-card:nth-of-type(2) {
-    background: var(--accent-danger);  /* Corresponds to former .bg-fraud */
-  }
-  .stats-grid .stat-card:nth-of-type(3) {
-    background: var(--accent-info);    /* Corresponds to former .bg-tech */
-  }
-  /* VISUAL ANALYTICS CHARTS */
-  .admin-charts-section {
+
+  /* CHARTS (Adapted from demo) */
+  .charts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 25px;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
   }
-
   .chart-container {
     background: var(--bg-primary);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px var(--shadow-color);
+    padding: 15px;
+    border-radius: 12px; /* Changed from 8px */
+    box-shadow: 0 4px 12px var(--shadow-color); /* Adjusted shadow */
+    border: 1px solid var(--border-color); /* Added border */
+    transition: all 0.3s ease; /* Added transition */
+  }
+  .chart-container h2 {
+    color: var(--text-primary); /* Ensure chart titles are visible */
+    margin: 0 0 10px; /* Add some margin below the title */
+    font-size: 1.1rem; /* Adjust font size if needed */
   }
 
-  .chart-container h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    text-align: center;
+  /* RECENT ACTIVITIES (Adapted from demo) */
+  .recent-activities {
+    background: var(--bg-primary);
+    padding: 15px;
+    border-radius: 12px; /* Consistent with cards */
+    box-shadow: 0 4px 12px var(--shadow-color); /* Consistent with cards */
+    border: 1px solid var(--border-color); /* Consistent with cards */
+    transition: all 0.3s ease; /* Consistent with cards */
+    max-height: 350px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+  .recent-activities h2 {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    color: var(--text-primary); /* Ensure heading color is theme-aware */
+  }
+  .activity-item {
+    padding: 10px 0; /* Increased padding */
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
     color: var(--text-primary);
+    display: flex; /* For better layout of time and details */
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease; /* Hover effect */
+  }
+  .activity-item:last-child {
+    border-bottom: none;
+  }
+  .activity-item:hover {
+    background-color: var(--bg-tertiary); /* Subtle hover effect */
+  }
+  .activity-time {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    flex-shrink: 0; /* Prevent shrinking */
+    margin-right: 10px;
+  }
+  .activity-details {
+    flex-grow: 1; /* Allow details to take available space */
   }
 
   /* POWER ACTION LINKS */
@@ -132,28 +188,12 @@
     color: var(--text-primary);
   }
 
-  /* ACTIVITY LOG TABLE */
-  .log-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 25px;
-    background: var(--bg-secondary);
-    box-shadow: 0 2px 4px var(--shadow-color);
-  }
-  .log-table th, .log-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-primary);
-  }
-  .log-table tr:hover {
-    background: var(--bg-tertiary);
-  }
+  /* ACTIVITY LOG TABLE (Removed, replaced by .recent-activities) */
+  /* The old .log-table and related styles are removed as the activity log is now a simple list */
 
-.log-table tbody td {
-  color: var(--text-primary);
-}
-
-.activity-log h3 {
-  color: var(--text-primary);
-}
+  @media (min-width: 768px) {
+    .charts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    /* The .bottom-section media query is not directly applicable as the structure changed */
+  }

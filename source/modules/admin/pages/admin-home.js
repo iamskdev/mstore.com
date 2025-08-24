@@ -1,23 +1,32 @@
 import { showToast } from '../../../utils/toast.js';
-import { fetchAllUsers, fetchAllOrders, fetchAllLogs, fetchAllAlerts } from '../../../utils/data-manager.js';
+import { fetchAllUsers, fetchAllOrders, fetchAllLogs, fetchAllAlerts, fetchAllMerchants } from '../../../utils/data-manager.js';
 import { formatCurrency, formatRelativeTime } from '../../../utils/formatters.js';
 
 /** Renders statistical cards with real data. */
-function renderStats(users = [], orders = []) {
-  const revenueEl = document.getElementById('admin-stat-revenue');
+function renderStats(users = [], orders = [], merchants = []) {
   const usersEl = document.getElementById('admin-stat-users');
-  const ordersEl = document.getElementById('admin-stat-orders');
+  const merchantsEl = document.getElementById('admin-stat-merchants');
+  const orders30dEl = document.getElementById('admin-stat-orders-30d');
+  const pendingTasksEl = document.getElementById('admin-stat-pending-tasks');
 
-  if (revenueEl) {
-    // This is a simplified calculation. A real-world scenario would be more complex.
-    const totalRevenue = orders.reduce((sum, order) => sum + (order.summary?.total || 0), 0);
-    revenueEl.textContent = formatCurrency(totalRevenue);
-  }
   if (usersEl) {
     usersEl.textContent = users.length;
   }
-  if (ordersEl) {
-    ordersEl.textContent = orders.length;
+  if (merchantsEl) {
+    merchantsEl.textContent = merchants.length;
+  }
+  if (orders30dEl) {
+    // Placeholder for now, ideally filter orders by last 30 days
+    orders30dEl.textContent = orders.filter(order => {
+      const orderDate = new Date(order.meta?.timestamp);
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      return orderDate >= thirtyDaysAgo;
+    }).length;
+  }
+  if (pendingTasksEl) {
+    // Placeholder for now
+    pendingTasksEl.textContent = '18'; 
   }
 }
 
@@ -101,6 +110,43 @@ function renderOrderStatusChart(orders = []) {
     }
   });
 }
+
+/** Renders a bar chart for user signups. */
+function renderSignupsChart() {
+  const ctx = document.getElementById('signupsChart').getContext('2d');
+  if (!ctx || typeof Chart === 'undefined') return;
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [...Array(30).keys()].map(i => `Day ${i+1}`),
+      datasets: [{
+        label: 'Signups',
+        data: Array.from({length:30}, () => Math.floor(Math.random() * 50) + 5),
+        backgroundColor: '#10b981'
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+}
+
+/** Renders a pie chart for top categories. */
+function renderCategoriesChart() {
+  const ctx = document.getElementById('categoriesPieChart').getContext('2d');
+  if (!ctx || typeof Chart === 'undefined') return;
+
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Electronics', 'Clothing', 'Home & Garden', 'Books', 'Others'],
+      datasets: [{
+        data: [30, 25, 20, 15, 10],
+        backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#6b7280']
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+}
 /** Renders critical alerts. */
 function renderAlerts(alerts = []) {
   const container = document.getElementById('admin-alerts-container');
@@ -125,23 +171,22 @@ function renderAlerts(alerts = []) {
 
 /** Renders the most recent activity logs. */
 function renderActivityLog(logs = []) {
-  const tbody = document.getElementById('admin-log-table-body');
-  if (!tbody) return;
+  const container = document.getElementById('admin-activity-items'); // Corrected ID
+  if (!container) return;
 
   // Get the 5 most recent logs
   const recentLogs = logs.sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp)).slice(0, 5);
 
   if (recentLogs.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3">No recent activity found.</td></tr>';
+    container.innerHTML = '<div class="activity-item">No recent activity found.</div>'; // Changed to div
     return;
   }
 
-  tbody.innerHTML = recentLogs.map(log => `
-    <tr>
-      <td>${formatRelativeTime(new Date(log.meta?.timestamp))}</td>
-      <td>${log.details?.email || log.meta?.userId?.slice(0, 8) + '...' || 'Unknown User'}</td>
-      <td>${(log.action || 'unknown_action').replace(/_/g, ' ')}</td>
-    </tr>
+  container.innerHTML = recentLogs.map(log => `
+    <div class="activity-item">
+      <span class="activity-time">${formatRelativeTime(new Date(log.meta?.timestamp))}</span>
+      <span class="activity-details">${log.details?.email || log.meta?.userId?.slice(0, 8) + '...' || 'Unknown User'} - ${(log.action || 'unknown_action').replace(/_/g, ' ')}</span>
+    </div>
   `).join('');
 }
 
@@ -151,18 +196,22 @@ export function init() {
   async function loadAdminData() {
     try {
       // Fetch all data in parallel for efficiency
-      const [users, orders, logs, alerts] = await Promise.all([
+      const [users, orders, logs, alerts, merchants] = await Promise.all([
         fetchAllUsers(true),      // Force a fresh fetch, bypassing cache
         fetchAllOrders(true),     // Force a fresh fetch, bypassing cache
         fetchAllLogs(true),       // Force a fresh fetch, bypassing cache
-        fetchAllAlerts(true)      // Force a fresh fetch, bypassing cache
+        fetchAllAlerts(true),     // Force a fresh fetch, bypassing cache
+        fetchAllMerchants(true)   // Force a fresh fetch, bypassing cache
       ]);
 
       // Render all components with the fetched data
-      renderStats(users, orders);
+      console.log("Fetched Data:", { users, orders, logs, alerts, merchants }); // Add this line
+      renderStats(users, orders, merchants);
       renderAlerts(alerts);
       renderUserRolesChart(users);
       renderOrderStatusChart(orders);
+      renderSignupsChart();
+      renderCategoriesChart();
       renderActivityLog(logs);
 
     } catch (error) {

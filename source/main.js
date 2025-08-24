@@ -143,6 +143,9 @@ class ViewManager {
 
     if (config.path && !this.loadedViews.has(config.id)) {
       await this.loadViewContent(newViewElement, config, role);
+    } else if (!config.path && !this.loadedViews.has(config.id)) { // NEW: Handle views with path: null
+      newViewElement.innerHTML = `<div class="view-placeholder" style="padding: 20px; text-align: center; color: var(--text-secondary);"><h3>${config.title} View</h3><p>This view is under development. Content will be available soon!</p></div>`;
+      this.loadedViews.add(config.id); // Mark as loaded to prevent re-injection
     } else if (config.path && this.loadedViews.has(config.id)) {
     }
 

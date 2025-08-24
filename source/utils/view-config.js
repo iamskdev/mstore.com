@@ -81,9 +81,12 @@ const viewConfig = {
       embedFooter: true,
       title: 'Home'
     },
-    data: { id: 'admin-data-view', path: null, title: 'Data' },
+    users: { id: 'admin-users-view', path: null, title: 'User Data' },
+    analytics: { id: 'admin-analytics-view', path: null, title: 'Analytics' },
+    requests: { id: 'admin-requests-view', path: null, title: 'Requests' },
     logs: { id: 'admin-logs-view', path: null, title: 'Logs' },
     promo: { id: 'admin-promo-view', path: null, title: 'Promo' },
+    campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns' },
     account: { id: 'admin-account-view', path: null, title: 'Account' }
   }
 };
