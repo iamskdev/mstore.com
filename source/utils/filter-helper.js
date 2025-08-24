@@ -30,7 +30,6 @@ class FilterManager {
      * @param {boolean} shouldShow - True to show the filter bar, false to hide it.
      */
     async manageVisibility(shouldShow) {
-        console.log(`DEBUG: FilterManager.manageVisibility called with shouldShow: ${shouldShow}`);
         if (!this.placeholder) return;
 
         // If it should be shown, load it if it hasn't been already.
@@ -438,7 +437,6 @@ class FilterManager {
      * @param {HTMLElement} viewElement - The parent element containing the embedded filter bar.
      */
     async initializeEmbeddedFilterBar(viewElement) {
-        console.log(`DEBUG: FilterManager.initializeEmbeddedFilterBar called for viewElement:`, viewElement);
         // Temporarily set the placeholder to the viewElement to reuse existing logic
         const originalPlaceholder = this.placeholder;
         this.placeholder = viewElement;

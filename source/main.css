@@ -261,7 +261,7 @@ html, body {
   top: -60px;
   left: 0;
   right: 0;
-  height: 60px;
+  height: var(--header-height);
   display: flex;
   align-items: flex-end; /* Align content to the bottom */
   justify-content: center;
@@ -281,12 +281,6 @@ html, body {
 .spinning {
   animation: spin 1s linear infinite;
 }
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 
 
 /* ======================== */

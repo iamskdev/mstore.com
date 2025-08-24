@@ -124,7 +124,6 @@ class ViewManager {
       document.getElementById('page-view-area').appendChild(newViewElement);
       console.log(`Dynamically created view element: #${config.id}`);
     }
-    console.log(`DEBUG: switchView - Attempting to switch to role: ${role}, viewId: ${viewId}, config.id: ${config.id}`);
   
 
     // If the requested view is already active, we don't need to re-render it.
@@ -142,12 +141,9 @@ class ViewManager {
 
     if (currentViewElement) currentViewElement.classList.remove('view-active');
 
-    console.log(`DEBUG: switchView - Current loadedViews:`, this.loadedViews);
     if (config.path && !this.loadedViews.has(config.id)) {
-      console.log(`DEBUG: switchView - Calling loadViewContent for ${config.id}`);
       await this.loadViewContent(newViewElement, config, role);
     } else if (config.path && this.loadedViews.has(config.id)) {
-      console.log(`DEBUG: switchView - Content for ${config.id} already loaded, skipping loadViewContent.`);
     }
 
     // Handle embedding the footer for views that don't have a content path but need a footer.
@@ -338,7 +334,6 @@ class ViewManager {
   }
 
   async init() {
-    console.log("[Debug] D. viewManager.init() started.");
       this.loadedViews.clear(); // Clear loaded views on init to ensure fresh content load
   
     // --- STEP 1: CRITICAL - Synchronize Auth State First ---

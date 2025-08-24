@@ -143,14 +143,15 @@ function setupPhoneVerificationUI() {
             const { AuthService } = await import('../../firebase/auth/auth.js');
             // --- DEV MODE BYPASS ---
             // If in 'dev' mode, we simulate the OTP flow without calling Firebase.
-            if (APP_CONFIG.appMode !== 'dev') {
+            // Temporarily skip reCAPTCHA initialization for testing purposes
+            // if (APP_CONFIG.appMode !== 'dev') { // Original condition
                 // Only initialize reCAPTCHA in production mode.
-                const recaptchaReady = await AuthService.initRecaptcha();
-                if (!recaptchaReady) {
-                    // Reset button if reCAPTCHA fails to initialize
-                    throw new Error("reCAPTCHA initialization failed.");
-                }
-            }
+                // const recaptchaReady = await AuthService.initRecaptcha();
+                // if (!recaptchaReady) {
+                //     // Reset button if reCAPTCHA fails to initialize
+                //     // throw new Error("reCAPTCHA initialization failed."); // Commented out as well
+                // }
+            // }
             success = await AuthService.sendVerificationOtp(phoneInput.value);
 
         } catch (error) {

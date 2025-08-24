@@ -1,38 +1,19 @@
-
-    :root {
-      --bg-primary: #f0f4f8;
-      --bg-secondary: #ffffff;
-      --bg-tertiary: #f8f9fa;
-      --text-primary: #212529;
-      --text-secondary: #6c757d;
-      --accent-primary: #007bff;
-      --accent-primary-hover: #0056b3;
-      --accent-text: #ffffff;
-      --border-color: #dee2e6;
-      --shadow-color: rgba(0, 0, 0, 0.1);
-      --error-color: #e74c3c;
-      --radius: 0.375rem;
-      --radius-lg: 0.5rem;
-    }
-
-    .guest-home-view {
-      padding: 24px;
-      text-align: center;
-      display: flex;
+.guest-account-view { /* Corrected typo */
       flex-direction: column;
-      align-items: center;
-      gap: 32px;
-      width: 100%;
-      min-height: 100%;
-      place-self: center;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
+      /* Removed min-height: 100vh; to avoid conflict with parent's fixed height */
+      background: var(--bg-primary);
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      padding-bottom: 1rem;
+      box-sizing: border-box;
     }
 
     .auth-card {
       background: var(--bg-primary);
-      margin: 1rem;
-      margin-top: 0rem;
+      max-width: 480px;
+      width: 90%;
+      justify-self: center;
+      justify-content: center;
       height: auto;
       border-radius: 0;
       box-shadow: none;
@@ -41,6 +22,7 @@
       justify-content: flex-start;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
 
     .auth-card:hover {
       transform: none;
@@ -69,6 +51,7 @@
     /* Tabs */
     .auth-tabs {
       display: flex;
+      overflow: hidden;
       background: var(--bg-tertiary);
       border-radius: var(--radius);
       padding: 0.25rem;
@@ -79,6 +62,9 @@
       flex: 1;
       padding: 0.75rem 1rem;
       border: none;
+      min-width: 0;
+      text-align: center;
+      overflow: hidden;
       background: transparent;
       font-weight: 600;
       color: var(--text-secondary);
@@ -269,6 +255,7 @@
 
     /* Buttons */
     .btn {
+      width: 100%; /* Added for responsiveness */
       padding: 1rem;
       border-radius: var(--radius);
       font-weight: 600;
@@ -319,9 +306,7 @@
       animation: spin 1s ease-in-out infinite;
     }
 
-    @keyframes spin {
-      to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
+    
 
     /* Divider */
     .auth-divider {
@@ -371,33 +356,3 @@
       height: 1.25rem;
     }
 
-    /* Responsive (Desktop Styles) */
-    @media (min-width: 480px) {
-    .guest-home-view {
-      width: 100%;
-      min-height: 100%;
-      place-self: center;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-    }
-
-      .auth-card {
-        max-height: auto;
-        place-self: center;
-        width: 480px;
-      
-        padding: 1rem;
-        
-        border-radius: var(--radius-lg);
-        box-shadow: 10px 10px 15px 15px var(--shadow-color), 0 4px 6px -2px var(--shadow-color);
-        justify-content: center; /* Center content vertically on desktop */
-      }
-
-
-    }
-
-/* Hide the Google reCAPTCHA badge that can sometimes appear */
-.grecaptcha-badge {
-    visibility: hidden;
-}
-    
