@@ -440,6 +440,7 @@ class ViewManager {
 }
 
 export const viewManager = new ViewManager();
+window.viewManager = viewManager;
 
 import { fetchAllItems, fetchActivePromotion } from './utils/data-manager.js';
 import { showToast } from './utils/toast.js';

@@ -10,13 +10,10 @@
 
     /* New classes for header toggle items */
     .header-toggle-item {
-      display: none; /* Default to flex, then hidden class will override */
+      display: flex; /* Default to flex */
     }
-    .header-toggle-item.show-logo {
-      display: flex; /* Show logo */
-    }
-    .header-toggle-item.show-menu-icon {
-      display: flex; /* Show menu icon */
+    .header-toggle-item.hidden {
+      display: none !important; /* This will override the default flex */
     }
 
     /* Banners for different modes */
@@ -217,9 +214,9 @@
     <header class="apna-header-content" id="main-header">
       <i class="fas fa-arrow-left header-icon" id="search-back"></i>
       <div class="header-branding">
-      <i class="fas fa-bars header-icon header-toggle-item menu-icon" font-size: 1.4rem; cursor: pointer; margin-right: 4px;"></i>
-      <span class="brand-logo header-toggle-item logo-container">
-                <img src="./source/assets/logos/app-header-logo.png" alt="App Logo">
+      <i class="fas fa-bars header-icon header-toggle-item menu-icon" id="header-menu-icon" style="font-size: 1.4rem; cursor: pointer; margin-right: 4px;" data-header-item="menu"></i>
+      <span class="brand-logo header-toggle-item logo-container" id="header-logo-container" data-header-item="logo">
+                <img src="./source/assets/logos/app-logo.png" alt="App Logo">
         </span>
         <span class="brand-name" id="header-name">Apna Store</span>
       </div>
@@ -258,29 +255,60 @@
   -->
   <script type="module">
     import { fetchUserById, fetchMerchantById } from './source/utils/data-manager.js';
-    import { viewManager } from './source/main.js';
 
     // --- Static Header Style Logic ---
     // This runs once when the header is loaded to set the initial style (logo vs. menu).
     // It reads the configuration from app-config.js.
     function initializeHeaderStyle() {
       const headerStyle = window.APP_CONFIG?.headerStyle || 'logo';
-      const logoContainer = document.querySelector('.logo-container');
-      const menuIconEl = document.querySelector('.menu-icon');
+      const logoContainer = document.querySelector('[data-header-item="logo"]');
+      const menuIconEl = document.querySelector('[data-header-item="menu"]');
+      // Removed logoEl as it's not directly used in the display logic here.
 
       if (logoContainer && menuIconEl) {
         if (headerStyle === 'menu') {
-          logoContainer.style.display = 'none';
-          menuIconEl.style.display = 'flex';
+          logoContainer.classList.add('hidden');
+          menuIconEl.classList.remove('hidden');
         } else { // 'logo' or default
-          logoContainer.style.display = 'flex';
-          menuIconEl.style.setProperty('display', 'none', 'important');
+          logoContainer.classList.remove('hidden');
+          menuIconEl.classList.add('hidden');
         }
       }
     }
 
     // Listen for partialsLoaded event to ensure APP_CONFIG and DOM are ready
-    window.addEventListener('partialsLoaded', initializeHeaderStyle);
+    // window.addEventListener('partialsLoaded', initializeHeaderStyle); // Removed this line
+
+    // --- Interference Detection (for debugging) ---
+    const logoContainerForObserver = document.querySelector('[data-header-item="logo"]');
+    if (logoContainerForObserver) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+            const currentDisplay = logoContainerForObserver.style.display;
+            console.warn('🚨 Logo container style changed!', { 
+              oldStyle: mutation.oldValue, 
+              newStyle: logoContainerForObserver.getAttribute('style'), 
+              currentDisplay: currentDisplay 
+            });
+          } else if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            console.warn('🚨 Logo container class changed!', { 
+              oldClass: mutation.oldValue, 
+              newClass: logoContainerForObserver.getAttribute('class') 
+            });
+          }
+        });
+      });
+
+      observer.observe(logoContainerForObserver, { attributes: true, attributeOldValue: true });
+      console.log('✅ MutationObserver attached to logo container.');
+    }
+
+    // Call initializeHeaderStyle immediately when the script loads
+    initializeHeaderStyle();
+
+    // Listen for partialsLoaded event to ensure APP_CONFIG and DOM are ready
+    // window.addEventListener('partialsLoaded', initializeHeaderStyle); // Removed this line again, just in case
 
     function updateHeaderUI({ role, view, config }) {
       const userType = role;
@@ -417,30 +445,9 @@
       // 5. Adjust main content padding to prevent overlap
       // Always select .page-view-area dynamically (in case DOM changes)
 
+      // Re-apply header style after dynamic branding updates
+      initializeHeaderStyle();
     }
-
-    // Listen for a promotion to be activated
-    window.addEventListener('promotionActivated', (e) => {
-        const promo = e.detail;
-        if (!promo || !promo.header) return;
-
-        console.log('Header responding to promotion:', promo.header);
-
-        const logoEl = document.querySelector('.logo-container img');
-        const nameEl = document.getElementById('header-name');
-        const headerContent = document.getElementById('main-header');
-
-        logoEl.src = promo.header.logo;
-        nameEl.textContent = promo.header.title;
-        
-        // Apply custom styles
-        if (promo.header.backgroundColor) {
-            headerContent.style.background = promo.header.backgroundColor;
-        }
-        if (promo.header.textColor) {
-            nameEl.style.color = promo.header.textColor;
-        }
-    });
 
     // Add click listener to the logo or menu icon to open the drawer.
     document.querySelectorAll('#header-logo-container, #header-menu-icon').forEach(el => {
@@ -503,7 +510,7 @@
 
     // Subscribe to the viewManager for state changes. This is the single source of truth.
     // It will provide the initial state immediately and all subsequent state changes.
-    viewManager.subscribe(updateHeaderUI);
+    window.viewManager.subscribe(updateHeaderUI);
     console.log("✅ Header: Subscribed to ViewManager for state updates.");
 
   </script>
