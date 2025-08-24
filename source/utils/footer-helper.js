@@ -70,44 +70,34 @@ export function initializeFooter(containerElement, role) {
         // After adding the class, the footer's height changes. We need to wait for the next
         // animation frame for the browser to calculate the new layout before we can scroll to it.
         requestAnimationFrame(() => {
-            // Get CSS variable values at the top of the function
-        const headerHeightCSS = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
-        const filterBarHeightCSS = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--filter-bar-height')) || 0;
+            // A second rAF to ensure all layout changes from CSS variables have been applied.
+            requestAnimationFrame(() => {
+                // The most robust way to calculate the scroll position.
+                // It directly measures the current positions of the footer and the scroll container,
+                // avoiding any timing issues with CSS variable updates.
 
-        requestAnimationFrame(() => {
-            const header = document.querySelector('.header-container');
-            const filterBar = document.querySelector('#filter-bar'); // Updated selector
+                const currentFooterTop = footerWrapper.getBoundingClientRect().top;
+                const scrollContainerTop = containerElement.getBoundingClientRect().top;
 
-            let targetOffset = 0; // Initialize to 0
+                // The distance to scroll is the difference between the footer's current top
+                // and the scroll container's top. We add this to the current scroll position.
+                const scrollAmount = currentFooterTop - scrollContainerTop;
+                const targetScrollTop = containerElement.scrollTop + scrollAmount;
 
-            if (filterBar && filterBar.offsetHeight > 0) { // If filter bar exists and is visible
-                targetOffset = headerHeightCSS + filterBarHeightCSS;
+                // Ensure we don't scroll past the boundaries.
+                const maxScrollTop = containerElement.scrollHeight - containerElement.clientHeight;
+                const finalScrollTop = Math.min(Math.max(0, targetScrollTop), maxScrollTop);
 
-            } else { // If filter bar is not present or not visible
-                targetOffset = headerHeightCSS;
+                containerElement.scrollTo({
+                    top: finalScrollTop,
+                    behavior: 'smooth'
+                });
 
-            }
-
-            // Calculate the target scroll position. We want the top of the footer
-            // to be just below the calculated offset.
-            // Using getBoundingClientRect().top for more accurate viewport-relative position
-            const currentFooterTopInViewport = footerWrapper.getBoundingClientRect().top;
-            const targetScrollTop = containerElement.scrollTop + currentFooterTopInViewport - targetOffset;
-
-
-            const maxScrollTop = containerElement.scrollHeight - containerElement.clientHeight;
-            const finalScrollTop = Math.min(Math.max(0, targetScrollTop), maxScrollTop);
-
-            containerElement.scrollTo({
-                top: finalScrollTop,
-                behavior: 'smooth'
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 700);
             });
- 
-            setTimeout(() => {
-                isAnimating = false;
-            }, 700);
         });
-    });
     };
 
     // Function to collapse the embedded footer

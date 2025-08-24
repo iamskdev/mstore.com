@@ -236,7 +236,195 @@
       <!-- Search Suggestions Box: Moved INSIDE the header content for correct positioning. -->
       <ul id="search-suggestions" class="search-suggestions"></ul>
     </header>
+    <!-- NEW: Container for the filter bar, managed by the header script -->
+    <div id="header-filter-bar-container" style="display: none;"></div>
   </div>
+
+  <script type="module">
+    import { fetchUserById, fetchMerchantById } from './source/utils/data-manager.js';
+    import { loadComponent } from './source/main.js';
+    import { filterManager } from './source/utils/filter-helper.js';
+
+    const headerContainer = document.querySelector('.header-container');
+    const filterBarContainer = document.getElementById('header-filter-bar-container');
+    let isFilterBarLoaded = false;
+
+    // --- Layout Observers ---
+    // This observer sets the --filter-bar-height variable whenever the filter bar's size changes.
+    const filterBarObserver = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const height = entry.contentRect.height;
+        document.documentElement.style.setProperty('--filter-bar-height', `${height}px`);
+      }
+    });
+
+    // Start observing the filter bar container.
+    if (filterBarContainer) {
+        filterBarObserver.observe(filterBarContainer);
+    }
+
+    // --- Core Header Logic ---
+    function initializeHeaderStyle() {
+      const headerStyle = window.APP_CONFIG?.headerStyle || 'logo';
+      const logoContainer = document.querySelector('[data-header-item="logo"]');
+      const menuIconEl = document.querySelector('[data-header-item="menu"]');
+      if (logoContainer && menuIconEl) {
+        logoContainer.classList.toggle('hidden', headerStyle === 'menu');
+        menuIconEl.classList.toggle('hidden', headerStyle !== 'menu');
+      }
+    }
+
+    async function manageFilterBar(show) {
+        if (show) {
+            if (!isFilterBarLoaded) {
+                await loadComponent(filterBarContainer, './source/components/filter-bar.html');
+                // The filterManager needs to be told which element to use now.
+                // We can re-purpose the initializeEmbeddedFilterBar for this.
+                filterManager.placeholder = filterBarContainer;
+                await filterManager._initializeComponentLogic();
+                await filterManager._initializeAdvancedPanelLogic();
+                isFilterBarLoaded = true;
+            }
+            filterBarContainer.style.display = 'block';
+        } else {
+            filterBarContainer.style.display = 'none';
+        }
+        // Toggle the class on the main content area
+        const pageViewArea = document.getElementById('page-view-area');
+        if(pageViewArea) {
+            pageViewArea.classList.toggle('filter-bar-active', show);
+        }
+    }
+
+    function updateHeaderUI({ role, view, config }) {
+      // Existing UI update logic...
+      const userType = role;
+      const modeBanner = document.getElementById('mode-banner');
+      const notificationIcon = document.getElementById('notification-icon');
+      const bellIcon = notificationIcon?.querySelector('i');
+      const badge = notificationIcon?.querySelector('.notification-badge');
+      const appMode = window.APP_CONFIG?.appMode;
+      const mainContent = document.getElementById('page-view-area');
+
+      // 1. Update header branding (logo and name) by fetching live data
+      const logoEl = document.querySelector('.logo-container img');
+      const nameEl = document.getElementById('header-name');
+      const logoContainer = document.querySelector('.logo-container');
+      
+      // --- Dynamic Branding Logic ---
+      const defaultLogo = './source/assets/logos/app-logo.png';
+      const defaultName = 'Apna Store';
+      const userId = localStorage.getItem('currentUserId');
+
+      const setLogo = (logoUrl) => {
+        const finalLogoUrl = logoUrl || defaultLogo;
+        logoEl.src = finalLogoUrl;
+        logoContainer.classList.toggle('is-avatar', !finalLogoUrl.includes('app-logo.png'));
+        logoContainer.classList.remove('is-loading-avatar');
+      };
+
+      if (userType === 'user' && userId) {
+        logoContainer.classList.add('is-loading-avatar');
+        nameEl.textContent = 'User Panel';
+        fetchUserById(userId).then(userData => {
+          if (userData) {
+            nameEl.textContent = userData.info?.nickName || userData.info?.fullName || 'Apna User';
+            setLogo(userData.info?.avatar);
+          }
+        });
+      } else if (userType === 'merchant' && userId) {
+        logoContainer.classList.add('is-loading-avatar');
+        nameEl.textContent = 'User Panel';
+        (async () => {
+          try {
+            const userData = await fetchUserById(userId);
+            if (!userData) throw new Error("User data not found for merchant.");
+            const merchantId = userData.meta?.links?.merchantId;
+            if (merchantId) {
+              const merchantData = await fetchMerchantById(merchantId);
+              if (merchantData) {
+                nameEl.textContent = merchantData.meta?.info?.name || 'Merchant Store';
+                setLogo(merchantData.meta?.info?.logo);
+              } else {
+                nameEl.textContent = userData.info?.fullName || 'Merchant Panel';
+                setLogo(userData.info?.avatar);
+              }
+            } else {
+              nameEl.textContent = userData.info?.fullName || 'Merchant Panel';
+              setLogo(userData.info?.avatar);
+            }
+          } catch (error) {
+            console.error("Header: Failed to fetch merchant branding.", error);
+            nameEl.textContent = 'Merchant Panel';
+            setLogo(defaultLogo);
+          }
+        })();
+      } else {
+        setLogo(defaultLogo);
+        nameEl.textContent = defaultName;
+      }
+
+      // Manage filter bar visibility based on the new view's config
+      manageFilterBar(config.showFilterBar || false);
+
+      // Other UI updates (banners, etc.)...
+      initializeHeaderStyle();
+    }
+
+    // --- Event Listeners ---
+    document.querySelectorAll('#header-logo-container, #header-menu-icon').forEach(el => {
+      el.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('toggleDrawerRequest'));
+      });
+    });
+
+    const searchToggleBtn = document.getElementById('search-toggle');
+    const searchBackBtn = document.getElementById('search-back');
+    const searchInput = document.getElementById('header-search-input');
+    const searchClearBtn = document.getElementById('search-clear');
+    const mainHeader = document.getElementById('main-header');
+
+    function openSearchView() {
+      mainHeader.classList.add('search-active');
+      searchInput.value = '';
+      searchInput.focus();
+    }
+
+    function closeSearchView() {
+      mainHeader.classList.remove('search-active');
+      searchClearBtn.style.display = 'none';
+      const suggestionsBox = document.getElementById('search-suggestions');
+      if (suggestionsBox) {
+        suggestionsBox.style.display = 'none';
+        suggestionsBox.innerHTML = '';
+      }
+    }
+
+    if (searchToggleBtn) searchToggleBtn.addEventListener('click', openSearchView);
+    if (searchBackBtn) searchBackBtn.addEventListener('click', closeSearchView);
+    window.addEventListener('closeSearchViewRequest', closeSearchView);
+
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        searchClearBtn.style.display = searchInput.value ? 'block' : 'none';
+      });
+    }
+
+    if (searchClearBtn) {
+      searchClearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        searchInput.focus();
+        searchClearBtn.style.display = 'none';
+        const suggestionsBox = document.getElementById('search-suggestions');
+        if (suggestionsBox) suggestionsBox.style.display = 'none';
+      });
+    }
+
+    // Subscribe to the viewManager for state changes.
+    window.viewManager.subscribe(updateHeaderUI);
+    console.log("✅ Header: Subscribed to ViewManager for state updates.");
+
+  </script>
 
   <!--
   Root cause: 

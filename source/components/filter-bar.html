@@ -106,19 +106,14 @@
     padding: 3px 0.5rem;
     align-items: center;
     left: 0;
-    height: var(--filter-bar-height); /* Use the dynamic --filter-bar-height variable */
+    /* REMOVED height: var(--filter-bar-height); It will now be determined by its content */
     display: flex;
     gap: 5px; /* Space between tabs */
     border-bottom: 1px solid var(--border-color);
-    position: fixed; /* Changed from sticky to fixed */
-    /* FIX: Use the dynamic --header-height variable set by the header component.
-       This ensures the filter bar is always positioned correctly below the header,
-       even if the header's height changes (e.g., due to a mode banner). */
-    top: var(--header-height); /* Fallback to 56px if variable isn't set */
-    z-index: 99;
+    /* REMOVED: position: fixed, top, z-index, width. These are no longer needed as it's part of the header flow. */
     width: 100%;
     box-sizing: border-box; /* Ensure padding is included in width */
-    overflow-x: auto; /* Enable horizontal scrolling */   
+    overflow-x: auto; /* Enable horizontal scrolling */
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }

@@ -171,13 +171,8 @@ class ViewManager {
 
     // --- Manage Shared UI Components ---
 
-    // 1. Manage the filter bar based on the new view's config
-    if (!this.filterManager) {
-      // Lazy-load the filter manager on first use to keep initial load light.
-      const { filterManager } = await import('./utils/filter-helper.js');
-      this.filterManager = filterManager;
-    }
-    this.filterManager.manageVisibility(config.showFilterBar || false);
+    // The header component now listens for view changes and manages the filter bar itself.
+    // We just need to ensure subscribers are notified of the change.
 
     // Use the History API with a hash-based path for SPA compatibility on simple static servers.
     const hashPath = `/#/${role}/${viewId}`; // जैसे: #/guest/home
