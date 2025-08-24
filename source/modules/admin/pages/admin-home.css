@@ -1,9 +1,4 @@
 
-/*
-  FIX: Restored the background color classes for the statistics cards.
-  These were missing, causing the cards to be invisible in dark mode as their
-  text color (var(--accent-text)) is black on a dark background.
-*/
   /* ADMIN HEADER */
   .admin-header {
     display: flex;

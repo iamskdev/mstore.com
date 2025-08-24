@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
-> - **Status:** `Up-to-Date`
-> - **Last Reviewed:** August 21, 2025, 07:25 PM IST
+> - **Status:** `Updated`
+> - **Last Reviewed:** 24/08/2025 19:04:27 +05:30
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides step-by-step instructions for testing the application using various methods, including admin-driven setup, UI-driven flows, and advanced developer tools. It is essential for quality assurance.
 
@@ -285,6 +285,8 @@
 ---
 
 ### 8. फीडबैक Modal में एक नया देश कैसे जोड़ें:
+
+**नोट:** यह सेक्शन ऐप के वर्कफ़्लो के बजाय UI कंपोनेंट कॉन्फ़िगरेशन से अधिक संबंधित है। भविष्य में इसे एक अधिक उपयुक्त दस्तावेज़ में ले जाया जा सकता है।
 
     ```html
     <div class="custom-option" data-value="+[CODE]">(+[CODE]) [Country Name] <span class="flag-emoji">[Flag Emoji]</span></div>
