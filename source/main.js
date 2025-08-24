@@ -4,6 +4,9 @@
  * It handles view configuration, switching, content loading, and URL hash synchronization.
  * 
  * Forced update to bypass caching. (2025-08-17)
+ *  * Initializes a scroll-aware header behavior.
+ * The header will move up/down based on the scroll direction of the page-view-area.
+ 
  */
 import { APP_CONFIG } from './utils/app-config.js';
 window.APP_CONFIG = APP_CONFIG;
@@ -608,8 +611,12 @@ export async function initializeApp() {
 
   // 2. Initialize the View Manager. This sets up the dynamic content views.
   await viewManager.init();
+
+  // Initialize the scroll-aware header behavior
+  initializeScrollAwareHeader();
   
-  
+  // Attempt to hide the browser's address bar on mobile devices.
+  attemptHideAddressBar();
 
   // 3. Set up ResizeObservers to automatically adjust layout variables.
   initializeLayoutObservers();
@@ -777,4 +784,76 @@ function initializePullToRefresh() {
       arrow.style.transform = 'rotate(0deg)';
     }
   });
+}
+
+function attemptHideAddressBar() {
+  // Check if it's a mobile device (simple check, can be more robust)
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    // Scroll by 1 pixel to trigger address bar hiding
+    // Use setTimeout to ensure it runs after initial rendering
+     setTimeout(() => {
+      window.scrollTo(0, 1);
+    }, 0);
+  }
+}
+
+/**
+ * Initializes a scroll-aware header behavior.
+ * The header will move up/down based on the scroll direction of the page-view-area.
+ */
+function initializeScrollAwareHeader() {
+  const header = document.querySelector('.header-container');
+  const pageViewArea = document.getElementById('page-view-area');
+
+  if (!header || !pageViewArea) {
+    console.warn('Scroll-aware header: Header or page-view-area not found. Skipping initialization.');
+    return;
+  }
+
+  let lastScrollTop = 0;
+  let headerHeight = header.offsetHeight;
+  let currentTranslateY = 0;
+
+  // Function to update header position
+  const updateHeaderPosition = () => {
+    // Get the currently active view within pageViewArea
+    const activeView = pageViewArea.querySelector('.page-view-area.view-active');
+    if (!activeView) return; // No active view, nothing to scroll
+
+    const scrollTop = activeView.scrollTop;
+    const scrollDelta = scrollTop - lastScrollTop;
+
+    // If scrolling down, hide the header
+    if (scrollDelta > 0) {
+      currentTranslateY = Math.max(-headerHeight, currentTranslateY - scrollDelta);
+    } 
+    // If scrolling up, show the header
+    else {
+      currentTranslateY = Math.min(0, currentTranslateY - scrollDelta);
+    }
+
+    header.style.transform = `translateY(${currentTranslateY}px)`;
+    lastScrollTop = scrollTop;
+  };
+
+  // Listen for scroll events on the page-view-area
+  pageViewArea.addEventListener('scroll', updateHeaderPosition, { passive: true });
+
+  // Also update header height if it changes (e.g., due to dynamic content)
+  const headerResizeObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+      if (entry.target === header) {
+        headerHeight = entry.contentRect.height;
+        // Ensure header is fully visible if its height changes while at top
+        if (pageViewArea.scrollTop === 0) {
+          header.style.transform = 'translateY(0px)';
+          currentTranslateY = 0;
+        }
+      }
+    }
+  });
+  headerResizeObserver.observe(header);
+
+  console.log('✅ Scroll-aware header initialized.');
 }

@@ -1,11 +1,12 @@
 <style>
     .header-container {
-      position: fixed;
+      position: fixed; /* Changed from sticky to fixed for JS control */
       top: 0;
       left: 0;
       right: 0;
       z-index: 1000;
       /* This container will hold the banner and the header bar */
+      transition: transform 0.3s ease-out; /* Add transition for smooth animation */
     }
 
     /* New classes for header toggle items */

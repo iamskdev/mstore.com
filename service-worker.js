@@ -1,5 +1,5 @@
 // --- Resilient Service Worker with Fallback Support ---
-const CACHE_NAME = 'APNA_STORE_CACHE_V7.2.0'; // Cache version updated for new path strategy
+const CACHE_NAME = 'APNA_STORE_CACHE_V7.2.1'; // Cache version updated for new path strategy
 const OFFLINE_PAGE = './source/common/pages/offline.html'; // Path from root
 const RUNTIME_CACHE = 'runtime-cache';
 const MAX_RUNTIME_CACHE_AGE = 24 * 60 * 60; // 24 hours in seconds
@@ -34,6 +34,7 @@ const APP_SHELL_URLS_STATIC = [
   { url: './manifest.json', priority: 1 },
   { url: OFFLINE_PAGE, priority: 1 },
   { url: './source/main.css', priority: 1 },
+  { url: './source/common/styles/theme.css', priority: 1 },
   { url: './source/assets/logos/app-logo-192.png', priority: 1 },
   { url: './source/assets/logos/app-logo-512.png', priority: 1 },
 

@@ -246,12 +246,8 @@
           <div class="drawer-item-content"><i class="fas fa-download"></i><span>Install App</span></div>
           <i class="fas fa-chevron-right"></i>
         </div>
-        <div class="drawer-item" id="drawer-login-btn">
-          <div class="drawer-item-content"><i class="fas fa-sign-in-alt"></i><span>Login</span></div>
-          <i class="fas fa-chevron-right"></i>
-        </div>
-        <div class="drawer-item" id="drawer-signup-btn">
-          <div class="drawer-item-content"><i class="fas fa-user-plus"></i><span>Sign Up</span></div>
+        <div class="drawer-item" id="drawer-login-signup-btn">
+          <div class="drawer-item-content"><i class="fas fa-sign-in-alt"></i><span>Login or Sign Up</span></div>
           <i class="fas fa-chevron-right"></i>
         </div>
         <div class="drawer-item feature-not-implemented" id="drawer-language-btn">
@@ -637,7 +633,15 @@
         const phoneEl = document.getElementById(`drawer-${prefix}-phone`);
 
         // Updated to use the new user schema
-        if (avatarEl) avatarEl.style.backgroundImage = `url('${userData?.info?.avatar || '../../assets/logos/app-logo.png'}')`;
+        if (avatarEl) {
+          if (userData?.info?.avatar) {
+            avatarEl.style.backgroundImage = `url('${userData.info.avatar}')`;
+            avatarEl.classList.remove('fallback-icon');
+          } else {
+            avatarEl.style.backgroundImage = 'none'; // Ensure no background image
+            avatarEl.classList.add('fallback-icon');
+          }
+        }
                 if (nameEl) nameEl.textContent = userData?.info?.nickName || userData?.info?.fullName || 'Apna User';
         if (emailEl) emailEl.textContent = userData?.info?.email || 'No email provided';
         if (phoneEl) {
@@ -700,10 +704,8 @@
     closeDrawer();
   }
 
-  // Guest: Login button
-  document.getElementById('drawer-login-btn')?.addEventListener('click', () => requestAuth('login'));
-  // Guest: Sign Up button
-  document.getElementById('drawer-signup-btn')?.addEventListener('click', () => requestAuth('register'));
+  // Guest: Login or Sign Up button
+  document.getElementById('drawer-login-signup-btn')?.addEventListener('click', () => requestAuth('login'));
 
   // Logout logic (sabhi roles ke liye)
   function logout() {

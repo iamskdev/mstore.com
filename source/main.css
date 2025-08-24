@@ -1,167 +1,15 @@
-/*
-========================================
-  TABLE OF CONTENTS
-========================================
-
-  1. GLOBAL VARIABLES & RESETS
-  2. THEME VARIABLES (LIGHT & DARK)
-  3. CORE APP LAYOUT
-  4. LAYOUT HELPERS & OVERRIDES
-  5. APP-WIDE COMPONENTS
-      - 5.1. Full-Screen Loader
-      - 5.2. Pull-to-Refresh
-      - 5.3. Search Suggestions
-
-========================================
-*/
-
-
-/* ========================================
-   1. GLOBAL VARIABLES & RESETS
-   ========================================
-   This section defines global CSS variables for layout dimensions
-   and applies a universal box-sizing reset for predictable layout behavior.
-*/
+/*1. GLOBAL VARIABLES & RESETS*/
 :root {
   --header-height: 56px;  /* Default header height */
   --nav-tab-height: 65px;  /* Default bottom bar height, matches tab-nav height */
   --filter-bar-height: 36px; /* Default filter bar height */
  }
-
-
-/* ========================================
-   2. THEME VARIABLES (LIGHT & DARK)
-   ========================================
-   Defines color palettes and other theme-related properties for both
-   light (default) and dark modes.
-*/
-:root {
-  /* --- 1. Backgrounds & Surfaces --- */
-  --bg-primary: #f9f9f9;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f0f2f5;
-  --bg-hover: #e4e6e9;
-  --bg-secondary-rgb: 255, 255, 255;
-  --page-bg-gradient: linear-gradient(to top right, #f0f2f5, #e6e9ed);
-
-  /* --- 2. Typography & Text --- */
-  --text-primary: #1c1e21;
-  --text-secondary: #606770;
-  --text-tertiary: #8a8d91;
-  --accent-text: #ffffff; /* Text on colored accent backgrounds */
-  --text-google-btn: #3c4043;
-
-  /* --- 3. Accents & Actions --- */
-  --accent-primary: #4361ee;
-  --accent-primary-hover: #3a53c4;
-  --accent-primary-rgb: 67, 97, 238;
-  --accent-secondary: #28a745;
-  --accent-secondary-hover: #218838;
-  --accent-danger: #e74a3b;
-  --accent-danger-rgb: 231, 74, 59;
-  --accent-info: #36b9cc;
-
-  /* --- 4. Borders & States --- */
-  --border-color: #e0e0e0;
-  --error-color: #d93025;
-
-  /* --- 5. Shadows & Elevation --- */
-  --shadow-color: rgba(0, 0, 0, 0.05);
-  --shadow-focus-primary: rgba(0, 123, 255, 0.2);
-  --shadow-focus-secondary: rgba(40, 167, 69, 0.2);
-  --shadow-focus-error: rgba(217, 48, 37, 0.2);
-
-  /* --- 6. Component-Specific: Header --- */
-  --header-banner-dev-bg: #ffc107;
-  --header-banner-dev-text: #000;
-  --header-banner-promo-bg: #2196F3;
-  --header-banner-promo-text: #fff;
-  --header-banner-admin-bg: #455A64;
-  --header-banner-admin-text: #fff;
-  --header-badge-bg: #FF5722;
-  --header-badge-text: #fff;
-
-  /* --- 7. Component-Specific: Footer --- */
-    --header-badge-bg: #e74c3c;
-  --header-badge-text: #fff;
-
-  /* --- 7. Component-Specific: Footer --- */
-    --header-badge-bg: #FF5722;
-  --header-badge-text: #fff;
-
-  /* --- 7. Component-Specific: Footer --- */
-  --footer-compact-bar-bg: rgba(0,0,0,0.03);
-  --footer-compact-bar-bg-hover: rgba(0,0,0,0.05);
-
-  /* --- 8. Component-Specific: User Home Colors --- */
-  --color-primary-user: #4361ee;
-  --color-primary-light-user: #4895ef;
-  --color-secondary-user: #3f37c9;
-  --color-accent-user: #f72585;
-  --color-success-user: #4cc9f0;
-  --color-warning-user: #f8961e;
-  --color-danger-user: #ef233c;
-
-
-}
-
-html.dark-mode {
-  /* --- 1. Backgrounds & Surfaces --- */
-  --bg-primary: #121212;
-  --bg-secondary: #1e1e1e;
-  --bg-tertiary: #2a2a3b;
-  --bg-hover: #3a3b4c;
-  --bg-secondary-rgb: 30, 30, 30;
-  --page-bg-gradient: linear-gradient(to top right, #1a1a2e, #16213e);
-
-  /* --- 2. Typography & Text --- */
-  --text-primary: #e0e0e0;
-  --text-secondary: #a0a0a0;
-  --text-tertiary: #7f8c8d;
-  --accent-text: #ffffff; /* Text on colored accent backgrounds */
-  --text-google-btn: #e0e0e0;
-
-  /* --- 3. Accents & Actions --- */
-  --accent-primary: #0077b6;
-  --accent-primary-hover: #005f9e;
-  --accent-primary-rgb: 0, 119, 182;
-  --accent-secondary: #69f0ae;
-  --accent-secondary-hover: #00bfa5;
-  --accent-danger: #d00000;
-  --accent-danger-rgb: 208, 0, 0;
-  --accent-info: #0081a7;
-
-  /* --- 4. Borders & States --- */
-  --border-color: #333333;
-  --error-color: #ff5252;
-
-  /* --- 5. Shadows & Elevation --- */
-  --shadow-color: rgba(0, 0, 0, 0.2);
-  --shadow-focus-primary: rgba(68, 138, 255, 0.25);
-  --shadow-focus-secondary: rgba(105, 240, 174, 0.25);
-  --shadow-focus-error: rgba(255, 82, 82, 0.25);
-
-  /* --- 6. Component-Specific: Header --- */
-  --header-banner-dev-bg: #f39c12;
-  --header-banner-dev-text: #fff;
-  --header-banner-promo-bg: #3498db;
-  --header-banner-promo-text: #fff;
-  --header-banner-admin-bg: #7f8c8d;
-  --header-banner-admin-text: #000;
-  --header-badge-bg: #e74c3c;
-  --header-badge-text: #fff;
-}
-
-/* ========================================
-   3. CORE APP LAYOUT
-   ========================================
-   Styles for the main `body` and the base `.page-view-area` which
-   form the fundamental structure of the application.
-*/
+ 
 html, body {
   box-sizing: border-box;
   font-family: 'Noto Sans', sans-serif;
   height: 100%;
+  min-height: 100vh; /* Added to ensure body is at least viewport height */
   margin: 0;
   padding: 0;
   background-color: var(--bg-primary);
@@ -176,24 +24,20 @@ html, body {
 
 
 .page-view-area {
-  position: absolute;
-  left: 0;
-  right: 0;
-  width: 100%;
-  top: var(--header-height);
-  bottom: var(--nav-tab-height);  
-  overflow: hidden; /* Prevents overflow issues */
+  width: 100%; /* Re-added */
   box-sizing: border-box;
+  position: absolute;
+  pointer-events: none;
   overflow-y: auto;
-  overscroll-behavior-y: contain; /* Prevents browser pull-to-refresh on this element */
   -webkit-overflow-scrolling: touch;
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
-              transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              top 0.3s ease, height 0.3s ease; /* Add transition for smooth size changes */
-  pointer-events: none;
+              transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* Removed top and height transitions */
   background: var(--bg-primary);
+  top: var(--header-height);
+  bottom: var(--nav-tab-height);
+  min-height: calc(100vh - var(--header-height) - var(--nav-tab-height)); /* Ensure content area fills remaining space */
 }
 
 
