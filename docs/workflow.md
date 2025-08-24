@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
-> - **Status:** `Updated`
-> - **Last Reviewed:** 24/08/2025 19:04:27 +05:30
+> - **Status:** `Up-to-Date`
+> - **Last Reviewed:** 24/08/2025 23:50:43 +05:30
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides step-by-step instructions for testing the application using various methods, including admin-driven setup, UI-driven flows, and advanced developer tools. It is essential for quality assurance.
 
@@ -245,7 +245,7 @@
     *   जब `VERIFICATION_ENABLED` को `false` पर सेट किया जाता है, तो ऐप सीधे फायरस्टोर से फ़ोन नंबर की विशिष्टता की जाँच करता है। यह एक **अस्थायी और असुरक्षित नियम** पर निर्भर करता है। उत्पादन में, इस नियम को हटा दिया जाना चाहिए और फ़ोन सत्यापन को क्लाउड फ़ंक्शन के माध्यम से नियंत्रित किया जाना चाहिए।
 
 5.  **ब्राउज़र कैश (Browser Cache):**
-    *   यदि आप JavaScript (`.js`) फ़ाइलों में बदलाव करने के बाद अपेक्षित परिणाम नहीं देख रहे हैं, तो **हार्ड रीफ़्रेश** (Ctrl+Shift+R या Cmd+Shift+R) करने का प्रयास करें या अपने ब्राउज़र का कैश साफ़ करें。
+    *   यदि आप JavaScript (`.js`) फ़ाइलों में बदलाव करने के बाद अपेक्षित परिणाम नहीं देख रहे हैं, तो **हार्ड रीफ़्रेश** (Ctrl+Shift+R या Cmd+Shift+R) करने का प्रयास करें या अपने ब्राउज़र का कैश साफ़ करें।
 
 ---
 
