@@ -12,6 +12,7 @@ html, body {
   min-height: 100vh; /* Added to ensure body is at least viewport height */
   margin: 0;
   padding: 0;
+  border: none;
   background-color: var(--bg-primary);
   overscroll-behavior-y: contain;
   -webkit-tap-highlight-color: transparent;  
