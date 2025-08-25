@@ -1,6 +1,6 @@
 # 🚀 Future Scope & Scalability 🚀
 
-This document outlines the roadmap for Apna Store, detailing planned features and the architectural principles that will ensure the application can grow and scale effectively.
+This document outlines the roadmap for mStore, detailing planned features and the architectural principles that will ensure the application can grow and scale effectively.
 
 ---
 

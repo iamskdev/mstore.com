@@ -3,7 +3,7 @@
 ================================================
 Last Updated: 18/07/2025, 15:30 IST
 
-This document lists the necessary files and configurations required to implement all planned features for the Apna Store application.
+This document lists the necessary files and configurations required to implement all planned features for the mStore application.
 
 ---
 

@@ -1,10 +1,10 @@
-# 📖 Apna Store - Data Directory Guide
+# 📖 mStore - Data Directory Guide
 
 
 
 ## 🎯 Purpose
 
-This directory (`/firebase/data/`) contains all the mock (dummy) data for the "Apna Store" application. These JSON files simulate a database and are crucial for local development and testing. The structure of this data is designed to be easily migrated to **Firebase Firestore** in the future.
+This directory (`/firebase/data/`) contains all the mock (dummy) data for the "mStore" application. These JSON files simulate a database and are crucial for local development and testing. The structure of this data is designed to be easily migrated to **Firebase Firestore** in the future.
 
 **Key Goal:** To maintain strict data integrity and consistency across all files. Please follow these rules carefully when adding or modifying data.
 
@@ -105,7 +105,7 @@ Maintaining the relationships described above will make writing Firestore securi
 
 ## 🎯 Purpose
 
-This directory (`/firebase/data/`) contains all the mock (dummy) data for the "Apna Store" application. These JSON files simulate a database and are crucial for local development and testing. The structure of this data is designed to be easily migrated to **Firebase Firestore** in the future.
+This directory (`/firebase/data/`) contains all the mock (dummy) data for the "mStore" application. These JSON files simulate a database and are crucial for local development and testing. The structure of this data is designed to be easily migrated to **Firebase Firestore** in the future.
 
 **Key Goal:** To maintain strict data integrity and consistency across all files. Please follow these rules carefully when adding or modifying data.
 

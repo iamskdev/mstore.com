@@ -2,7 +2,7 @@
 
 **Last Updated:** 18/07/2025, 16:00 IST
 
-This guide provides a complete checklist for renaming the "Apna Store" application. Following these steps will ensure that all parts of the app are updated correctly, whether you are doing it before or after deployment.
+This guide provides a complete checklist for renaming the "mStore" application. Following these steps will ensure that all parts of the app are updated correctly, whether you are doing it before or after deployment.
 
 ---
 
@@ -43,10 +43,10 @@ These changes affect what the user sees directly in their browser.
     -   **What to change:** The `<title>` tag.
 
 -   **`shared/partials/header.html`**
-    -   **What to change:** The default brand name text inside `<span class="brand-name">Apna Store</span>`.
+    -   **What to change:** The default brand name text inside `<span class="brand-name">mStore</span>`.
 
 -   **`shared/partials/footer.html`**
-    -   **What to change:** The heading (`<h4>About Apna Store</h4>`) and the copyright text (`© 2025 Apna Store`).
+    -   **What to change:** The heading (`<h4>About mStore</h4>`) and the copyright text (`© 2025 mStore`).
 
 ### Step 3: Update Assets
 
@@ -58,8 +58,8 @@ These changes affect what the user sees directly in their browser.
 
 To keep the project maintainable, update all references to the old name.
 
--   **`readme.md`**: Update the main project title (`# Apna Store`).
--   **`docs/` folder**: Check all `.md` and `.txt` files (like `future-scope.md`, `project-structure-guide.md`, etc.) for any mention of "Apna Store" and replace it with the new name.
+-   **`readme.md`**: Update the main project title (`# mStore`).
+-   **`docs/` folder**: Check all `.md` and `.txt` files (like `future-scope.md`, `project-structure-guide.md`, etc.) for any mention of "mStore" and replace it with the new name.
 
 ---
 

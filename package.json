@@ -1,7 +1,7 @@
 {
   "name": "apna-store",
   "version": "7.0.0",
-  "description": "A modern PWA for local shops and services.",
+  "description": "Revolutionize your shopping and selling experience with our modern marketplace app.",
   "main": "index.js",
   "scripts": {
     "start": "npx live-server . --port=8181 --host=0.0.0.0 --mount=/apnastore.com/:.",

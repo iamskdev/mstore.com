@@ -37,7 +37,7 @@ function showInstallPromptToast() {
     <div class="install-toast-content">
         <img src="./source/assets/logos/app-logo.png" alt="App Logo" class="install-toast-logo">
         <div class="install-toast-text">
-            <strong>Add Apna Store to Home Screen</strong>
+            <strong>Add mStore to Home Screen</strong>
             <span>For a faster, full-screen experience.</span>
         </div>
     </div>

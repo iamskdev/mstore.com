@@ -2,7 +2,7 @@
 > - **Status:** `Updated`
 > - **Last Reviewed:** 24/08/2025 18:58:34 +05:30
 > - **Reviewer:** Santosh (with Gemini)
-> - **Purpose:** This document provides a mandatory guide for developers on how to create new pages and views within the "Apna Store" project, ensuring consistency, performance, and adherence to the established architecture. It has been updated to reflect the latest ViewManager architecture and best practices.
+> - **Purpose:** This document provides a mandatory guide for developers on how to create new pages and views within the "mStore" project, ensuring consistency, performance, and adherence to the established architecture. It has been updated to reflect the latest ViewManager architecture and best practices.
 
 ---
 

@@ -1,4 +1,4 @@
-# 📁 Apna Store Path Structure
+# 📁 mStore Path Structure
 📅 Last Updated: 24/07/2025, 23:38
 
 ├── .env

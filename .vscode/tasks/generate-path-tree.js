@@ -87,7 +87,7 @@ function writeOutputs() {
   const treeLines = buildTree(ROOT, '', true, true);
 
   const flatHeader = `# 📁 Project Path Tree (Gemini-friendly)\n📅 Last Updated: ${now}\n\n`;
-  const treeHeader = `# 📁 Apna Store Path Structure\n📅 Last Updated: ${now}\n\n`;
+  const treeHeader = `# 📁 mStore Path Structure\n📅 Last Updated: ${now}\n\n`;
 
   fs.writeFileSync(OUTPUT_FLAT, flatHeader + flatPaths.join('\n'));
   fs.writeFileSync(OUTPUT_TREE, treeHeader + treeLines.join('\n'));

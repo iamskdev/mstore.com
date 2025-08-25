@@ -1,7 +1,7 @@
 {
-  "name": "Apna Store",
-  "short_name": "Apna Store",
-  "description": "A modern PWA for local shops and services.",
+  "name": "mStore",
+  "short_name": "mStore",
+  "description": "Revolutionize your shopping and selling experience with our modern marketplace app.",
   "start_url": "./",
   "scope": ".",
   "display": "standalone",
@@ -34,21 +34,21 @@
       "sizes": "720x1600",
       "type": "image/jpg",
       "form_factor": "narrow",
-      "label": "Welcome to Apna Store"
+      "label": "Welcome to mStore"
     },
     {
       "src": "./source/assets/screenshots/guest-account.jpg",
       "sizes": "720x1600",
       "type": "image/jpg",
       "form_factor": "narrow",
-      "label": "Welcome to Apna Store"
+      "label": "Welcome to mStore"
     },    
     {
       "src": "./source/assets/screenshots/desktop-guest-home.png",
       "sizes": "1920x1080",
       "type": "image/jpg",
       "form_factor": "wide",
-      "label": "Apna Store on Desktop"
+      "label": "mStore on Desktop"
     }
   ]
 }

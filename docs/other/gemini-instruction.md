@@ -1,4 +1,4 @@
-📄 GEMINI INSTRUCTION - APNA STORE PROJECT  
+📄 GEMINI INSTRUCTION - mStore PROJECT  
 📅 Updated: 16/07/2025
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  
