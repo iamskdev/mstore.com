@@ -33,17 +33,39 @@ function setButtonLoading(button, isLoading, loadingText = 'Processing...') {
  * लॉगिन, रजिस्टर और रीसेट के बीच टैब स्विचिंग को सेट करता है।
  */
 function setupAuthTabs() {
-    const tabs = document.querySelectorAll('.auth-tab'); // HTML में .auth-tab से मैच करता है
+    const tabs = document.querySelectorAll('.auth-tab');
     const forms = document.querySelectorAll('.auth-form');
+    const titleEl = document.querySelector('.auth-title');
+    const subtitleEl = document.querySelector('.auth-subtitle');
+
+    const formText = {
+        loginForm: {
+            title: "Welcome back",
+            subtitle: "Manage your account with ease"
+        },
+        registerForm: {
+            title: "Create an Account",
+            subtitle: "Get started in just a few steps"
+        },
+        resetForm: {
+            title: "Forgot Password?",
+            subtitle: "Enter your email to get a reset link"
+        }
+    };
 
     const showForm = (formId) => {
         forms.forEach(form => {
-            // 'active' क्लास को मैनेज करें, 'hidden' को नहीं, क्योंकि CSS इसी पर निर्भर करता है
             form.classList.toggle('active', form.id === formId);
         });
         tabs.forEach(tab => {
             tab.classList.toggle('active', tab.dataset.form === formId);
         });
+
+        // Update header text
+        if (titleEl && subtitleEl && formText[formId]) {
+            titleEl.textContent = formText[formId].title;
+            subtitleEl.textContent = formText[formId].subtitle;
+        }
     };
 
     tabs.forEach(tab => {
@@ -55,21 +77,18 @@ function setupAuthTabs() {
         });
     });
 
-    // sessionStorage के आधार पर प्रारंभिक टैब दिखाएं (जैसे ड्रॉअर से आने पर)
     const initialTab = sessionStorage.getItem('initialAuthTab') || 'login';
     showForm(`${initialTab}Form`);
 
-    // "Forgot Password?" लिंक के लिए इवेंट लिस्नर
     document.getElementById('forgot-password-link')?.addEventListener('click', (e) => {
         e.preventDefault();
-        showForm('resetForm'); // 'resetForm' दिखाएं और सभी टैब को निष्क्रिय करें
+        showForm('resetForm');
     });
 
-    // "Back to Login" लिंक के लिए इवेंट लिस्नर
     document.querySelector('.back-to-login-link')?.addEventListener('click', (e) => {
         e.preventDefault();
         showForm('loginForm');
-        sessionStorage.setItem('initialAuthTab', 'login'); // सेशन स्टोरेज को भी रीसेट करें
+        sessionStorage.setItem('initialAuthTab', 'login');
     });
 }
 
