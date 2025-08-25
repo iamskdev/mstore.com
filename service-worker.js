@@ -36,7 +36,7 @@ const APP_SHELL_URLS_STATIC = [
   { url: './source/main.css', priority: 1 },
   { url: './source/common/styles/theme.css', priority: 1 },
   { url: './source/assets/logos/app-logo-192.png', priority: 1 },
-  { url: './source/assets/logos/app-logo-512.png', priority: 1 },
+  { url: './source/assets/logos/app-logo.png', priority: 1 },
 
   // Tier 2: Core Scripts & Config - The main logic that boots the app.
   { url: './source/utils/app-config.js', priority: 2 },

@@ -16,7 +16,7 @@
       "purpose": "any"
     },
     {
-      "src": "./source/assets/logos/app-logo-512.png",
+      "src": "./source/assets/logos/app-logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
