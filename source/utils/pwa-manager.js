@@ -119,8 +119,26 @@ export function initializePwaInstall() {
 
   // Listen for the event from index.html that the prompt is ready.
   window.addEventListener('pwaInstallReady', () => {
-    // Show the toast after a short delay to be less intrusive.
-    setTimeout(showInstallPromptToast, 3000);
+    // Ensure the splash screen is hidden before showing the install prompt toast.
+    const splashScreen = document.getElementById('splashScreen');
+    if (splashScreen && !splashScreen.classList.contains('hidden')) {
+      // If splash screen is still visible, wait for it to hide.
+      // This is a fallback, ideally the event should be dispatched after splash screen hides.
+      const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            if (splashScreen.classList.contains('hidden')) {
+              setTimeout(showInstallPromptToast, 3000);
+              observer.disconnect(); // Stop observing once hidden
+            }
+          }
+        }
+      });
+      observer.observe(splashScreen, { attributes: true });
+    } else {
+      // Splash screen is already hidden or doesn't exist, show toast directly.
+      setTimeout(showInstallPromptToast, 3000);
+    }
   });
 
   // Use a single, delegated event listener for all drawer install buttons.

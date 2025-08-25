@@ -53,7 +53,7 @@ html, body {
 }
 
 
-.full-screen-loader {
+.page-loader {
   position: fixed;
   top: 0;
   left: 0;
@@ -65,7 +65,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Highest z-index to be on top of everything */
+  z-index: 9998; /* Highest z-index to be on top of everything */
   opacity: 1;
   visibility: visible;
   /*
@@ -76,7 +76,7 @@ html, body {
   transition: opacity 0.3s ease, visibility 0s linear 0s;
 }
 
-.full-screen-loader.hidden {
+.page-loader.hidden {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -294,3 +294,73 @@ ul#search-suggestions .suggestion-item .suggestion-icon {
 .install-toast-btn.install:hover {
   background-color: var(--accent-primary-hover);
 }
+
+/* Splash Screen Styles from splash-demo.html */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary); /* Changed here */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.splash-content {
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.splash-logo {
+  width: min(30vw, 150px);
+  height: min(30vw, 150px);
+  margin-bottom: 20px;
+  animation: 
+    float var(--animation-duration) ease-in-out infinite,
+    pulse calc(var(--animation-duration) * 1.5) ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.progress-container {
+  width: min(80vw, 300px);
+  height: 6px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
+  margin-top: 30px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent-primary); /* Changed to accent color */
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+}
+
+.splash-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.splash-screen.hidden .splash-content {
+  transform: translateY(-20px);
+}
+

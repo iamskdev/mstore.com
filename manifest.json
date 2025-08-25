@@ -6,7 +6,7 @@
   "scope": ".",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#ffffff",
+  "background_color": "#000000",
   "theme_color": "#f9f9f9",
   "icons": [
     {
@@ -16,8 +16,14 @@
       "purpose": "any"
     },
     {
-      "src": "./source/assets/logos/app-logo.png",
+      "src": "./source/assets/logos/app-logo-512.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./source/assets/logos/app-logo.png",
+      "sizes": "1080x1080",
       "type": "image/png",
       "purpose": "any"
     }

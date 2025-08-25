@@ -42,9 +42,20 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
  </head>
  <body id="main-body">
+  <div class="splash-screen" id="splashScreen">
+    <div class="splash-content">
+      <img src="./source/assets/logos/app-logo.png" 
+           class="splash-logo" 
+           alt="Apna Store Logo"
+           onerror="this.src='./source/assets/logos/app-logo.png'">
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+  </div>
  
- <!-- Full-screen Loader -->
- <div class="full-screen-loader hidden">
+ <!-- Page Loader -->
+ <div class="page-loader hidden">
   <div class="spinner"></div>
 </div>
 
@@ -74,6 +85,11 @@
   <!-- 8. Scripts -->
   <!-- This single module is the main entry point for the application's logic. -->
   <!-- It handles loading all other necessary components and scripts in the correct order. -->
+<script>
+    const progressBar = document.getElementById('progressBar');
+    const splashScreen = document.getElementById('splashScreen');
+    // Progress bar animation will be controlled by main.js
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script type="module">
   // ✅ Import critical modules at the top.

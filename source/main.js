@@ -201,6 +201,7 @@ class ViewManager {
   }
 
   async loadViewContent(viewElement, config, role) {
+    showPageLoader(); // Show page loader at the beginning of content loading
     try {
       viewElement.innerHTML = `<div class="view-placeholder"><div class="loading-spinner"><div class="spinner"></div></div></div>`;
 
@@ -309,6 +310,8 @@ class ViewManager {
     } catch (err) {
       console.error(`Failed to load view content for ${config.id}:`, err);
       viewElement.innerHTML = `<div class="view-error"><h3>Failed to load content</h3><p>${err.message}</p></div>`;
+    } finally { // Added finally block
+      hidePageLoader(); // Hide page loader after content loading (success or failure)
     }
   }
 
@@ -459,12 +462,12 @@ function getScrollbarWidth() {
 getScrollbarWidth();
 
 /**
- * Shows the full-screen loader.
+ * Shows the page loader.
  */
-function showFullScreenLoader() {
-  const loader = document.querySelector('.full-screen-loader');
-  if (loader) {
-    loader.classList.remove('hidden');
+function showPageLoader() { // Renamed function
+  const pageLoader = document.querySelector('.page-loader'); // Renamed variable and class selector
+  if (pageLoader) {
+    pageLoader.classList.remove('hidden');
   }
   originalBodyPaddingRight = document.documentElement.style.paddingRight;
   document.documentElement.style.overflow = 'hidden';
@@ -472,15 +475,26 @@ function showFullScreenLoader() {
 }
 
 /**
- * Hides the full-screen loader with a fade-out animation.
+ * Hides the page loader with a fade-out animation.
  */
-function hideFullScreenLoader() {
-  const loader = document.querySelector('.full-screen-loader');
-  if (loader) {
-    loader.classList.add('hidden');
+function hidePageLoader() { // Renamed function
+  const pageLoader = document.querySelector('.page-loader'); // Renamed variable and class selector
+  if (pageLoader) {
+    pageLoader.classList.add('hidden');
   }
   document.documentElement.style.overflow = '';
   document.documentElement.style.paddingRight = originalBodyPaddingRight;
+}
+
+/**
+ * Updates the width of the splash screen progress bar.
+ * @param {number} percentage - The percentage to set the progress bar width to (0-100).
+ */
+function updateSplashScreenProgressBar(percentage) {
+  const progressBar = document.getElementById('progressBar');
+  if (progressBar) {
+    progressBar.style.width = `${percentage}%`;
+  }
 }
 
 
@@ -598,10 +612,18 @@ export async function loadCoreComponents() {
 export async function initializeApp() {
   console.log("🚀 🚀 Initializing App...");
   setupPwaRefreshBlockers();
-  showFullScreenLoader();
+
+  let totalProgress = 0;
+  const updateProgress = (increment) => {
+    totalProgress += increment;
+    updateSplashScreenProgressBar(totalProgress);
+  };
+
+  updateProgress(10); // Initial start
 
   // 1. Load core static components like header and navigation first.
   await loadCoreComponents();
+  updateProgress(20); // Core components loaded
 
   // Set --header-height immediately after core components are loaded
   const headerContainer = document.querySelector('.header-container');
@@ -611,6 +633,7 @@ export async function initializeApp() {
 
   // 2. Initialize the View Manager. This sets up the dynamic content views.
   await viewManager.init();
+  updateProgress(30); // Initial view loaded
 
   // Initialize the scroll-aware header behavior
   initializeScrollAwareHeader();
@@ -632,17 +655,10 @@ export async function initializeApp() {
   console.log(`%c🎨 Header Style: ${APP_CONFIG.headerStyle.toUpperCase()}`, 'color: #9c27b0; font-weight: bold; font-size: 12px;');
 
   try {
-    // 2. Fetch all data using the centralized data service.
-    // FIX: The fetchAllItems function returns an array directly, not an object.
-    // Using destructuring `{ allItems }` was causing `allItems` to be undefined.
     const allItems = await fetchAllItems();
-    // Store the full list in sessionStorage for all pages (unified)
+    updateProgress(30); // Main data loaded
     sessionStorage.setItem('allItems', JSON.stringify(allItems));
 
-    // 3. Initialize data-dependent modules
-    
-
-    // 4. Handle special app modes like 'promo'
     if (APP_CONFIG.appMode === 'promo') {
       const promotionData = await fetchActivePromotion();
       if (promotionData) {
@@ -650,31 +666,34 @@ export async function initializeApp() {
         window.dispatchEvent(new CustomEvent('promotionActivated', { detail: promotionData }));
       }
     }
-
-    
-
   } catch (error) {
     console.error("❌ Failed to load item data:", error);
     showToast('error', 'Failed to load app data. Please refresh.', 5000);
-    // Dispatch an event to notify the explore view of the error.
     window.dispatchEvent(new CustomEvent('itemDataLoadError', {
       detail: { message: "Failed to load items. Please try again later." }
     }));
-    // The explore view will handle displaying the error message.
   } finally {
-    // A small delay to make the transition smoother and prevent jarring flashes
-    // Hide the loader regardless of success or failure.
-    initializePullToRefresh(); // Initialize pull-to-refresh
-    hideFullScreenLoader();
+    initializePullToRefresh();
+
+    const splashScreen = document.getElementById('splashScreen');
+    if (splashScreen) {
+      updateSplashScreenProgressBar(100); // Ensure it reaches 100%
+      setTimeout(() => {
+        splashScreen.classList.add('hidden');
+        setTimeout(() => {
+          splashScreen.style.display = 'none';
+        }, 800);
+      }, 100);
+    }
   }
 
-  // 6. Initialize cart and saved items in sessionStorage if they don't exist
   if (!sessionStorage.getItem('cart')) {
     sessionStorage.setItem('cart', '[]');
   }
   if (!sessionStorage.getItem('savedItems')) {
     sessionStorage.setItem('savedItems', '[]');
   }
+  updateProgress(10); // Final setup
 }
 
 function initializeLayoutObservers() {
