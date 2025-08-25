@@ -40,6 +40,13 @@ const viewConfig = {
       cssPath: './source/common/styles/guest-account.css',
       jsPath: './source/common/scripts/guest-account.js',
       title: 'Account'
+    },
+    notifications: {
+      id: 'guest-notifications-view',
+      path: './source/common/pages/notification-view.html',
+      cssPath: './source/common/styles/notification-view.css',
+      jsPath: './source/common/scripts/notification-view.js',
+      title: 'Notifications'
     }
   },
   user: {
@@ -62,14 +69,28 @@ const viewConfig = {
     },
     saved: { id: 'user-saved-view', path: null, title: 'Saved' },
     cart: { id: 'user-cart-view', path: null, title: 'Cart' },
-    account: { id: 'user-account-view', path: null, title: 'Account' }
+    account: { id: 'user-account-view', path: null, title: 'Account' },
+    notifications: {
+      id: 'user-notifications-view',
+      path: './source/common/pages/notification-view.html',
+      cssPath: './source/common/styles/notification-view.css',
+      jsPath: './source/common/scripts/notification-view.js',
+      title: 'Notifications'
+    }
   },
   merchant: {
     home: { id: 'merchant-home-view', path: './source/modules/merchant/pages/merchant-home.html', embedFooter: true, title: 'Home' },
     explore: { id: 'merchant-inventory-view', path: null, title: 'Inventory' },
     add: { id: 'merchant-add-view', path: null, title: 'Add' },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics' },
-    account: { id: 'merchant-account-view', path: null, title: 'Account' }
+    account: { id: 'merchant-account-view', path: null, title: 'Account' },
+    notifications: {
+      id: 'merchant-notifications-view',
+      path: './source/common/pages/notification-view.html',
+      cssPath: './source/common/styles/notification-view.css',
+      jsPath: './source/common/scripts/notification-view.js',
+      title: 'Notifications'
+    }
   },
   admin: {
     home: {
@@ -87,7 +108,14 @@ const viewConfig = {
     logs: { id: 'admin-logs-view', path: null, title: 'Logs' },
     promo: { id: 'admin-promo-view', path: null, title: 'Promo' },
     campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns' },
-    account: { id: 'admin-account-view', path: null, title: 'Account' }
+    account: { id: 'admin-account-view', path: null, title: 'Account' },
+    notifications: {
+      id: 'admin-notifications-view',
+      path: './source/common/pages/notification-view.html',
+      cssPath: './source/common/styles/notification-view.css',
+      jsPath: './source/common/scripts/notification-view.js',
+      title: 'Notifications'
+    }
   }
 };
 

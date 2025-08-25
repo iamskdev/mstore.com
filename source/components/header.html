@@ -158,8 +158,25 @@
       box-sizing: border-box;
     }
 
-    .apna-header-content.search-active .header-search-input-container {
+        .apna-header-content.search-active .header-search-input-container {
       display: block; /* Visible in search mode */
+    }
+
+    /* New styles for notification view */
+    .notification-header-content {
+      display: none; /* Hidden by default */
+      align-items: center;
+      gap: 12px;
+    }
+
+    .apna-header-content.notification-active .header-branding,
+    .apna-header-content.notification-active .header-actions,
+    .apna-header-content.notification-active .header-search-input-container {
+      display: none;
+    }
+
+    .apna-header-content.notification-active .notification-header-content {
+      display: flex; /* Show notification header content */
     }
 
     .search-clear {
@@ -215,6 +232,11 @@
     <div id="mode-banner" class="mode-banner"></div>
     <header class="apna-header-content" id="main-header">
       <i class="fas fa-arrow-left header-icon" id="search-back"></i>
+      <!-- NEW: Notification Header Content -->
+      <div class="notification-header-content hidden">
+        <i class="fas fa-arrow-left header-icon" id="notification-back-btn"></i>
+        <span class="brand-name" id="notification-title">Notifications</span>
+      </div>
       <div class="header-branding">
       <i class="fas fa-bars header-icon header-toggle-item menu-icon" id="header-menu-icon" style="font-size: 1.4rem; cursor: pointer; margin-right: 4px;" data-header-item="menu"></i>
       <span class="brand-logo header-toggle-item logo-container" id="header-logo-container" data-header-item="logo">
@@ -262,6 +284,10 @@
     const logoEl = document.querySelector('.logo-container img');
     const nameEl = document.getElementById('header-name');
     const logoContainer = document.querySelector('.logo-container');
+
+    const notificationHeaderContent = document.querySelector('.notification-header-content');
+    const notificationBackBtn = document.getElementById('notification-back-btn');
+    const notificationTitle = document.getElementById('notification-title');
 
     let isFilterBarLoaded = false;
 
@@ -433,6 +459,15 @@
         searchClearBtn.style.display = 'none';
         const suggestionsBox = document.getElementById('search-suggestions');
         if (suggestionsBox) suggestionsBox.style.display = 'none';
+      });
+    }
+
+    if (notificationIcon) {
+      notificationIcon.addEventListener('click', () => {
+        const currentRole = window.viewManager.currentRole;
+        window.dispatchEvent(new CustomEvent('requestViewChange', {
+          detail: { role: currentRole, view: 'notifications' }
+        }));
       });
     }
 
