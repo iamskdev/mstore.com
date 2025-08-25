@@ -108,6 +108,7 @@ class ViewManager {
    * @param {string} viewId The ID of the view to switch to.
    */
   async switchView(role, viewId) {
+    console.log(`ViewManager: Attempting to switch to role: ${role}, viewId: ${viewId}`); // Added log
     // Validate the requested role and viewId. Fallback to a safe default if invalid.
     if (!this.viewConfig[role] || !this.viewConfig[role][viewId]) {
       console.warn(`ViewManager: Invalid role "${role}" or view "${viewId}". Falling back to default.`);
@@ -116,8 +117,12 @@ class ViewManager {
     }
 
     const config = this.viewConfig[role][viewId];
+    // Resolve view configuration, checking commonViews for paths if not present in role-specific config
+    let resolvedConfig = { ...config }; // Start with role-specific config
+
+    
     const currentViewElement = document.querySelector('.page-view-area.view-active');
-    let newViewElement = document.getElementById(config.id);
+    let newViewElement = document.getElementById(resolvedConfig.id);
 
     // If the view element doesn't exist, create it dynamically
     if (!newViewElement) {
@@ -144,19 +149,19 @@ class ViewManager {
 
     if (currentViewElement) currentViewElement.classList.remove('view-active');
 
-    if (config.path && !this.loadedViews.has(config.id)) {
-      await this.loadViewContent(newViewElement, config, role);
-    } else if (!config.path && !this.loadedViews.has(config.id)) { // NEW: Handle views with path: null
-      newViewElement.innerHTML = `<div class="view-placeholder" style="padding: 20px; text-align: center; color: var(--text-secondary);"><h3>${config.title} View</h3><p>This view is under development. Content will be available soon!</p></div>`;
-      this.loadedViews.add(config.id); // Mark as loaded to prevent re-injection
-    } else if (config.path && this.loadedViews.has(config.id)) {
+    if (resolvedConfig.path && !this.loadedViews.has(resolvedConfig.id)) {
+      await this.loadViewContent(newViewElement, resolvedConfig, role);
+    } else if (!resolvedConfig.path && !this.loadedViews.has(resolvedConfig.id)) { // NEW: Handle views with path: null
+      newViewElement.innerHTML = `<div class="view-placeholder" style="padding: 20px; text-align: center; color: var(--text-secondary);"><h3>${resolvedConfig.title} View</h3><p>This view is under development. Content will be available soon!</p></div>`;
+      this.loadedViews.add(resolvedConfig.id); // Mark as loaded to prevent re-injection
+    } else if (resolvedConfig.path && this.loadedViews.has(resolvedConfig.id)) {
     }
 
     // Handle embedding the footer for views that don't have a content path but need a footer.
     // This ensures views like guest-home can have a footer without a dedicated HTML file.
-    if (!config.path && config.embedFooter && !this.loadedViews.has(config.id)) {
+    if (!resolvedConfig.path && resolvedConfig.embedFooter && !this.loadedViews.has(resolvedConfig.id)) {
       await this._loadAndEmbedFooter(newViewElement, role);
-      this.loadedViews.add(config.id); // Mark as "loaded" to prevent re-embedding
+      this.loadedViews.add(resolvedConfig.id); // Mark as "loaded" to prevent re-embedding
     }
 
     newViewElement.classList.add('view-active');
@@ -716,10 +721,14 @@ function initializeLayoutObservers() {
 }
 
 function initializePullToRefresh() {
+  // Only initialize Pull-to-Refresh if the app is running in standalone mode (PWA)
+  if (!window.matchMedia('(display-mode: standalone)').matches) {
+    console.log("Pull-to-Refresh not initialized: Not in standalone mode.");
+    return;
+  }
   const ptr = document.getElementById("pullToRefresh");
   const arrow = document.getElementById("arrowIcon");
   const spinner = document.getElementById("spinnerIcon");
-  // Listen on the main content area, which contains the scrollable views.
   const mainContent = document.getElementById('page-view-area');
 
   if (!mainContent) {
@@ -743,34 +752,44 @@ function initializePullToRefresh() {
   window.addEventListener('resize', updateHeaderHeight);
   updateHeaderHeight();
 
+  // Listen for touchstart on the main content area
   mainContent.addEventListener('touchstart', e => {
     startY = e.touches[0].clientY;
     isPulling = false; // Reset on every touch.
+  }, { passive: true }); // Keep passive: true for touchstart
+
+  // Global touchmove listener (passive: true) - allows normal scrolling
+  window.addEventListener('touchmove', e => {
+    // This listener is now passive and does not prevent default behavior.
+    // It's here primarily for consistency or if other non-blocking logic is needed.
   }, { passive: true });
 
+  // Existing touchmove listener for custom PTR animation
   mainContent.addEventListener('touchmove', e => {
     const activeView = mainContent.querySelector('.page-view-area.view-active');
-    if (!activeView) return; // Exit if no active view. 
+    if (!activeView) return;
 
-    const isAtTop = activeView.scrollTop === 0;
+    // Use a more robust check for activeView being at the top
+    const isAtTop = activeView.scrollTop === 0; // Keep this for the active view's scroll
+
     const currentY = e.touches[0].clientY;
     const diff = currentY - startY;
 
     // Condition to START a pull: active view is at the top, user is pulling down, and not already in a pull.
-    if (isAtTop && diff > 5 && !isPulling) {
+    if (isAtTop && diff > 20 && !isPulling) {
       isPulling = true;
       ptr.style.transition = 'none'; // Disable transition during pull for direct mapping.
     }
 
     if (isPulling) {
-      e.preventDefault(); // Take control from browser.
+      e.preventDefault(); // Prevent default browser scroll only when our custom PTR is active
       const pullDistance = Math.max(0, diff);
       ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight + Math.min(pullDistance, 120)}px`;
       
       const rotation = Math.min((pullDistance / pullThreshold) * 180, 180);
       arrow.style.transform = `rotate(${rotation}deg)`;
     }
-  }, { passive: false });
+  }, { passive: false }); // Must be passive: false to allow preventDefault
 
   mainContent.addEventListener('touchend', e => {
     if (!isPulling) return;

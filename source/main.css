@@ -27,6 +27,7 @@ html, body {
 .page-view-area {
   width: 100%; /* Re-added */
   box-sizing: border-box;
+  display: flex;  
   position: absolute;
   pointer-events: none;
   overflow-y: auto;

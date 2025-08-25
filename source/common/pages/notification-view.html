@@ -1,78 +1,80 @@
-<div class="notifications-container">
-    <div class="filter-tabs">
-        <div class="filter-tab active">All</div>
-        <div class="filter-tab">Offers</div>
-        <div class="filter-tab">Updates</div>
-        <div class="filter-tab">Reminders</div>
+<!-- NOTIFICATION VIEW CONTAINER -->
+<div class="notification-view">
+
+  <!-- ========== TAB NAVIGATION AREA ========== -->
+  <div class="notification-tab-bar">
+    <button class="tab-btn active" data-tab="all">All</button>
+    <button class="tab-btn" data-tab="orders">Updates</button>
+    <button class="tab-btn" data-tab="offers">Offers</button>
+    <button class="tab-btn" data-tab="reminders">Reminders</button>
+  </div>
+
+  <!-- ========== TAB CONTENT AREA ========== -->
+  <div class="notification-content">
+
+    <!-- All Notifications -->
+    <div class="tab-panel active" id="all">
+      <div class="notification-card">
+        <div class="notification-icon">📦</div>
+        <div class="notification-info">
+          <h4 class="notification-title">Order #1234 Shipped</h4>
+          <div class="notification-message-wrapper">
+            <p class="notification-message-content">Your order has been dispatched and is on the way.</p>
+            <button class="read-more-btn hidden">Read More</button>
+          </div>
+          <span class="notification-time">2h ago</span>
+        </div>
+      </div>
     </div>
-    
-    <div class="notification-group">
-        <div class="group-title">Today</div>
-        
-        <div class="notification-item unread">
-            <div class="notification-icon">📅</div>
-            <div class="notification-content">
-                <div class="notification-title">Booking Confirmed</div>
-                <div class="notification-message">Your full-body massage is scheduled for Aug 14 at 5 PM.</div>
-            </div>
-            <div class="notification-time">2h ago</div>
+
+    <!-- Orders -->
+    <div class="tab-panel" id="orders">
+      <div class="notification-card">
+        <div class="notification-icon">✅</div>
+        <div class="notification-info">
+          <h4 class="notification-title">Order Delivered</h4>
+          <p class="notification-message">Your package has been delivered successfully.</p>
+          <span class="notification-time">1d ago</span>
         </div>
-        
-        <div class="notification-item">
-            <div class="notification-icon">🎁</div>
-            <div class="notification-content">
-                <div class="notification-title">Special Offer</div>
-                <div class="notification-message">Get 20% off on couples massage this weekend.</div>
-            </div>
-            <div class="notification-time">5h ago</div>
-        </div>
+      </div>
     </div>
-    
-    <div class="notification-group">
-        <div class="group-title">Yesterday</div>
-        
-        <div class="notification-item unread">
-            <div class="notification-icon">🕒</div>
-            <div class="notification-content">
-                <div class="notification-title">Reminder</div>
-                <div class="notification-message">Please arrive 10 mins early for your spa therapy.</div>
-            </div>
-            <div class="notification-time">Yesterday</div>
+
+    <!-- Offers -->
+    <div class="tab-panel" id="offers">
+      <div class="notification-card offer">
+        <div class="notification-icon">🎉</div>
+        <div class="notification-info">
+          <h4 class="notification-title">50% Off on Electronics</h4>
+          <p class="notification-message">Grab your favorite gadgets at half the price.</p>
+          <span class="notification-time">Today</span>
         </div>
+      </div>
     </div>
-    
-    <div class="notification-group">
-        <div class="group-title">This Week</div>
-        
-        <div class="notification-item">
-            <div class="notification-icon">🎁</div>
-            <div class="notification-content">
-                <div class="notification-title">Special Offer</div>
-                <div class="notification-message">Get 20% off on Aromatherapy this weekend.</div>
-            </div>
-            <div class="notification-time">2 days ago</div>
+
+    <!-- System -->
+    <div class="tab-panel" id="system">
+      <div class="notification-card system">
+        <div class="notification-icon">⚙️</div>
+        <div class="notification-info">
+          <h4 class="notification-title">App Update Available</h4>
+          <p class="notification-message">Version 7.2.1 is now available. Please update.</p>
+          <span class="notification-time">3d ago</span>
         </div>
+      </div>
     </div>
-    
-    <div class="notification-group">
-        <div class="group-title">Earlier</div>
-        
-        <div class="notification-item">
-            <div class="notification-icon">🌿</div>
-            <div class="notification-content">
-                <div class="notification-title">Loyalty Update</div>
-                <div class="notification-message">You have earned 200 points.</div>
-            </div>
-            <div class="notification-time">1 week ago</div>
+
+    <!-- Reminders -->
+    <div class="tab-panel" id="reminders">
+      <div class="notification-card reminder">
+        <div class="notification-icon">⏰</div>
+        <div class="notification-info">
+          <h4 class="notification-title">Payment Reminder</h4>
+          <p class="notification-message">Don’t forget to pay your pending bill before 30 Aug.</p>
+          <span class="notification-time">1h ago</span>
         </div>
-        
-        <div class="notification-item">
-            <div class="notification-icon">💆</div>
-            <div class="notification-content">
-                <div class="notification-title">New Service</div>
-                <div class="notification-message">Try our new Hot Stone Massage now available.</div>
-            </div>
-            <div class="notification-time">2 weeks ago</div>
-        </div>
+      </div>
     </div>
+
+  </div>
+
 </div>

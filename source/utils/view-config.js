@@ -7,6 +7,14 @@ const defaultViews = {
   admin: 'home'
 };
 
+const notificationView = {
+  id: 'notifications-view',
+  path: './source/common/pages/notification-view.html',
+  cssPath: './source/common/styles/notification-view.css',
+  jsPath: './source/common/scripts/notification-view.js',
+  title: 'Notifications'
+};
+
 /**
  * @file View Configuration
  * Defines all possible views for each user role, their DOM IDs, and content paths.
@@ -41,13 +49,7 @@ const viewConfig = {
       jsPath: './source/common/scripts/guest-account.js',
       title: 'Account'
     },
-    notifications: {
-      id: 'guest-notifications-view',
-      path: './source/common/pages/notification-view.html',
-      cssPath: './source/common/styles/notification-view.css',
-      jsPath: './source/common/scripts/notification-view.js',
-      title: 'Notifications'
-    }
+    notifications: notificationView
   },
   user: {
     home: {
@@ -70,13 +72,7 @@ const viewConfig = {
     saved: { id: 'user-saved-view', path: null, title: 'Saved' },
     cart: { id: 'user-cart-view', path: null, title: 'Cart' },
     account: { id: 'user-account-view', path: null, title: 'Account' },
-    notifications: {
-      id: 'user-notifications-view',
-      path: './source/common/pages/notification-view.html',
-      cssPath: './source/common/styles/notification-view.css',
-      jsPath: './source/common/scripts/notification-view.js',
-      title: 'Notifications'
-    }
+    notifications: notificationView
   },
   merchant: {
     home: { id: 'merchant-home-view', path: './source/modules/merchant/pages/merchant-home.html', embedFooter: true, title: 'Home' },
@@ -84,13 +80,7 @@ const viewConfig = {
     add: { id: 'merchant-add-view', path: null, title: 'Add' },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics' },
     account: { id: 'merchant-account-view', path: null, title: 'Account' },
-    notifications: {
-      id: 'merchant-notifications-view',
-      path: './source/common/pages/notification-view.html',
-      cssPath: './source/common/styles/notification-view.css',
-      jsPath: './source/common/scripts/notification-view.js',
-      title: 'Notifications'
-    }
+    notifications: notificationView
   },
   admin: {
     home: {
@@ -109,14 +99,8 @@ const viewConfig = {
     promo: { id: 'admin-promo-view', path: null, title: 'Promo' },
     campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns' },
     account: { id: 'admin-account-view', path: null, title: 'Account' },
-    notifications: {
-      id: 'admin-notifications-view',
-      path: './source/common/pages/notification-view.html',
-      cssPath: './source/common/styles/notification-view.css',
-      jsPath: './source/common/scripts/notification-view.js',
-      title: 'Notifications'
-    }
-  }
-};
+    notifications: notificationView
+  },
+  };
 
 export { viewConfig, defaultViews };

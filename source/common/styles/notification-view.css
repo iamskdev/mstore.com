@@ -1,91 +1,183 @@
-* {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-        
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        /* Notifications Page Styles */
-        .notifications-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            min-height: 100vh;
-            padding-bottom: 60px; /* Space for bottom nav */
-        }
-        
+/* ===============================
+   Notification View - Simple Tabs
+   =============================== */
 
-        .filter-tabs {
-            display: flex;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .filter-tab {
-            flex: 1;
-            text-align: center;
-            padding: 15px 0;
-            cursor: pointer;
-        }
-        
-        .filter-tab.active {
-            color: #4a2c82;
-            border-bottom: 2px solid #4a2c82;
-            font-weight: bold;
-        }
-        
-        .notification-group {
-            margin: 20px 0;
-        }
-        
-        .group-title {
-            padding: 5px 20px;
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .notification-item {
-            display: flex;
-            padding: 15px 20px;
-            border-bottom: 1px solid #f0f0f0;
-            align-items: center;
-        }
-        
-        .notification-item.unread {
-            background-color: #f8f5ff;
-        }
-        
-        .notification-icon {
-            font-size: 24px;
-            margin-right: 15px;
-            color: #4a2c82;
-        }
-        
-        .notification-content {
-            flex: 1;
-        }
-        
-        .notification-title {
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-        
-        .notification-item.unread .notification-title {
-            color: #4a2c82;
-        }
-        
-        .notification-message {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .notification-time {
-            color: #999;
-            font-size: 12px;
-            white-space: nowrap;
-            margin-left: 10px;
-        }
+/* ---------- LAYOUT ---------- */
+.notification-view {
+  bottom: var(--tab-nav-height);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+/* ---------- TAB BAR (text only) ---------- */
+.notification-tab-bar {
+  display: flex;
+  gap: 0; /* Reduced gap */
+  /* Removed padding-left: 1rem; */
+  align-items: center;
+  flex-direction: row;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-primary);
+}
+
+.tab-btn {
+  flex-shrink: 0; /* Changed from flex: 1; */
+  /* Removed gap: 10px; as it's not needed here */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center; /* Corrected invalid value */
+  padding: 10px 15px; /* Added horizontal padding */
+  font-size: 15px;
+  font-weight: 500;
+  min-width: 10px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  transition: color .2s ease;
+}
+
+.tab-btn.active {
+  color: rgb(var(--accent-primary-rgb));
+  position: relative;
+}
+
+.tab-btn.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgb(var(--accent-primary-rgb));
+  border-radius: 3px 3px 0 0; /* top-left, top-right, bottom-right, bottom-left */
+}
+
+/* ---------- CONTENT AREA ---------- */
+.notification-content {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  background: var(--bg-primary);
+}
+
+/* Panels (show active tab) */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ---------- NOTIFICATION LIST (divider style) ---------- */
+.notification-list {
+  list-style: none;
+  margin: 0; padding: 0;
+}
+
+.notification-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 8px;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  transition: background .2s ease;
+}
+
+.notification-card:last-child {
+  border-bottom: none;
+}
+
+.notification-card:active {
+  background: var(--bg-hover);
+}
+
+/* Icon/Avatar */
+.notification-card .notification-icon {
+  flex: 0 0 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  font-size: 18px;
+}
+
+/* Text Info */
+.notification-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-title {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.notification-message-wrapper {
+  position: relative;
+  /* Removed padding-bottom: 20px; */
+}
+
+.notification-message-content {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5em; /* Added for consistent line height */
+  color: var(--text-secondary);
+  max-height: 40px; /* Show approx 2-3 lines (now based on line-height) */
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.notification-card.expanded .notification-message-content {
+  max-height: none;
+  overflow: visible;
+}
+
+.read-more-btn {
+  /* Removed absolute positioning */
+  background: none;
+  border: none;
+  color: var(--accent-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0; /* Reduced padding */
+  text-decoration: underline;
+  /* Removed z-index */
+  display: inline; /* Ensure it flows with text */
+}
+
+.read-more-btn.hidden {
+  display: none;
+}
+
+.notification-card:last-child {
+  border-bottom: none;
+}
+
+/* Time */
+.notification-time {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* ---------- TYPE COLORS ---------- */
+.notification-card.offer .notification-icon {
+  background: rgba(255, 165, 0, .15);
+  color: #f8961e;
+}
+.notification-card.system .notification-icon {
+  background: rgba(0, 119, 182, .15);
+  color: #0077b6;
+}
+.notification-card.reminder .notification-icon {
+  background: rgba(67, 97, 238, .15);
+  color: rgb(var(--accent-primary-rgb));
+}
