@@ -4,7 +4,6 @@
     {
       "label": "🔁 Update Path Tree (manual)",
       "type": "shell",
-      "command": "node .vscode/tasks/generate-path-tree.js --force",
       "group": "build",
       "presentation": {
         "reveal": "always",
