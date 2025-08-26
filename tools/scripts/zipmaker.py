@@ -9,7 +9,7 @@ MAX_FILE_SIZE_MB = 100
 PROJECT_NAME = "ApnaStore"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "../../"))
-ZIP_EXPORT_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "../../../ZipVersions"))
+ZIP_EXPORT_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "../../../Versions"))
 LOG_FOLDER = os.path.abspath(os.path.join(SCRIPT_DIR, "../../docs/versions"))
 VERSION_TYPES = ["Dev", "Alpha", "Beta", "Release", "Stable"]
 
@@ -120,7 +120,7 @@ version = get_valid_version(last_version)
 version_with_v = f"V{version}"
 note_hint = last_note if last_note else "New Release"
 note_input = prompt(f"Enter Note [Example: {note_hint}]: ").strip()
-note = note_input[0].upper() + note_input[1:] if note_input else "NoNote"
+    note = note_input.title() if note_input else "No_Note"
 
 # ==== Zip logic ====
 folder_for_log = f"{PROJECT_NAME}_{last_version}" if last_version else f"{PROJECT_NAME}_V0.0.0"
@@ -167,7 +167,7 @@ try:
         if last_id == 0:
             f.write(f"### {PROJECT_NAME} {VERSION_TYPE} Versions\n\n")
         f.write(f"# D{next_id:03} >> `{now}` >> `{folder_for_log}` >> `{version_with_v}` >> `{note}` >> `{zip_name}`\n")
-        f.write("---")
+        f.write("---\n")
     print("Log file updated successfully.")
 except Exception as e:
     print(f"❌ Error updating log file: {e}")
