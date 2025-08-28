@@ -1,9 +1,9 @@
-.guest-account-view { /* Corrected typo */
+#guest-account-view { /* Corrected typo */
       flex-direction: column;
       /* Removed min-height: 100vh; to avoid conflict with parent's fixed height */
       background: var(--bg-primary);
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
       padding-bottom: 1rem;
       box-sizing: border-box;
     }
@@ -11,7 +11,7 @@
     .auth-card {
       background: var(--bg-primary);
       max-width: 480px;
-      width: 90%;
+      width: 100%;
       justify-self: center;
       justify-content: center;
       height: auto;
