@@ -196,17 +196,17 @@ function updateHeroSection(user) {
 
     if (avatarImg) {
         // Use user's avatar if available, otherwise a default.
-        const avatarPath = user?.info?.avatar || './localstore/images/users/vivek.jpg';
+        const avatarPath = user?.info?.avatar;
         avatarImg.src = avatarPath;
-        avatarImg.onerror = () => { avatarImg.src = './localstore/images/users/vivek.jpg'; };
+        avatarImg.onerror = () => { avatarImg.src = './source/assets/logos/app-logo.png'; };
     }
 }
 
 /**
- * Main initialization function for the User Home Page.
+ * Main initialization function for the Home Page.
  */
 export async function init() {
-    const container = document.getElementById('user-home-view'); // Correctly target the main view container
+    const container = document.getElementById('.home-view'); // Correctly target the main view container
     if (!container || container.dataset.initialized === 'true') return;
 
     console.log('✨ Initializing User Home Page...');

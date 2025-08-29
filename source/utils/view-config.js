@@ -24,11 +24,11 @@ const notificationView = {
 const viewConfig = {
   guest: {
     home: {
-      id: 'guest-home-view',
-      path: './source/common/pages/guest-home.html',
-      cssPath: './source/common/styles/guest-home.css',
-      jsPath: './source/common/scripts/guest-home.js',
-      showFilterBar: false, // No filter bar on the welcome page
+      id: 'home-view',
+      path: './source/common/pages/home.html',
+      cssPath: './source/common/styles/home.css',
+      jsPath: './source/common/scripts/home.js',
+      showFilterBar: true, // No filter bar on the welcome page
       title: 'Home'
     },
     chat: { id: 'guest-chat-view', path: null, title: 'Chat' },
@@ -45,10 +45,10 @@ const viewConfig = {
   },
   user: {
     home: {
-      id: 'user-home-view',
-      path: './source/modules/consumer/pages/user-home.html',
-      cssPath: './source/modules/consumer/styles/user-home.css',
-      jsPath: './source/modules/consumer/scripts/user-home.js',
+      id: 'home-view',
+      path: './source/common/pages/home.html',
+      cssPath: './source/common/styles/home.css',
+      jsPath: './source/common/scripts/home.js',
       showFilterBar: true,
       embedFooter: true, // Embed it directly into the view content
       title: 'Home'
@@ -60,7 +60,15 @@ const viewConfig = {
     notifications: notificationView
   },
   merchant: {
-    home: { id: 'merchant-home-view', path: null, embedFooter: true, title: 'Home' },
+    home: {
+      id: 'home-view',
+      path: './source/common/pages/home.html',
+      cssPath: './source/common/styles/home.css',
+      jsPath: './source/common/scripts/home.js',
+      showFilterBar: true,
+      embedFooter: true,
+      title: 'Home'
+    },
     chat: { id: 'merchant-chat-view', path: null, title: 'Chat' },
     add: { id: 'merchant-add-view', path: null, title: 'Add' },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics' },
@@ -69,7 +77,7 @@ const viewConfig = {
   },
   admin: {
     home: {
-      id: 'admin-home-view',
+      id: 'home-view',
       path: "./source/modules/admin/pages/admin-home.html",
       cssPath: "./source/modules/admin/pages/admin-home.css",
       jsPath: "./source/modules/admin/pages/admin-home.js",
