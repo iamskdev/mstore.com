@@ -248,6 +248,7 @@
 
     // Switcher visible in "dev" or "promo" modes, OR if super-admin logged in
     const isAdminLoggedIn = loggedInUserType === 'admin';
+    console.log("RoleSwitcher: loggedInUserType:", loggedInUserType, "isAdminLoggedIn:", isAdminLoggedIn); // ADDED LOG
 
     if (appMode === 'dev' || appMode === 'promo' || isAdminLoggedIn) {
       if (isAdminLoggedIn && appMode !== 'dev' && appMode !== 'promo') {

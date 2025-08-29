@@ -580,8 +580,12 @@ export async function loadComponent(element, path) {
  * Finds all elements with a `data-partial` attribute and loads them using the loadComponent helper.
  */
 export async function loadCoreComponents() {
-    // Show dev-only partials if appMode is 'dev' or 'promo'
-    const allowDevOnly = APP_CONFIG.appMode === 'dev' || APP_CONFIG.appMode === 'promo';
+    // Determine if the current user is an admin
+    const loggedInUserType = localStorage.getItem('currentUserType');
+    const isAdminLoggedIn = loggedInUserType === 'admin';
+
+    // Show dev-only partials if appMode is 'dev' or 'promo', OR if an admin is logged in
+    const allowDevOnly = APP_CONFIG.appMode === 'dev' || APP_CONFIG.appMode === 'promo' || isAdminLoggedIn;
 
     const promises = [];
 
@@ -597,6 +601,7 @@ export async function loadCoreComponents() {
         }
 
         // Skip dev-only partials if not in the correct mode
+        // The 'allowDevOnly' now includes the isAdminLoggedIn check
         if (config.devOnly && !allowDevOnly) {
             element.remove(); // Clean up the placeholder
             continue;
@@ -626,7 +631,14 @@ export async function initializeApp() {
 
   updateProgress(10); // Initial start
 
-  // 1. Load core static components like header and navigation first.
+  // 2. Initialize the View Manager. This sets up the dynamic content views.
+  //    This also ensures authentication state is resolved and localStorage is updated.
+  await viewManager.init();
+  updateProgress(30); // Initial view loaded
+
+  // 1. Load core static components like header and navigation.
+  //    Now, loadCoreComponents can reliably check localStorage for currentUserType.
+  console.log("initializeApp: currentUserType before loadCoreComponents:", localStorage.getItem('currentUserType')); // ADDED LOG
   await loadCoreComponents();
   updateProgress(20); // Core components loaded
 
@@ -635,10 +647,6 @@ export async function initializeApp() {
   if (headerContainer) {
     document.documentElement.style.setProperty('--header-height', `${headerContainer.offsetHeight}px`);
   }
-
-  // 2. Initialize the View Manager. This sets up the dynamic content views.
-  await viewManager.init();
-  updateProgress(30); // Initial view loaded
 
   // Initialize the scroll-aware header behavior
   initializeScrollAwareHeader();
