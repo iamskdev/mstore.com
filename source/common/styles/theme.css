@@ -40,6 +40,8 @@
   /* --- 4. Borders & States --- */
   --border-color: #e0e0e0;
   --error-color: #d93025;
+  --bg-skeleton: #e0e0e0;
+  --bg-skeleton-shimmer: #f0f0f0;
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.05);
@@ -102,6 +104,8 @@ html.dark-mode {
   /* --- 4. Borders & States --- */
   --border-color: #333333;
   --error-color: #ff5252;
+  --bg-skeleton: #2a2a3b;
+  --bg-skeleton-shimmer: #3a3b4c;
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.2);

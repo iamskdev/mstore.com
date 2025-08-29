@@ -2,10 +2,10 @@
 
 const tabMapping = {
   promotional: "offers",
-  reminder: "reminders",
-  system: "system",
-  transactional: "orders",   // alerts ke liye
-  order_update: "orders"     // alerts ke liye
+  reminder: "activities",
+  system: "updates",
+  transactional: "activities",
+  order_update: "activities"
 };
 
 // Utility: create notification card
@@ -14,13 +14,13 @@ function createNotificationCard(item, type = "campaign") {
   const icon = content.richContent?.icon ? `<i class="${content.richContent.icon}"></i>` : "🔔";
   const image = content.richContent?.image ? `<img src="${content.richContent.image}" class="notification-img" />` : "";
   const time = item.meta?.createdAt || item.meta?.schedule?.sendAt || new Date().toISOString();
+  const formattedTime = new Date(time).toLocaleString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
 
   // CTA buttons
   let ctas = "";
   if (content.cta && content.cta.length > 0) {
-    ctas = `<div class="notification-cta">
-              ${content.cta.map(c => `<a href="${c.url}" class="btn ${c.type}">${c.label}</a>`).join("")}
-            </div>`;
+    // Note: The wrapping div is now part of the main template literal
+    ctas = content.cta.map(c => `<a href="${c.url}" class="cta-link ${c.type}">${c.label}</a>`).join("");
   }
 
   return `
@@ -33,8 +33,12 @@ function createNotificationCard(item, type = "campaign") {
           <button class="read-more-btn hidden">Read More</button>
         </div>
         ${image}
-        <span class="notification-time">${new Date(time).toLocaleString()}</span>
-        ${ctas}
+        <div class="notification-footer">
+          <span class="notification-time">${formattedTime}</span>
+          <div class="notification-cta">
+            ${ctas}
+          </div>
+        </div>
       </div>
     </div>
   `;
@@ -60,7 +64,7 @@ function renderNotifications(campaigns, alerts) {
     if (item._src === "campaign") {
       category = tabMapping[item.meta?.type] || "offers";
     } else {
-      category = tabMapping[item.meta?.category] || "orders";
+      category = tabMapping[item.meta?.category] || "updates";
     }
 
     const html = createNotificationCard(item, item._src);
@@ -125,33 +129,54 @@ export function init() {
   // Swipe functionality
   const notificationContent = document.querySelector(".notification-content");
   let startX = 0;
-  let startY = 0; // Added
-  let currentX = 0;
-  let currentY = 0; // Added
+  let startY = 0;
+  let currentX = 0; // Moved declaration here
+  let currentY = 0; // Moved declaration here
   let isSwiping = false;
+  let hasMoved = false; // New flag
 
   notificationContent.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY; // Added
+    startY = e.touches[0].clientY;
     isSwiping = true;
+    hasMoved = false; // Reset on touchstart
   });
 
   notificationContent.addEventListener('touchmove', (e) => {
     if (!isSwiping) return;
     currentX = e.touches[0].clientX;
-    currentY = e.touches[0].clientY; // Added
+    currentY = e.touches[0].clientY;
+
+    const diffX = currentX - startX;
+    const diffY = currentY - startY;
+    const moveThreshold = 10; // Increased threshold to consider it a "move"
+
+    // Set hasMoved if significant movement occurs
+    if (Math.abs(diffX) > moveThreshold || Math.abs(diffY) > moveThreshold) {
+      hasMoved = true;
+    }
+
+    // Prevent default scrolling if a horizontal swipe is likely
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+      e.preventDefault();
+    }
   });
 
-  notificationContent.addEventListener('touchend', () => {
+  notificationContent.addEventListener('touchend', (e) => {
     if (!isSwiping) return;
     isSwiping = false;
 
-    const diffX = currentX - startX;
-    const diffY = currentY - startY; // Added
-    const swipeThreshold = 50; // pixels
+    // If no significant movement occurred, it's a tap, not a swipe.
+    if (!hasMoved) {
+      return;
+    }
 
-    // Only trigger if horizontal swipe is dominant and exceeds threshold
-    if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY)) { // Modified condition
+    const diffX = currentX - startX;
+    const diffY = currentY - startY;
+    const swipeThreshold = 60; // Adjusted pixels for swipe detection
+
+    // Only trigger swipe if horizontal swipe is dominant and exceeds threshold
+    if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY)) {
       const activeTabBtn = document.querySelector(".tab-btn.active");
       const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
       const currentIndex = tabBtns.indexOf(activeTabBtn);
@@ -303,7 +328,7 @@ function initializeExpandCollapse() {
 
     // Add click listener to the card itself to stop propagation
     card.addEventListener('click', (event) => { // Added event parameter
-      event.stopPropagation(); // Stop propagation for the notification card
+      // event.stopPropagation(); // Stop propagation for the notification card
     });
   });
 }

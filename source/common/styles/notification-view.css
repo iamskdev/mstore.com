@@ -1,39 +1,31 @@
 /* ===============================
-   Notification View - Simple Tabs
+   Notification View - Final Style
    =============================== */
 
 /* ---------- LAYOUT ---------- */
 .notification-view {
-  bottom: var(--tab-nav-height);
   display: flex;
   flex-direction: column;
   background: var(--bg-primary);
   color: var(--text-primary);
   overflow: hidden;
+  height: 100%;
 }
 
-/* ---------- TAB BAR (text only) ---------- */
+/* ---------- TAB BAR ---------- */
 .notification-tab-bar {
   display: flex;
-  gap: 0; /* Reduced gap */
-  /* Removed padding-left: 1rem; */
-  align-items: center;
-  flex-direction: row;
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-primary);
+  justify-content: flex-start; /* Add for left alignment */
+  gap: 20px; /* Add for equal gap between tabs */
+  padding: 0 10px; /* Add horizontal padding to the bar itself if needed */
 }
 
 .tab-btn {
-  flex-shrink: 0; /* Changed from flex: 1; */
-  /* Removed gap: 10px; as it's not needed here */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center; /* Corrected invalid value */
-  padding: 10px 15px; /* Added horizontal padding */
+  padding: 8px 0; /* Reduced vertical padding, removed horizontal as gap handles it */
   font-size: 15px;
-  font-weight: 500;
-  min-width: 10px;
+  font-weight: 600;
   color: var(--text-secondary);
   background: none;
   border: none;
@@ -41,57 +33,52 @@
   cursor: pointer;
   position: relative;
   transition: color .2s ease;
+  text-align: left; /* Changed to left alignment */
+  white-space: nowrap; /* Prevent text wrapping */
 }
 
 .tab-btn.active {
-  color: rgb(var(--accent-primary-rgb));
-  position: relative;
+  color: var(--accent-primary);
 }
 
 .tab-btn.active::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
+  left: -5px; /* Extend 5px to the left */
+  right: -5px; /* Extend 5px to the right */
   bottom: 0;
   height: 3px;
-  background: rgb(var(--accent-primary-rgb));
-  border-radius: 3px 3px 0 0; /* top-left, top-right, bottom-right, bottom-left */
+  background: var(--accent-primary);
+  border-radius: 3px 3px 0 0;
 }
 
 /* ---------- CONTENT AREA ---------- */
 .notification-content {
   flex: 1 1 auto;
   overflow-y: auto;
-  background: var(--bg-primary);
 }
 
-/* Panels (show active tab) */
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
-/* ---------- NOTIFICATION LIST (divider style) ---------- */
-.notification-list {
-  list-style: none;
-  margin: 0; padding: 0;
-}
-
+/* ---------- NOTIFICATION CARD (LIST ITEM) ---------- */
 .notification-card {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 14px 8px;
+  gap: 16px;
   background: var(--bg-primary);
+  padding: 16px;
   border-bottom: 1px solid var(--border-color);
-  transition: background .2s ease;
+  transition: background-color 0.2s ease;
+  outline: none; /* Add this line */
 }
 
-.notification-card:last-child {
-  border-bottom: none;
+.notification-card:hover {
+  background-color: transparent;
 }
 
 .notification-card:active {
-  background: var(--bg-hover);
+  background-color: transparent;
 }
 
 /* Icon/Avatar */
@@ -101,8 +88,8 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: var(--bg-secondary);
-  font-size: 18px;
+  background: var(--bg-tertiary);
+  font-size: 20px;
 }
 
 /* Text Info */
@@ -112,72 +99,134 @@
 }
 
 .notification-title {
-  margin: 0 0 4px;
-  font-size: 15px;
+  margin: 0 0 6px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .notification-message-wrapper {
   position: relative;
-  /* Removed padding-bottom: 20px; */
 }
 
 .notification-message-content {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.5em; /* Added for consistent line height */
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--text-secondary);
-  max-height: 40px; /* Show approx 2-3 lines (now based on line-height) */
+  max-height: 4.5em; /* Approx 3 lines */
   overflow: hidden;
   transition: max-height 0.3s ease-out;
 }
 
 .notification-card.expanded .notification-message-content {
-  max-height: none;
-  overflow: visible;
+  max-height: 50em; /* Large value to allow full expansion */
 }
 
 .read-more-btn {
-  /* Removed absolute positioning */
   background: none;
   border: none;
   color: var(--accent-primary);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  padding: 0; /* Reduced padding */
-  text-decoration: underline;
-  /* Removed z-index */
-  display: inline; /* Ensure it flows with text */
+  padding: 4px 0 0;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .read-more-btn.hidden {
   display: none;
 }
 
-.notification-card:last-child {
-  border-bottom: none;
+/* ---------- Notification Footer ---------- */
+.notification-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
 }
 
-/* Time */
 .notification-time {
-  margin-left: auto;
   font-size: 12px;
   color: var(--text-tertiary);
-  white-space: nowrap;
 }
 
-/* ---------- TYPE COLORS ---------- */
-.notification-card.offer .notification-icon {
-  background: rgba(255, 165, 0, .15);
-  color: #f8961e;
+.notification-cta {
+  display: flex;
+  gap: 16px;
 }
-.notification-card.system .notification-icon {
-  background: rgba(0, 119, 182, .15);
-  color: #0077b6;
+
+.cta-link {
+  color: var(--accent-primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
-.notification-card.reminder .notification-icon {
-  background: rgba(67, 97, 238, .15);
-  color: rgb(var(--accent-primary-rgb));
+
+.cta-link:hover {
+  text-decoration: underline;
+  color: var(--accent-primary-hover);
+}
+
+
+/* ===============================
+   Skeleton Loader
+   =============================== */
+
+.skeleton-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.skeleton-icon,
+.skeleton-title,
+.skeleton-text {
+  background: var(--bg-skeleton);
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { background-color: var(--bg-skeleton); }
+  50% { background-color: var(--bg-skeleton-shimmer); }
+  100% { background-color: var(--bg-skeleton); }
+}
+
+.skeleton-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeleton-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 18px;
+}
+
+.skeleton-text {
+  width: 90%;
+  height: 14px;
+}
+
+.skeleton-text.short {
+  width: 70%;
 }

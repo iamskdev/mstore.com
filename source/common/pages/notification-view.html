@@ -4,9 +4,9 @@
   <!-- ========== TAB NAVIGATION AREA ========== -->
   <div class="notification-tab-bar">
     <button class="tab-btn active" data-tab="all">All</button>
-    <button class="tab-btn" data-tab="orders">Updates</button>
     <button class="tab-btn" data-tab="offers">Offers</button>
-    <button class="tab-btn" data-tab="reminders">Reminders</button>
+    <button class="tab-btn" data-tab="activities">Activities</button>
+    <button class="tab-btn" data-tab="updates">Updates</button>
   </div>
 
   <!-- ========== TAB CONTENT AREA ========== -->
@@ -14,63 +14,64 @@
 
     <!-- All Notifications -->
     <div class="tab-panel active" id="all">
-      <div class="notification-card">
-        <div class="notification-icon">📦</div>
-        <div class="notification-info">
-          <h4 class="notification-title">Order #1234 Shipped</h4>
-          <div class="notification-message-wrapper">
-            <p class="notification-message-content">Your order has been dispatched and is on the way.</p>
-            <button class="read-more-btn hidden">Read More</button>
-          </div>
-          <span class="notification-time">2h ago</span>
+      <div class="skeleton-card">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
         </div>
       </div>
-    </div>
-
-    <!-- Orders -->
-    <div class="tab-panel" id="orders">
-      <div class="notification-card">
-        <div class="notification-icon">✅</div>
-        <div class="notification-info">
-          <h4 class="notification-title">Order Delivered</h4>
-          <p class="notification-message">Your package has been delivered successfully.</p>
-          <span class="notification-time">1d ago</span>
+      <div class="skeleton-card">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
         </div>
       </div>
     </div>
 
     <!-- Offers -->
     <div class="tab-panel" id="offers">
-      <div class="notification-card offer">
-        <div class="notification-icon">🎉</div>
-        <div class="notification-info">
-          <h4 class="notification-title">50% Off on Electronics</h4>
-          <p class="notification-message">Grab your favorite gadgets at half the price.</p>
-          <span class="notification-time">Today</span>
+      <div class="skeleton-card">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
         </div>
       </div>
     </div>
 
-    <!-- System -->
-    <div class="tab-panel" id="system">
-      <div class="notification-card system">
-        <div class="notification-icon">⚙️</div>
-        <div class="notification-info">
-          <h4 class="notification-title">App Update Available</h4>
-          <p class="notification-message">Version 7.2.1 is now available. Please update.</p>
-          <span class="notification-time">3d ago</span>
+    <!-- Activities -->
+    <div class="tab-panel" id="activities">
+      <div class="skeleton-card">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
         </div>
       </div>
     </div>
 
-    <!-- Reminders -->
-    <div class="tab-panel" id="reminders">
-      <div class="notification-card reminder">
-        <div class="notification-icon">⏰</div>
-        <div class="notification-info">
-          <h4 class="notification-title">Payment Reminder</h4>
-          <p class="notification-message">Don’t forget to pay your pending bill before 30 Aug.</p>
-          <span class="notification-time">1h ago</span>
+    <!-- Updates -->
+    <div class="tab-panel" id="updates">
+      <div class="skeleton-card">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
         </div>
       </div>
     </div>
