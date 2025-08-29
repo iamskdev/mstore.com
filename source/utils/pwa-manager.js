@@ -35,7 +35,7 @@ function showInstallPromptToast() {
   toast.className = 'install-prompt-toast';
   toast.innerHTML = `
     <div class="install-toast-content">
-        <img src="./source/assets/logos/app-logo.png" alt="App Logo" class="install-toast-logo">
+        <img src="./source/assets/logos/app_icon_192.png" alt="App Logo" class="install-toast-logo">
         <div class="install-toast-text">
             <strong>Add mStore to Home Screen</strong>
             <span>For a faster, full-screen experience.</span>
