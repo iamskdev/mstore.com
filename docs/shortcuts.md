@@ -102,7 +102,7 @@ To connect your local repository to a remote one.
 - **Details:**
   - `<name>` is the short name for the remote, usually `origin`.
   - `<url>` is the URL of the repository (e.g., `https://github.com/user/repo.git`).
-- **Example:** `git remote add origin https://github.com/santosh/apna-store.git`
+- **Example:** `git remote add origin https://github.com/santosh/mstore.git`
 
 ### Remove a Remote
 To disconnect a remote from your local repository.

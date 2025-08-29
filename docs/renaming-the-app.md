@@ -29,7 +29,7 @@ These files define how the app is identified by browsers and operating systems.
     -   **Why:** This is important for project management and if you ever publish it as a package.
 
 -   **`service-worker.js`**
-    -   **What to change:** The `CACHE_NAME` variable (e.g., from `'apna-store-cache-v1'` to `'new-app-name-cache-v1'`).
+    -   **What to change:** The `CACHE_NAME` variable (e.g., from `'mstore-cache-v1'` to `'new-app-name-cache-v1'`).
     -   **Why:** Changing the cache name is **critical**. It forces the service worker to delete the old cache and create a new one, ensuring users get the updated files (like new logos and HTML).
 
 ### Step 2: Update User-Facing HTML & Partials
