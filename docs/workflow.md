@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Up-to-Date`
-> - **Last Reviewed:** 24/08/2025 23:50:43 +05:30
+> - **Last Reviewed:** 29/08/2025 HH:MM:SS IST (Updated by Gemini)
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides step-by-step instructions for testing the application using various methods, including admin-driven setup, UI-driven flows, and advanced developer tools. It is essential for quality assurance.
 
@@ -107,7 +107,7 @@
 4.  **पर्दे के पीछे क्या होता है**
     *   सिस्टम जाँच करेगा कि ईमेल (और यदि कॉन्फ़िगर किया गया है तो फ़ोन नंबर) अद्वितीय है।
     *   यदि सब कुछ ठीक है, तो फायरबेस में एक नया लॉगिन खाता और फायरस्टोर में संबंधित प्रोफ़ाइल दस्तावेज़ बनाए जाते हैं।
-    *   आपको स्वचालित रूप से लॉगिन कर दिया जाएगा और उपयोगकर्ता होम पेज पर भेज दिया जाएगा।
+    *   आपको स्वचालित रूप से लॉगिन कर दिया जाएगा और उपयोगकर्ता होम पेज पर भेज दिया जाएगा, जहाँ सभी उत्पाद और सेवाएँ प्रदर्शित होती हैं।
 
 #### भाग B: नए बनाए गए उपयोगकर्ता के साथ लॉगिन करना
 

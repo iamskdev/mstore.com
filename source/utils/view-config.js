@@ -3,7 +3,7 @@
 const defaultViews = {
   guest: 'home',
   user: 'home',
-  merchant: 'home',
+  merchant: 'add',
   admin: 'home'
 };
 
@@ -31,15 +31,7 @@ const viewConfig = {
       showFilterBar: false, // No filter bar on the welcome page
       title: 'Home'
     },
-    explore: {
-      id: 'guest-explore-view',
-      // Re-use the same component files as the user's explore view
-      path: './source/modules/consumer/pages/user-explore.html',
-      cssPath: './source/modules/consumer/styles/user-explore.css',
-      jsPath: './source/modules/consumer/scripts/user-explore.js',
-      showFilterBar: true,
-      title: 'Explore'
-    },
+    chat: { id: 'guest-chat-view', path: null, title: 'Chat' },
     saved: { id: 'guest-saved-view', path: null, title: 'Saved' },
     cart: { id: 'guest-cart-view', path: null, title: 'Cart' },
     account: {
@@ -61,22 +53,15 @@ const viewConfig = {
       embedFooter: true, // Embed it directly into the view content
       title: 'Home'
     },
-    explore: {
-      id: 'user-explore-view',
-      path: './source/modules/consumer/pages/user-explore.html',
-      cssPath: './source/modules/consumer/styles/user-explore.css',
-      jsPath: './source/modules/consumer/scripts/user-explore.js',
-      showFilterBar: true,
-      title: 'Explore'
-    },
+    chat: { id: 'user-chat-view', path: null, title: 'Chat' },
     saved: { id: 'user-saved-view', path: null, title: 'Saved' },
     cart: { id: 'user-cart-view', path: null, title: 'Cart' },
     account: { id: 'user-account-view', path: null, title: 'Account' },
     notifications: notificationView
   },
   merchant: {
-    home: { id: 'merchant-home-view', path: './source/modules/merchant/pages/merchant-home.html', embedFooter: true, title: 'Home' },
-    explore: { id: 'merchant-inventory-view', path: null, title: 'Inventory' },
+    home: { id: 'merchant-home-view', path: null, embedFooter: true, title: 'Home' },
+    chat: { id: 'merchant-chat-view', path: null, title: 'Chat' },
     add: { id: 'merchant-add-view', path: null, title: 'Add' },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics' },
     account: { id: 'merchant-account-view', path: null, title: 'Account' },
@@ -94,7 +79,7 @@ const viewConfig = {
     },
     users: { id: 'admin-users-view', path: null, title: 'User Data' },
     analytics: { id: 'admin-analytics-view', path: null, title: 'Analytics' },
-    requests: { id: 'admin-requests-view', path: null, title: 'Requests' },
+    requests: { id: 'admin-request-view', path: null, title: 'Chat' },
     logs: { id: 'admin-logs-view', path: null, title: 'Logs' },
     promo: { id: 'admin-promo-view', path: null, title: 'Promo' },
     campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns' },

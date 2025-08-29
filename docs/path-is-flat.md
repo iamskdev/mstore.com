@@ -1,21 +1,17 @@
 # 📁 Project Path Tree (Gemini-friendly)
-📅 Last Updated: 26/08/2025, 12:17
+📅 Last Updated: 29/08/2025, 19:45
 
 S:\My Projects\Apna Store\mStore_V0.0.1\.firebaserc
 S:\My Projects\Apna Store\mStore_V0.0.1\.gitignore
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\GEMINI.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\brands_list.md
-S:\My Projects\Apna Store\mStore_V0.0.1\docs\how-to-use-emulators.md
+S:\My Projects\Apna Store\mStore_V0.0.1\docs\firebase-emulator.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\implementing-new-views.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\media-queries.md
-S:\My Projects\Apna Store\mStore_V0.0.1\docs\my-path-structure.md
-S:\My Projects\Apna Store\mStore_V0.0.1\docs\path-guide.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\path-is-flat.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\path-structured.md
-S:\My Projects\Apna Store\mStore_V0.0.1\docs\project-structure-guide.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\renaming-the-app.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\schema-guide.md
-S:\My Projects\Apna Store\mStore_V0.0.1\docs\server-config-guide.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\shortcuts.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\versions\ApnaStore_Dev_Versions.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\workflow.md
@@ -171,12 +167,9 @@ S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\icons\system\login.svg
 S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\icons\system\logout.svg
 S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\icons\system\setting.svg
 S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\icons\system\signup.svg
-S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\logos\app-logo-192-black.jpg
-S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\logos\app-logo-192-white.jpg
-S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\logos\app-logo-192.png
-S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\logos\app-logo-512.png
 S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\logos\app-logo.png
-S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\logos\debug.log
+S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\logos\app_icon_192.png
+S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\logos\app_icon_512.png
 S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\screenshots\desktop-guest-home.png
 S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\screenshots\guest-account.jpg
 S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\screenshots\guest-home.jpg
@@ -238,15 +231,11 @@ S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\admin\scripts\dev-tools.j
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\admin\scripts\log-reader.js
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\admin\scripts\mock-inject.js
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\admin\scripts\mode-switcher.js
-S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\consumer\pages\user-explore.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\consumer\pages\user-home.html
-S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\consumer\scripts\user-explore.js
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\consumer\scripts\user-home.js
-S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\consumer\styles\user-explore.css
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\consumer\styles\user-home.css
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\merchant\account.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\merchant\analytics.html
-S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\merchant\explore.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\merchant\merchant-home.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\merchant\pages\merchant-home.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\utils\app-config.js

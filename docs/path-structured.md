@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 26/08/2025, 12:17
+📅 Last Updated: 29/08/2025, 19:45
 
 ├── .firebaserc
 ├── .gitignore
@@ -10,28 +10,19 @@
 ├── package.json
 ├── readme.md
 ├── service-worker.js
-├── 📁 Store\
-│   └── 📁 ApnaStore_V7.1.7\
-│       └── 📁 source\
-│           └── 📁 common\
-│               └── 📁 styles\
 ├── 📁 demo\
 ├── 📁 docs\
 │   ├── 📁 versions\
 │   │   └── ApnaStore_Dev_Versions.md
 │   ├── GEMINI.md
 │   ├── brands_list.md
-│   ├── how-to-use-emulators.md
+│   ├── firebase-emulator.md
 │   ├── implementing-new-views.md
 │   ├── media-queries.md
-│   ├── my-path-structure.md
-│   ├── path-guide.md
 │   ├── path-is-flat.md
 │   ├── path-structured.md
-│   ├── project-structure-guide.md
 │   ├── renaming-the-app.md
 │   ├── schema-guide.md
-│   ├── server-config-guide.md
 │   ├── shortcuts.md
 │   └── workflow.md
 ├── 📁 functions\
@@ -203,12 +194,9 @@
 │   │   │       ├── setting.svg
 │   │   │       └── signup.svg
 │   │   ├── 📁 logos\
-│   │   │   ├── app-logo-192-black.jpg
-│   │   │   ├── app-logo-192-white.jpg
-│   │   │   ├── app-logo-192.png
-│   │   │   ├── app-logo-512.png
 │   │   │   ├── app-logo.png
-│   │   │   └── debug.log
+│   │   │   ├── app_icon_192.png
+│   │   │   └── app_icon_512.png
 │   │   ├── 📁 screenshots\
 │   │   │   ├── desktop-guest-home.png
 │   │   │   ├── guest-account.jpg
@@ -289,26 +277,18 @@
 │   │   │       ├── log-reader.js
 │   │   │       ├── mock-inject.js
 │   │   │       └── mode-switcher.js
-│   │   ├── 📁 common\
-│   │   │   ├── 📁 pages\
-│   │   │   ├── 📁 scripts\
-│   │   │   └── 📁 styles\
 │   │   ├── 📁 consumer\
 │   │   │   ├── 📁 pages\
-│   │   │   │   ├── user-explore.html
 │   │   │   │   └── user-home.html
 │   │   │   ├── 📁 scripts\
-│   │   │   │   ├── user-explore.js
 │   │   │   │   └── user-home.js
 │   │   │   └── 📁 styles\
-│   │   │       ├── user-explore.css
 │   │   │       └── user-home.css
 │   │   └── 📁 merchant\
 │   │       ├── 📁 pages\
 │   │       │   └── merchant-home.html
 │   │       ├── account.html
 │   │       ├── analytics.html
-│   │       ├── explore.html
 │   │       └── merchant-home.html
 │   ├── 📁 utils\
 │   │   ├── app-config.js

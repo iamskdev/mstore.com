@@ -40,12 +40,12 @@
 .tab-btn.active {
   color: var(--accent-primary);
 }
-
+/* Selected tab css */
 .tab-btn.active::after {
   content: "";
   position: absolute;
-  left: -5px; /* Extend 5px to the left */
-  right: -5px; /* Extend 5px to the right */
+  left: -10px; /* Extend to the left */
+  right: -10px; /* Extend to the right */
   bottom: 0;
   height: 3px;
   background: var(--accent-primary);

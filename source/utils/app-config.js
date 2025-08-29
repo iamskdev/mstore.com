@@ -9,7 +9,7 @@ export const APP_CONFIG = {
    * - "promo": Promotional mode. Activates promotional UI for a specific merchant.
    * - null:    Live/Production mode. Normal user flow.
    */
-  appMode: null,
+  appMode: 'dev',
   /**
    * - 'firebase':   Fetches data from the live Firebase database.
    * - 'emulator':   Fetches data from the local Firebase Emulator Suite.

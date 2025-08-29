@@ -131,6 +131,51 @@ async function populateGrid(gridId, itemType, cardCreator, limit = 4) {
 }
 
 /**
+ * Populates the "All Products & Services" grid with all available items.
+ */
+async function populateAllItemsGrid() {
+    const grid = document.getElementById('all-products-grid');
+    const countEl = document.getElementById('all-products-count');
+    if (!grid || !countEl) return;
+
+    // Show skeletons while loading
+    grid.innerHTML = '';
+    for (let i = 0; i < 8; i++) { // Show more skeletons for all items
+        grid.appendChild(createSkeletonCard());
+    }
+    countEl.textContent = '';
+
+    try {
+        const allItems = await fetchAllItems();
+
+        grid.innerHTML = ''; // Clear skeletons
+        if (allItems.length === 0) {
+            grid.innerHTML = `<div class="no-items-placeholder">No products or services found.</div>`;
+            countEl.textContent = '0 items';
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        for (const item of allItems) {
+            if (item.type === 'product') {
+                const card = createProductCard(item);
+                if (card) fragment.appendChild(card);
+            } else if (item.type === 'service') {
+                const card = createServiceCard(item);
+                if (card) fragment.appendChild(card);
+            }
+        }
+        grid.appendChild(fragment);
+        countEl.textContent = `${allItems.length} items`;
+
+    } catch (error) {
+        console.error('Failed to load all items:', error);
+        grid.innerHTML = `<div class="no-items-placeholder">Could not load all products and services.</div>`;
+        countEl.textContent = 'Error loading items';
+    }
+}
+
+/**
  * Updates the greeting message and user avatar in the hero section.
  * @param {object|null} user - The user object from Firestore, or null for guests.
  */
@@ -178,6 +223,7 @@ export async function init() {
     // Populate the dynamic sections
     populateGrid('recommended-products-grid', 'product', createProductCard, 4);
     populateGrid('popular-services-grid', 'service', createServiceCard, 3);
+    populateAllItemsGrid(); // Call the new function to populate all items
 
     // Add event listeners for navigation using event delegation
     container.addEventListener('click', (e) => {

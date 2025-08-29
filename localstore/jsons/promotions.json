@@ -76,9 +76,9 @@
           "link": "/merchant/MRC000000000001"
         },
         {
-          "label": "Explore",
-          "icon": "fas fa-search",
-          "link": "/merchant/MRC000000000001/explore"
+          "label": "Chat",
+          "icon": "fas fa-comment-dots",
+          "link": "/merchant/MRC000000000001/chat"
         },
         {
           "label": "Saved",

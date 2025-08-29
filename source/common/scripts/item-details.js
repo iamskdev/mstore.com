@@ -456,7 +456,7 @@ export function initializeItemDetailsPage() {
       <div class="placeholder-view" style="text-align: center; padding: 40px;">
         <h2><i class="fas fa-exclamation-triangle"></i> Item Not Found</h2>
         <p>We couldn't find the item you're looking for.</p>
-        <p>Please go back to the <a href="/#explore" style="color: var(--primary-color); text-decoration: underline;">Explore page</a> to select an item.</p>
+        <p>Please go back to the <a href="/#home" style="color: var(--primary-color); text-decoration: underline;">Home page</a> to select an item.</p>
       </div>
     `;
     const relatedSection = document.querySelector('.related-section');

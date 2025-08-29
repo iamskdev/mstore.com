@@ -198,7 +198,7 @@ const dummyCampaigns = [
       title: "Welcome Offer!",
       message: "Get 10% off on your first purchase. This is a long message to test the expand/collapse functionality. It should span multiple lines and then be truncated. Click 'Read More' to see the full content.",
       richContent: { icon: "fas fa-gift" },
-      cta: [{ label: "Shop Now", url: "#/user/explore", type: "primary" }]
+      cta: [{ label: "Shop Now", url: "#/user/home", type: "primary" }]
     },
     meta: { type: "promotional" }
   },
