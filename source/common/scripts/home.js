@@ -1,4 +1,4 @@
-import { fetchAllItems, fetchUserById } from '../../../utils/data-manager.js';
+import { fetchAllItems, fetchUserById } from '../../utils/data-manager.js';
 
 /**
  * Creates a product card element based on the design in user-home.css.

@@ -78,7 +78,7 @@ const viewConfig = {
   },
   admin: {
     home: {
-      id: 'admin-home-view', // Changed ID to be unique
+      id: 'admin-home-view', 
       path: "./source/modules/admin/pages/admin-home.html",
       cssPath: "./source/modules/admin/pages/admin-home.css",
       jsPath: "./source/modules/admin/pages/admin-home.js",
@@ -88,7 +88,7 @@ const viewConfig = {
     },
     users: { id: 'admin-users-view', path: null, title: 'User Data' },
     analytics: { id: 'admin-analytics-view', path: null, title: 'Analytics' },
-    requests: { id: 'admin-request-view', path: null, title: 'Chat' },
+    requests: { id: 'admin-request-view', path: null, title: 'Request' },
     logs: { id: 'admin-logs-view', path: null, title: 'Logs' },
     promo: { id: 'admin-promo-view', path: null, title: 'Promo' },
     campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns' },

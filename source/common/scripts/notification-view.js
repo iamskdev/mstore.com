@@ -11,7 +11,6 @@ const tabMapping = {
 // Utility: create notification card
 function createNotificationCard(item, type = "campaign") {
   const content = item.content || {};
-  const icon = content.richContent?.icon ? `<i class="${content.richContent.icon}"></i>` : "🔔";
   const image = content.richContent?.image ? `<img src="${content.richContent.image}" class="notification-img" />` : "";
   const time = item.meta?.createdAt || item.meta?.schedule?.sendAt || new Date().toISOString();
   const formattedTime = new Date(time).toLocaleString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
@@ -25,7 +24,6 @@ function createNotificationCard(item, type = "campaign") {
 
   return `
     <div class="notification-card">
-      <div class="notification-icon">${icon}</div>
       <div class="notification-info">
         <h4 class="notification-title">${content.title || "No Title"}</h4>
         <div class="notification-message-wrapper">

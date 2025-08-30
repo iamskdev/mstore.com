@@ -105,7 +105,7 @@ html, body {
   justify-content: center;
   padding-bottom: 10px; /* Add some padding from the bottom */
   transition: top 0.3s ease;
-  z-index: 999;
+  z-index: 998;
 }
 
 #pullToRefresh .material-icons {

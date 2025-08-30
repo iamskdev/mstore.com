@@ -10,6 +10,7 @@
   color: var(--text-primary);
   overflow: hidden;
   height: 100%;
+  z-index: 999;
 }
 
 /* ---------- TAB BAR ---------- */
@@ -64,8 +65,6 @@
 /* ---------- NOTIFICATION CARD (LIST ITEM) ---------- */
 .notification-card {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
   background: var(--bg-primary);
   padding: 16px;
   border-bottom: 1px solid var(--border-color);
@@ -82,15 +81,7 @@
 }
 
 /* Icon/Avatar */
-.notification-card .notification-icon {
-  flex: 0 0 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--bg-tertiary);
-  font-size: 20px;
-}
+
 
 /* Text Info */
 .notification-info {
@@ -183,13 +174,10 @@
 
 .skeleton-card {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
   padding: 16px;
   border-bottom: 1px solid var(--border-color);
 }
 
-.skeleton-icon,
 .skeleton-title,
 .skeleton-text {
   background: var(--bg-skeleton);
@@ -201,13 +189,6 @@
   0% { background-color: var(--bg-skeleton); }
   50% { background-color: var(--bg-skeleton-shimmer); }
   100% { background-color: var(--bg-skeleton); }
-}
-
-.skeleton-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  flex-shrink: 0;
 }
 
 .skeleton-info {
@@ -230,3 +211,4 @@
 .skeleton-text.short {
   width: 70%;
 }
+
