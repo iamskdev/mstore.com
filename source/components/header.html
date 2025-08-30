@@ -261,7 +261,7 @@
       <ul id="search-suggestions" class="search-suggestions"></ul>
     </header>
     <!-- NEW: Container for the filter bar, managed by the header script -->
-    <div id="header-filter-bar-container" style="display: none;"></div>
+    <div id="filter-bar-placeholder" style="display: none;"></div>
   </div>
 
   <script type="module">
@@ -271,7 +271,7 @@
 
     // --- Elements ---
     const headerContainer = document.querySelector('.header-container');
-    const filterBarContainer = document.getElementById('header-filter-bar-container');
+    const filterBarContainer = document.getElementById('filter-bar-placeholder');
     const searchToggleBtn = document.getElementById('search-toggle');
     const searchBackBtn = document.getElementById('search-back');
     const searchInput = document.getElementById('header-search-input');
@@ -288,8 +288,6 @@
     const notificationHeaderContent = document.querySelector('.notification-header-content');
     const notificationBackBtn = document.getElementById('notification-back-btn');
     const notificationTitle = document.getElementById('notification-title');
-
-    let isFilterBarLoaded = false;
 
     // --- Observers ---
     const filterBarObserver = new ResizeObserver(entries => {
@@ -312,21 +310,8 @@
     }
 
     async function manageFilterBar(show) {
-        if (show) {
-            if (!isFilterBarLoaded) {
-                await loadComponent(filterBarContainer, './source/components/filter-bar.html');
-                filterManager.placeholder = filterBarContainer;
-                await filterManager._initializeComponentLogic();
-                isFilterBarLoaded = true;
-            }
-            filterBarContainer.style.display = 'block';
-        } else {
-            filterBarContainer.style.display = 'none';
-        }
-        const pageViewArea = document.getElementById('page-view-area');
-        if(pageViewArea) {
-            pageViewArea.classList.toggle('filter-bar-active', show);
-        }
+        // Delegate directly to the filterManager. It will handle loading, initialization, and visibility.
+        await filterManager.manageVisibility(show);
     }
 
     function openSearchView() {

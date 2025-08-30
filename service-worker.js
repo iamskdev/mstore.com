@@ -58,6 +58,9 @@ const APP_SHELL_URLS_STATIC = [
   { url: './source/firebase/firestore/logs-collection.js', priority: 4 },
   { url: './source/firebase/firebase-credentials.js', priority: 4 },
 
+  // Tier 5: Components
+  { url: './source/components/filter-modal.html', priority: 5 },
+
 
 
   // Tier 6: Third-party Libraries

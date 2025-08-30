@@ -12,19 +12,21 @@ const COMPONENT_PATH = './source/components/filter-bar.html';
 
 class FilterManager {
     constructor() {
-        this.placeholder = document.getElementById(PLACEHOLDER_ID);
-        this.isLoaded = false; // Tracks if the filter bar component is loaded
-        this.isInitialized = false; // Tracks if the filter bar logic has been attached
+        this._placeholder = null; // Private property to hold the element
+        this.isLoaded = false;
+        this.isInitialized = false;
+        this.modalContainer = null;
+        this.isModalLoaded = false;
+        this.isAdvancedPanelInitialized = false;
+        this.allCategoriesData = [];
+    }
 
-        this.modalContainer = null; // Will hold the dynamically created div for the modal
-        this.isModalLoaded = false; // Tracks if the filter modal component is loaded
-        this.isAdvancedPanelInitialized = false; // Tracks if the modal logic has been attached
-
-        this.allCategoriesData = []; // Cache for category data
-
-        if (!this.placeholder) {
-            console.warn(`FilterManager: Placeholder element #${PLACEHOLDER_ID} not found.`);
+    // Public getter for the placeholder element
+    get placeholder() {
+        if (!this._placeholder) {
+            this._placeholder = document.getElementById(PLACEHOLDER_ID);
         }
+        return this._placeholder;
     }
 
     /**
@@ -50,12 +52,17 @@ class FilterManager {
             }
         }
 
-        // Toggle visibility using a class for better CSS control and adjust page-view-area class
+        // Toggle visibility and manage layout
         if (this.placeholder) {
-            this.placeholder.style.visibility = shouldShow ? 'visible' : 'hidden';
+            this.placeholder.style.display = shouldShow ? 'block' : 'none';
             const pageViewArea = document.querySelector('.page-view-area');
             if (pageViewArea) {
                 pageViewArea.classList.toggle('filter-bar-active', shouldShow);
+            }
+            // If we are hiding the bar, explicitly set the height variable to 0.
+            // This is a safeguard in case the ResizeObserver doesn't fire reliably for 'display: none'.
+            if (!shouldShow) {
+                document.documentElement.style.setProperty('--filter-bar-height', '0px');
             }
         }
     }

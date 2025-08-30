@@ -51,11 +51,6 @@ html, body {
   pointer-events: auto;
 }
 
-/* Adjust the top position of the main content area when the filter bar is active */
-.page-view-area.filter-bar-active {
-  top: calc(var(--header-height) + var(--filter-bar-height));
-}
-
 
 .page-loader {
   position: fixed;
@@ -72,11 +67,6 @@ html, body {
   z-index: 9998; /* Highest z-index to be on top of everything */
   opacity: 1;
   visibility: visible;
-  /*
-    Transition opacity over 0.3s.
-    When hiding, delay the visibility change until the opacity transition is done.
-    When showing, make it visible immediately.
-  */
   transition: opacity 0.3s ease, visibility 0s linear 0s;
 }
 
