@@ -1,119 +1,136 @@
 import { fetchAllItems, fetchUserById } from '../../utils/data-manager.js';
 
-/**
- * Creates a product card element based on the design in user-home.css.
- * @param {object} item - The product item from Firestore.
- * @returns {HTMLElement} The product card element.
- */
-function createProductCard(item) {
-    const card = document.createElement('div');
-    card.className = 'product-card';
-
-    const originalPrice = item.pricing?.mrp || item.pricing?.sellingPrice;
-    const sellingPrice = item.pricing?.sellingPrice;
-    const discount = originalPrice && sellingPrice && originalPrice > sellingPrice
-        ? Math.round(((originalPrice - sellingPrice) / originalPrice) * 100)
-        : 0;
-
-    const imagePath = Array.isArray(item.media?.images) && item.media.images.length > 0
-        ? item.media.images[0]
-        : './localstore/images/default-product.jpg';
-    const DEFAULT_PRODUCT_IMAGE = './localstore/images/default-product.jpg';
-
-    card.innerHTML = `
-        ${discount > 0 ? `<div class="product-badge">${discount}% OFF</div>` : ''}
-        <img src="${imagePath}" alt="${item.name}" class="product-image" onerror="this.src='${defaultImagePath}'">
-        <div class="product-details">
-            <h3>${item.name}</h3>
-            <p class="product-price">
-                ${discount > 0 ? `<span class="original-price" style="text-decoration: line-through;">₹${originalPrice}</span>` : ''}
-                <span class="discounted-price">₹${sellingPrice}</span>
-                <span class="quantity">${item.inventory?.unit || 'item'}</span>
-            </p>
-            <button class="add-to-cart">Add to Cart</button>
-        </div>
-    `;
-
-    // Navigate to item details, but not when "Add to Cart" is clicked.
-    card.addEventListener('click', (e) => {
-        if (e.target.classList.contains('add-to-cart')) {
-            e.stopPropagation();
-            console.log(`Added ${item.name} to cart.`);
-            // Future: Add to cart logic here
-        } else {
-            sessionStorage.setItem('selectedItem', JSON.stringify(item));
-            window.dispatchEvent(new CustomEvent('navigateToItem', { detail: item }));
-        }
-    });
-    return card;
-}
+let cardGridTemplate = ''; // Global variable to store the template
+const DEFAULT_PRODUCT_IMAGE = './localstore/images/default-product.jpg';
+const DEFAULT_SERVICE_IMAGE = './localstore/images/default-service.jpg';
 
 /**
- * Creates a service card element based on the design in user-home.css.
- * @param {object} item - The service item from Firestore.
- * @returns {HTMLElement} The service card element.
+ * Creates a card element from the card-grid.html template.
+ * @param {object} item - The item data (product or service).
+ * @param {boolean} isSkeleton - If true, returns a skeleton card.
+ * @returns {HTMLElement} The card element.
  */
-function createServiceCard(item) {
-    const card = document.createElement('div');
-    card.className = 'service-card';
+function createCardFromTemplate(item, isSkeleton = false) {
+    const cardWrapper = document.createElement('div');
+    cardWrapper.className = 'card-wrapper'; // A wrapper for grid display
 
-    const iconMap = {
-        'xerox': 'fa-copy', 'print': 'fa-print', 'photo': 'fa-camera',
-        'aadhaar': 'fa-id-card', 'lamination': 'fa-layer-group', 'default': 'fa-concierge-bell'
-    };
-    const categoryKey = item.category?.toLowerCase() || '';
-    const iconClass = iconMap[categoryKey] || iconMap['default'];
+    if (isSkeleton) {
+        cardWrapper.innerHTML = `
+            <a class="card skeleton-card">
+                <div class="card-image-wrapper skeleton-image"></div>
+                <div class="card-info">
+                    <div class="name skeleton-text"></div>
+                    <div class="price-container skeleton-text short"></div>
+                    <div class="stock-status skeleton-text micro"></div>
+                    <button class="add-to-cart skeleton-button"></button>
+                </div>
+            </a>
+        `;
+        return cardWrapper;
+    }
 
-    card.innerHTML = `
-        <div class="service-icon"><i class="fas ${iconClass}"></i></div>
-        <div class="service-details">
-            <h3>${item.name}</h3>
-            <p>From ₹${item.pricing?.sellingPrice}</p>
-        </div>
-    `;
-    card.addEventListener('click', () => {
-        sessionStorage.setItem('selectedItem', JSON.stringify(item));
-        window.dispatchEvent(new CustomEvent('navigateToItem', { detail: item }));
-    });
-    return card;
-}
+    // Determine image source based on item type
+    const imageSrc = item.media?.thumbnail || (item.type === 'product' ? DEFAULT_PRODUCT_IMAGE : DEFAULT_SERVICE_IMAGE);
 
-/**
- * Creates a skeleton loader card to show while data is being fetched.
- * @returns {HTMLElement} The skeleton card element.
- */
-function createSkeletonCard() {
-    const skeleton = document.createElement('div');
-    skeleton.className = 'card-skeleton';
-    skeleton.innerHTML = `
-        <div class="skeleton-image"></div>
-        <div class="skeleton-text"></div>
-        <div class="skeleton-text short"></div>
-    `;
-    return skeleton;
+    // Determine original and current prices
+    const originalPrice = item.pricing?.mrp;
+    const currentPrice = item.pricing?.sellingPrice;
+
+    // Determine stock status
+    let stockStatusText = '';
+    let stockStatusClass = '';
+    let stockIconClass = '';
+    let addToCartDisabled = '';
+    let addToCartText = 'Add to Cart';
+    let addToCartIconClass = 'fas fa-shopping-cart';
+
+    if (item.inventory?.stockQty > 0) {
+        stockStatusText = 'In Stock';
+        stockStatusClass = 'in';
+        stockIconClass = 'fas fa-check-circle';
+    } else {
+        stockStatusText = 'Out of Stock';
+        stockStatusClass = 'out';
+        stockIconClass = 'fas fa-times-circle';
+        addToCartDisabled = 'disabled';
+        addToCartText = 'Out of Stock';
+        addToCartIconClass = 'fas fa-exclamation-circle';
+    }
+
+    // Construct the Href for item details
+    const itemHref = `item-details.html?itemId=${item.meta.itemId}`;
+
+    let populatedTemplate = cardGridTemplate
+        .replace(/{{HREF}}/g, itemHref)
+        .replace(/{{IMAGE_SRC}}/g, imageSrc)
+        .replace(/{{ITEM_NAME}}/g, item.info.name)
+        .replace(/{{CURRENT_PRICE}}/g, currentPrice.toFixed(2))
+        .replace(/{{ORIGINAL_PRICE}}/g, originalPrice && originalPrice > currentPrice ? originalPrice.toFixed(2) : '')
+        .replace(/{{UNIT}}/g, item.info.attributes?.weight || item.info.attributes?.volume || item.meta.type === 'service' ? '' : 'unit') // Use weight/volume for products, empty for services
+        .replace(/{{STOCK_STATUS_CLASS}}/g, stockStatusClass)
+        .replace(/{{STOCK_ICON_CLASS}}/g, stockIconClass)
+        .replace(/{{STOCK_STATUS_TEXT}}/g, stockStatusText)
+        .replace(/{{DESCRIPTION}}/g, item.info.description || '')
+        .replace(/{{ADD_TO_CART_DISABLED}}/g, addToCartDisabled)
+        .replace(/{{ADD_TO_CART_ICON_CLASS}}/g, addToCartIconClass)
+        .replace(/{{ADD_TO_CART_TEXT}}/g, addToCartText)
+        .replace(/{{DEFAULT_IMAGE_SRC}}/g, item.type === 'product' ? DEFAULT_PRODUCT_IMAGE : DEFAULT_SERVICE_IMAGE)
+        .replace(/{{WISHLIST_ACTIVE_CLASS}}/g, '') // Default empty for now
+        .replace(/{{WISHLIST_ICON_CLASS}}/g, 'far fa-heart'); // Default empty for now
+
+    // Handle conditional rendering for ORIGINAL_PRICE
+    if (!(originalPrice && originalPrice > currentPrice)) {
+        populatedTemplate = populatedTemplate.replace(/{{#if ORIGINAL_PRICE}}[\s\S]*?{{\/if}}/g, '');
+    }
+
+    cardWrapper.innerHTML = populatedTemplate;
+
+    // Add event listeners for the card (navigation and add to cart)
+    const cardElement = cardWrapper.querySelector('.card');
+    if (cardElement) {
+        cardElement.addEventListener('click', (e) => {
+            // Prevent navigation if add to cart or wishlist button is clicked
+            if (e.target.closest('.add-to-cart') || e.target.closest('.wishlist-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Handle add to cart/wishlist logic here if needed
+                if (e.target.closest('.add-to-cart')) {
+                    console.log(`Added ${item.info.name} to cart.`);
+                    // showToast('Added to cart'); // Example toast
+                } else if (e.target.closest('.wishlist-btn')) {
+                    console.log(`Toggled wishlist for ${item.info.name}.`);
+                }
+            } else {
+                // Navigate to item details page
+                sessionStorage.setItem('selectedItem', JSON.stringify(item));
+                window.dispatchEvent(new CustomEvent('navigateToItem', { detail: item }));
+            }
+        });
+    }
+
+    return cardWrapper;
 }
 
 /**
  * Populates a grid with data, showing skeletons while loading.
  * @param {string} gridId - The ID of the grid element to populate.
  * @param {string} itemType - 'product' or 'service'.
- * @param {function} cardCreator - The function to create a card (e.g., createProductCard).
  * @param {number} limit - The maximum number of items to display.
  */
-async function populateGrid(gridId, itemType, cardCreator, limit = 4) {
+async function populateGrid(gridId, itemType, limit = 4) {
     const grid = document.getElementById(gridId);
     if (!grid) return;
 
     // 1. Show skeletons
     grid.innerHTML = '';
     for (let i = 0; i < limit; i++) {
-        grid.appendChild(createSkeletonCard());
+        grid.appendChild(createCardFromTemplate(null, true)); // Pass true for skeleton
     }
 
     try {
         // 2. Fetch data
         const allItems = await fetchAllItems();
-        const items = allItems.filter(item => item.type === itemType).slice(0, limit);
+        const items = allItems.filter(item => item.meta.type === itemType && item.meta.flags.isActive).slice(0, limit);
 
         // 3. Clear skeletons and populate real data
         grid.innerHTML = '';
@@ -121,9 +138,12 @@ async function populateGrid(gridId, itemType, cardCreator, limit = 4) {
             grid.innerHTML = `<p class="placeholder-text">No ${itemType}s found.</p>`;
             return;
         }
+        const fragment = document.createDocumentFragment();
         for (const item of items) {
-            grid.appendChild(cardCreator(item));
+            const card = createCardFromTemplate(item);
+            if (card) fragment.appendChild(card);
         }
+        grid.appendChild(fragment);
     } catch (error) {
         console.error(`Failed to load ${itemType}s:`, error);
         grid.innerHTML = `<p class="error-message">Could not load ${itemType}s.</p>`;
@@ -141,32 +161,28 @@ async function populateAllItemsGrid() {
     // Show skeletons while loading
     grid.innerHTML = '';
     for (let i = 0; i < 8; i++) { // Show more skeletons for all items
-        grid.appendChild(createSkeletonCard());
+        grid.appendChild(createCardFromTemplate(null, true)); // Use new function for skeletons
     }
     countEl.textContent = '';
 
     try {
         const allItems = await fetchAllItems();
+        const activeItems = allItems.filter(item => item.meta.flags.isActive);
 
         grid.innerHTML = ''; // Clear skeletons
-        if (allItems.length === 0) {
+        if (activeItems.length === 0) {
             grid.innerHTML = `<div class="no-items-placeholder">No products or services found.</div>`;
             countEl.textContent = '0 items';
             return;
         }
 
         const fragment = document.createDocumentFragment();
-        for (const item of allItems) {
-            if (item.type === 'product') {
-                const card = createProductCard(item);
-                if (card) fragment.appendChild(card);
-            } else if (item.type === 'service') {
-                const card = createServiceCard(item);
-                if (card) fragment.appendChild(card);
-            }
+        for (const item of activeItems) {
+            const card = createCardFromTemplate(item);
+            if (card) fragment.appendChild(card);
         }
         grid.appendChild(fragment);
-        countEl.textContent = `${allItems.length} items`;
+        countEl.textContent = `${activeItems.length} items`;
 
     } catch (error) {
         console.error('Failed to load all items:', error);
@@ -175,30 +191,6 @@ async function populateAllItemsGrid() {
     }
 }
 
-/*
-function updateHeroSection(user) {
-    const hour = new Date().getHours();
-    let timeGreeting = 'Good Evening';
-    if (hour < 12) timeGreeting = 'Good Morning';
-    else if (hour < 18) timeGreeting = 'Good Afternoon';
-
-    const greetingEl = document.getElementById('greetingText');
-    const avatarImg = document.getElementById('user-avatar-img');
-
-    if (greetingEl) {
-        // Use user's first name if available, otherwise a generic greeting.
-        const userName = user?.info?.fullName?.split(' ')[0] || 'Guest';
-        greetingEl.textContent = `${timeGreeting}, ${userName}!`; // Use first name for a personal touch
-    }
-
-    if (avatarImg) {
-        // Use user's avatar if available, otherwise a default.
-        const avatarPath = user?.info?.avatar;
-        avatarImg.src = avatarPath;
-        avatarImg.onerror = () => { avatarImg.src = './source/assets/logos/app-logo.png'; };
-    }
-}
-*/
 
 /**
  * Main initialization function for the Home Page.
@@ -209,21 +201,21 @@ export async function init() {
 
     console.log('✨ Initializing User Home Page...');
 
-    // Fetch user data and update hero section
-    /*
-    const userId = localStorage.getItem('currentUserId'); // Correct key for user ID
-    if (userId) {
-        const user = await fetchUserById(userId);
-        updateHeroSection(user);
-    } else {
-        updateHeroSection(null); // Handle guest state
+    // Fetch card-grid.html template only once
+    try {
+        const response = await fetch('./source/components/cards/card-grid.html');
+        if (!response.ok) throw new Error(`Failed to fetch card-grid.html: ${response.statusText}`);
+        cardGridTemplate = await response.text();
+    } catch (error) {
+        console.error('Error loading card-grid.html template:', error);
+        // Fallback or error display if template fails to load
+        container.innerHTML = '<p class="error-message">Failed to load card template. Please refresh.</p>';
+        return;
     }
-    */
+
 
     // Populate the dynamic sections
-    populateGrid('recommended-products-grid', 'product', createProductCard, 4);
-    populateGrid('popular-services-grid', 'service', createServiceCard, 3);
-    populateAllItemsGrid(); // Call the new function to populate all items
+    populateAllItemsGrid();
 
     // Add event listeners for navigation using event delegation
     container.addEventListener('click', (e) => {
