@@ -175,10 +175,7 @@ async function populateAllItemsGrid() {
     }
 }
 
-/**
- * Updates the greeting message and user avatar in the hero section.
- * @param {object|null} user - The user object from Firestore, or null for guests.
- */
+/*
 function updateHeroSection(user) {
     const hour = new Date().getHours();
     let timeGreeting = 'Good Evening';
@@ -201,6 +198,7 @@ function updateHeroSection(user) {
         avatarImg.onerror = () => { avatarImg.src = './source/assets/logos/app-logo.png'; };
     }
 }
+*/
 
 /**
  * Main initialization function for the Home Page.
@@ -212,6 +210,7 @@ export async function init() {
     console.log('✨ Initializing User Home Page...');
 
     // Fetch user data and update hero section
+    /*
     const userId = localStorage.getItem('currentUserId'); // Correct key for user ID
     if (userId) {
         const user = await fetchUserById(userId);
@@ -219,6 +218,7 @@ export async function init() {
     } else {
         updateHeroSection(null); // Handle guest state
     }
+    */
 
     // Populate the dynamic sections
     populateGrid('recommended-products-grid', 'product', createProductCard, 4);

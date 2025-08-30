@@ -36,18 +36,22 @@
   --accent-danger: #e74a3b;
   --accent-danger-rgb: 231, 74, 59;
   --accent-info: #36b9cc;
+  --accent-warning: #fbbf24; /* Added for stars */
+  --accent-success: #22c55e; /* Added for stock status in */
 
   /* --- 4. Borders & States --- */
   --border-color: #e0e0e0;
   --error-color: #d93025;
   --bg-skeleton: #e0e0e0;
   --bg-skeleton-shimmer: #f0f0f0;
+  --button-disabled-bg: #cbd5e1; /* Added for disabled button background */
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.05);
   --shadow-focus-primary: rgba(0, 123, 255, 0.2);
   --shadow-focus-secondary: rgba(40, 167, 69, 0.2);
   --shadow-focus-error: rgba(217, 48, 37, 0.2);
+  --shadow-hover-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Added for card hover effect */
 
   /* --- 6. Component-Specific: Header --- */
   --header-banner-dev-bg: #ffc107;
@@ -100,18 +104,22 @@ html.dark-mode {
   --accent-danger: #d00000;
   --accent-danger-rgb: 208, 0, 0;
   --accent-info: #0081a7;
+  --accent-warning: #fbbf24; /* Added for stars */
+  --accent-success: #22c55e; /* Added for stock status in */
 
   /* --- 4. Borders & States --- */
   --border-color: #333333;
   --error-color: #ff5252;
   --bg-skeleton: #2a2a3b;
   --bg-skeleton-shimmer: #3a3b4c;
+  --button-disabled-bg: #cbd5e1; /* Added for disabled button background */
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.2);
   --shadow-focus-primary: rgba(68, 138, 255, 0.25);
   --shadow-focus-secondary: rgba(105, 240, 174, 0.25);
   --shadow-focus-error: rgba(255, 82, 82, 0.25);
+  --shadow-hover-card: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1); /* Added for card hover effect (dark mode adjusted) */
 
   /* --- 6. Component-Specific: Header --- */
   --header-banner-dev-bg: #f39c12;

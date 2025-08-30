@@ -1,46 +1,51 @@
 <!-- File: /source/modules/consumer/pages/user-home.html -->
   <div class="home-view">
-  <!-- Hero Section -->
-  <div class="hero-section">
-    <div class="hero-content">
-      <h1 id="greetingText">Welcome!</h1>
-      <p class="hero-subtext">Your daily specials are ready</p>
-    </div>
-    <div class="hero-avatar">
-      <!-- Avatar will be set by user-home.js -->
-      <img src= './localstore/images/users/vivek.jpg' alt="User" class="user-avatar" id="user-avatar-img">
-    </div>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="quick-actions">
-    <div class="action-card" data-view-target="home">
-      <div class="action-icon" style="background: #e3f2fd;">
-        <i class="fas fa-store"></i>
-      </div>
-      <span>Shop Now</span>
-    </div>
-    <div class="action-card" data-view-target="cart"> <!-- Assuming orders are in cart/account view -->
-      <div class="action-icon" style="background: #e8f5e9;">
-        <i class="fas fa-box-open"></i>
-      </div>
-      <span>My Orders</span>
-      <div class="order-badge">2</div>
-    </div>
-    <div class="action-card" data-view-target="saved">
-      <div class="action-icon" style="background: #fce4ec;">
-        <i class="fas fa-heart"></i>
-      </div>
-      <span>Wishlist</span>
-    </div>
-    <div class="action-card" data-view-target="home"> 
-      <div class="action-icon" style="background: #fff8e1;">
-        <i class="fas fa-tag"></i>
-      </div>
-      <span>Offers</span>
-      <div class="offer-badge">New</div>
-    </div>
-  </div>
+  <!-- Hero Section - This section is currently commented out. -->
+  <!-- It was originally designed to display a welcome message and user avatar. -->
+  <!-- <div class="hero-section"> -->
+  <!-- <div class="hero-content"> -->
+  <!-- <h1 id="greetingText">Welcome!</h1> -->
+  <!-- <p class="hero-subtext">Your daily specials are ready</p> -->
+  <!-- </div> -->
+  <!-- <div class="hero-avatar"> -->
+  <!-- Avatar will be set by user-home.js -->
+  <!-- <img src= './localstore/images/users/vivek.jpg' alt="User" class="user-avatar" id="user-avatar-img"> -->
+  <!-- </div> -->
+  <!-- </div> -->
+  
+  <!-- Quick Actions Section -->
+  <!-- <div class="quick-actions"> -->
+    <!-- Action Card: Shop Now -->
+    <!-- <div class="action-card" data-view-target="home"> -->
+      <!-- <div class="action-icon" style="background: #e3f2fd;"> -->
+        <!-- <i class="fas fa-store"></i> -->
+      <!-- </div> -->
+      <!-- <span>Shop Now</span> -->
+    <!-- </div> -->
+    <!-- Action Card: My Orders -->
+    <!-- <div class="action-card" data-view-target="cart"> --> <!-- Assuming orders are in cart/account view -->
+      <!-- <div class="action-icon" style="background: #e8f5e9;"> -->
+        <!-- <i class="fas fa-box-open"></i> -->
+      <!-- </div> -->
+      <!-- <span>My Orders</span> -->
+      <!-- <div class="order-badge">2</div> -->
+    <!-- </div> -->
+    <!-- Action Card: Wishlist -->
+    <!-- <div class="action-card" data-view-target="saved"> -->
+      <!-- <div class="action-icon" style="background: #fce4ec;"> -->
+        <!-- <i class="fas fa-heart"></i> -->
+      <!-- </div> -->
+      <!-- <span>Wishlist</span> -->
+    <!-- </div> -->
+    <!-- Action Card: Offers -->
+    <!-- <div class="action-card" data-view-target="home"> -->
+      <!-- <div class="action-icon" style="background: #fff8e1;"> -->
+        <!-- <i class="fas fa-tag"></i> -->
+      <!-- </div> -->
+      <!-- <span>Offers</span> -->
+      <!-- <div class="offer-badge">New</div> -->
+    <!-- </div> -->
+  <!-- </div> -->
 
   <!-- Special Offers Banner -->
   <div class="offer-banner">

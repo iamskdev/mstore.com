@@ -29,10 +29,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567890",
       "note": "most trending item in the biscuits category",
-      "descriptions": {
-        "short": "Classic glucose biscuit by Parle, perfect with tea.",
-        "long": "Classic glucose biscuit by Parle, perfect with tea. Classic glucose biscuit by Parle, perfect with tea. Classic glucose biscuit by Parle, perfect with tea. Classic glucose biscuit by Parle, perfect with tea."
-      },
+      "description": "Classic glucose biscuit by Parle, perfect with tea.",
       "attributes": {
         "flavor": "original",
         "weight": "80g",
@@ -131,10 +128,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567891",
       "note": "popular salt brand with high customer trust",
-      "descriptions": {
-        "short": "Tata Salt 1KG Pack",
-        "long": "Iodized salt by Tata for better health."
-      },
+      "description": "Tata Salt 1KG Pack",
       "attributes": {
         "origin": "India",
         "weight": "1kg",
@@ -225,10 +219,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567893",
       "note": null,
-      "descriptions": {
-        "short": "Fortune Mustard Oil 1L",
-        "long": "Pure mustard oil for cooking and pickles."
-      },
+      "description": "Fortune Mustard Oil 1L",
       "attributes": {
         "origin": "India",
         "volume": "1L",
@@ -319,10 +310,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567894",
       "note": null,
-      "descriptions": {
-        "short": "Surf Excel 500g",
-        "long": "Quick wash detergent powder for clean clothes."
-      },
+      "description": "Surf Excel 500g",
       "attributes": {
         "origin": "India",
         "weight": "500g",
@@ -412,10 +400,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567895",
       "note": null,
-      "descriptions": {
-        "short": "Lux Soap 100g",
-        "long": "Fragrant bathing soap for smooth skin."
-      },
+      "description": "Lux Soap 100g",
       "attributes": {
         "origin": "India",
         "weight": "100g",
@@ -504,10 +489,7 @@
       "hsnCode": "XXXXXX",
       "barcode": null,
       "note": null,
-      "descriptions": {
-        "short": "Glossy photo print service",
-        "long": "Glossy photo print service for instant passport and document photos."
-      },
+      "description": "Glossy photo print service",
       "attributes": {
         "mode": "Offline",
         "includes": [
@@ -600,10 +582,7 @@
       "hsnCode": "XXXXXX",
       "barcode": null,
       "note": null,
-      "descriptions": {
-        "short": "B/W Xerox copy",
-        "long": "Black & white xerox copy service for documents."
-      },
+      "description": "Black & white xerox copy service for documents.",
       "attributes": {
         "mode": "Offline",
         "includes": [
@@ -695,10 +674,7 @@
       "hsnCode": "XXXXXX",
       "barcode": null,
       "note": null,
-      "descriptions": {
-        "short": "Aadhar card lamination",
-        "long": "Plastic lamination service for Aadhar and other cards."
-      },
+      "description": "Any type card lamination",
       "attributes": {
         "mode": "Offline",
         "includes": [
@@ -790,10 +766,7 @@
       "hsnCode": "XXXXXX",
       "barcode": null,
       "note": null,
-      "descriptions": {
-        "short": "PAN card application service",
-        "long": "PAN card apply service for government documentation."
-      },
+      "description": "PAN card application service",
       "attributes": {
         "mode": "Online",
         "includes": [
@@ -885,10 +858,7 @@
       "hsnCode": "XXXXXX",
       "barcode": null,
       "note": null,
-      "descriptions": {
-        "short": "Govt job form fill service",
-        "long": "Online government job form fill and document upload service."
-      },
+      "description": "Form fill service",
       "attributes": {
         "mode": "Online",
         "includes": [
@@ -982,10 +952,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567896",
       "note": null,
-      "descriptions": {
-        "short": "Dabur Red Toothpaste 200g",
-        "long": "Herbal toothpaste for healthy gums and teeth."
-      },
+      "description": "Herbal toothpaste for healthy gums and teeth.",
       "attributes": {
         "origin": "India",
         "weight": "200g",
@@ -1076,10 +1043,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567897",
       "note": null,
-      "descriptions": {
-        "short": "Colgate Toothpaste",
-        "long": "Colgate toothpaste for strong teeth, healthy gums, and fresh breath. Provides complete oral care."
-      },
+      "description": "Colgate toothpaste for strong teeth.",
       "attributes": {
         "origin": "India",
         "weight": "100g",
@@ -1170,10 +1134,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567898",
       "note": null,
-      "descriptions": {
-        "short": "Good Day Cashew Cookies 200g",
-        "long": "Cashew rich cookies by Britannia for tea time."
-      },
+      "description": "Cashew rich cookies by Britannia for tea time.",
       "attributes": {
         "origin": "India",
         "weight": "200g",
@@ -1264,10 +1225,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567899",
       "note": null,
-      "descriptions": {
-        "short": "Lijjat Papad 200g",
-        "long": "Urad dal papad by Lijjat for crispy meals."
-      },
+      "description": "Urad dal papad by Lijjat for crispy meals.",
       "attributes": {
         "origin": "India",
         "weight": "200g",
@@ -1358,10 +1316,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567800",
       "note": null,
-      "descriptions": {
-        "short": "Amul Butter 500g Pack",
-        "long": "Creamy and delicious Amul Butter for your breakfast."
-      },
+      "description": "Creamy and delicious Amul Butter for your breakfast.",
       "attributes": {
         "origin": "India",
         "weight": "500g",
@@ -1451,10 +1406,7 @@
       "hsnCode": "XXXXXX",
       "barcode": "8901234567801",
       "note": null,
-      "descriptions": {
-        "short": "Red Label Tea 500g",
-        "long": "Strong and refreshing tea by Brooke Bond."
-      },
+      "description": "Strong and refreshing tea by Brooke Bond.",
       "attributes": {
         "origin": "India",
         "weight": "500g",
@@ -1544,10 +1496,7 @@
       "hsnCode": "XXXXXX",
       "barcode": null,
       "note": null,
-      "descriptions": {
-        "short": "Document scanning service",
-        "long": "All type document Scanning service."
-      },
+      "description": "All type document Scanning service.",
       "attributes": {
         "mode": "Offline",
         "includes": [
@@ -1639,10 +1588,7 @@
       "hsnCode": "XXXXXX",
       "barcode": null,
       "note": null,
-      "descriptions": {
-        "short": "A4 color document print",
-        "long": "Color print service for A4 documents."
-      },
+      "description": "Color print service for A4 documents.",
       "attributes": {
         "mode": "Offline",
         "includes": [
@@ -1734,10 +1680,7 @@
       "hsnCode": "XXXXXX",
       "barcode": null,
       "note": null,
-      "descriptions": {
-        "short": "Passport photo studio session",
-        "long": "Passport size photograph studio service."
-      },
+      "description": "Passport size photograph studio service.",
       "attributes": {
         "mode": "Offline",
         "includes": [
@@ -1829,10 +1772,7 @@
       "hsnCode": "XXXXXX",
       "barcode": null,
       "note": null,
-      "descriptions": {
-        "short": "Professional resume making service",
-        "long": "Make your resume now"
-      },
+      "description": "Professional resume making service",
       "attributes": {
         "mode": "Online",
         "includes": [

@@ -477,7 +477,7 @@
   display: flex;
   align-items: stretch;
   flex-direction: column;
-  gap: 1rem; /* Tighter gap, closer to item-card */
+  gap: 1rem; /* Tighter gap, closer to card */
 }
 #item-description-text {
   color: var(--text-tertiary); /* De-emphasize to match card's description color */

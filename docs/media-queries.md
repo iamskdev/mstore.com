@@ -85,7 +85,7 @@ All base styles are written without a media query, making them the default for a
 **Example:**
 ```css
 /* Base styles apply to all screens, but are designed for mobile */
-.item-card {
+.card {
   display: flex;
   flex-direction: row; /* Horizontal layout for list view on mobile */
   padding: 0.5rem;
@@ -105,7 +105,7 @@ A single media query is used to adapt the layout for any screen larger than a ty
 ```css
 @media screen and (min-width: 600px) {
   /* Change card layout to vertical for grids on larger screens */
-  .items-grid .item-card {
+  .items-grid .card {
     flex-direction: column;
   }
 
