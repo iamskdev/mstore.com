@@ -28,6 +28,8 @@ html, body {
   width: 100%; /* Re-added */
   box-sizing: border-box;
   display: flex;  
+  left: 0;
+  right: 0;
   position: absolute;
   pointer-events: none;
   overflow-y: auto;

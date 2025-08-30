@@ -4,7 +4,7 @@ const defaultViews = {
   guest: 'home',
   user: 'home',
   merchant: 'add',
-  admin: 'home'
+  admin: 'home' // Changed from 'home' to 'admin-home'
 };
 
 const notificationView = {
@@ -28,7 +28,8 @@ const viewConfig = {
       path: './source/common/pages/home.html',
       cssPath: './source/common/styles/home.css',
       jsPath: './source/common/scripts/home.js',
-      showFilterBar: true, // No filter bar on the welcome page
+      showFilterBar: true, // No filter bar on the welcome 
+      embedFooter: true,
       title: 'Home'
     },
     chat: { id: 'guest-chat-view', path: null, title: 'Chat' },
@@ -77,7 +78,7 @@ const viewConfig = {
   },
   admin: {
     home: {
-      id: 'home-view',
+      id: 'admin-home-view', // Changed ID to be unique
       path: "./source/modules/admin/pages/admin-home.html",
       cssPath: "./source/modules/admin/pages/admin-home.css",
       jsPath: "./source/modules/admin/pages/admin-home.js",

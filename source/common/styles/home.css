@@ -1,10 +1,12 @@
 /* 🖼️ Base Styles & Scoped Theme */
 .home-view {
   width: 100%;
-  height: auto;
   margin: 0;
+  height: auto;
+  padding: 0.5rem;
+
   font-family: 'Segoe UI', system-ui, sans-serif;
-  
+
 }
 
 /* 🌟 Hero Section */

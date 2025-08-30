@@ -206,7 +206,7 @@ function updateHeroSection(user) {
  * Main initialization function for the Home Page.
  */
 export async function init() {
-    const container = document.getElementById('.home-view'); // Correctly target the main view container
+    const container = document.querySelector('.home-view'); // Correctly target the main view container
     if (!container || container.dataset.initialized === 'true') return;
 
     console.log('✨ Initializing User Home Page...');
