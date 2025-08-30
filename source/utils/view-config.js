@@ -7,13 +7,7 @@ const defaultViews = {
   admin: 'home' // Changed from 'home' to 'admin-home'
 };
 
-const notificationView = {
-  id: 'notifications-view',
-  path: './source/common/pages/notification-view.html',
-  cssPath: './source/common/styles/notification-view.css',
-  jsPath: './source/common/scripts/notification-view.js',
-  title: 'Notifications'
-};
+
 
 /**
  * @file View Configuration
@@ -42,7 +36,14 @@ const viewConfig = {
       jsPath: './source/common/scripts/guest-account.js',
       title: 'Account'
     },
-    notifications: notificationView
+    notifications: {
+      id: 'notifications-view',
+      path: './source/common/pages/notification-view.html',
+      cssPath: './source/common/styles/notification-view.css',
+      jsPath: './source/common/scripts/notification-view.js',
+      title: 'Notifications',
+      allowedTypes: ['promotions', 'general']
+    }
   },
   user: {
     home: {
@@ -58,7 +59,14 @@ const viewConfig = {
     saved: { id: 'user-saved-view', path: null, title: 'Saved' },
     cart: { id: 'user-cart-view', path: null, title: 'Cart' },
     account: { id: 'user-account-view', path: null, title: 'Account' },
-    notifications: notificationView
+    notifications: {
+      id: 'notifications-view',
+      path: './source/common/pages/notification-view.html',
+      cssPath: './source/common/styles/notification-view.css',
+      jsPath: './source/common/scripts/notification-view.js',
+      title: 'Notifications',
+      allowedTypes: ['promotions', 'order_status', 'general']
+    }
   },
   merchant: {
     home: {
@@ -74,7 +82,14 @@ const viewConfig = {
     add: { id: 'merchant-add-view', path: null, title: 'Add' },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics' },
     account: { id: 'merchant-account-view', path: null, title: 'Account' },
-    notifications: notificationView
+    notifications: {
+      id: 'notifications-view',
+      path: './source/common/pages/notification-view.html',
+      cssPath: './source/common/styles/notification-view.css',
+      jsPath: './source/common/scripts/notification-view.js',
+      title: 'Notifications',
+      allowedTypes: ['new_order', 'stock_alert', 'order_status']
+    }
   },
   admin: {
     home: {
@@ -93,7 +108,14 @@ const viewConfig = {
     promo: { id: 'admin-promo-view', path: null, title: 'Promo' },
     campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns' },
     account: { id: 'admin-account-view', path: null, title: 'Account' },
-    notifications: notificationView
+    notifications: {
+      id: 'notifications-view',
+      path: './source/common/pages/notification-view.html',
+      cssPath: './source/common/styles/notification-view.css',
+      jsPath: './source/common/scripts/notification-view.js',
+      title: 'Notifications',
+      allowedTypes: ['all']
+    }
   },
   };
 

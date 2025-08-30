@@ -227,6 +227,28 @@
     }
 
     .bell-shake { animation: bellShake 0.5s ease-in-out; }
+
+    #notification-icon.active-notification i {
+      color: var(--accent-primary); /* Highlight color for active notification icon */
+    }
+
+    /* Ripple Effect for Notification Icon */
+    #notification-icon .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(var(--accent-primary-rgb), 0.1); /* Use global variable directly */
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
   </style>
   <div class="header-container">
     <div id="mode-banner" class="mode-banner"></div>
@@ -421,6 +443,23 @@
       initializeHeaderStyle();
     }
 
+    // NEW: Function to update the notification icon's UI
+    function updateNotificationIconUI({ view }) {
+      if (notificationIcon) {
+        if (view === 'notifications') {
+          notificationIcon.classList.add('active-notification');
+          if (bellIcon) {
+            bellIcon.classList.add('bell-shake');
+            setTimeout(() => {
+              bellIcon.classList.remove('bell-shake');
+            }, 500); // Remove shake after 0.5 seconds
+          }
+        } else {
+          notificationIcon.classList.remove('active-notification');
+        }
+      }
+    }
+
     // --- Event Listeners ---
     document.querySelectorAll('#header-logo-container, #header-menu-icon').forEach(el => {
       el.addEventListener('click', () => window.dispatchEvent(new CustomEvent('toggleDrawerRequest')));
@@ -447,16 +486,42 @@
     }
 
     if (notificationIcon) {
-      notificationIcon.addEventListener('click', () => {
-        const currentRole = window.viewManager.currentRole;
-        window.dispatchEvent(new CustomEvent('requestViewChange', {
-          detail: { role: currentRole, view: 'notifications' }
-        }));
+      notificationIcon.addEventListener('click', (e) => {
+        // Ripple effect for notification icon
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+
+        // Calculate size for ripple (based on notificationIcon dimensions)
+        const size = Math.max(notificationIcon.offsetWidth, notificationIcon.offsetHeight) * 1.5;
+
+        ripple.style.width = ripple.style.height = `${size}px`;
+        // Position the ripple in the center of the notificationIcon
+        ripple.style.left = `${(notificationIcon.offsetWidth - size) / 2}px`;
+        ripple.style.top = `${(notificationIcon.offsetHeight - size) / 2}px`;
+
+        notificationIcon.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600); // Remove after animation
+
+        // NEW LOGIC: Check current view before dispatching
+        if (window.viewManager.currentView === 'notifications') {
+          // If already in notifications view, go back
+          window.history.back();
+        } else {
+          // Otherwise, open notifications view
+          const currentRole = window.viewManager.currentRole;
+          window.dispatchEvent(new CustomEvent('requestViewChange', {
+            detail: { role: currentRole, view: 'notifications' }
+          }));
+        }
       });
     }
 
     // --- Initialization ---
     window.viewManager.subscribe(updateHeaderUI);
+    // NEW: Subscribe the notification icon UI update function
+    window.viewManager.subscribe(updateNotificationIconUI);
     console.log("✅ Header: Subscribed to ViewManager for state updates.");
+
+    
   </script>
 

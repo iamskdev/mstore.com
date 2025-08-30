@@ -300,7 +300,22 @@ const dummyAlerts = [
 ];
 
 function addDummyNotifications() {
-  renderNotifications(dummyCampaigns, dummyAlerts);
+  let campaignsToRender = [...dummyCampaigns]; // Create a mutable copy
+
+  // Check if app is in developer mode
+  if (window.APP_CONFIG && window.APP_CONFIG.appMode === 'dev') {
+    const devModeNotification = {
+      content: {
+        title: "Developer Mode Active",
+        message: "You are currently running the app in developer mode. This is for testing purposes only and may expose additional features or debug information. To switch to production mode, change 'appMode' in app-config.js.",
+        richContent: { icon: "fas fa-code" }
+      },
+      meta: { type: "system" }
+    };
+    campaignsToRender.unshift(devModeNotification); // Add to the beginning
+  }
+
+  renderNotifications(campaignsToRender, dummyAlerts);
 }
 
 function initializeExpandCollapse() {
