@@ -13,9 +13,13 @@ const COMPONENT_PATH = './source/components/filter-bar.html';
 class FilterManager {
     constructor() {
         this.placeholder = document.getElementById(PLACEHOLDER_ID);
-        this.isLoaded = false;
-        this.isInitialized = false; // Track if the logic has been attached
-        this.isAdvancedPanelInitialized = false;
+        this.isLoaded = false; // Tracks if the filter bar component is loaded
+        this.isInitialized = false; // Tracks if the filter bar logic has been attached
+
+        this.modalContainer = null; // Will hold the dynamically created div for the modal
+        this.isModalLoaded = false; // Tracks if the filter modal component is loaded
+        this.isAdvancedPanelInitialized = false; // Tracks if the modal logic has been attached
+
         this.allCategoriesData = []; // Cache for category data
 
         if (!this.placeholder) {
@@ -39,7 +43,6 @@ class FilterManager {
                 this.isLoaded = true;
                 // Initialize the component's logic right after it's loaded
                 this._initializeComponentLogic();
-                this._initializeAdvancedPanelLogic();
                 this.isInitialized = true;
             } catch (error) {
                 console.error('FilterManager: Failed to load filter bar component.', error);
@@ -162,17 +165,23 @@ class FilterManager {
      * Initializes the logic for the advanced filter panel.
      * @private
      */
-    _initializeAdvancedPanelLogic() {
+    async _initializeAdvancedPanelLogic() {
         if (this.isAdvancedPanelInitialized) return;
 
-        const panel = this.placeholder.querySelector('#advanced-filter-panel');
-        const overlay = this.placeholder.querySelector('#adv-filter-overlay');
-        const closeBtn = this.placeholder.querySelector('.adv-filter-close-btn');
-        const applyBtn = this.placeholder.querySelector('#adv-filter-apply-btn');
-        const resetBtn = this.placeholder.querySelector('#adv-filter-reset-btn');
+        // Ensure modalContainer exists and is populated before querying
+        if (!this.modalContainer) {
+            console.error("FilterManager: Modal container not found for advanced panel initialization.");
+            return;
+        }
+
+        const panel = this.modalContainer.querySelector('#advanced-filter-panel');
+        const overlay = this.modalContainer.querySelector('#adv-filter-overlay');
+        const closeBtn = this.modalContainer.querySelector('.adv-filter-close-btn');
+        const applyBtn = this.modalContainer.querySelector('#adv-filter-apply-btn');
+        const resetBtn = this.modalContainer.querySelector('#adv-filter-reset-btn');
  
         if (!panel || !overlay || !closeBtn) {
-            console.error("FilterManager: Advanced panel elements not found.");
+            console.error("FilterManager: Advanced panel elements not found within modalContainer.");
             return;
         }
  
@@ -215,8 +224,8 @@ class FilterManager {
      */
     _areFiltersActive() {
         const values = this._getAdvancedFilterValues();
-        const minSlider = this.placeholder.querySelector('#adv-min-price-slider');
-        const maxSlider = this.placeholder.querySelector('#adv-max-price-slider');
+        const minSlider = this.modalContainer.querySelector('#adv-min-price-slider');
+        const maxSlider = this.modalContainer.querySelector('#adv-max-price-slider');
 
         // Check if any value is different from its default
         if (values.sort !== 'relevance') return true;
@@ -234,7 +243,7 @@ class FilterManager {
      * @private
      */
     _updateFilterIconState() {
-        const iconBtn = this.placeholder.querySelector('.filter-icon-btn');
+        const iconBtn = this.placeholder.querySelector('.filter-icon-btn'); // This still targets the filter bar icon
         if (!iconBtn) return;
 
         // The toggle method with the second argument is perfect for this.
@@ -247,7 +256,7 @@ class FilterManager {
      * @private
      */
     _getAdvancedFilterValues() {
-        const get = (selector) => this.placeholder.querySelector(selector)?.value;
+        const get = (selector) => this.modalContainer.querySelector(selector)?.value;
         return {
             sort: get('#adv-filter-sort'),
             minPrice: get('#adv-min-price-slider'),
@@ -263,7 +272,7 @@ class FilterManager {
      * @private
      */
     _resetAdvancedFilters() {
-        const panel = this.placeholder.querySelector('#advanced-filter-panel');
+        const panel = this.modalContainer.querySelector('#advanced-filter-panel');
         if (!panel) return;
 
         panel.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
@@ -290,7 +299,7 @@ class FilterManager {
      * @private
      */
     _syncHorizontalBar(categorySlug) {
-        const container = this.placeholder.querySelector('#filter-bar');
+        const container = this.placeholder.querySelector('#filter-bar'); // This still targets the filter bar
         if (!container) return;
 
         container.querySelectorAll('.filter-bar-tab.active').forEach(tab => tab.classList.remove('active'));
@@ -315,7 +324,7 @@ class FilterManager {
             this.allCategoriesData = await fetchAllCategories(true);
 
             // Populate Main Categories
-            const mainCategorySelect = this.placeholder.querySelector('#adv-filter-main-category');
+            const mainCategorySelect = this.modalContainer.querySelector('#adv-filter-main-category');
             if (mainCategorySelect) {
                 let mainCatOptions = '';
                 this.allCategoriesData.forEach(cat => {
@@ -331,7 +340,7 @@ class FilterManager {
             mainCategorySelect?.addEventListener('change', (e) => this._onMainCategoryChange(e.target.value));
 
             // Populate Brands
-            const brandSelect = this.placeholder.querySelector('#adv-filter-brand');
+            const brandSelect = this.modalContainer.querySelector('#adv-filter-brand');
             if (brandSelect) {
                 const brands = await fetchAllBrands(true);
                 let brandOptions = '';
@@ -354,7 +363,7 @@ class FilterManager {
      * @private
      */
     _onMainCategoryChange(mainCategorySlug) {
-        const subCategorySelect = this.placeholder.querySelector('#adv-filter-subcategory');
+        const subCategorySelect = this.modalContainer.querySelector('#adv-filter-subcategory');
         if (!subCategorySelect) return;
 
         // Always reset the sub-category dropdown first
@@ -388,26 +397,46 @@ class FilterManager {
      * @param {boolean} show - True to show, false to hide.
      * @private
      */
-    _toggleAdvancedPanel(show) {
-        const panel = this.placeholder.querySelector('#advanced-filter-panel');
-        const overlay = this.placeholder.querySelector('#adv-filter-overlay');
-        if (!panel || !overlay) return;
+    async _toggleAdvancedPanel(show) {
+        if (show && !this.isModalLoaded) {
+            if (!this.modalContainer) {
+                this.modalContainer = document.createElement('div');
+                document.body.appendChild(this.modalContainer);
+            }
+            try {
+                await loadComponent(this.modalContainer, './source/components/filter-modal.html');
+                this.isModalLoaded = true;
+                this._initializeAdvancedPanelLogic(); // Initialize logic after component is loaded
+            } catch (error) {
+                console.error('FilterManager: Failed to load filter modal component.', error);
+                return;
+            }
+        }
+
+        const panel = this.modalContainer.querySelector('#advanced-filter-panel');
+        const overlay = this.modalContainer.querySelector('#adv-filter-overlay');
+        if (!panel || !overlay) {
+            console.error("FilterManager: Modal elements not found after loading.");
+            return;
+        }
 
         if (show) {
             overlay.classList.add('visible');
             panel.classList.add('visible');
             document.body.style.overflow = 'hidden';
+            this._updateFilterIconState(); // Update icon state when modal is shown
         } else {
             overlay.classList.remove('visible');
             panel.classList.remove('visible');
             document.body.style.overflow = '';
+            this._updateFilterIconState(); // Update icon state when modal is hidden
         }
     }
 
     /** @private Attaches event listeners for the dual-range price slider. */
     _initializePriceSlider() {
-        const minSlider = this.placeholder.querySelector('#adv-min-price-slider');
-        const maxSlider = this.placeholder.querySelector('#adv-max-price-slider');
+        const minSlider = this.modalContainer.querySelector('#adv-min-price-slider');
+        const maxSlider = this.modalContainer.querySelector('#adv-max-price-slider');
         minSlider?.addEventListener('input', () => this._updatePriceSlider());
         maxSlider?.addEventListener('input', () => this._updatePriceSlider());
         this._updatePriceSlider(); // Initial call
@@ -415,11 +444,11 @@ class FilterManager {
 
     /** @private Updates the visual state of the price slider (labels and track). */
     _updatePriceSlider() {
-        const minSlider = this.placeholder.querySelector('#adv-min-price-slider');
-        const maxSlider = this.placeholder.querySelector('#adv-max-price-slider');
-        const minLabel = this.placeholder.querySelector('#adv-min-price-label');
-        const maxLabel = this.placeholder.querySelector('#adv-max-price-label');
-        const track = this.placeholder.querySelector('.price-slider-track');
+        const minSlider = this.modalContainer.querySelector('#adv-min-price-slider');
+        const maxSlider = this.modalContainer.querySelector('#adv-max-price-slider');
+        const minLabel = this.modalContainer.querySelector('#adv-min-price-label');
+        const maxLabel = this.modalContainer.querySelector('#adv-max-price-label');
+        const track = this.modalContainer.querySelector('.price-slider-track');
         if (!minSlider || !maxSlider || !minLabel || !maxLabel || !track) return;
 
         let minVal = parseInt(minSlider.value);
@@ -444,11 +473,10 @@ class FilterManager {
         try {
             // Re-use the component initialization logic, but target the embedded filter bar
             await this._initializeComponentLogic();
-            await this._initializeAdvancedPanelLogic();
-            // Mark as initialized for this specific embedded instance if needed,
-            // though the main isInitialized flag might be sufficient if only one embedded instance is active at a time.
-            // For now, we'll rely on the logic within _initializeComponentLogic and _initializeAdvancedPanelLogic
-            // to handle re-initialization if called multiple times on the same element.
+            // Note: _initializeAdvancedPanelLogic is now called by _toggleAdvancedPanel when the modal is first shown.
+            // If you need to re-initialize the advanced panel logic for an embedded bar, you'd need to
+            // ensure the modal HTML is present in 'viewElement' and call it directly.
+            // For this specific use case (separate modal), we don't need to call it here.
         } catch (error) {
             console.error('FilterManager: Failed to initialize embedded filter bar logic.', error);
         } finally {

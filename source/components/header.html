@@ -317,7 +317,6 @@
                 await loadComponent(filterBarContainer, './source/components/filter-bar.html');
                 filterManager.placeholder = filterBarContainer;
                 await filterManager._initializeComponentLogic();
-                await filterManager._initializeAdvancedPanelLogic();
                 isFilterBarLoaded = true;
             }
             filterBarContainer.style.display = 'block';
