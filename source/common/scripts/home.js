@@ -2,6 +2,8 @@ import { fetchAllItems, fetchAllUnits } from '../../utils/data-manager.js';
 
 let cardGridTemplate = ''; // Global variable to store the template
 let unitsData = {}; // Global variable to store units data
+let allItems = []; // Global variable to store all fetched items
+let currentFilter = 'all'; // Global variable to store the current filter
 
 const DEFAULT_PRODUCT_IMAGE = './localstore/images/default-product.jpg';
 const DEFAULT_SERVICE_IMAGE = './localstore/images/default-service.jpg';
@@ -156,44 +158,84 @@ function createCardFromTemplate(item, isSkeleton = false) {
 }
 
 
-async function populateAllItemsGrid() {
+async function populateAllItemsGrid(itemsToDisplay = allItems) {
+    console.log('populateAllItemsGrid called.');
     const grid = document.getElementById('all-products-grid');
-    const countEl = document.getElementById('all-products-count');
-    if (!grid || !countEl) return;
+    // Removed const countEl = document.getElementById('all-products-count');
+    console.log('Grid element:', grid);
+    // Removed console.log('Count element:', countEl);
+    if (!grid) return; // Modified check
 
     grid.innerHTML = '';
     for (let i = 0; i < 8; i++) {
         grid.appendChild(createCardFromTemplate(null, true));
     }
-    countEl.textContent = '';
+    // Removed countEl.textContent = '';
 
     try {
-        const allItems = await fetchAllItems();
-        const activeItems = allItems.filter(item => item.meta.flags.isActive);
+        // If allItems is empty, fetch them. This ensures data is fetched only once.
+        if (allItems.length === 0) {
+            const fetchedItems = await fetchAllItems();
+            allItems = fetchedItems.filter(item => item.meta.flags.isActive);
+            console.log('Fetched allItems:', allItems);
+            itemsToDisplay = allItems; // If fetching for the first time, display all active items
+        }
+
+        console.log('Current filter:', currentFilter);
+        const filteredItems = applyFilters(itemsToDisplay, currentFilter); // Apply current filter
+        console.log('Filtered items:', filteredItems);
 
         grid.innerHTML = '';
-        if (activeItems.length === 0) {
+        if (filteredItems.length === 0) {
             grid.innerHTML = `<div class="no-items-placeholder">No products or services found.</div>`;
-            countEl.textContent = '0 items';
+            // Removed countEl.textContent = '0 items';
             return;
         }
 
         const fragment = document.createDocumentFragment();
-        for (const item of activeItems) {
+        for (const item of filteredItems) { // Use filteredItems here
             const card = createCardFromTemplate(item);
             if (card) fragment.appendChild(card);
         }
         grid.appendChild(fragment);
-        countEl.textContent = `${activeItems.length} items`;
+        // Removed countEl.textContent = `${filteredItems.length} items`;
 
     } catch (error) {
         console.error('Failed to load all items:', error);
         grid.innerHTML = `<div class="no-items-placeholder">Could not load all products and services.</div>`;
-        countEl.textContent = 'Error loading items';
+        // Removed countEl.textContent = 'Error loading items';
     }
 }
 
+/**
+ * Applies filters to the given array of items.
+ * @param {Array} items - The array of items to filter.
+ * @param {string} filterValue - The filter value (e.g., category slug, 'all', 'product', 'service').
+ * @returns {Array} The filtered array of items.
+ */
+function applyFilters(items, filterValue) {
+    console.log('applyFilters called with filterValue:', filterValue);
+    console.log('Items before filtering:', items.length);
+    let filtered = [];
+    if (filterValue === 'all') {
+        filtered = items;
+    } else if (filterValue === 'product') {
+        filtered = items.filter(item => item.meta.type === 'product');
+    } else if (filterValue === 'service') {
+        filtered = items.filter(item => item.meta.type === 'service');
+    } else {
+        // Filter by category slug (main category or subcategory)
+        filtered = items.filter(item =>
+            item.categories?.some(cat => cat.slug === filterValue) ||
+            item.subcategories?.some(subcat => subcat.slug === filterValue)
+        );
+    }
+    console.log('Items after filtering:', filtered.length);
+    return filtered;
+}
+
 export async function init() {
+    console.log('home.js init() called.');
     const container = document.querySelector('.home-view');
     if (!container || container.dataset.initialized === 'true') return;
 
@@ -207,7 +249,7 @@ export async function init() {
 
         if (!templateResponse.ok) throw new Error(`Failed to fetch card-grid.html: ${templateResponse.statusText}`);
         cardGridTemplate = await templateResponse.text();
-        
+
         unitsResponse.forEach(unit => {
             unitsData[unit.meta.unitId] = unit;
         });
@@ -217,6 +259,22 @@ export async function init() {
         container.innerHTML = '<p class="error-message">Failed to load initial data. Please refresh.</p>';
         return;
     }
+
+    // Listen for filter changes from the filter bar
+    window.addEventListener('filterChanged', (event) => {
+        console.log('filterChanged event received:', event.detail.filter);
+        currentFilter = event.detail.filter;
+        populateAllItemsGrid(); // Re-populate grid with new filter
+    });
+
+    // Listen for advanced filter changes
+    window.addEventListener('advancedFilterApplied', (event) => {
+        // For now, we'll just log the advanced filters.
+        // More complex filtering logic will be added here later.
+        console.log('Advanced filters applied:', event.detail);
+        // You might want to update currentFilter based on advanced filters
+        // and then call populateAllItemsGrid()
+    });
 
     populateAllItemsGrid();
 
