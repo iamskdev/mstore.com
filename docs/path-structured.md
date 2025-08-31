@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 29/08/2025, 19:45
+📅 Last Updated: 31/08/2025, 19:48
 
 ├── .firebaserc
 ├── .gitignore
@@ -11,10 +11,10 @@
 ├── readme.md
 ├── service-worker.js
 ├── 📁 demo\
+│   └── demo-card.html
 ├── 📁 docs\
 │   ├── 📁 versions\
 │   │   └── ApnaStore_Dev_Versions.md
-│   ├── GEMINI.md
 │   ├── brands_list.md
 │   ├── firebase-emulator.md
 │   ├── implementing-new-views.md
@@ -208,26 +208,26 @@
 │   │   │   ├── hi.json
 │   │   │   └── langs.json
 │   │   ├── 📁 pages\
-│   │   │   ├── gateway.html
 │   │   │   ├── guest-account.html
-│   │   │   ├── guest-home.html
+│   │   │   ├── home.html
 │   │   │   ├── item-details.html
 │   │   │   ├── notification-view.html
 │   │   │   └── offline.html
 │   │   ├── 📁 scripts\
 │   │   │   ├── guest-account.js
-│   │   │   ├── guest-home.js
+│   │   │   ├── home.js
 │   │   │   ├── item-details.js
 │   │   │   └── notification-view.js
 │   │   └── 📁 styles\
 │   │       ├── guest-account.css
-│   │       ├── guest-home.css
+│   │       ├── home.css
 │   │       ├── item-details.css
 │   │       ├── notification-view.css
 │   │       └── theme.css
 │   ├── 📁 components\
-│   │   ├── 📁 card\
-│   │   │   └── card.html
+│   │   ├── 📁 cards\
+│   │   │   ├── card-grid.html
+│   │   │   └── card-list.html
 │   │   ├── 📁 feedback-modal\
 │   │   │   ├── feedback-modal.css
 │   │   │   ├── feedback-modal.html
@@ -235,6 +235,7 @@
 │   │   ├── drawer.html
 │   │   ├── error-page.html
 │   │   ├── filter-bar.html
+│   │   ├── filter-modal.html
 │   │   ├── footer.html
 │   │   ├── header.html
 │   │   ├── role-switcher.html
@@ -279,11 +280,8 @@
 │   │   │       └── mode-switcher.js
 │   │   ├── 📁 consumer\
 │   │   │   ├── 📁 pages\
-│   │   │   │   └── user-home.html
 │   │   │   ├── 📁 scripts\
-│   │   │   │   └── user-home.js
 │   │   │   └── 📁 styles\
-│   │   │       └── user-home.css
 │   │   └── 📁 merchant\
 │   │       ├── 📁 pages\
 │   │       │   └── merchant-home.html

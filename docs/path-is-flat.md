@@ -1,9 +1,9 @@
 # 📁 Project Path Tree (Gemini-friendly)
-📅 Last Updated: 29/08/2025, 19:45
+📅 Last Updated: 31/08/2025, 19:48
 
 S:\My Projects\Apna Store\mStore_V0.0.1\.firebaserc
 S:\My Projects\Apna Store\mStore_V0.0.1\.gitignore
-S:\My Projects\Apna Store\mStore_V0.0.1\docs\GEMINI.md
+S:\My Projects\Apna Store\mStore_V0.0.1\demo\demo-card.html
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\brands_list.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\firebase-emulator.md
 S:\My Projects\Apna Store\mStore_V0.0.1\docs\implementing-new-views.md
@@ -176,28 +176,29 @@ S:\My Projects\Apna Store\mStore_V0.0.1\source\assets\screenshots\guest-home.jpg
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\langs\en.json
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\langs\hi.json
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\langs\langs.json
-S:\My Projects\Apna Store\mStore_V0.0.1\source\common\pages\gateway.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\pages\guest-account.html
-S:\My Projects\Apna Store\mStore_V0.0.1\source\common\pages\guest-home.html
+S:\My Projects\Apna Store\mStore_V0.0.1\source\common\pages\home.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\pages\item-details.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\pages\notification-view.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\pages\offline.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\scripts\guest-account.js
-S:\My Projects\Apna Store\mStore_V0.0.1\source\common\scripts\guest-home.js
+S:\My Projects\Apna Store\mStore_V0.0.1\source\common\scripts\home.js
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\scripts\item-details.js
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\scripts\notification-view.js
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\styles\guest-account.css
-S:\My Projects\Apna Store\mStore_V0.0.1\source\common\styles\guest-home.css
+S:\My Projects\Apna Store\mStore_V0.0.1\source\common\styles\home.css
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\styles\item-details.css
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\styles\notification-view.css
 S:\My Projects\Apna Store\mStore_V0.0.1\source\common\styles\theme.css
-S:\My Projects\Apna Store\mStore_V0.0.1\source\components\card\card.html
+S:\My Projects\Apna Store\mStore_V0.0.1\source\components\cards\card-grid.html
+S:\My Projects\Apna Store\mStore_V0.0.1\source\components\cards\card-list.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\components\drawer.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\components\error-page.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\components\feedback-modal\feedback-modal.css
 S:\My Projects\Apna Store\mStore_V0.0.1\source\components\feedback-modal\feedback-modal.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\components\feedback-modal\feedback-modal.js
 S:\My Projects\Apna Store\mStore_V0.0.1\source\components\filter-bar.html
+S:\My Projects\Apna Store\mStore_V0.0.1\source\components\filter-modal.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\components\footer.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\components\header.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\components\role-switcher.html
@@ -231,9 +232,6 @@ S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\admin\scripts\dev-tools.j
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\admin\scripts\log-reader.js
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\admin\scripts\mock-inject.js
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\admin\scripts\mode-switcher.js
-S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\consumer\pages\user-home.html
-S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\consumer\scripts\user-home.js
-S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\consumer\styles\user-home.css
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\merchant\account.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\merchant\analytics.html
 S:\My Projects\Apna Store\mStore_V0.0.1\source\modules\merchant\merchant-home.html
