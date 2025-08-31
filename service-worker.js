@@ -1,5 +1,5 @@
 // --- Resilient Service Worker with Fallback Support ---
-const CACHE_NAME = 'M_STORE_CACHE_V0.0.2'; // Cache version updated for new path strategy
+const CACHE_NAME = 'M_STORE_CACHE_V0.0.4'; // Cache version updated for new path strategy
 const OFFLINE_PAGE = './source/common/pages/offline.html'; // Path from root
 const RUNTIME_CACHE = 'runtime-cache';
 const MAX_RUNTIME_CACHE_AGE = 24 * 60 * 60; // 24 hours in seconds
