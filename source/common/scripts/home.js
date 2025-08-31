@@ -143,9 +143,7 @@ function createCardFromTemplate(item, isSkeleton = false) {
                 e.preventDefault();
                 e.stopPropagation();
                 if (e.target.closest('.add-to-cart')) {
-                    console.log(`Added ${item.info.name} to cart.`);
                 } else if (e.target.closest('.wishlist-btn')) {
-                    console.log(`Toggled wishlist for ${item.info.name}.`);
                 }
             } else {
                 sessionStorage.setItem('selectedItem', JSON.stringify(item));
@@ -159,11 +157,7 @@ function createCardFromTemplate(item, isSkeleton = false) {
 
 
 async function populateAllItemsGrid(itemsToDisplay = allItems) {
-    console.log('populateAllItemsGrid called.');
     const grid = document.getElementById('all-products-grid');
-    // Removed const countEl = document.getElementById('all-products-count');
-    console.log('Grid element:', grid);
-    // Removed console.log('Count element:', countEl);
     if (!grid) return; // Modified check
 
     grid.innerHTML = '';
@@ -177,13 +171,10 @@ async function populateAllItemsGrid(itemsToDisplay = allItems) {
         if (allItems.length === 0) {
             const fetchedItems = await fetchAllItems();
             allItems = fetchedItems.filter(item => item.meta.flags.isActive);
-            console.log('Fetched allItems:', allItems);
             itemsToDisplay = allItems; // If fetching for the first time, display all active items
         }
 
-        console.log('Current filter:', currentFilter);
-        const filteredItems = applyFilters(itemsToDisplay, currentFilter); // Apply current filter
-        console.log('Filtered items:', filteredItems);
+        const filteredItems = applyFilters(itemsToDisplay, currentFilter, currentAdvancedFilters); // Apply current filter
 
         grid.innerHTML = '';
         if (filteredItems.length === 0) {
@@ -201,45 +192,89 @@ async function populateAllItemsGrid(itemsToDisplay = allItems) {
         // Removed countEl.textContent = `${filteredItems.length} items`;
 
     } catch (error) {
-        console.error('Failed to load all items:', error);
         grid.innerHTML = `<div class="no-items-placeholder">Could not load all products and services.</div>`;
         // Removed countEl.textContent = 'Error loading items';
     }
 }
 
+let currentAdvancedFilters = {}; // New global variable for advanced filters
+
 /**
  * Applies filters to the given array of items.
  * @param {Array} items - The array of items to filter.
  * @param {string} filterValue - The filter value (e.g., category slug, 'all', 'product', 'service').
+ * @param {object} advancedFilters - Optional: Object containing advanced filter criteria.
  * @returns {Array} The filtered array of items.
  */
-function applyFilters(items, filterValue) {
-    console.log('applyFilters called with filterValue:', filterValue);
-    console.log('Items before filtering:', items.length);
-    let filtered = [];
-    if (filterValue === 'all') {
-        filtered = items;
-    } else if (filterValue === 'product') {
-        filtered = items.filter(item => item.meta.type === 'product');
+function applyFilters(items, filterValue, advancedFilters = {}) {
+    let filtered = items;
+
+    // Apply basic filter (from horizontal bar)
+    if (filterValue === 'product') {
+        filtered = filtered.filter(item => item.meta.type === 'product');
     } else if (filterValue === 'service') {
-        filtered = items.filter(item => item.meta.type === 'service');
-    } else {
+        filtered = filtered.filter(item => item.meta.type === 'service');
+    } else if (filterValue !== 'all') {
         // Filter by category slug (main category or subcategory)
-        filtered = items.filter(item =>
+        filtered = filtered.filter(item =>
             item.categories?.some(cat => cat.slug === filterValue) ||
             item.subcategories?.some(subcat => subcat.slug === filterValue)
         );
     }
-    console.log('Items after filtering:', filtered.length);
+
+    // Apply advanced filters
+    if (advancedFilters.mainCategory) {
+        filtered = filtered.filter(item =>
+            item.categories?.some(cat => cat.slug === advancedFilters.mainCategory)
+        );
+    }
+    if (advancedFilters.subcategory) {
+        filtered = filtered.filter(item =>
+            item.subcategories?.some(subcat => subcat.slug === advancedFilters.subcategory)
+        );
+    }
+    if (advancedFilters.brand) {
+        filtered = filtered.filter(item =>
+            item.meta.brandId === advancedFilters.brand
+        );
+    }
+    if (advancedFilters.minPrice) {
+        const minPrice = parseFloat(advancedFilters.minPrice);
+        filtered = filtered.filter(item =>
+            item.pricing?.sellingPrice >= minPrice
+        );
+    }
+    if (advancedFilters.maxPrice) {
+        const maxPrice = parseFloat(advancedFilters.maxPrice);
+        filtered = filtered.filter(item =>
+            item.pricing?.sellingPrice <= maxPrice
+        );
+    }
+
+    // Apply sorting (if 'sort' is present and not 'relevance')
+    if (advancedFilters.sort && advancedFilters.sort !== 'relevance') {
+        // Create a shallow copy before sorting to ensure re-render if needed
+        filtered = [...filtered].sort((a, b) => {
+            if (advancedFilters.sort === 'price-asc') {
+                return a.pricing.sellingPrice - b.pricing.sellingPrice;
+            } else if (advancedFilters.sort === 'price-desc') {
+                return b.pricing.sellingPrice - a.pricing.sellingPrice;
+            } else if (advancedFilters.sort === 'name-asc') {
+                return a.info.name.localeCompare(b.info.name);
+            } else if (advancedFilters.sort === 'name-desc') {
+                return b.info.name.localeCompare(a.info.name);
+            }
+            return 0;
+        });
+    }
+
     return filtered;
 }
 
 export async function init() {
-    console.log('home.js init() called.');
     const container = document.querySelector('.home-view');
     if (!container || container.dataset.initialized === 'true') return;
 
-    console.log('✨ Initializing User Home Page...');
 
     try {
         const [templateResponse, unitsResponse] = await Promise.all([
@@ -255,25 +290,21 @@ export async function init() {
         });
 
     } catch (error) {
-        console.error('Error loading initial data:', error);
         container.innerHTML = '<p class="error-message">Failed to load initial data. Please refresh.</p>';
         return;
     }
 
     // Listen for filter changes from the filter bar
     window.addEventListener('filterChanged', (event) => {
-        console.log('filterChanged event received:', event.detail.filter);
         currentFilter = event.detail.filter;
+        
         populateAllItemsGrid(); // Re-populate grid with new filter
     });
 
     // Listen for advanced filter changes
     window.addEventListener('advancedFilterApplied', (event) => {
-        // For now, we'll just log the advanced filters.
-        // More complex filtering logic will be added here later.
-        console.log('Advanced filters applied:', event.detail);
-        // You might want to update currentFilter based on advanced filters
-        // and then call populateAllItemsGrid()
+        currentAdvancedFilters = event.detail; // Store the advanced filters
+        populateAllItemsGrid(); // Re-populate grid with new advanced filters
     });
 
     populateAllItemsGrid();
