@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
-> - **Status:** `Up-to-Date`
-> - **Last Reviewed:** 29/08/2025 20:40:56 IST (Updated by Gemini)
+> - **Status:** `Updated`
+> - **Last Reviewed:** 31/08/2025 23:59:00 IST (Updated by Gemini)
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document serves as the main entry point for understanding the project's features, architecture, and setup instructions. It is intended for all developers joining the project.
 

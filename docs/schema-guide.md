@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
-> - **Status:** `Up-to-Date`
-> - **Last Reviewed:** 31/08/2025 12:35:00 IST (Updated by Gemini)
+> - **Status:** `Updated`
+> - **Last Reviewed:** 31/08/2025 23:59:00 IST (Updated by Gemini)
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides a comprehensive guide to all Firestore data collections, detailing each schema's structure, fields, and relationships. It is the single source of truth for the data model.
 
@@ -113,7 +113,9 @@
 ### मुख्य ऑब्जेक्ट्स:
 
 -   **`meta`**: आइटम का मेटाडेटा।
-    -   `itemId`, `type` (`product`/`service`), `version`, `priority`, `flags`, `links` (`merchantId`, `brandId`, `unitId`, `categoryId`)।
+    -   `itemId`, `type` (`product`/`service`), `version`, `priority`, `flags`, `links` (`merchantId`, `brandId`, `unitId`, `categoryId` - **अब `ICT` उपसर्ग के साथ**)।
+    -   **`categories`** (array): आइटम से संबंधित मुख्य श्रेणियों की सूची (प्रत्येक में `slug` और `categoryId` शामिल)।
+    -   **`subcategories`** (array): आइटम से संबंधित उप-श्रेणियों की सूची (प्रत्येक में `slug` और `subCatId` शामिल)।
 -   **`info`**: आइटम का विस्तृत विवरण।
     -   `name`, `sku`, `hsnCode`, `barcode`, `note`, `description`, `attributes`।
 -   **`pricing`**: मूल्य निर्धारण की जानकारी।
@@ -130,6 +132,7 @@
 ### संभावित स्थितियाँ और भविष्य के सुधार:
 -   एक "सेवा" (service) के लिए, `inventory` ऑब्जेक्ट में अधिकांश फ़ील्ड `null` होंगे।
 -   `flags.isFeatured` का उपयोग करके किसी आइटम को होमपेज पर प्रमुखता से दिखाया जा सकता है।
+-   **कैटेगरी और सबकैटेगरी लिंकिंग:** `items.json` में `categories` और `subcategories` एरे को `categories.json` में परिभाषित स्लग और IDs के साथ पॉपुलेट किया जाता है, जिससे फ़िल्टरिंग और नेविगेशन आसान हो जाता है।
 -   **उत्पाद वेरिएंट (Product Variants):** भविष्य में, एक ही उत्पाद के विभिन्न वेरिएंट (जैसे, टी-शर्ट के लिए अलग-अलग आकार और रंग) को संभालने के लिए स्कीमा को बढ़ाया जा सकता है। यह एक `variants` ऐरे जोड़कर किया जा सकता है, जहाँ प्रत्येक ऑब्जेक्ट का अपना `sku`, `price`, और `attributes` (जैसे `size: "M"`, `color: "Red"`) होता है।
 -   **बंडल उत्पाद (Bundled Products):** एक `isBundle: true` ध्वज और एक `bundledItems` ऐरे जोड़ा जा सकता है जिसमें बंडल में शामिल `itemId` और `quantity` की सूची हो।
 

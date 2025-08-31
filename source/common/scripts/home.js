@@ -1,9 +1,10 @@
-import { fetchAllItems, fetchAllUnits } from '../../utils/data-manager.js';
+import { fetchAllItems, fetchAllUnits, fetchAllCategories } from '../../utils/data-manager.js';
 
 let cardGridTemplate = ''; // Global variable to store the template
 let unitsData = {}; // Global variable to store units data
 let allItems = []; // Global variable to store all fetched items
 let currentFilter = 'all'; // Global variable to store the current filter
+let allCategoriesMap = {}; // New global variable for categories map
 
 const DEFAULT_PRODUCT_IMAGE = './localstore/images/default-product.jpg';
 const DEFAULT_SERVICE_IMAGE = './localstore/images/default-service.jpg';
@@ -215,23 +216,42 @@ function applyFilters(items, filterValue, advancedFilters = {}) {
     } else if (filterValue === 'service') {
         filtered = filtered.filter(item => item.meta.type === 'service');
     } else if (filterValue !== 'all') {
-        // Filter by category slug (main category or subcategory)
-        filtered = filtered.filter(item =>
-            item.categories?.some(cat => cat.slug === filterValue) ||
-            item.subcategories?.some(subcat => subcat.slug === filterValue)
-        );
+        // Get the category ID from the slug
+        const categoryIdToFilter = Object.values(allCategoriesMap).find(cat => cat.meta.slug === filterValue)?.meta.categoryId;
+        if (categoryIdToFilter) {
+            filtered = filtered.filter(item => item.meta.links.categoryId === categoryIdToFilter);
+        } else {
+            // If filterValue is a subcategory slug, find its parent category ID
+            const subcategoryParentId = Object.values(allCategoriesMap).find(cat =>
+                cat.subcategories?.some(subcat => subcat.slug === filterValue)
+            )?.meta.categoryId;
+            if (subcategoryParentId) {
+                filtered = filtered.filter(item => item.meta.links.categoryId === subcategoryParentId);
+            }
+        }
     }
 
     // Apply advanced filters
     if (advancedFilters.mainCategory) {
-        filtered = filtered.filter(item =>
-            item.categories?.some(cat => cat.slug === advancedFilters.mainCategory)
-        );
+        const mainCategoryId = Object.values(allCategoriesMap).find(cat => cat.meta.slug === advancedFilters.mainCategory)?.meta.categoryId;
+        if (mainCategoryId) {
+            filtered = filtered.filter(item => item.meta.links.categoryId === mainCategoryId);
+        }
     }
     if (advancedFilters.subcategory) {
-        filtered = filtered.filter(item =>
-            item.subcategories?.some(subcat => subcat.slug === advancedFilters.subcategory)
-        );
+        const subcategorySlug = advancedFilters.subcategory;
+        // Find the parent category ID for the selected subcategory
+        const parentCategoryId = Object.values(allCategoriesMap).find(cat =>
+            cat.subcategories?.some(subcat => subcat.slug === subcategorySlug)
+        )?.meta.categoryId;
+
+        if (parentCategoryId) {
+            filtered = filtered.filter(item => item.meta.links.categoryId === parentCategoryId);
+        }
+        // Note: Filtering by subcategory slug directly on item.subcategories is not possible
+        // because items only have categoryId, not subcategory slugs.
+        // The current approach filters by the parent category of the subcategory.
+        // If more granular subcategory filtering is needed, items.json would need to store subcategory IDs.
     }
     if (advancedFilters.brand) {
         filtered = filtered.filter(item =>
@@ -277,9 +297,10 @@ export async function init() {
 
 
     try {
-        const [templateResponse, unitsResponse] = await Promise.all([
+        const [templateResponse, unitsResponse, categoriesResponse] = await Promise.all([
             fetch('./source/components/cards/card-grid.html'),
-            fetchAllUnits()
+            fetchAllUnits(),
+            fetchAllCategories(true) // Fetch all categories
         ]);
 
         if (!templateResponse.ok) throw new Error(`Failed to fetch card-grid.html: ${templateResponse.statusText}`);
@@ -287,6 +308,11 @@ export async function init() {
 
         unitsResponse.forEach(unit => {
             unitsData[unit.meta.unitId] = unit;
+        });
+
+        // Populate allCategoriesMap
+        categoriesResponse.forEach(cat => {
+            allCategoriesMap[cat.meta.categoryId] = cat;
         });
 
     } catch (error) {

@@ -20,7 +20,7 @@
         "merchantId": "MRC000000000001",
         "brandId": "BRD000000000016",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000001"
+        "categoryId": "ICT000000000001"
       }
     },
     "info": {
@@ -119,7 +119,7 @@
         "merchantId": "MRC000000000001",
         "brandId": "BRD000000000005",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000001"
+        "categoryId": "ICT000000000001"
       }
     },
     "info": {
@@ -210,7 +210,7 @@
         "merchantId": "MRC000000000001",
         "brandId": "BRD000000000002",
         "unitId": "UNT000000000002",
-        "categoryId": "CAT000000000001"
+        "categoryId": "ICT000000000001"
       }
     },
     "info": {
@@ -301,7 +301,7 @@
         "merchantId": "MRC000000000001",
         "brandId": "BRD000000000063",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000006"
+        "categoryId": "ICT000000000006"
       }
     },
     "info": {
@@ -391,7 +391,7 @@
         "merchantId": "MRC000000000001",
         "brandId": "BRD000000000061",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000005"
+        "categoryId": "ICT000000000005"
       }
     },
     "info": {
@@ -480,7 +480,7 @@
       "links": {
         "merchantId": "MRC000000000001",
         "unitId": "UNT000000000036",
-        "categoryId": "CAT000000000011"
+        "categoryId": "ICT000000000011"
       }
     },
     "info": {
@@ -573,7 +573,7 @@
       "links": {
         "merchantId": "MRC000000000001",
         "unitId": "UNT000000000005",
-        "categoryId": "CAT000000000011"
+        "categoryId": "ICT000000000011"
       }
     },
     "info": {
@@ -665,7 +665,7 @@
       "links": {
         "merchantId": "MRC000000000002",
         "unitId": "UNT000000000038",
-        "categoryId": "CAT000000000011"
+        "categoryId": "ICT000000000011"
       }
     },
     "info": {
@@ -757,7 +757,7 @@
       "links": {
         "merchantId": "MRC000000000002",
         "unitId": "UNT000000000038",
-        "categoryId": "CAT000000000011"
+        "categoryId": "ICT000000000011"
       }
     },
     "info": {
@@ -849,7 +849,7 @@
       "links": {
         "merchantId": "MRC000000000002",
         "unitId": "UNT000000000036",
-        "categoryId": "CAT000000000011"
+        "categoryId": "ICT000000000011"
       }
     },
     "info": {
@@ -943,7 +943,7 @@
         "merchantId": "MRC000000000001",
         "brandId": "BRD000000000017",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000005"
+        "categoryId": "ICT000000000005"
       }
     },
     "info": {
@@ -1034,7 +1034,7 @@
         "merchantId": "MRC000000000001",
         "brandId": "BRD000000000026",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000005"
+        "categoryId": "ICT000000000005"
       }
     },
     "info": {
@@ -1125,7 +1125,7 @@
         "merchantId": "MRC000000000002",
         "brandId": "BRD000000000071",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000001"
+        "categoryId": "ICT000000000001"
       }
     },
     "info": {
@@ -1216,7 +1216,7 @@
         "merchantId": "MRC000000000002",
         "brandId": "BRD000000000021",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000001"
+        "categoryId": "ICT000000000001"
       }
     },
     "info": {
@@ -1307,7 +1307,7 @@
         "merchantId": "MRC000000000001",
         "brandId": "BRD000000000001",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000001"
+        "categoryId": "ICT000000000001"
       }
     },
     "info": {
@@ -1397,7 +1397,7 @@
         "merchantId": "MRC000000000002",
         "brandId": "BRD000000000057",
         "unitId": "UNT000000000001",
-        "categoryId": "CAT000000000001"
+        "categoryId": "ICT000000000001"
       }
     },
     "info": {
@@ -1487,7 +1487,7 @@
       "links": {
         "merchantId": "MRC000000000001",
         "unitId": "UNT000000000038",
-        "categoryId": "CAT000000000011"
+        "categoryId": "ICT000000000011"
       }
     },
     "info": {
@@ -1579,7 +1579,7 @@
       "links": {
         "merchantId": "MRC000000000001",
         "unitId": "UNT000000000005",
-        "categoryId": "CAT000000000011"
+        "categoryId": "ICT000000000011"
       }
     },
     "info": {
@@ -1671,7 +1671,7 @@
       "links": {
         "merchantId": "MRC000000000002",
         "unitId": "UNT000000000036",
-        "categoryId": "CAT000000000011"
+        "categoryId": "ICT000000000011"
       }
     },
     "info": {
@@ -1763,7 +1763,7 @@
       "links": {
         "merchantId": "MRC000000000002",
         "unitId": "UNT000000000036",
-        "categoryId": "CAT000000000011"
+        "categoryId": "ICT000000000011"
       }
     },
     "info": {
