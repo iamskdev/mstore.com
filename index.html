@@ -130,7 +130,6 @@
 
     const register = () => {
       if (APP_CONFIG.appMode === 'dev' && forceSWInDev) {
-        console.warn('DEV MODE: Service Worker is being registered for testing purposes.');
       }
       // Register the service worker as a module to allow 'import' statements inside it.
       navigator.serviceWorker.register('./service-worker.js', { type: 'module' })

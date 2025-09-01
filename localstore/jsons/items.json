@@ -884,9 +884,9 @@
       "isLowStock": false
     },
     "media": {
-      "thumbnail": "./localstore/images/items/form-fill.jpg",
+      "thumbnail": null,
       "gallery": [
-        "./localstore/images/items/form-fill.jpg"
+        null
       ],
       "video": null
     },
@@ -1613,9 +1613,9 @@
       "isLowStock": false
     },
     "media": {
-      "thumbnail": "./localstore/images/items/a4-colorprint-document-thumb.jpg",
+      "thumbnail": null,
       "gallery": [
-        "./localstore/images/items/a4-colorprint-document.jpg"
+        null
       ],
       "video": null
     },
@@ -1798,9 +1798,9 @@
       "isLowStock": false
     },
     "media": {
-      "thumbnail": "./localstore/images/items/sample-service.jpg",
+      "thumbnail": null,
       "gallery": [
-        "./localstore/images/items/sample-service.jpg"
+        null
       ],
       "video": null
     },

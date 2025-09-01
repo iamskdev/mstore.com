@@ -1,5 +1,7 @@
-const APP_VERSION = "v0.0.1"; 
-const CACHE_NAME = `mStore_Cache_${APP_VERSION}`;
+// Define APP_VERSIONa and APP_ENVIRONMENT here as the single source of truth
+const APP_VERSION = "0.0.1"; // auto bump by script implementing soon
+const APP_ENVIRONMENT = "Development"; // auto bumping by script
+const CACHE_NAME = `mStore_Cache_v${APP_VERSION}`;
 const OFFLINE_PAGE = './source/common/pages/offline.html';
 const RUNTIME_CACHE = 'runtime-cache';
 const MAX_RUNTIME_CACHE_AGE = 24 * 60 * 60; // 24 hours in seconds
@@ -42,7 +44,8 @@ const APP_SHELL_URLS = [
   './source/components/role-switcher.html',
   './source/components/filter-modal.html',
 
-  // Pages & Associated Assets from view-config.js
+  // Pages & Associated Assets from view-config.
+  './source/utils/view-config.js',
   './source/common/pages/home.html',
   './source/common/styles/home.css',
   './source/common/scripts/home.js',
@@ -187,11 +190,32 @@ self.addEventListener('activate', (event) => {
       
       await self.clients.claim();
       console.log('Service Worker: Activation completed');
+
+      // Send version and environment to all active clients immediately after activation
+      const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+      clients.forEach(client => {
+        client.postMessage({
+          type: 'VERSION_INFO',
+          version: APP_VERSION,
+          environment: APP_ENVIRONMENT
+        });
+      });
     })().catch(err => {
       console.error('Activation failed:', err);
       return self.clients.claim();
     })
   );
+});
+
+// Listen for messages from clients (e.g., to request version info if not received initially)
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'REQUEST_VERSION_INFO') {
+    event.source.postMessage({
+      type: 'VERSION_INFO',
+      version: APP_VERSION,
+      environment: APP_ENVIRONMENT
+    });
+  }
 });
 
 // --- Fetch Handling ---

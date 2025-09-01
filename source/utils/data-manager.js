@@ -25,11 +25,9 @@ const createDataFetcher = (collectionName, idKey) => {
         const dataSource = APP_CONFIG.dataSource || 'firebase';
 
         if (cachePromise && !force) {
-            console.log(`✅ Returning cached ${dataSource} ${collectionName} data.`);
             return cachePromise;
         }
 
-        console.log(`⏳ Fetching ${collectionName} data from ${dataSource.toUpperCase()}...`);
 
         const promise = (async () => {
             if (dataSource === 'localstore') {
@@ -37,10 +35,8 @@ const createDataFetcher = (collectionName, idKey) => {
                     const response = await fetch(`../../localstore/jsons/${collectionName}.json`);
                     if (!response.ok) throw new Error(`Failed to fetch local ${collectionName}.json: ${response.statusText}`);
                     const data = await response.json();
-                    console.log(`Local mock ${collectionName}:`, data);
                     return data;
                 } catch (err) {
-                    console.error(`Local mock fetch error for ${collectionName}:`, err);
                     cachePromise = null; // Reset cache on error
                     return [];
                 }
@@ -54,16 +50,13 @@ const createDataFetcher = (collectionName, idKey) => {
                     // ID within its `meta` object (e.g., meta.userId). This ensures the
                     // data structure is identical to the local JSON mock files, preventing inconsistencies.
                     const data = snapshot.docs.map(doc => doc.data());
-                    console.log(`Firestore ${collectionName}:`, data);
                     return data;
                 } catch (err) {
-                    console.error(`Firestore fetch error for ${collectionName}:`, err);
                     cachePromise = null; // Reset cache on error to allow retries
                     // Re-throw the error so the calling component can handle it (e.g., show an error message)
                     throw err;
                 }
             } else {
-                console.error(`Unknown data source: '${dataSource}'. Cannot fetch ${collectionName}.`);
                 return [];
             }
         })();
@@ -87,12 +80,10 @@ const createDataFetcher = (collectionName, idKey) => {
                 const item = allData.find(d => d.meta[idKey] === id);
                 return item || null;
             } catch (error) {
-                console.error(`Error fetching ${id} from local mock ${collectionName}:`, error);
                 return null;
             }
         } else if (dataSource === 'firebase' || dataSource === 'emulator') {
             if (!firestore) {
-                console.error(`Firestore is not initialized for fetchById on ${collectionName}!`);
                 throw new Error(`Firestore is not initialized for fetchById on ${collectionName}!`);
             }
             try {
@@ -103,15 +94,12 @@ const createDataFetcher = (collectionName, idKey) => {
                     // is already present within the document's `meta` object.
                     return doc.data();
                 } else {
-                    console.warn(`${collectionName} with ID ${id} not found in Firestore.`);
                     return null;
                 }
             } catch (error) {
-                console.error(`Error fetching ${id} from Firestore collection ${collectionName}:`, error);
                 throw error;
             }
         } else {
-            console.error(`Unknown data source: '${dataSource}'. Cannot fetch by ID from ${collectionName}.`);
             return null;
         }
     };
@@ -149,7 +137,6 @@ export async function simulateLocalDataWrite(collectionName, newData) {
         if (response.ok) {
             data = await response.json();
         } else if (response.status === 404) {
-            console.warn(`Local mock file not found for ${collectionName}.json. Creating new array.`);
         } else {
             throw new Error(`Failed to fetch local ${collectionName}.json: ${response.statusText}`);
         }
@@ -158,10 +145,8 @@ export async function simulateLocalDataWrite(collectionName, newData) {
 
         // In a real scenario, you would send this 'data' back to a server to write to the file.
         // For this simulation, we'll just log it and assume success.
-        console.log(`Simulating write to ${collectionName}.json:`, data);
         return true;
     } catch (error) {
-        console.error(`Error simulating local data write for ${collectionName}:`, error);
         return false;
     }
 }
@@ -205,7 +190,6 @@ export async function generateSequentialId(collectionName, prefix) {
         return `${prefix}${paddedId}`;
 
     } catch (error) {
-        console.error(`Failed to generate sequential ID for ${collectionName}:`, error);
         // Re-throw the error to be handled by the calling function (e.g., the signup rollback)
         throw error;
     }
@@ -224,12 +208,10 @@ export async function fetchActivePromotion() {
             const promotions = await fetchAllPromotions();
             return promotions.find(p => p.meta.status.isActive === true) || null;
         } catch (error) {
-            console.error("Error fetching local active promotion:", error);
             return null;
         }
     } else if (dataSource === 'firebase' || dataSource === 'emulator') {
         if (!firestore) {
-            console.error("Firestore is not initialized for fetchActivePromotion!");
             return null;
         }
         try {
@@ -240,11 +222,9 @@ export async function fetchActivePromotion() {
             const promoDoc = snapshot.docs[0];
             return { promoId: promoDoc.id, ...promoDoc.data() };
         } catch (error) {
-            console.error("Failed to fetch active promotion from Firestore:", error);
             return null;
         }
     } else {
-        console.error(`Unknown data source: '${dataSource}'. Cannot fetch active promotion.`);
         return null;
     }
 }
