@@ -289,7 +289,7 @@
     </div>
     <div class="drawer-footer">
         <span class="version-info">
-          © 2025 mStore | {{Version}} | {{Environment}}
+          © 2025 mStore | v{{Version}} | {{Environment}}
         </span>
     </div>
   </div>
@@ -565,7 +565,7 @@
     </div>
     <div class="drawer-footer">
         <span class="version-info">
-          © 2025 mStore | {{Version}} | {{Environment}}
+          © 2025 mStore | v{{Version}} | {{Environment}}
         </span>
     </div>
   </div>
@@ -588,7 +588,7 @@
    */
   function updateVersionInfo() {
     document.querySelectorAll(".version-info").forEach(el => {
-      el.innerHTML = `© 2025 mStore | ${appVersion} | ${appEnvironment}`;
+      el.innerHTML = `© 2025 mStore | v${appVersion} | ${appEnvironment}`;
     });
   }
 
