@@ -19,7 +19,7 @@ Below is an example of a version log entry.
 [
   {
     "version": "0.0.1",
-    "versionId": "VRN00000001",
+    "versionId": "VRN0000001",
     "environment": "dev",
     "releaseChannel": "beta",
     "status": "deployed",
@@ -56,7 +56,7 @@ Below is an example of a version log entry.
 सिमेंटिक वर्जन `MAJOR.MINOR.PATCH` (उदाहरण: 0.0.1). प्रत्येक भाग का अधिकतम मान 9 है।
 
 **`versionId`**
-प्रत्येक डिप्लॉयमेंट के लिए यूनिक आईडी (उदाहरण: `VRN00000001`), यह सुनिश्चित करता है कि यदि वर्जन नंबर दोहराया जाता है तो भी विशिष्टता बनी रहे।
+प्रत्येक डिप्लॉयमेंट के लिए यूनिक आईडी (उदाहरण: `VRN0000001`), यह सुनिश्चित करता है कि यदि वर्जन नंबर दोहराया जाता है तो भी विशिष्टता बनी रहे।
 
 **`environment`**
 डिप्लॉयमेंट एनवायरनमेंट: `dev` | `test` | `staging` | `beta` | `production` | `hotfix`.
@@ -114,4 +114,4 @@ ISO डेट-टाइम फॉर्मेट में डिप्लॉय
 
 -   **Versioning Limit**: The `major`, `minor`, and `patch` versions can go up to `9.9.9`. After this, the version should reset to `0.0.1` for the next environment or major release.
 -   **Version Storage**: It is recommended to store all version history in Firebase for persistence and keep only the latest version information in the project's source code (e.g., in a configuration file) for display purposes.
--   **Footer Display**: The application footer of drawer should display key version information, for example: `© 2025 | V0.1.0 | Production`.
+-   **Footer Display**: The application footer of drawer should display key version information, for example: `© 2025 | V0.1.0 | "environmet"`.

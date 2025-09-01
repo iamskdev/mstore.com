@@ -1,103 +1,74 @@
-// --- Resilient Service Worker with Fallback Support ---
-const CACHE_NAME = 'M_STORE_CACHE_V0.0.4'; // Cache version updated for new path strategy
-const OFFLINE_PAGE = './source/common/pages/offline.html'; // Path from root
+const APP_VERSION = "v0.0.1"; 
+const CACHE_NAME = `mStore_Cache_${APP_VERSION}`;
+const OFFLINE_PAGE = './source/common/pages/offline.html';
 const RUNTIME_CACHE = 'runtime-cache';
 const MAX_RUNTIME_CACHE_AGE = 24 * 60 * 60; // 24 hours in seconds
 
-// Import necessary configurations from other modules
-import { viewConfig } from './source/utils/view-config.js';
+// --- App Shell + Critical Assets ---
+// This list is now manually maintained. All critical app files must be listed here.
+const APP_SHELL_URLS = [
+  // Core App Shell
+  './index.html',
+  './manifest.json',
+  OFFLINE_PAGE,
+  './source/main.css',
+  './source/common/styles/theme.css',
+  './source/assets/logos/app-logo-192.png',
+  './source/assets/logos/app-logo.png',
 
-// Centralized configuration for all static partials.
-const partialsMap = {
-  'main-header-placeholder': { path: './source/components/header.html' },
-  'drawer-placeholder': { path: './source/components/drawer.html' },
-  'bottom-nav-placeholder': { path: './source/components/tab-nav.html' },
-  'role-switcher-placeholder': { path: './source/components/role-switcher.html', devOnly: true }
-};
+  // Core Scripts & Config
+  './source/utils/app-config.js',
+  './source/main.js',
+  './source/firebase/firebase-config.js',
 
-// Helper to normalize URLs by removing query parameters and hash.
-// This is crucial for caching assets that might have cache-busting parameters (e.g., ?v=timestamp).
-function normalizeUrl(url) {
-  const urlObj = new URL(url, self.location.origin); // Use self.location.origin for base URL
-  urlObj.search = ''; // Remove query parameters
-  urlObj.hash = '';   // Remove hash
-  return urlObj.toString();
-}
+  // Core Utility Modules
+  './source/utils/data-manager.js',
+  './source/utils/filter-helper.js',
+  './source/utils/footer-helper.js',
+  './source/utils/formatters.js',
+  './source/utils/pwa-manager.js',
+  './source/utils/theme-switcher.js',
+  './source/utils/toast.js',
 
-// --- App Shell + Critical Assets (Manually Maintained) ---
-// This list must be manually updated when new critical utility scripts are added.
-// A bundler like Webpack would handle this automatically, but for a no-bundler setup,
-// this list is the single source of truth for what makes the app shell work offline.
-const APP_SHELL_URLS_STATIC = [
-  // Tier 1: Core App Shell - The absolute minimum to render the page.
-  { url: './index.html', priority: 1 },
-  { url: './manifest.json', priority: 1 },
-  { url: OFFLINE_PAGE, priority: 1 },
-  { url: './source/main.css', priority: 1 },
-  { url: './source/common/styles/theme.css', priority: 1 },
-  { url: './source/assets/logos/app-logo-192.png', priority: 1 },
-  { url: './source/assets/logos/app-logo.png', priority: 1 },
+  // Firebase Modules
+  './source/firebase/auth/auth.js',
+  './source/firebase/firestore/logs-collection.js',
+  './source/firebase/firebase-credentials.js',
 
-  // Tier 2: Core Scripts & Config - The main logic that boots the app.
-  { url: './source/utils/app-config.js', priority: 2 },
-  { url: './source/main.js', priority: 2 },
-  { url: './source/firebase/firebase-config.js', priority: 2 },
+  // Components
+  './source/components/header.html',
+  './source/components/drawer.html',
+  './source/components/tab-nav.html',
+  './source/components/role-switcher.html',
+  './source/components/filter-modal.html',
 
-  // Tier 3: Core Utility Modules - All the helper scripts the app depends on.
-  { url: './source/utils/data-manager.js', priority: 4 },
-  { url: './source/utils/filter-helper.js', priority: 3 },
-  { url: './source/utils/footer-helper.js', priority: 3 },
-  { url: './source/utils/formatters.js', priority: 3 },
-  { url: './source/utils/pwa-manager.js', priority: 3 },
-  { url: './source/utils/theme-switcher.js', priority: 4 },
-  { url: './source/utils/toast.js', priority: 3 },
-  
-  
-  // Tier 4: Firebase Modules & Other Logic
-  { url: './source/firebase/auth/auth.js', priority: 4 },
-  { url: './source/firebase/firestore/logs-collection.js', priority: 4 },
-  { url: './source/firebase/firebase-credentials.js', priority: 4 },
+  // Pages & Associated Assets from view-config.js
+  './source/common/pages/home.html',
+  './source/common/styles/home.css',
+  './source/common/scripts/home.js',
+  './source/common/pages/guest-account.html',
+  './source/common/styles/guest-account.css',
+  './source/common/scripts/guest-account.js',
+  './source/common/pages/notification-view.html',
+  './source/common/styles/notification-view.css',
+  './source/common/scripts/notification-view.js',
+  './source/modules/admin/pages/admin-home.html',
+  './source/modules/admin/pages/admin-home.css',
+  './source/modules/admin/pages/admin-home.js',
 
-  // Tier 5: Components
-  { url: './source/components/filter-modal.html', priority: 5 },
-
-
-
-  // Tier 6: Third-party Libraries
-  { url: 'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.esm.js', priority: 6 },
-  { url: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', priority: 6 },
-  { url: 'https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap', priority: 6 }
+  // Third-party Libraries
+  'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.esm.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  'https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap'
 ];
 
-// Dynamically generate URLs from partialsMap and viewConfig
-const dynamicAppShellUrls = new Set();
-
-// Add partials from partialsMap
-for (const id in partialsMap) {
-  dynamicAppShellUrls.add(normalizeUrl(partialsMap[id].path));
+// Helper to normalize URLs for caching
+function normalizeUrl(url) {
+  const urlObj = new URL(url, self.location.origin);
+  urlObj.search = '';
+  urlObj.hash = '';
+  return urlObj.toString();
 }
-
-// Add view contents (HTML, CSS, JS) from viewConfig
-for (const role in viewConfig) {
-  for (const view in viewConfig[role]) {
-    const config = viewConfig[role][view];
-    if (config.path) {
-      dynamicAppShellUrls.add(normalizeUrl(config.path));
-    }
-    if (config.cssPath) {
-      dynamicAppShellUrls.add(normalizeUrl(config.cssPath));
-    }
-    if (config.jsPath) {
-      dynamicAppShellUrls.add(normalizeUrl(config.jsPath));
-    }
-  }
-}
-
-// Convert dynamic set to array of objects with a default priority (e.g., Tier 3)
-const APP_SHELL_URLS_DYNAMIC = Array.from(dynamicAppShellUrls).map(url => ({ url: url, priority: 3 }));
-
-// Combine static and dynamic lists
-const APP_SHELL_URLS = APP_SHELL_URLS_STATIC.concat(APP_SHELL_URLS_DYNAMIC);
 
 // --- Improved Helper Functions ---
 const isCacheable = (request) => {
@@ -124,10 +95,10 @@ const shouldCacheInRuntime = (request) => {
 const addToCache = async (cacheName, request, response) => {
   if (response && response.ok) {
     try {
-      const cache = await caches.open(cacheName); // Open the specified cache
-      await cache.put(new Request(normalizeUrl(request.url), request), response.clone()); // Cache with normalized URL
+      const cache = await caches.open(cacheName);
+      await cache.put(new Request(normalizeUrl(request.url), request), response.clone());
       return true;
-    } catch (error) { // Catch any errors during caching
+    } catch (error) {
       console.error(`Failed to cache ${request.url}:`, error);
       return false;
     }
@@ -137,12 +108,12 @@ const addToCache = async (cacheName, request, response) => {
 
 const fromCache = async (request) => {
   try {
-    const cache = await caches.open(CACHE_NAME); // Open the primary cache
-    const cached = await cache.match(normalizeUrl(request.url)); // Match against normalized URL
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(normalizeUrl(request.url));
     if (cached) return cached;
     
-    const runtimeCache = await caches.open(RUNTIME_CACHE); // Open the runtime cache
-    return await runtimeCache.match(normalizeUrl(request.url)); // Match against normalized URL
+    const runtimeCache = await caches.open(RUNTIME_CACHE);
+    return await runtimeCache.match(normalizeUrl(request.url));
   } catch (error) {
     console.error('Cache access error:', error);
     return undefined;
@@ -154,7 +125,7 @@ const fromNetwork = async (request, cacheName) => {
     const response = await fetch(request);
     const responseClone = response.clone();
     
-    if (cacheName && shouldCacheInRuntime(request)) { // Only cache if it's a cacheable type
+    if (cacheName && shouldCacheInRuntime(request)) {
       await addToCache(cacheName, request, responseClone);
     }
     
@@ -167,20 +138,15 @@ const fromNetwork = async (request, cacheName) => {
 
 // --- Resilient Installation ---
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing with new path strategy...');
+  console.log('Service Worker: Installing...');
   
   event.waitUntil(
     (async () => {
       try {
         const cache = await caches.open(CACHE_NAME);
         console.log('Service Worker: Caching App Shell...');
-        
-        // Extract just the URLs from the configuration object
-        const urlsToCache = APP_SHELL_URLS.map(item => item.url);
-        
-        await cache.addAll(urlsToCache);
+        await cache.addAll(APP_SHELL_URLS);
         console.log('Service Worker: App Shell caching complete.');
-        
         await self.skipWaiting();
       } catch (error) {
         console.error('Service Worker: Failed to cache App Shell during install.', error);
@@ -194,7 +160,6 @@ self.addEventListener('activate', (event) => {
   console.log('Service Worker: Activating...');
   event.waitUntil(
     (async () => {
-      // Clean up old caches
       const keys = await caches.keys();
       await Promise.all(
         keys.map(key => {
@@ -205,7 +170,6 @@ self.addEventListener('activate', (event) => {
         })
       );
       
-      // Clean up expired runtime cache entries
       const runtimeCache = await caches.open(RUNTIME_CACHE);
       const requests = await runtimeCache.keys();
       
@@ -225,7 +189,6 @@ self.addEventListener('activate', (event) => {
       console.log('Service Worker: Activation completed');
     })().catch(err => {
       console.error('Activation failed:', err);
-      // Even if cleanup fails, we still want to activate
       return self.clients.claim();
     })
   );
@@ -238,12 +201,10 @@ self.addEventListener('fetch', (event) => {
   if (!isCacheable(request)) return;
 
   const isAppShellAsset = APP_SHELL_URLS.some(
-    asset => normalizeUrl(asset.url) === normalizeUrl(request.url)
+    asset => normalizeUrl(asset) === normalizeUrl(request.url)
   );
 
-  // API requests (Network only, no caching)
   if (request.url.includes('/api/')) {
-    // Let the browser handle it, don't intercept
     return;
   }
 
@@ -252,18 +213,15 @@ self.addEventListener('fetch', (event) => {
       (async () => {
         const cached = await fromCache(request);
         if (cached) {
-          // Serve from cache immediately, then update in the background
-          event.waitUntil(fromNetwork(request, CACHE_NAME).catch(() => { /* Ignore background update failures */ }));
+          event.waitUntil(fromNetwork(request, CACHE_NAME).catch(() => {}));
           return cached;
         }
-        // If not in cache, fetch from network and add to cache
         return fromNetwork(request, CACHE_NAME);
       })()
     );
     return;
   }
 
-  // All other assets (Cache-first, falling back to network)
   event.respondWith(
     fromCache(request).then(
       (cachedResponse) => cachedResponse || fromNetwork(request, RUNTIME_CACHE)

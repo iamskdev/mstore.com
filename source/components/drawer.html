@@ -223,6 +223,16 @@
     .slider.round { border-radius: 24px; }
     .slider.round:before { border-radius: 50%; }
 
+    .version-info {
+      display: block;
+      padding: 12px 16px;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      text-align: center;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+
     .theme-toggle-switch .fa-moon { color: var(--text-secondary); }
     .theme-toggle-switch .fa-sun {
       color: var(--text-secondary);
@@ -263,6 +273,10 @@
             </label>
           </div>
         </div>
+        <div class="drawer-item app-share-btn">
+          <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
         <div class="drawer-item feature-not-implemented">
           <div class="drawer-item-content"><i class="fas fa-info-circle"></i><span>About Us</span></div>
           <i class="fas fa-chevron-right"></i>
@@ -274,10 +288,9 @@
       </div>
     </div>
     <div class="drawer-footer">
-      <div class="drawer-item app-share-btn">
-        <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
-        <i class="fas fa-chevron-right"></i>
-      </div>
+        <span class="version-info">
+          © 2025 mStore | {{Version}} | {{Environment}}
+        </span>
     </div>
   </div>
 
@@ -343,6 +356,10 @@
             </label>
           </div>
         </div>
+        <div class="drawer-item app-share-btn">
+          <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
         <div class="drawer-item feature-not-implemented">
           <div class="drawer-item-content"><i class="fas fa-headset"></i><span>Support</span></div>
           <i class="fas fa-chevron-right"></i>
@@ -354,10 +371,9 @@
       </div>
     </div>
     <div class="drawer-footer">
-      <div class="drawer-item app-share-btn">
-        <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
-        <i class="fas fa-chevron-right"></i>
-      </div>
+        <span class="version-info">
+          © 2025 mStore | {{Version}} | {{Environment}}
+        </span>
     </div>
   </div>
 
@@ -433,8 +449,8 @@
             </label>
           </div>
         </div>
-        <div class="drawer-item feature-not-implemented">
-          <div class="drawer-item-content"><i class="fas fa-cog"></i><span>Settings</span></div>
+        <div class="drawer-item app-share-btn">
+          <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
           <i class="fas fa-chevron-right"></i>
         </div>
         <div class="drawer-item feature-not-implemented">
@@ -448,10 +464,9 @@
       </div>
     </div>
     <div class="drawer-footer">
-      <div class="drawer-item app-share-btn">
-        <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
-        <i class="fas fa-chevron-right"></i>
-      </div>
+        <span class="version-info">
+          © 2025 mStore | {{Version}} | {{Environment}}
+        </span>
     </div>
   </div>
 
@@ -534,6 +549,10 @@
             </label>
           </div>
         </div>
+        <div class="drawer-item app-share-btn">
+          <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
         <div class="drawer-item feature-not-implemented">
           <div class="drawer-item-content"><i class="fas fa-headset"></i><span>Support</span></div>
           <i class="fas fa-chevron-right"></i>
@@ -545,10 +564,9 @@
       </div>
     </div>
     <div class="drawer-footer">
-      <div class="drawer-item app-share-btn">
-        <div class="drawer-item-content"><i class="fas fa-share-alt"></i><span>Share App</span></div>
-        <i class="fas fa-chevron-right"></i>
-      </div>
+        <span class="version-info">
+          © 2025 mStore | {{Version}} | {{Environment}}
+        </span>
     </div>
   </div>
 </div>
@@ -842,4 +860,38 @@
   // It will provide the initial state immediately and all subsequent state changes.
   viewManager.subscribe(updateDrawerUI);
   console.log("✅ Drawer: Subscribed to ViewManager for state updates.");
+</script>
+
+<script>
+  // --- Default safe values ---
+  const defaults = {
+    Version: "v0.0.0",
+    Environment: "Unknown"
+  };
+
+  // --- Last saved (localStorage से) ---
+  const saved = {
+    Version: localStorage.getItem("Version"),
+    Environment: localStorage.getItem("Environment")
+  };
+
+  // --- Live fetched values (Firestore/JSON से आएंगे, अभी simulate) ---
+  const fetched = null; // मान लो fetch fail हो गया
+
+  // --- Final values with 3-condition fallback ---
+  const versionInfo = {
+    Version: fetched?.Version || saved.Version || defaults.Version,
+    Environment: fetched?.Environment || saved.Environment || defaults.Environment
+  };
+
+  // --- Local save (हर बार update होने पर) ---
+  localStorage.setItem("Version", versionInfo.Version);
+  localStorage.setItem("Environment", versionInfo.Environment);
+
+  // --- Replace placeholders in DOM ---
+  document.querySelectorAll(".version-info").forEach(el => {
+      el.innerHTML = el.innerHTML
+        .replace("{{Version}}", versionInfo.Version)
+        .replace("{{Environment}}", versionInfo.Environment);
+  });
 </script>
