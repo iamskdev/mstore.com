@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "project": "mStore",
+    "environment": "development",
+    "releaseChannel": "alpha"
+  },
+  "versioning": {
+    "idPrefix": "VRN",
+    "scheme": "major.minor.patch",
+    "startVersion": "0.0.1",
+    "maxVersion": "9.9.9",
+    "autoIncrement": true,
+    "allowRollback": true
+  },
+  "formatting": {
+    "jsonHash": "full",
+    "jsonTime": "YYYY-MM-DDTHH:mm:ss[Z]",
+    "markdownHash": 7,
+    "markdownTime": "DD MMMM YYYY, hh:mm A [IST]"
+  },
+  "updateIn": {
+    "jsonFile": "./localstore/jsons/versions.json",
+    "markdownFile": "./docs/CHANGELOG.md",
+    "swFile": {
+      "file": "./service-worker.js",
+      "versionKey": "APP_VERSION",
+      "environmentKey": "APP_ENVIRONMENT"
+    }
+  },
+  "audit": {
+    "createdAt": "2025-09-02T14:40:00Z",
+    "createdBy": "Santosh",
+    "verifiedAt": "2025-09-02T14:45:00Z",
+    "verifiedBy": "System"
+  }
+}
