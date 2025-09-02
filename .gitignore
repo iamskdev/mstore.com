@@ -67,3 +67,7 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Ignored files as per user request
+localstore/jsons/versions.json
+docs/CHANGELOG.md
