@@ -1,0 +1,23 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run versioner.js and capture its output
+OUTPUT=$(node versioner/versioner.js)
+EXIT_CODE=$?
+
+# Print the output from versioner.js
+echo "$OUTPUT"
+
+# If versioner.js indicated no bump, then exit successfully without adding versioning files
+if echo "$OUTPUT" | grep -q "Commit did not trigger version bump"; then
+  exit 0
+fi
+
+# If versioner.js exited with an error, then fail the commit
+if [ $EXIT_CODE -ne 0 ]; then
+  exit $EXIT_CODE
+fi
+
+# If versioner.js performed a bump, then add the modified files to the commit
+# Assuming versions.json, CHANGELOG.md, and service-worker.js are the files updated by versioner.js
+git add localstore/jsons/versions.json docs/CHANGELOG.md service-worker.js
