@@ -63,22 +63,49 @@ function getLastCommit() {
 
 // --- Helper: detect bump type ---
 function getBumpType(commitMessage) {
-  console.log(`DEBUG: getBumpType - commitMessage: ${commitMessage}`); // Added log
   if (/^revert:/i.test(commitMessage)) {
-    console.log("DEBUG: getBumpType - returning rollback"); // Added log
     return "rollback";
   }
   if (/BREAKING CHANGE/i.test(commitMessage)) {
-    console.log("DEBUG: getBumpType - returning major"); // Added log
     return "major"; // 🚨 only case for major
   }
   if (/^(feat|fix|refactor|perf|improve):/i.test(commitMessage)) {
-    console.log("DEBUG: getBumpType - returning patch"); // Added log
     return "patch";
   }
-  console.log("DEBUG: getBumpType - returning null (skip)"); // Added log
   return null; // skip docs, style, chore, test
 }
+
+// --- Helper: Parse details from commit body ---
+function parseCommitBody(commitMessage) {
+  const details = {};
+  const lines = commitMessage.split('\n');
+
+  // Regex to find key: value lines
+  const regex = /^(notes|tickets|tags|added|fixed|improved|rollbackPlan):\s*(.*)/i;
+
+  for (const line of lines) {
+    const match = line.match(regex);
+    if (match) {
+      const key = match[1].toLowerCase();
+      let value = match[2].trim();
+
+      // For array-like fields
+      if (['tickets', 'tags', 'added', 'fixed', 'improved'].includes(key)) {
+        // Split by comma and trim each item
+        value = value.split(',').map(item => item.trim()).filter(item => item);
+        if (value.length > 0) {
+            details[key] = value;
+        }
+      } else { // For string fields
+        if (value) {
+            details[key] = value;
+        }
+      }
+    }
+  }
+  return details;
+}
+
 
 // --- Helper: get current ISO time ---
 function nowISO() {
@@ -112,7 +139,7 @@ function updateJsonFile(commit) {
   const bumpType = getBumpType(commit.message);
 
   if (!bumpType) {
-    console.log("ℹ️ No version bump needed for this commit type");
+    console.log("ℹ️  No version bump needed for this commit type.");
     return null;
   }
 
@@ -144,6 +171,8 @@ function updateJsonFile(commit) {
     bumpType,
     versioning.scheme
   );
+  
+  const commitDetails = parseCommitBody(commit.message);
 
   const newEntry = {
     title: commit.message.split("\n")[0] || "Auto bump version",
@@ -153,19 +182,11 @@ function updateJsonFile(commit) {
     environment: meta.environment,
     releaseChannel: meta.releaseChannel,
     status: "pending",
-    tags: [],
-    tickets: [],
     breakingChanges: /BREAKING CHANGE/i.test(commit.message),
-    rollbackPlan: "",
-    added: [],
-    fixed: [],
-    improved: [],
-    notes: [],
+    ...commitDetails,
     audit: {
       createdBy: config.audit.createdBy || "System",
-      createdAt: nowISO(),
-      verifiedBy: null,
-      verificationDate: null,
+      createdAt: nowISO(), 
       deployedAt: null,
       deployedBy: null,
     },
@@ -191,10 +212,15 @@ function updateMarkdown(entry) {
   const dateStr = formatIST(entry.audit.createdAt || nowISO());
 
   let mdBlock = `## Version ${entry.version} | ${entry.environment}\n\n`;
-  mdBlock += `**Title:** \`${entry.title}\`\n`;
-  mdBlock += `**Date:** ${dateStr}\n`;
-  mdBlock += `**VersionId:** \`${entry.versionId}\`\n`;
-  mdBlock += `**Commit:** \`${commitShort}\`\n\n`;
+  mdBlock += `**Title:** 	este${entry.title}	este
+`;
+  mdBlock += `**Date:** ${dateStr}
+`;
+  mdBlock += `**VersionId:** 	este${entry.versionId}	este
+`;
+  mdBlock += `**Commit:** 	este${commitShort}	este
+
+`;
 
   if (entry.breakingChanges) {
     mdBlock += `⚠️ **BREAKING CHANGE detected**\n\n`;
@@ -228,7 +254,7 @@ function updateMarkdown(entry) {
       );
     }
   } else {
-    console.log("✅ Commit did not trigger version bump");
+    console.log("✅ Commit did not trigger version bump skipped.");
     process.exit(0); // Exit successfully if no bump
   }
 })();
