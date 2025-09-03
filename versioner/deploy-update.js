@@ -85,10 +85,12 @@ function updateChangelog(deployedVersions, deployedBy, rollbackPlan) {
   }
 
   // --- Inputs from command line arguments ---
-  const deployedBy =
-  process.argv[2] || 
-  config.updateIn.updaterName || 
-  config.meta.ownerName || 
+
+const cliArg = process.argv[2] && process.argv[2].trim();
+const deployedBy =
+  (cliArg && cliArg !== "Automated" ? cliArg : null) ||
+  config.updateIn.updaterName ||
+  config.meta.ownerName ||
   "System";
   const rollbackPlan = process.argv[3] || "";
 
@@ -103,12 +105,14 @@ function updateChangelog(deployedVersions, deployedBy, rollbackPlan) {
   console.log(`Found ${pendingVersions.length} pending versions to deploy...\n`);
 
   // --- Update all pending versions ---
-  pendingVersions.forEach(v => {
-    v.status = "deployed";
-    v.audit.deployedAt = nowISO();
-    v.audit.deployedBy = deployedBy;
-    if (rollbackPlan) v.rollbackPlan = rollbackPlan;
-  });
+pendingVersions.forEach(v => {
+  v.status = "deployed";
+  v.audit.deployedAt = nowISO();
+  v.audit.deployedBy = deployedBy;
+  if (rollbackPlan) {
+    v.audit.rollbackPlan = rollbackPlan;   // 👈 yaha save kar
+  }
+});
 
   // Save updated versions.json
   saveJSON(versionsPath, versions);

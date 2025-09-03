@@ -1,6 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
 # Run versioner.js and capture its output
 OUTPUT=$(node versioner/versioner.js)
 EXIT_CODE=$?
