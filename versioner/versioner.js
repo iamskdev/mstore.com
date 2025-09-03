@@ -60,57 +60,90 @@ function getLastCommit() {
     }
   }
 }
-
 // --- Helper: detect bump type ---
 function getBumpType(commitMessage) {
   const firstLine = commitMessage.split("\n")[0].trim();
 
-  // rollback detect only if first line starts with revert:
   if (/^revert[: ]/i.test(firstLine)) {
     return "rollback";
   }
 
   if (/BREAKING CHANGE/i.test(commitMessage)) {
-    return "major"; // 🚨 only case for major
+    return "major"; // 🚨 sirf breaking par major
   }
-  if (/^(feat|fix|refactor|perf|improve):/i.test(firstLine)) {
+
+  // ✅ feat/fix/refactor/perf/improve sab patch banenge
+  if (/^(feat|fix|refactor|perf|):/i.test(firstLine)) {
     return "patch";
   }
-  return null; // skip docs, style, chore, test
+
+  // ❌ docs/chore/style/test skip
+  return null;
 }
 
 // --- Helper: Parse details from commit body ---
 function parseCommitBody(commitMessage) {
   const details = {};
-  const lines = commitMessage.split('\n');
+  const lines = commitMessage.split("\n");
 
-  // Regex to find key: value lines
-  const regex = /^(notes|tickets|tags|added|fixed|improved|rollbackPlan):\s*(.*)/i;
+  // --- First line se type/title nikal lo ---
+  const headerRegex = /^(feat|fix|docs|perf|style|refactor|test|chore|revert|rollback):\s*(.*)$/i;
+  const headerMatch = lines[0].match(headerRegex);
+  if (headerMatch) {
+    details.type = headerMatch[1].toLowerCase(); // feat/fix/...
+    details.title = headerMatch[2].trim();       // baaki title
+  } else {
+    details.title = lines[0]; // fallback (agar koi type nahi mila)
+  }
 
-  for (const line of lines) {
+  // Sirf basic regex (key: value) pakad lo
+  const regex = /^-?\s*([a-zA-Z]+):\s*(.*)/i;
+
+  // 🔹 Normalization map (common spelling/plural mistakes)
+  const normalizeKey = (rawKey) => {
+    const key = rawKey.toLowerCase();
+
+    if (["note", "notes"].includes(key)) return "note";
+    if (["ticket", "tickets"].includes(key)) return "tickets";
+    if (["tag", "tags"].includes(key)) return "tags";
+    if (["add", "adds", "added"].includes(key)) return "added";
+    if (["fix", "fixed", "fixes"].includes(key)) return "fixed";
+    if (["improve", "improves", "improved"].includes(key)) return "improved";
+    if (["rollbackplan", "rollback-plan", "rollback"].includes(key)) return "rollbackPlan";
+
+    return key; // fallback
+  };
+
+  // --- Loop through body lines ---
+  for (const line of lines.slice(1)) { // 👈 skip first line (title already handled)
     const match = line.match(regex);
     if (match) {
-      const key = match[1].toLowerCase();
+      let key = normalizeKey(match[1]);
       let value = match[2].trim();
 
-      // For array-like fields
-      if (['tickets', 'tags', 'added', 'fixed', 'improved'].includes(key)) {
-        // Split by comma and trim each item
-        value = value.split(',').map(item => item.trim()).filter(item => item);
+      // 🔹 String fields (note, rollbackPlan)
+      if (["note", "rollbackPlan"].includes(key)) {
+        if (value) details[key] = value;
+        continue;
+      }
+
+      // 🔹 Array-like fields
+      if (["tickets", "tags", "added", "fixed", "improved"].includes(key)) {
+        value = value
+          .split(",")
+          .map((item) => item.trim())
+          .filter((item) => item);
         if (value.length > 0) {
-            details[key] = value;
+          details[key] = value;
         }
-      } else { // For string fields
-        if (value) {
-            details[key] = value;
-        }
+      } else {
+        if (value) details[key] = value; // fallback string
       }
     }
   }
+
   return details;
 }
-
-
 // --- Helper: get current ISO time ---
 function nowISO() {
   return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
@@ -153,27 +186,42 @@ function updateJsonFile(commit) {
     return null;
   }
 
-  // --- Rollback case ---
-  if (bumpType === "rollback") {
-    if (!versioning.allowRollback) {
-      console.log("❌ Rollback attempt detected but not allowed by config");
-      return null;
-    }
-
-    if (!last) {
-      console.log("⚠️ No previous version to rollback");
-      return null;
-    }
-
-    last.status = "reverted";
-    last.audit.rollbackAt = nowISO();
-    last.audit.rollbackBy = config.audit.createdBy || "System";
-
-    fs.writeFileSync(jsonFile, JSON.stringify(versions, null, 2));
-    console.log(`🔄 Rollback applied → ${last.version} [${last.versionId}]`);
-
-    return { ...last, rollback: true };
+if (bumpType === "rollback") {
+  if (!last) {
+    console.log("⚠️ No previous version to rollback");
+    return null;
   }
+
+  // mark last as reverted
+  last.status = "reverted";
+  last.audit.rollbackAt = nowISO();
+  last.audit.rollbackBy = config.audit.createdBy || "System";
+
+  // ✅ rollback ek new entry banayega
+const newEntry = {
+  title: commit.message.split("\n")[0] || "Auto bump version",
+  commitHash: commit.hash,
+  version: newVersion,
+  versionId: generateVersionId(versioning.idPrefix, versions),
+  environment: meta.environment,
+  releaseChannel: meta.releaseChannel,
+  status: "pending",
+  breakingChanges: /BREAKING CHANGE/i.test(commit.message),
+  ...commitDetails,   // 👈 isme type aata hai agar header match hua
+  audit: {
+    createdBy: config.audit.createdBy || "System",
+    createdAt: nowISO(), 
+    deployedAt: null,
+    deployedBy: null,
+  },
+};
+
+  versions.unshift(rollbackEntry);
+  fs.writeFileSync(jsonFile, JSON.stringify(versions, null, 2));
+  console.log(`🔄 Rollback entry created for → ${last.version} [${last.versionId}]`);
+
+  return { ...rollbackEntry, rollback: true };
+}
 
   // --- Normal bump case ---
   const newVersion = bumpVersion(
@@ -220,8 +268,8 @@ function updateMarkdown(entry) {
     ? entry.commitHash.slice(0, formatting.markdownHash)
     : "N/A";
 
-  // ✅ prevent duplicate in changelog
-  if (old.includes(commitShort)) {
+  const commitHash = entry.commitHash || entry.hash || "";
+  if (!entry.rollback && !commitHash.startsWith("IAMSKDEV") && old.includes(commitShort)) {
     console.log("⏩ Commit already logged in CHANGELOG.md, skipping.");
     return;
   }
@@ -229,16 +277,46 @@ function updateMarkdown(entry) {
   const dateStr = formatIST(entry.audit.createdAt || nowISO());
 
   let mdBlock = `## Version ${entry.version} | ${entry.environment}\n\n`;
-  mdBlock += `**Title:** ${entry.title}\n`;
-  mdBlock += `**Date:** ${dateStr}\n`;
-  mdBlock += `**VersionId:** ${entry.versionId}\n`;
-  mdBlock += `**Commit:** ${commitShort}\n\n`;
+  mdBlock += `**Type:** \`${entry.type || "Misc"}\`\n`;
+  mdBlock += `**Title:** \`${entry.title}\`\n`;
+  mdBlock += `**Date:** \`${dateStr}\`\n`;
+  mdBlock += `**VersionId:** \`${entry.versionId}\`\n`;
+  mdBlock += `**Commit:** \`${commitShort}\`\n\n`;
 
   if (entry.breakingChanges) {
     mdBlock += `⚠️ **BREAKING CHANGE detected**\n\n`;
   }
   if (entry.rollback) {
     mdBlock += `🔄 **Rollback applied to this version**\n\n`;
+  }
+
+  // ✅ add notes from JSON
+  if (entry.added && entry.added.length) {
+    mdBlock += `### ADDED\n`;
+    entry.added.forEach(item => {
+      mdBlock += `- ${item}\n`;
+    });
+    mdBlock += `\n`;
+  }
+
+  if (entry.fixed && entry.fixed.length) {
+    mdBlock += `### FIXED\n`;
+    entry.fixed.forEach(item => {
+      mdBlock += `- ${item}\n`;
+    });
+    mdBlock += `\n`;
+  }
+
+  if (entry.improved && entry.improved.length) {
+    mdBlock += `### IMPROVED\n`;
+    entry.improved.forEach(item => {
+      mdBlock += `- ${item}\n`;
+    });
+    mdBlock += `\n`;
+  }
+
+  if (entry.notes) {
+    mdBlock += `### NOTES\n${entry.notes}\n\n`;
   }
 
   mdBlock += "---\n\n";
@@ -278,15 +356,34 @@ function updateServiceWorker(entry) {
   fs.writeFileSync(swFilePath, swContent);
   console.log("✅ service-worker.js updated");
 }
+// --- CLI Parser ---
+function parseCLI() {
+  const args = process.argv.slice(2);
+
+  if (args[0] === "commit" && (args[1] === "-m" || args[1] === "--message")) {
+    const message = args.slice(2).join("\n");
+    return { message, hash: "IAMSKDEV_" + Date.now() };
+  }
+
+  return null;
+}
 
 // --- Main ---
 (function main() {
-  const commit = getLastCommit();
+  // 1️⃣ CLI check
+  let commit = parseCLI();
+
+  // 2️⃣ Agar CLI se nahi mila to normal git commit fetch
+  if (!commit) {
+    commit = getLastCommit();
+  }
+
   const newEntry = updateJsonFile(commit);
 
   if (newEntry) {
     updateMarkdown(newEntry);
-    updateServiceWorker(newEntry); // Add this line
+    updateServiceWorker(newEntry);
+
     if (newEntry.rollback) {
       console.log(`✅ Rollback recorded for ${newEntry.version}`);
     } else {
@@ -296,6 +393,6 @@ function updateServiceWorker(entry) {
     }
   } else {
     console.log("✅ Commit did not trigger version bump skipped.");
-    process.exit(0); // Exit successfully if no bump
+    process.exit(0);
   }
 })();

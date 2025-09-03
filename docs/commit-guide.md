@@ -1,168 +1,308 @@
 ---
 DOCUMENT AUDIT:
-  Last Reviewed: 03/09/2025 15:46:00 IST
+  Last Reviewed: Wednesday, September 3, 2025
   Reviewer: Santosh (with Gemini)
 ---
 
-# 🚀 Commit Message Guide: Production Standard
+# Commit Message Guide: Production Standard
 
-This guide outlines the standard for writing clear, concise, and informative commit messages within this project. Adhering to these guidelines ensures a consistent commit history, facilitates easier code reviews, and improves the generation of release notes.
+This guide establishes the definitive standards for crafting **clear, consistent, and professional** commit messages within this project. Adherence to these guidelines is crucial for:
 
-## 0. Quick Reference: The Anatomy of a Commit Message
-
-Every commit message is structured into four distinct parts:
-
-```
-<Type>: <Short summary>
-
-<body> (optional)
-
-<footer> (optional)
-```
-
-*   **Type**: Categorizes the nature of the change (e.g., `Feat`, `Fix`, `Docs`).
-*   **Short Summary**: A brief, single-line description of the change, starting with a capital letter.
-*   **Body**: (Optional) A detailed explanation of *what* and *why* the change was made.
-*   **Footer**: (Optional) Contains information about breaking changes or issue references.
+-   Maintaining a clean and structured commit history.
+-   Facilitating efficient debugging and code reviews.
+-   Enabling accurate and automated generation of release notes.
+-   Ensuring professional and uniform practices across the development team.  
 
 ---
 
-## 1. Types: Allowed Prefixes
+## 0. Anatomy of a Commit Message
 
-The following prefixes are mandatory for the `<Type>` field, and they must be in **Capital Case**:
+Each commit message adheres to a structured format to ensure clarity and machine readability:
 
-*   `Feat`: A new feature.
-*   `Fix`: A bug fix.
-*   `Docs`: Documentation-only changes.
-*   `Style`: Changes that do not affect the meaning of the code (e.g., formatting, missing semicolons, whitespace).
-*   `Refactor`: A code change that neither fixes a bug nor adds a feature, but improves the code structure or readability.
-*   `Test`: Adding missing tests or correcting existing tests.
-*   `Chore`: Changes to the build process or auxiliary tools and libraries (e.g., configuration files, CI/CD setup).
-*   `Improve`: Enhancements or optimizations to an existing feature, without introducing new functionality or fixing a bug.
-*   `Revert`: Reverts a previous commit.
-*   `Rollback`: Reverts a release or deployment.
+```
+<type>: <subject>
+
+[body]
+
+[footer]
+```
+
+**Explanation of Components:**
+
+*   **`<type>`:** Categorizes the nature of the change (e.g., `feat`, `fix`, `docs`). This is crucial for automated tooling.
+*   **`<subject>`:** A concise, single-line summary of the change, written in the imperative mood (as if giving a command).
+*   **`[body]` (Optional):** Provides a detailed explanation of *what* the change is and *why* it was made, without delving into *how* it was implemented. Use bullet points for enhanced readability.
+*   **`[footer]` (Optional):** Contains metadata such as breaking changes, references to issues, or other relevant information.
+
+
 
 ---
 
-## 2. Title: Short Summary Guidelines
+1. Allowed Commit Types
 
-*   The first line (subject line) should be no more than **50-72 characters** in length.
-*   Always use the **imperative tense** in the subject line. This means writing as if you are giving a command.
-    *   ✅ **Correct**: `Add`, `Update`, `Fix`, `Remove`, `Improve`
-    *   ❌ **Incorrect**: `Added`, `Updated`, `Fixed`, `Removed`, `Improved`
-*   The commit **Type must be in Capital Case**, and the **summary must start with a Capital letter**.
-    *   ✅ **Correct**: `Chore: Improve versioning logic`
-    *   ✅ **Correct**: `Fix: Resolve crash on checkout page`
-    *   ❌ **Incorrect**: `chore: improve versioning logic` (lowercase type is not allowed)
-    *   ❌ **Incorrect**: `Fix: resolve crash on checkout page` (summary must start with a capital letter)
+Use one of these Capital Case types:
+
+Feat → A new feature. (Triggers a patch version bump)
+
+Fix → A bug fix. (Triggers a patch version bump)
+
+Perf → A code change that improves performance. (Triggers a patch version bump)
+
+Refactor → Code restructure without new features or fixes. (Triggers a patch version bump)
+
+Improve → Optimizations or enhancements to existing features. (Triggers a patch version bump)
+
+Docs → Documentation-only changes. (Does NOT trigger a version bump)
+
+Style → Code style only (formatting, spacing, semicolons). (Does NOT trigger a version bump)
+
+Test → Adding or updating tests. (Does NOT trigger a version bump)
+
+Chore → Build process, CI/CD, configs, tooling. (Does NOT trigger a version bump)
+
+Revert → Reverts a previous commit. (Triggers a rollback action in the versioning system)
+
+Rollback → Rolls back a full release or deployment. (Triggers a rollback action in the versioning system)
+
+*Note: While Capital Case is recommended for readability, the system processes commit types case-insensitively.*
+
+---
+
+## 2. Subject Line (Short Summary) Rules
+
+The subject line is the first line of the commit message and must adhere to the following rules:
+
+*   **Length:** Must be between 50 and 72 characters.
+*   **Imperative Mood:** Use the imperative mood (as if giving a command).
+    *   ✅ Correct: `Add`, `Update`, `Fix`, `Remove`, `Improve`
+    *   ❌ Incorrect: `Added`, `Updated`, `Fixed`
+*   **Capitalization:**
+    *   The `<type>` (e.g., `Feat`, `Fix`) must start with a capital letter.
+    *   The `<subject>` (summary) must start with a capital letter.
 
 **Examples:**
 
-*   `Feat: Add JWT-based user login`
-*   `Fix: Resolve crash on checkout page`
-*   `Improve: Optimize checkout page loading time`
-*   `Revert: "Feat(auth): Add JWT login"`
-*   `Rollback: Revert production deploy v1.2.3`
+*   ✅ `Feat: Add JWT-based user login`
+*   ✅ `Fix: Resolve crash on checkout page`
+*   ❌ `feat: add jwt login` (Type lowercase is not allowed)
+*   ❌ `Fix: resolve crash on checkout` (Summary lowercase is not allowed)
+
+
 
 ---
 
-## 3. Body: Detailed Explanation (Optional, Recommended)
+## 3. Body (Optional but Recommended)
 
-The body of the commit message should explain *what* was changed and *why* it was changed, not *how*.
+The body of the commit message provides a more detailed explanation of the change. It should focus on *what* was changed and *why* it was changed, rather than *how* it was implemented.
 
-*   Each line should be wrapped at **72 characters** for readability.
-*   Use bullet points for clarity.
-*   Reference any related issues or tickets.
+*   Use bullet points or paragraphs for clarity.
+*   Wrap text at 72 characters for optimal readability in various Git tools.
+*   Reference relevant issues or tickets (e.g., `Closes #123`, `Fixes #456`).
 
 **Example:**
 
 ```
 Improve: Enhance search performance
 
-- Optimized database query by adding necessary indexes.
-- Reduced response time by approximately 40% for common search queries.
+- Optimized database query with proper indexing.
+- Reduced response time by approximately 40%.
 - Related to issue #145.
 ```
 
+
 ---
 
-**Example: For include Note**
+## 4. Structured Body Fields
 
-Fix: Correct price calculation in checkout
+The commit body supports specific structured fields that are automatically parsed and utilized by the versioning system. These fields enhance the detail and utility of commit messages:
 
-- Fixed floating-point precision issue.
-- Ensured values are rounded to 2 decimals.
-
-Notes: Affects only checkout API, no impact on payment gateway.
-
-
-git commit -m "Fix: Correct price calculation in checkout" \
--m "- Fixed floating-point precision issue." \
--m "- Ensured values are rounded to 2 decimals." \
--m "Notes: Affects only checkout API, no impact on payment gateway."
-
-
-## 4. Footer: Breaking Changes & Issue References (Optional)
-
-The footer is used for important metadata, such as:
-
-*   **Breaking Changes**: Indicate any changes that might break existing functionality for users or other parts of the system.
-*   **Issue References**: Further references to issues or tickets that are resolved or related to the commit.
+*   **`Added:`** → Describes new modules, features, or functionalities introduced.
+*   **`Fixed:`** → Details bug fixes, addressing specific issues or defects.
+*   **`Improved:`** → Outlines optimizations, performance enhancements, or general improvements to existing features.
+*   **`Note:`** → Provides additional context, warnings, or special considerations relevant to the commit.
 
 **Example:**
 
 ```
-BREAKING CHANGE: Removed old cart API v1
+Fix: Correct price calculation in checkout
+
+- Fixed floating-point precision issue.
+- Ensured values round to 2 decimals.
+
+Note: Affects checkout API only, not payment gateway.
 ```
+
 
 ---
 
-## 5. Good Commit Examples
+## 5. Footer (Optional)
 
-Here are some examples of well-structured commit messages:
+The footer section is used for conveying critical metadata, primarily **breaking changes** and **issue references**.
 
-```
-Feat: Add order history API integration
+*   **Breaking Changes:** Indicate any changes that are not backward-compatible. This must start with `BREAKING CHANGE:` followed by a description of the change and migration instructions.
+*   **Issue References:** Link to related issues or tickets in your issue tracking system. Use keywords like `Closes #123`, `Fixes #456`, or `Resolves #789`.
 
-- Implemented the /orders endpoint for fetching user order history.
-- Added a new UI component to display past orders.
-- Closes #450
-```
+**Example:**
 
 ```
-Fix: Correct total price calculation
+BREAKING CHANGE: Removed old Cart API v1
 
-- Fixed a floating-point precision issue in the checkout process.
-- Ensured all price calculations are rounded to 2 decimal places.
+The previous Cart API (v1) has been deprecated and removed.
+Migrate to Cart API v2 for all cart-related operations.
 ```
 
-```
-Improve: Optimize product image loading
-
-- Implemented lazy loading for product images to improve initial page load time.
-- Reduced the initial page size by 1.5MB.
-```
-
-```
-Revert: "feat(auth): add JWT login"
-
-- Removed the JWT login feature due to a critical security vulnerability discovered post-deployment.
-- This reverts commit a1b2c3d.
-```
-
-```
-Rollback: Revert production deploy v1.2.3
-
-- The deployment was rolled back to version v1.2.2.
-- This action was taken due to an unexpected outage in the payment gateway integration.
-```
 
 ---
 
-## 6. Best Practices
+## 6. Rollback & Revert Rules
 
-*   **Consistency is Key**: Always follow these patterns to maintain a clean and understandable commit history.
-*   **Clear Summaries**: The short summary is often used in release notes, so ensure it is descriptive and meaningful.
-*   **Use `Improve` Wisely**: This type is specifically for enhancing or optimizing existing features, not for new features or bug fixes.
-*   **Use `Revert`/`Rollback` Carefully**: These types should be used sparingly and primarily for emergency fixes or critical rollbacks.
-*   **Automated Enforcement**: Consider using commit message linters or Git hooks (like Husky) to automatically enforce these guidelines.
+This section clarifies the distinction and usage of `Revert` and `Rollback` operations within the version control system.
+
+*   **`Revert`:** Used for undoing a specific commit. This creates a new commit that reverses the changes introduced by the target commit.
+    *   **Example:**
+        ```
+        Revert: "Feat(auth): Add JWT login"
+
+        - Removed JWT login feature due to critical vulnerability.
+        - This reverts commit a1b2c3d.
+        ```
+    *   **Note:** While `Revert` is a commit type for undoing specific commits, it triggers a `rollback` action in the versioning system, indicating a reversal of a previous state.
+
+*   **`Rollback`:** Used for undoing a full release or deployment to a previous stable version. This typically involves deploying an older version of the application.
+    *   **Example:**
+        ```
+        Rollback: Revert production deploy v1.2.3
+
+        - Deployment rolled back to version v1.2.2.
+        - Triggered due to payment gateway outage.
+        ```
+
+
+
+---
+
+## 7. Good Commit Examples
+
+Here are several examples illustrating well-formed commit messages that adhere to these guidelines:
+
+*   **Feature (Feat):**
+    ```
+    Feat: Implement user profile management API
+
+    - Added endpoints for creating, retrieving, updating, and deleting user profiles.
+    - Integrated with authentication module for secure access.
+    - Closes #450
+    ```
+
+*   **Fix (Fix):**
+    ```
+    Fix: Resolve incorrect price calculation in checkout
+
+    - Corrected floating-point precision issue affecting total price.
+    - Ensured all monetary values are rounded to two decimal places.
+    ```
+
+*   **Improvement (Improve)::**
+    ```
+    Improve: Optimize product image loading performance
+
+    - Implemented lazy loading for all product images.
+    - Reduced initial page load size by approximately 1.5MB.
+    ```
+
+*   **Revert (Revert):**
+    ```
+    Revert: "Feat(auth): Add JWT login"
+
+    - Removed JWT login feature due to discovered critical security vulnerability.
+    - This reverts commit a1b2c3d.
+    ```
+
+*   **Rollback (Rollback):**
+    ```
+    Rollback: Revert production deployment to v1.2.3
+
+    - Rolled back the production environment to version v1.2.2.
+    - Reason: Unexpected outage in payment gateway service.
+    ```
+
+---
+
+
+## Example Commit (CLI/Git)
+
+This example demonstrates a comprehensive commit message, as it would appear when authored via the command line interface (CLI) or a Git client:
+
+```
+Feat: Implement user authentication module
+
+- Added login UI with form validation.
+- Fixed responsive navigation bar issue on mobile devices.
+- Improved login API response time by optimizing database queries.
+- Tickets: JIRA-102, GH-55
+- Tags: frontend, auth
+- Note: This commit introduces the core user authentication module.
+- RollbackPlan: Revert to VRN0000151 if login functionality introduces critical regressions.
+```
+
+
+---
+
+## Example Generated JSON Output
+```json
+{
+  "title": "Meaning full summries heading",
+  "type": "feat",
+  "commitHash": "IAMSKDEV_1756919500000",
+  "version": "2.3.0",
+  "versionId": "VRN0000152",
+  "environment": "development",
+  "releaseChannel": "alpha",
+  "status": "pending",
+  "breakingChanges": false,
+
+  "added": [
+    "login UI with form validation"
+  ],
+  "fixed": [
+    "navbar issue on mobile"
+  ],
+  "improved": [
+    "login API response time"
+  ],
+  "tickets": [
+    "JIRA-102",
+    "GH-55"
+  ],
+  "tags": [
+    "frontend",
+    "auth"
+  ],
+  "note": "This commit introduces login module.",
+  "rollbackPlan": "Revert to VRN0000151 if login breaks",
+
+  "audit": {
+    "createdBy": "Santosh",
+    "createdAt": "2025-09-03T17:45:00Z",
+    "deployedAt": null,
+    "deployedBy": null
+  }
+}
+
+
+---
+
+
+## 8. Best Practices
+
+Adhering to these best practices will further enhance the quality and utility of your commit messages:
+
+*   **Consistency is Key:** Always follow the defined format and guidelines to maintain a uniform and predictable commit history.
+*   **Concise Summaries:** Keep subject lines short and to the point, as they are prominently displayed in logs and release notes.
+*   **Judicious Use of `Improve`:** Reserve the `Improve` type specifically for commits focused on performance optimizations or significant enhancements to existing features.
+*   **Careful `Revert`/`Rollback` Usage:** Employ `Revert` and `Rollback` operations only for critical undo scenarios, understanding their implications on the project history.
+*   **Automate Enforcement:** Utilize commit linting tools (e.g., Husky with commitlint) to automatically validate commit messages against these standards, ensuring compliance across the team.
+
+
+
+---

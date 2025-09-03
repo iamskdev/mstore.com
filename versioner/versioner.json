@@ -20,7 +20,7 @@
     "markdownTime": "DD MMMM YYYY, hh:mm A [IST]"
   },
   "updateIn": {
-    "updaterNamey": "Santosh",
+    "updaterName": "Santosh",
     "jsonFile": "./localstore/jsons/versions.json",
     "markdownFile": "./docs/CHANGELOG.md",
     "swFile": {

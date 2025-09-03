@@ -1,5 +1,5 @@
 // Define APP_VERSIONa and APP_ENVIRONMENT here as the single source of truth
-const APP_VERSION = "1.2.0"; // auto bump by script implementing soon
+const APP_VERSION = "2.2.4"; // auto bump by script implementing soon
 const APP_ENVIRONMENT = "development"; // auto bumping by script
 const CACHE_NAME = `mStore_Cache_v${APP_VERSION}`;
 const OFFLINE_PAGE = './source/common/pages/offline.html';

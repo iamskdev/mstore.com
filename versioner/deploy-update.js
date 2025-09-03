@@ -85,7 +85,11 @@ function updateChangelog(deployedVersions, deployedBy, rollbackPlan) {
   }
 
   // --- Inputs from command line arguments ---
-  const deployedBy = process.argv[2] || config.updateIn.updaterName || "System (Automated)";
+  const deployedBy =
+  process.argv[2] || 
+  config.updateIn.updaterName || 
+  config.meta.ownerName || 
+  "System";
   const rollbackPlan = process.argv[3] || "";
 
   // --- Filter pending versions ---
