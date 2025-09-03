@@ -63,13 +63,17 @@ function getLastCommit() {
 
 // --- Helper: detect bump type ---
 function getBumpType(commitMessage) {
-  if (/^revert:/i.test(commitMessage)) {
+  const firstLine = commitMessage.split("\n")[0].trim();
+
+  // rollback detect only if first line starts with revert:
+  if (/^revert[: ]/i.test(firstLine)) {
     return "rollback";
   }
+
   if (/BREAKING CHANGE/i.test(commitMessage)) {
     return "major"; // 🚨 only case for major
   }
-  if (/^(feat|fix|refactor|perf|improve):/i.test(commitMessage)) {
+  if (/^(feat|fix|refactor|perf|improve):/i.test(firstLine)) {
     return "patch";
   }
   return null; // skip docs, style, chore, test
@@ -133,6 +137,12 @@ function updateJsonFile(commit) {
   let versions = [];
   if (fs.existsSync(jsonFile)) {
     versions = JSON.parse(fs.readFileSync(jsonFile, "utf-8"));
+  }
+
+  // ✅ prevent duplicate commit entry
+  if (versions.some(v => v.commitHash === commit.hash)) {
+    console.log("⏩ Commit already exists in versions.json, skipping.");
+    return null;
   }
 
   const last = versions[0];
@@ -204,23 +214,25 @@ function updateMarkdown(entry) {
   if (!entry) return;
 
   const mdFile = path.resolve(__dirname, "..", updateIn.markdownFile);
+  let old = fs.existsSync(mdFile) ? fs.readFileSync(mdFile, "utf-8") : "";
 
   const commitShort = entry.commitHash
     ? entry.commitHash.slice(0, formatting.markdownHash)
     : "N/A";
 
+  // ✅ prevent duplicate in changelog
+  if (old.includes(commitShort)) {
+    console.log("⏩ Commit already logged in CHANGELOG.md, skipping.");
+    return;
+  }
+
   const dateStr = formatIST(entry.audit.createdAt || nowISO());
 
   let mdBlock = `## Version ${entry.version} | ${entry.environment}\n\n`;
-  mdBlock += `**Title:** 	este${entry.title}	este
-`;
-  mdBlock += `**Date:** ${dateStr}
-`;
-  mdBlock += `**VersionId:** 	este${entry.versionId}	este
-`;
-  mdBlock += `**Commit:** 	este${commitShort}	este
-
-`;
+  mdBlock += `**Title:** ${entry.title}\n`;
+  mdBlock += `**Date:** ${dateStr}\n`;
+  mdBlock += `**VersionId:** ${entry.versionId}\n`;
+  mdBlock += `**Commit:** ${commitShort}\n\n`;
 
   if (entry.breakingChanges) {
     mdBlock += `⚠️ **BREAKING CHANGE detected**\n\n`;
@@ -231,12 +243,40 @@ function updateMarkdown(entry) {
 
   mdBlock += "---\n\n";
 
-  let old = "";
-  if (fs.existsSync(mdFile)) {
-    old = fs.readFileSync(mdFile, "utf-8");
-  }
   fs.writeFileSync(mdFile, mdBlock + old);
   console.log("✅ CHANGELOG.md updated");
+}
+
+// --- Update service-worker.js ---
+function updateServiceWorker(entry) {
+  if (!updateIn.swFile || !entry) return;
+
+  const swFilePath = path.resolve(__dirname, "..", updateIn.swFile.file);
+  if (!fs.existsSync(swFilePath)) {
+    console.warn(`⚠️ service-worker.js not found at ${swFilePath}`);
+    return;
+  }
+
+  let swContent = fs.readFileSync(swFilePath, "utf-8");
+
+  const versionKeyRegex = new RegExp(
+    `const ${updateIn.swFile.versionKey} = ".*";`
+  );
+  const environmentKeyRegex = new RegExp(
+    `const ${updateIn.swFile.environmentKey} = ".*";`
+  );
+
+  swContent = swContent.replace(
+    versionKeyRegex,
+    `const ${updateIn.swFile.versionKey} = "${entry.version}";`
+  );
+  swContent = swContent.replace(
+    environmentKeyRegex,
+    `const ${updateIn.swFile.environmentKey} = "${entry.environment}";`
+  );
+
+  fs.writeFileSync(swFilePath, swContent);
+  console.log("✅ service-worker.js updated");
 }
 
 // --- Main ---
@@ -246,6 +286,7 @@ function updateMarkdown(entry) {
 
   if (newEntry) {
     updateMarkdown(newEntry);
+    updateServiceWorker(newEntry); // Add this line
     if (newEntry.rollback) {
       console.log(`✅ Rollback recorded for ${newEntry.version}`);
     } else {

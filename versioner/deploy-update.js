@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const readline = require("readline");
 
 // --- Load config ---
 const configPath = path.join(__dirname, "versioner.json");
@@ -41,97 +40,84 @@ function formatIST(dateStr) {
   }).replace("am", "AM").replace("pm", "PM") + " IST";
 }
 
-// --- CLI helper ---
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-function ask(question) {
-  return new Promise((resolve) => rl.question(question, (ans) => resolve(ans.trim())));
-}
+// --- Update Deployment Changelog ---
+function updateChangelog(deployedVersions, deployedBy, rollbackPlan) {
+  if (!deployedVersions.length) return;
 
-// --- Update Changelog ---
-function updateChangelog(entry) {
-  if (!entry) return;
+  const dateStr = formatIST(deployedVersions[0].audit.deployedAt);
 
-  const commitShort = entry.commitHash
-    ? entry.commitHash.slice(0, config.formatting.markdownHash)
-    : "N/A";
+  let mdBlock = `## Deployment Update\n\n`;
+  mdBlock += `**Status:** ✅ Deployed by ${deployedBy}\n`;
+  mdBlock += `**Deployed At:** ${dateStr}\n\n`;
 
-  const dateStr = formatIST(entry.audit.deployedAt || entry.audit.createdAt);
-
-  let mdBlock = `## Version ${entry.version} | ${entry.environment}\n\n`;
-  mdBlock += `**Title:** \`${entry.title}\`\n`;
-  mdBlock += `**Date:** ${dateStr}\n`;
-  mdBlock += `**VersionId:** \`${entry.versionId}\`\n`;
-  mdBlock += `**Commit:** \`${commitShort}\`\n`;
-  mdBlock += `**Status:** ✅ Deployed by ${entry.audit.deployedBy}\n\n`;
-
-  if (entry.rollbackPlan) {
-    mdBlock += `**Rollback Plan:** ${entry.rollbackPlan}\n\n`;
+  if (rollbackPlan) {
+    mdBlock += `**Rollback Plan:** ${rollbackPlan} (added ${dateStr})\n\n`;
   }
 
-  if (entry.breakingChanges) {
-    mdBlock += `⚠️ **BREAKING CHANGE detected**\n\n`;
-  }
+  mdBlock += `**Included Versions:**\n`;
+  deployedVersions.forEach(v => {
+    if (v.status === "reverted") {
+      mdBlock += `- ${v.version} [${v.versionId}] - ❌ Reverted (${v.title})\n`;
+    } else {
+      mdBlock += `- ${v.version} [${v.versionId}] - ${v.title}\n`;
+    }
+  });
 
-  mdBlock += "---\n\n";
+  mdBlock += "\n---\n\n";
 
   let old = "";
   if (fs.existsSync(changelogPath)) {
     old = fs.readFileSync(changelogPath, "utf-8");
   }
   fs.writeFileSync(changelogPath, mdBlock + old);
+
   console.log("📘 CHANGELOG.md updated with deployment info");
 }
 
 // --- Main ---
-(async function main() {
+(function main() {
   console.log("🚀 Deployment Updater\n");
 
   let versions = loadJSON(versionsPath, []);
   if (!versions.length) {
     console.log("❌ No versions found. Run versioner.js first.");
-    rl.close();
     return;
   }
 
-  let latest = versions[0];
+  // --- Inputs from command line arguments ---
+  const deployedBy = process.argv[2] || config.updateIn.updaterName || "System (Automated)";
+  const rollbackPlan = process.argv[3] || "";
 
-  if (latest.status !== "pending") {
-    console.log(
-      `⚠️ Latest version ${latest.version} is not in "pending" state (current=${latest.status}).`
-    );
-    console.log("👉 Nothing to deploy or already deployed.\n");
-    rl.close();
+  // --- Filter pending versions ---
+  const pendingVersions = versions.filter(v => v.status === "pending");
+
+  if (!pendingVersions.length) {
+    console.log("👉 No pending versions to deploy.\n");
     return;
   }
 
-  console.log(`Latest Version: ${latest.version} [${latest.versionId}]`);
-  console.log(`Title: ${latest.title}`);
-  console.log(`Environment: ${latest.environment}\n`);
+  console.log(`Found ${pendingVersions.length} pending versions to deploy...\n`);
 
-  // --- Inputs ---
-  const deployedBy = await ask("Who is deploying? ");
-  const rollbackPlan = await ask("Rollback plan (optional): ");
+  // --- Update all pending versions ---
+  pendingVersions.forEach(v => {
+    v.status = "deployed";
+    v.audit.deployedAt = nowISO();
+    v.audit.deployedBy = deployedBy;
+    if (rollbackPlan) v.rollbackPlan = rollbackPlan;
+  });
 
-  // --- Update entry ---
-  latest.status = "deployed";
-  latest.audit.deployedAt = nowISO();
-  latest.audit.deployedBy = deployedBy || "System";
-  if (rollbackPlan) latest.rollbackPlan = rollbackPlan;
-
-  versions[0] = latest;
+  // Save updated versions.json
   saveJSON(versionsPath, versions);
 
-  // --- Update changelog ---
-  updateChangelog(latest);
+// --- Update changelog with all deployed versions ---
+  updateChangelog(pendingVersions, deployedBy, rollbackPlan);
+
+  // Check if repo has any reverted versions in history
+  if (versions.some(v => v.status === "reverted")) {
+  console.log("⚠️ Some versions in history were marked as reverted.");
+  fs.appendFileSync(changelogPath, `⚠️ Note: Some versions in history were reverted.\n\n`);
+}
 
   console.log("\n✅ Deployment info updated successfully!");
-  console.log(`🎉 Version ${latest.version} deployed by ${latest.audit.deployedBy}`);
-  console.log(
-    "👉 Next step: If version cycle complete, run 'node versioner/config-updater.js' to switch environment."
-  );
-
-  rl.close();
+  console.log(`🎉 ${pendingVersions.length} version(s) deployed by ${deployedBy}`);
 })();
