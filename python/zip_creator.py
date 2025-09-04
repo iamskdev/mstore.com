@@ -30,7 +30,7 @@ def get_latest_version():
     """Reads versions.json to get the latest version string."""
     logging.info("Trying to determine the latest version...")
     try:
-        versioner_config_path = os.path.join(os.path.dirname(__file__), 'versioner.json')
+        versioner_config_path = os.path.join(PROJECT_ROOT, 'versioner', 'versioner.json')
         with open(versioner_config_path, 'r', encoding='utf-8') as f:
             versioner_config = json.load(f)
         

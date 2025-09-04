@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime, timedelta, timezone
 
 def iso_to_ist(iso_str):
@@ -61,6 +62,23 @@ def json_to_md(data, output_file):
 
 
 if __name__ == "__main__":
-    with open("./localstore/jsons/versions.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
-    json_to_md(data, "./docs/CHANGELOG.md")
+    print("Starting markdown_creator.py script...")
+    script_dir = os.path.dirname(__file__)
+    input_file = script_dir + "/../localstore/jsons/versions.json"
+    output_file = script_dir + "/../../verrsions/CHANGELOG/FULL_CHANGELOG.md"
+    
+    
+    try:
+        with open(input_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        print(f"Successfully read data from {os.path.normpath(input_file).replace(os.sep, '/')}")
+        
+        json_to_md(data, output_file)
+        print(f"Successfully wrote Markdown to {os.path.normpath(output_file).replace(os.sep, '/')}")
+        print("Script finished.")
+    except FileNotFoundError:
+        print(f"Error: Input file not found at {os.path.normpath(input_file).replace(os.sep, '/')}")
+    except json.JSONDecodeError:
+        print(f"Error: Could not decode JSON from {os.path.normpath(input_file).replace(os.sep, '/')}. Check file format.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")

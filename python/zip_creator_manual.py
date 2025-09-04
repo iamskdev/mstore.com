@@ -8,9 +8,9 @@ MAX_FILE_SIZE_MB = 100
 # ==== Project Name ====
 PROJECT_NAME = "ApnaStore"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "../../"))
-ZIP_EXPORT_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "../../../Versions"))
-LOG_FOLDER = os.path.abspath(os.path.join(SCRIPT_DIR, "../../docs/versions"))
+PROJECT_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "../"))
+ZIP_EXPORT_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "../../Versions"))
+LOG_FOLDER = os.path.abspath(os.path.join(SCRIPT_DIR, "../../Versions/CHANGELOG"))
 VERSION_TYPES = ["Dev", "Alpha", "Beta", "Release", "Stable"]
 
 # ==== Ensure folders exist ====
@@ -119,8 +119,8 @@ def get_valid_version(last_version=None):
 version = get_valid_version(last_version)
 version_with_v = f"V{version}"
 note_hint = last_note if last_note else "New Release"
-note_input = prompt(f"Enter Note [Example: {note_hint}]: ").strip()
-    note = note_input.title() if note_input else "No_Note"
+note_input = prompt(f"Enter Note [Example: {note_hint}]: ").strip() # This line was incorrectly indented
+note = note_input.title() if note_input else "No_Note"
 
 # ==== Zip logic ====
 folder_for_log = f"{PROJECT_NAME}_{last_version}" if last_version else f"{PROJECT_NAME}_V0.0.0"
