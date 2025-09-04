@@ -73,7 +73,7 @@ function getBumpType(commitMessage) {
   }
 
   // ✅ feat/fix/refactor/perf/improve sab patch banenge
-  if (/^(feat|fix|refactor|perf|):/i.test(firstLine)) {
+  if (/^(feat|fix|refactor|perf):/i.test(firstLine)) {
     return "patch";
   }
 

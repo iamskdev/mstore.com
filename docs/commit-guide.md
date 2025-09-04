@@ -1,6 +1,6 @@
 ---
 DOCUMENT AUDIT:
-  Last Reviewed: Wednesday, September 3, 2025
+  Last Reviewed: Friday, September 5, 2025
   Reviewer: Santosh (with Gemini)
 ---
 
@@ -50,8 +50,6 @@ Perf → A code change that improves performance. (Triggers a patch version bump
 
 Refactor → Code restructure without new features or fixes. (Triggers a patch version bump)
 
-Improve → Optimizations or enhancements to existing features. (Triggers a patch version bump)
-
 Docs → Documentation-only changes. (Does NOT trigger a version bump)
 
 Style → Code style only (formatting, spacing, semicolons). (Does NOT trigger a version bump)
@@ -73,9 +71,6 @@ Rollback → Rolls back a full release or deployment. (Triggers a rollback actio
 The subject line is the first line of the commit message and must adhere to the following rules:
 
 *   **Length:** Must be between 50 and 72 characters.
-*   **Imperative Mood:** Use the imperative mood (as if giving a command).
-    *   ✅ Correct: `Add`, `Update`, `Fix`, `Remove`, `Improve`
-    *   ❌ Incorrect: `Added`, `Updated`, `Fixed`
 *   **Capitalization:**
     *   The `<type>` (e.g., `Feat`, `Fix`) must start with a capital letter.
     *   The `<subject>` (summary) must start with a capital letter.
@@ -102,14 +97,17 @@ The body of the commit message provides a more detailed explanation of the chang
 **Example:**
 
 ```
-Improve: Enhance search performance
+git add . && git commit -m "Refactor: Modularize home page and card display
 
-- Optimized database query with proper indexing.
-- Reduced response time by approximately 40%.
-- Related to issue #145.
+Improved: Moved card rendering logic to card-helper.js for better modularity.
+Improved: Simplified home.html by removing offer banner and updating item grid ID.
+Improved: Cleaned up home.js by importing card-related functions.
+Improved: Updated service-worker.js to cache new card helper and grid files.
+Improved: Adjusted card styling in card-grid.html.
+Fixed: Removed unused CSS from home.css.
+Fixed: Removed improve from type becaue it is used in body."
+
 ```
-
-
 ---
 
 ## 4. Structured Body Fields
