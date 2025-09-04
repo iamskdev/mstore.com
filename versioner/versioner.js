@@ -73,7 +73,7 @@ function getBumpType(commitMessage) {
   }
 
   // ✅ feat/fix/refactor/perf/improve sab patch banenge
-  if (/^(feat|fix|refactor|perf):/i.test(firstLine)) {
+  if (/^(feat|fix|refactor|perf|improve):/i.test(firstLine)) {
     return "patch";
   }
 
@@ -86,15 +86,8 @@ function parseCommitBody(commitMessage) {
   const details = {};
   const lines = commitMessage.split("\n");
 
-  // --- First line se type/title nikal lo ---
-  const headerRegex = /^(feat|fix|docs|perf|style|refactor|test|chore|revert|rollback):\s*(.*)$/i;
-  const headerMatch = lines[0].match(headerRegex);
-  if (headerMatch) {
-    details.type = headerMatch[1].toLowerCase(); // feat/fix/...
-    details.title = headerMatch[2].trim();       // baaki title
-  } else {
-    details.title = lines[0]; // fallback (agar koi type nahi mila)
-  }
+// --- First line ko pura ka pura title banao ---
+  details.title = lines[0].trim();
 
   // Sirf basic regex (key: value) pakad lo
   const regex = /^-?\s*([a-zA-Z]+):\s*(.*)/i;
@@ -114,33 +107,40 @@ function parseCommitBody(commitMessage) {
     return key; // fallback
   };
 
-  // --- Loop through body lines ---
-  for (const line of lines.slice(1)) { // 👈 skip first line (title already handled)
-    const match = line.match(regex);
-    if (match) {
-      let key = normalizeKey(match[1]);
-      let value = match[2].trim();
+// --- Loop through body lines ---
+for (const line of lines.slice(1)) { // 👈 skip first line (title already handled)
+  const clean = line.trim();
+  if (!clean) continue;
 
-      // 🔹 String fields (note, rollbackPlan)
-      if (["note", "rollbackPlan"].includes(key)) {
-        if (value) details[key] = value;
-        continue;
-      }
+  const match = line.match(regex);
+  if (match) {
+    let key = normalizeKey(match[1]);
+    let value = match[2].trim();
 
-      // 🔹 Array-like fields
-      if (["tickets", "tags", "added", "fixed", "improved"].includes(key)) {
-        value = value
-          .split(",")
-          .map((item) => item.trim())
-          .filter((item) => item);
-        if (value.length > 0) {
-          details[key] = value;
-        }
-      } else {
-        if (value) details[key] = value; // fallback string
-      }
+    // 🔹 String fields (note, rollbackPlan)
+    if (["note", "rollbackPlan"].includes(key)) {
+      if (value) details[key] = value;
+      continue;
     }
+
+    // 🔹 Array-like fields
+    if (["tickets", "tags", "added", "fixed", "improved"].includes(key)) {
+      value = value
+        .split(",")
+        .map((item) => item.trim())
+        .filter((item) => item);
+      if (value.length > 0) {
+        details[key] = value;
+      }
+    } else {
+      if (value) details[key] = value; // fallback string
+    }
+  } else if (details.type) {
+    // 👇 agar simple line hai, to type ke array me daal do
+    if (!details[details.type]) details[details.type] = [];
+    details[details.type].push(clean);
   }
+}
 
   return details;
 }
@@ -197,30 +197,33 @@ if (bumpType === "rollback") {
   last.audit.rollbackAt = nowISO();
   last.audit.rollbackBy = config.audit.createdBy || "System";
 
-  // ✅ rollback ek new entry banayega
-const newEntry = {
-  title: commit.message.split("\n")[0] || "Auto bump version",
-  commitHash: commit.hash,
-  version: newVersion,
-  versionId: generateVersionId(versioning.idPrefix, versions),
-  environment: meta.environment,
-  releaseChannel: meta.releaseChannel,
-  status: "pending",
-  breakingChanges: /BREAKING CHANGE/i.test(commit.message),
-  ...commitDetails,   // 👈 isme type aata hai agar header match hua
-  audit: {
-    createdBy: config.audit.createdBy || "System",
-    createdAt: nowISO(), 
-    deployedAt: null,
-    deployedBy: null,
-  },
-};
+  // rollback ke liye bhi ek patch bump naya version banega
+  const newVersion = bumpVersion(last.version, "patch", versioning.scheme);
+  const commitDetails = parseCommitBody(commit.message);
 
-  versions.unshift(rollbackEntry);
+  const newEntry = {
+    title: commit.message.split("\n")[0] || "Auto bump version",
+    commitHash: commit.hash,
+    version: newVersion,
+    versionId: generateVersionId(versioning.idPrefix, versions),
+    environment: meta.environment,
+    releaseChannel: meta.releaseChannel,
+    status: "rollback",
+    breakingChanges: /BREAKING CHANGE/i.test(commit.message),
+    ...commitDetails,
+    audit: {
+      createdBy: config.audit.createdBy || "System",
+      createdAt: nowISO(),
+      rollbackAt: nowISO(),
+      rollbackBy: config.audit.createdBy || "System",
+}
+  };
+
+  versions.unshift(newEntry);
   fs.writeFileSync(jsonFile, JSON.stringify(versions, null, 2));
   console.log(`🔄 Rollback entry created for → ${last.version} [${last.versionId}]`);
 
-  return { ...rollbackEntry, rollback: true };
+  return { ...newEntry, rollback: true };
 }
 
   // --- Normal bump case ---
@@ -290,32 +293,24 @@ function updateMarkdown(entry) {
     mdBlock += `🔄 **Rollback applied to this version**\n\n`;
   }
 
-  // ✅ add notes from JSON
-  if (entry.added && entry.added.length) {
-    mdBlock += `### ADDED\n`;
-    entry.added.forEach(item => {
+  // ✅ Body from JSON
+const skipFields = ["type","title","commitHash","version","versionId","environment","releaseChannel","status","breakingChanges","audit"];
+
+for (const key in entry) {
+  if (skipFields.includes(key)) continue;
+
+  if (Array.isArray(entry[key]) && entry[key].length) {
+    mdBlock += `### ${key.toUpperCase()}\n`;
+    entry[key].forEach(item => {
       mdBlock += `- ${item}\n`;
     });
     mdBlock += `\n`;
+  } else if (typeof entry[key] === "string" && entry[key]) {
+    mdBlock += `### ${key.toUpperCase()}\n${entry[key]}\n\n`;
   }
+}
 
-  if (entry.fixed && entry.fixed.length) {
-    mdBlock += `### FIXED\n`;
-    entry.fixed.forEach(item => {
-      mdBlock += `- ${item}\n`;
-    });
-    mdBlock += `\n`;
-  }
-
-  if (entry.improved && entry.improved.length) {
-    mdBlock += `### IMPROVED\n`;
-    entry.improved.forEach(item => {
-      mdBlock += `- ${item}\n`;
-    });
-    mdBlock += `\n`;
-  }
-
-  if (entry.notes) {
+  if (entry.note) {
     mdBlock += `### NOTES\n${entry.notes}\n\n`;
   }
 

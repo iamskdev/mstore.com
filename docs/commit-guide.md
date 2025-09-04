@@ -46,6 +46,8 @@ Feat → A new feature. (Triggers a patch version bump)
 
 Fix → A bug fix. (Triggers a patch version bump)
 
+Improve → An enhancement or improvement to an existing feature or functionality. (Triggers a patch version bump)
+
 Perf → A code change that improves performance. (Triggers a patch version bump)
 
 Refactor → Code restructure without new features or fixes. (Triggers a patch version bump)
@@ -63,6 +65,7 @@ Revert → Reverts a previous commit. (Triggers a rollback action in the version
 Rollback → Rolls back a full release or deployment. (Triggers a rollback action in the versioning system)
 
 *Note: While Capital Case is recommended for readability, the system processes commit types case-insensitively.*
+*Important: A `BREAKING CHANGE:` in the footer will always trigger a **major** version bump, regardless of the commit type.*
 
 ---
 
@@ -112,12 +115,15 @@ Fixed: Removed improve from type becaue it is used in body."
 
 ## 4. Structured Body Fields
 
-The commit body supports specific structured fields that are automatically parsed and utilized by the versioning system. These fields enhance the detail and utility of commit messages:
+The commit body supports specific structured fields that are automatically parsed and utilized by the versioning system. These fields enhance the detail and utility of commit messages. The system normalizes keys (e.g., `note`/`notes` to `note`, `ticket`/`tickets` to `tickets`) for consistency. Simple lines in the body that do not follow a `key: value` format will be captured under the commit `type` (e.g., if the type is `feat`, simple lines will be added to a `feat` array).
 
 *   **`Added:`** → Describes new modules, features, or functionalities introduced.
 *   **`Fixed:`** → Details bug fixes, addressing specific issues or defects.
 *   **`Improved:`** → Outlines optimizations, performance enhancements, or general improvements to existing features.
 *   **`Note:`** → Provides additional context, warnings, or special considerations relevant to the commit.
+*   **`Tickets:`** → References to related issue tracking tickets (e.g., `JIRA-123`, `GH-456`). Can be a comma-separated list.
+*   **`Tags:`** → Categorization tags for the commit (e.g., `frontend`, `backend`, `auth`). Can be a comma-separated list.
+*   **`RollbackPlan:`** → Describes the plan to revert the changes if necessary (e.g., `Revert to VRN0000151 if login functionality introduces critical regressions`).
 
 **Example:**
 
@@ -232,15 +238,17 @@ Here are several examples illustrating well-formed commit messages that adhere t
 This example demonstrates a comprehensive commit message, as it would appear when authored via the command line interface (CLI) or a Git client:
 
 ```
-Feat: Implement user authentication module
+git add .
+git commit -m "Feat: Implement user authentication module
 
-- Added login UI with form validation.
-- Fixed responsive navigation bar issue on mobile devices.
-- Improved login API response time by optimizing database queries.
-- Tickets: JIRA-102, GH-55
-- Tags: frontend, auth
-- Note: This commit introduces the core user authentication module.
-- RollbackPlan: Revert to VRN0000151 if login functionality introduces critical regressions.
+Added login UI with form validation
+Fixed responsive navigation bar issue on mobile devices
+Improved login API response time by optimizing database queries
+Tickets: JIRA-102, GH-55, TSK-900
+Tags: frontend, auth, security
+Note: This commit introduces the core user authentication module
+RollbackPlan: Revert to VRN0000151 if login functionality introduces critical regressions"
+
 ```
 
 
@@ -249,9 +257,9 @@ Feat: Implement user authentication module
 ## Example Generated JSON Output
 ```json
 {
-  "title": "Meaning full summries heading",
+  "title": "Implement user authentication module",
   "type": "feat",
-  "commitHash": "IAMSKDEV_1756919500000",
+  "commitHash": "IAMSKDEV_1757022000000",
   "version": "2.3.0",
   "versionId": "VRN0000152",
   "environment": "development",
@@ -263,30 +271,31 @@ Feat: Implement user authentication module
     "login UI with form validation"
   ],
   "fixed": [
-    "navbar issue on mobile"
+    "responsive navigation bar issue on mobile devices"
   ],
   "improved": [
-    "login API response time"
+    "login API response time by optimizing database queries"
   ],
   "tickets": [
     "JIRA-102",
-    "GH-55"
+    "GH-55",
+    "TSK-900"
   ],
   "tags": [
     "frontend",
-    "auth"
+    "auth",
+    "security"
   ],
-  "note": "This commit introduces login module.",
-  "rollbackPlan": "Revert to VRN0000151 if login breaks",
+  "note": "This commit introduces the core user authentication module",
+  "rollbackPlan": "Revert to VRN0000151 if login functionality introduces critical regressions",
 
   "audit": {
     "createdBy": "Santosh",
-    "createdAt": "2025-09-03T17:45:00Z",
+    "createdAt": "2025-09-04T21:40:00Z",
     "deployedAt": null,
     "deployedBy": null
   }
 }
-
 
 ---
 
