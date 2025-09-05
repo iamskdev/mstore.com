@@ -1,5 +1,6 @@
 import { fetchAllItems, fetchAllUnits, fetchAllCategories } from '../../utils/data-manager.js';
 import { createCardFromTemplate, initCardHelper } from '../../utils/card-helper.js';
+import { createBannerFromTemplate, initBannerManager } from '../../utils/banner-mannager.js'; // Add this line
 
 let allItems = []; // Global variable to store all fetched items
 let currentFilter = 'all'; // Global variable to store the current filter
@@ -157,11 +158,32 @@ export async function init() {
         });
 
         await initCardHelper(unitsData); // Initialize card helper with units data
+        await initBannerManager(); // Initialize banner manager
 
         // Populate allCategoriesMap
         categoriesResponse.forEach(cat => {
             allCategoriesMap[cat.meta.categoryId] = cat;
         });
+
+        // --- Banner Integration ---
+        const bannerContainer = document.getElementById('banner-container');
+        if (bannerContainer) {
+            const sampleBannerData = {
+                bannerType: "AD",      
+                brandLogo: "../source/assets/logos/app-logo.png", // Adjusted path
+                brandName: "Apna Store",
+                itemBrand: "New Arrivals",  
+                contentTitle: "Fresh Stock Daily!",
+                contentSubtitle: "Discover the latest products at amazing prices.",
+                itemImage: "./localstore/images/items/red-bull.jpg", // Adjusted path
+                priceText: "Shop Now!",
+                ctaText: "Explore ➔",    
+                ctaLink: "#"  // Link to a relevant page or category
+            };
+            const bannerElement = createBannerFromTemplate(sampleBannerData);
+            bannerContainer.appendChild(bannerElement);
+        }
+        // --- End Banner Integration ---
 
     } catch (error) {
         container.innerHTML = '<p class="error-message">Failed to load initial data. Please refresh.</p>';

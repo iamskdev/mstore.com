@@ -1,0 +1,27 @@
+if [ -n "$GIT_AMENDING_COMMIT" ]; then
+  exit 0
+fi
+
+export GIT_AMENDING_COMMIT=1
+
+# Run versioner.js and capture its output
+OUTPUT=$(node versioner/versioner.js)
+EXIT_CODE=$?
+
+# Print the output from versioner.js
+echo "$OUTPUT"
+
+# If versioner.js indicated no bump, then exit successfully without adding versioning files
+if echo "$OUTPUT" | grep -q "Commit did not trigger version bump"; then
+  exit 0
+fi
+
+# If versioner.js exited with an error, then fail (though post-commit errors don't stop the commit)
+if [ $EXIT_CODE -ne 0 ]; then
+  echo "Error: versioner.js failed with exit code $EXIT_CODE"
+  exit $EXIT_CODE
+fi
+
+# If versioner.js performed a bump, then add the modified service-worker.js to the commit
+git add service-worker.js
+git commit --amend --no-edit --allow-empty

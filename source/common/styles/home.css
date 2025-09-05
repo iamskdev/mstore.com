@@ -5,3 +5,7 @@
   padding: 0.5rem;
   font-family: 'Segoe UI', system-ui, sans-serif;
 }
+
+#banner-container {
+  margin-bottom: 0.5rem;
+}

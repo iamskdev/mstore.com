@@ -93,10 +93,25 @@ function parseCommitBody(commitMessage) {
   if (revertMatch) details.revertedCommit = revertMatch[1];
 
   const keyValueRegex = /^-?\s*([a-zA-Z]+):\s*(.*)/i;
-  const remainingLines = [];
+  const sectionRegex = /^(Added|Fixed|Improved):\s*$/i; // Regex to identify sections
+  let currentSection = null; // To keep track of the current section
+
   for (const line of bodyLines) {
     const clean = line.trim();
-    if (!clean) continue;
+
+    const sectionMatch = clean.match(sectionRegex);
+    if (sectionMatch) {
+      currentSection = sectionMatch[1].toLowerCase(); // Set current section
+      continue; // Process next line after finding a section header
+    }
+
+    if (!clean) {
+      // If it's an empty line, and we have an active section,
+      // we don't reset currentSection.
+      // If it's an empty line and no active section, it's just a separator.
+      continue;
+    }
+
     const kvMatch = clean.match(keyValueRegex);
     if (kvMatch) {
       const key = kvMatch[1].toLowerCase();
@@ -104,23 +119,22 @@ function parseCommitBody(commitMessage) {
       if (['ticket', 'tickets'].includes(key)) details.tickets.push(...value.split(',').map(t => t.trim()));
       else if (['tag', 'tags'].includes(key)) details.tags.push(...value.split(',').map(t => t.trim()));
       else if (['note', 'notes'].includes(key)) details.notes.push(value);
-      else remainingLines.push(line);
-    } else {
-      remainingLines.push(line);
+    } else if (clean.startsWith('- ')) {
+      // If a bullet point and a section is active, add to that section
+      if (currentSection && details.changes[currentSection]) {
+        details.changes[currentSection].push(clean.substring(2).trim());
+      }
+      else {
+        // Fallback if no section is active, use commit type or default 'improved'
+        let fallbackListKey = 'improved';
+        if (details.type === 'feat') fallbackListKey = 'added';
+        if (details.type === 'fix') fallbackListKey = 'fixed';
+        if (!details.changes[fallbackListKey]) details.changes[fallbackListKey] = [];
+        details.changes[fallbackListKey].push(clean.substring(2).trim());
+      }
     }
   }
 
-  let listKey = 'improved';
-  if (details.type === 'feat') listKey = 'added';
-  if (details.type === 'fix') listKey = 'fixed';
-  for (const line of remainingLines) {
-    const clean = line.trim();
-    if (clean.startsWith('- ')) {
-      if (!details.changes[listKey]) details.changes[listKey] = [];
-      details.changes[listKey].push(clean.substring(2).trim());
-    }
-  }
-  
   const breakingChangeMatch = bodyLines.join('\n').match(/BREAKING CHANGE: (.*)/);
   if (breakingChangeMatch) details.breakingChanges.push(breakingChangeMatch[1]);
 
@@ -200,26 +214,23 @@ function updateMarkdown(entry) {
   const commitShort = entry.commit.hash.short;
   const commitUrl = entry.commit.hash.url;
 
-  if (old.includes(commitShort) && !commitShort.startsWith('dummy')) {
-    console.log("⏩ Commit already logged in CHANGELOG.md, skipping.");
-    return;
-  }
+  
 
   const dateStr = formatIST(entry.audit.createdAt);
   let mdBlock = `## Version ${entry.version.new} | ${entry.metadata.environment}
 
 `;
-  mdBlock += `**Type:** ${entry.type}
+  mdBlock += `**Type**: [${entry.type}]
 `;
-  mdBlock += `**Author:** ${entry.commit.author.name}
+  mdBlock += `**Author**: [${entry.commit.author.name}]
+`;
+  mdBlock += `**Sort Hash**: [${commitShort}]
 `;
   if(entry.commit.branch && entry.commit.branch.name) {
-    mdBlock += `**Branch:** [${entry.commit.branch.name}](${entry.commit.branch.url})
+    mdBlock += `**Branch**: [${entry.commit.branch.url}]
 `;
   }
-  mdBlock += `**Commit:** [${commitShort}](${commitUrl})
-`;
-  mdBlock += `**Date:** ${dateStr}
+  mdBlock += `**Date**: [${dateStr}]
 
 `;
 
