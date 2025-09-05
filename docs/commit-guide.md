@@ -20,7 +20,7 @@ This guide establishes the definitive standards for crafting **clear, consistent
 Each commit message adheres to a structured format to ensure clarity and machine readability:
 
 ```
-<type>: <subject>
+<type>(<scope>): <subject>
 
 [body]
 
@@ -30,8 +30,9 @@ Each commit message adheres to a structured format to ensure clarity and machine
 **Explanation of Components:**
 
 *   **`<type>`:** Categorizes the nature of the change (e.g., `feat`, `fix`, `docs`). This is crucial for automated tooling.
-*   **`<subject>`:** A concise, single-line summary of the change, written in the imperative mood (as if giving a command).
-*   **`[body]` (Optional):** Provides a detailed explanation of *what* the change is and *why* it was made, without delving into *how* it was implemented. Use bullet points for enhanced readability.
+*   **`<scope>`** (Optional): Specifies the part of the codebase affected by the change (e.g., `auth`, `ui`, `api`, `docs`). This helps in quickly identifying the area of impact. If the change is project-wide, the scope can be omitted.
+*   **`<subject>`:** A concise, single-line summary of the change. **Always** write in the imperative mood (e.g., "Add feature" not "Added feature" or "Adds feature").
+*   **`[body]` (Optional):** Provides a detailed explanation of *what* the change is and *why* it was changed (the problem it solves or the value it adds), rather than *how* it was implemented. Use bullet points for enhanced readability.
 *   **`[footer]` (Optional):** Contains metadata such as breaking changes, references to issues, or other relevant information.
 
 
@@ -46,7 +47,7 @@ Feat → A new feature. (Triggers a patch version bump)
 
 Fix → A bug fix. (Triggers a patch version bump)
 
-Improve → An enhancement or improvement to an existing feature or functionality. (Triggers a patch version bump)
+Improve → An enhancement or optimization to an *existing* feature or functionality. This is not a new feature (`feat`) or a bug fix (`fix`). (Triggers a patch version bump)
 
 Perf → A code change that improves performance. (Triggers a patch version bump)
 
@@ -64,7 +65,7 @@ Revert → Reverts a previous commit. (Triggers a rollback action in the version
 
 Rollback → Rolls back a full release or deployment. (Triggers a rollback action in the versioning system)
 
-*Note: While Capital Case is recommended for readability, the system processes commit types case-insensitively.*
+*Note: While Capital Case is recommended for readability, the system processes commit types case-insensitively. However, for consistency and adherence to the standard, always use Capital Case.*
 *Important: A `BREAKING CHANGE:` in the footer will always trigger a **major** version bump, regardless of the commit type.*
 
 ---
@@ -85,13 +86,18 @@ The subject line is the first line of the commit message and must adhere to the 
 *   ❌ `feat: add jwt login` (Type lowercase is not allowed)
 *   ❌ `Fix: resolve crash on checkout` (Summary lowercase is not allowed)
 
+**⚠️ Important Subject Line Formatting:**
+The versioning system strictly parses the subject line. Ensure the exact format `<type>(<scope>): <subject>` or `<type>: <subject>` is used.
+*   **Always include a colon and a single space** (`: `) after the `<type>` or `(<scope>)`.
+*   Incorrect formatting (e.g., `Feat(auth)Add login`, `Fix-Resolve bug`) will lead to incorrect parsing and potentially malformed JSON output.
+
 
 
 ---
 
 ## 3. Body (Optional but Recommended)
 
-The body of the commit message provides a more detailed explanation of the change. It should focus on *what* was changed and *why* it was changed, rather than *how* it was implemented.
+The body of the commit message provides a more detailed explanation of the change. It should focus on *what* was changed and, crucially, *why* it was changed (the problem it solves or the value it adds), rather than *how* it was implemented. Use bullet points for enhanced readability.
 
 *   Use bullet points or paragraphs for clarity.
 *   Wrap text at 72 characters for optimal readability in various Git tools.
@@ -99,18 +105,6 @@ The body of the commit message provides a more detailed explanation of the chang
 
 **Example:**
 
-```
-git add . && git commit -m "Refactor: Modularize home page and card display
-
-Improved: Moved card rendering logic to card-helper.js for better modularity.
-Improved: Simplified home.html by removing offer banner and updating item grid ID.
-Improved: Cleaned up home.js by importing card-related functions.
-Improved: Updated service-worker.js to cache new card helper and grid files.
-Improved: Adjusted card styling in card-grid.html.
-Fixed: Removed unused CSS from home.css.
-Fixed: Removed improve from type becaue it is used in body."
-
-```
 ---
 
 ## 4. Structured Body Fields
@@ -123,7 +117,12 @@ The commit body supports specific structured fields that are automatically parse
 *   **`Note:`** → Provides additional context, warnings, or special considerations relevant to the commit.
 *   **`Tickets:`** → References to related issue tracking tickets (e.g., `JIRA-123`, `GH-456`). Can be a comma-separated list.
 *   **`Tags:`** → Categorization tags for the commit (e.g., `frontend`, `backend`, `auth`). Can be a comma-separated list.
-*   **`RollbackPlan:`** → Describes the plan to revert the changes if necessary (e.g., `Revert to VRN0000151 if login functionality introduces critical regressions`).
+*   **`RollbackPlan:`** → Describes the plan to revert the changes if necessary (e.g., `Revert to VRN000000000151 if login functionality introduces critical regressions`).
+
+**⚠️ Important Body Formatting for Structured Fields:**
+For proper parsing into JSON, adhere to these strict formatting rules:
+*   **Key-Value Pairs:** Always use the exact `Key: Value` format (e.g., `Note: This is a note.`). A colon and a single space (`: `) are mandatory after the key. Keys must be alphabetic (e.g., `Note`, `Tickets`, `Added`).
+*   **Bullet Points:** For `Added:`, `Fixed:`, and `Improved:` sections, use a hyphen followed by a single space (`- `) for each item (e.g., `- Fixed a bug.`). Other bullet point styles (e.g., `* `, `+ `) will not be parsed.
 
 **Example:**
 
@@ -145,6 +144,20 @@ The footer section is used for conveying critical metadata, primarily **breaking
 
 *   **Breaking Changes:** Indicate any changes that are not backward-compatible. This must start with `BREAKING CHANGE:` followed by a description of the change and migration instructions.
 *   **Issue References:** Link to related issues or tickets in your issue tracking system. Use keywords like `Closes #123`, `Fixes #456`, or `Resolves #789`.
+
+**⚠️ Important Footer Formatting for Breaking Changes:**
+The `BREAKING CHANGE:` keyword must be followed by a colon and a single space (`: `) for the versioning system to correctly parse it.
+*   Example: `BREAKING CHANGE: Removed old API endpoint.`
+*   Incorrect formatting (e.g., `BREAKING CHANGE - Removed`, `BREAKINGCHANGE:`) will prevent proper parsing and may lead to an incorrect major version bump.
+
+**Example:**
+
+```
+BREAKING CHANGE: Removed old Cart API v1
+
+The previous Cart API (v1) has been deprecated and removed.
+Migrate to Cart API v2 for all cart-related operations.
+```
 
 **Example:**
 
@@ -247,11 +260,9 @@ Improved login API response time by optimizing database queries
 Tickets: JIRA-102, GH-55, TSK-900
 Tags: frontend, auth, security
 Note: This commit introduces the core user authentication module
-RollbackPlan: Revert to VRN0000151 if login functionality introduces critical regressions"
+RollbackPlan: Revert to VRN000000000151 if login functionality introduces critical regressions"
 
 ```
-
-
 ---
 
 ## Example Generated JSON Output
@@ -261,7 +272,7 @@ RollbackPlan: Revert to VRN0000151 if login functionality introduces critical re
   "type": "feat",
   "commitHash": "IAMSKDEV_1757022000000",
   "version": "2.3.0",
-  "versionId": "VRN0000152",
+  "versionId": "VRN000000000152",
   "environment": "development",
   "releaseChannel": "alpha",
   "status": "pending",
@@ -287,7 +298,7 @@ RollbackPlan: Revert to VRN0000151 if login functionality introduces critical re
     "security"
   ],
   "note": "This commit introduces the core user authentication module",
-  "rollbackPlan": "Revert to VRN0000151 if login functionality introduces critical regressions",
+  "rollbackPlan": "Revert to VRN000000000151 if login functionality introduces critical regressions",
 
   "audit": {
     "createdBy": "Santosh",
@@ -296,7 +307,6 @@ RollbackPlan: Revert to VRN0000151 if login functionality introduces critical re
     "deployedBy": null
   }
 }
-
 ---
 
 
@@ -309,7 +319,4 @@ Adhering to these best practices will further enhance the quality and utility of
 *   **Judicious Use of `Improve`:** Reserve the `Improve` type specifically for commits focused on performance optimizations or significant enhancements to existing features.
 *   **Careful `Revert`/`Rollback` Usage:** Employ `Revert` and `Rollback` operations only for critical undo scenarios, understanding their implications on the project history.
 *   **Automate Enforcement:** Utilize commit linting tools (e.g., Husky with commitlint) to automatically validate commit messages against these standards, ensuring compliance across the team.
-
-
-
----
+*   **Learn from Examples:** Refer to the "Good Commit Examples" and "Example Commit (CLI/Git)" sections for practical demonstrations of well-formed messages.

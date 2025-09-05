@@ -71,3 +71,6 @@ node_modules/
 # Ignored files as per user request
 localstore/jsons/versions.json
 docs/CHANGELOG.md
+
+# Optional commit message file
+docs/commit_message.txt

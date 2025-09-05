@@ -57,9 +57,11 @@ function updateChangelog(deployedVersions, deployedBy, rollbackPlan) {
   mdBlock += `**Included Versions:**\n`;
   deployedVersions.forEach(v => {
     if (v.status === "reverted") {
-      mdBlock += `- ${v.version} [${v.versionId}] - ❌ Reverted (${v.title})\n`;
+      mdBlock += `- ${v.version} [${v.versionId}] - ❌ Reverted (${v.subject})
+`;
     } else {
-      mdBlock += `- ${v.version} [${v.versionId}] - ${v.title}\n`;
+      mdBlock += `- ${v.version.new} [${v.versionId}] - ${v.subject}
+`;
     }
   });
 
@@ -123,7 +125,9 @@ pendingVersions.forEach(v => {
   // Check if repo has any reverted versions in history
   if (versions.some(v => v.status === "reverted")) {
   console.log("⚠️ Some versions in history were marked as reverted.");
-  fs.appendFileSync(changelogPath, `⚠️ Note: Some versions in history were reverted.\n\n`);
+  fs.appendFileSync(changelogPath, `⚠️ Note: Some versions in history were reverted.
+
+`);
 }
 
   console.log("\n✅ Deployment info updated successfully!");

@@ -9,7 +9,6 @@
     "idPrefix": "VRN",
     "scheme": "major.minor.patch",
     "startVersion": "0.0.1",
-    "maxVersion": "9.9.9",
     "autoIncrement": true,
     "allowRollback": true
   },
@@ -36,3 +35,4 @@
     "modifyBy": "Gemini"
   }
 }
+
