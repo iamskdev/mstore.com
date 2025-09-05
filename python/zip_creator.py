@@ -3,6 +3,7 @@ import zipfile
 import json
 import logging
 from datetime import datetime
+import sys # Added
 
 # --- Configure Logging ---
 # --- Configure Logging ---
@@ -73,7 +74,7 @@ def create_project_zip():
         os.makedirs(ZIP_EXPORT_DIR)
         logging.info(f"Created output directory: {ZIP_EXPORT_DIR}")
 
-    zip_filename = f"MSTORE_v{version}_{timestamp}.zip"
+    zip_filename = f"MSTORE_v{version['new']}_{timestamp}.zip"
     zip_filepath = os.path.join(ZIP_EXPORT_DIR, zip_filename)
     
     logging.info(f"Starting zip creation for version {version}...")
@@ -111,7 +112,9 @@ def create_project_zip():
             pass # This is to avoid syntax error
         
         print("\n🎉 Congratulations! Zip file created successfully. 🎉")
+        sys.stdout.flush() # Added
         logging.info(f"Output file: {zip_filepath}")
+        sys.stderr.flush() # Added
 
     except Exception as e:
         logging.error(f"An error occurred during zip creation: {e}", exc_info=True)
@@ -119,3 +122,4 @@ def create_project_zip():
 # --- Run the script ---
 if __name__ == "__main__":
     create_project_zip()
+    sys.exit(0) # Added
