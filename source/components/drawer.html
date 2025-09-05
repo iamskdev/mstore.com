@@ -223,7 +223,7 @@
     .slider.round { border-radius: 24px; }
     .slider.round:before { border-radius: 50%; }
 
-    .version-info {
+    .app-version {
       display: block;
       padding: 12px 16px;
       font-size: 0.7rem;
@@ -288,9 +288,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-        <span class="version-info">
-          © 2025 mStore | v{{Version}} | {{Environment}}
-        </span>
+        <span class="app-version">© 2025 mStore | v... | ...</span>
     </div>
   </div>
 
@@ -371,9 +369,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-        <span class="version-info">
-          © 2025 mStore | v{{Version}} | {{Environment}}
-        </span>
+        <span class="app-version">© 2025 mStore | v... | ...</span>
     </div>
   </div>
 
@@ -464,9 +460,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-        <span class="version-info">
-          © 2025 mStore | v{{Version}} | {{Environment}}
-        </span>
+        <span class="app-version">© 2025 mStore | v... | ...</span>
     </div>
   </div>
 
@@ -564,9 +558,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-        <span class="version-info">
-          © 2025 mStore | v{{Version}} | {{Environment}}
-        </span>
+        <span class="app-version">© 2025 mStore | v... | ...</span>
     </div>
   </div>
 </div>
@@ -582,13 +574,14 @@
 
   let appVersion = 'N/A';
   let appEnvironment = 'N/A';
+  let appName = 'N/A';
 
   /**
    * Updates the version information in the drawer footer.
    */
   function updateVersionInfo() {
-    document.querySelectorAll(".version-info").forEach(el => {
-      el.innerHTML = `© 2025 mStore | v${appVersion} | ${appEnvironment}`;
+    document.querySelectorAll(".app-version").forEach(el => {
+      el.innerHTML = `© 2025 ${appName} | v${appVersion} | ${appEnvironment}`;
     });
   }
 
@@ -875,9 +868,10 @@
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', (event) => {
       console.log('Drawer: Received message from Service Worker', event.data);
-      if (event.data && event.data.type === 'VERSION_INFO') {
+      if (event.data && event.data.version) { // Check for event.data.version as per idea.md
+        appName = event.data.app; // New
         appVersion = event.data.version;
-        appEnvironment = event.data.environment;
+        appEnvironment = event.data.env;
         updateVersionInfo(); // Update the UI once data is received
       }
     });
@@ -885,12 +879,10 @@
     // Request version info from the Service Worker once it's ready and controlling the page
     navigator.serviceWorker.ready.then(registration => {
       if (registration.active) {
-        registration.active.postMessage({ type: 'REQUEST_VERSION_INFO' });
+        registration.active.postMessage("GET_VERSION"); // Send "GET_VERSION" as per idea.md
       }
     });
   }
-
-  updateVersionInfo();
 
   console.log("✅ Drawer: Subscribed to ViewManager for state updates.");
 </script>

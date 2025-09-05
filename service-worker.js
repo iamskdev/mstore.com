@@ -1,7 +1,8 @@
 // Define APP_VERSIONa and APP_ENVIRONMENT here as the single source of truth
+const APP_NAME = "mStore";
 const APP_VERSION = "1.2.1"; // auto bump by script implementing soon
 const APP_ENVIRONMENT = "development"; // auto bumping by script
-const CACHE_NAME = `mStore_Cache_v${APP_VERSION}`;
+const CACHE_NAME = `${APP_NAME}_Cache_v${APP_VERSION}`;
 const OFFLINE_PAGE = './source/common/pages/offline.html';
 const RUNTIME_CACHE = 'runtime-cache';
 const MAX_RUNTIME_CACHE_AGE = 24 * 60 * 60; // 24 hours in seconds
@@ -192,16 +193,6 @@ self.addEventListener('activate', (event) => {
       
       await self.clients.claim();
       console.log('Service Worker: Activation completed');
-
-      // Send version and environment to all active clients immediately after activation
-      const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
-      clients.forEach(client => {
-        client.postMessage({
-          type: 'VERSION_INFO',
-          version: APP_VERSION,
-          environment: APP_ENVIRONMENT
-        });
-      });
     })().catch(err => {
       console.error('Activation failed:', err);
       return self.clients.claim();
@@ -211,11 +202,12 @@ self.addEventListener('activate', (event) => {
 
 // Listen for messages from clients (e.g., to request version info if not received initially)
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'REQUEST_VERSION_INFO') {
+  if (event.data === "GET_VERSION") {
+    console.log('Service Worker: Sending version info', { app: APP_NAME, version: APP_VERSION, env: APP_ENVIRONMENT });
     event.source.postMessage({
-      type: 'VERSION_INFO',
+      app: APP_NAME,
       version: APP_VERSION,
-      environment: APP_ENVIRONMENT
+      env: APP_ENVIRONMENT
     });
   }
 });
