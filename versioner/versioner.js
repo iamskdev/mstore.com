@@ -43,7 +43,7 @@ function getCommitDetails(forHash = "HEAD") {
 
     return {
       message,
-      hash: { long: longHash, short: shortHash, url: commitUrl },
+      hash: { long: longHash, short: shortHash },
       author: { name: authorName, email: authorEmail },
       branch: { name: branchName, url: branchUrl },
     };
@@ -65,7 +65,7 @@ function getBumpType(commitMessage) {
   if (/^revert[: ]/i.test(firstLine)) return "revert";
   if (/BREAKING CHANGE/.test(body) || /!/.test(firstLine.split(":")[0])) return "major";
   if (/^feat[:(]/i.test(firstLine)) return "minor";
-  if (/^(fix|perf|refactor|docs|style|chore|test)[:(]/i.test(firstLine)) return "patch";
+  if (/^(fix|perf)[:(]/i.test(firstLine)) return "patch";
   return null;
 }
 
@@ -175,7 +175,10 @@ function updateJsonFile(commitDetails) {
     versionId: generateVersionId(versioning.idPrefix, versions),
     commit: {
         hash: commitDetails.hash,
-        author: commitDetails.author,
+        author: {
+            name: commitDetails.author.name,
+            userName: commitDetails.author.email
+        },
         branch: commitDetails.branch,
     },
     type: parsedBody.type,
@@ -212,9 +215,6 @@ function updateMarkdown(entry) {
   const mdFile = path.resolve(__dirname, "..", updateIn.markdownFile);
   let old = fs.existsSync(mdFile) ? fs.readFileSync(mdFile, "utf-8") : "";
   const commitShort = entry.commit.hash.short;
-  const commitUrl = entry.commit.hash.url;
-
-  
 
   const dateStr = formatIST(entry.audit.createdAt);
   let mdBlock = `## Version ${entry.version.new} | ${entry.metadata.environment}
@@ -278,13 +278,13 @@ function updateServiceWorker(entry) {
     const message = `revert: ${originalSubject}\n\nThis reverts commit ${versionToRevert.commit.hash.long}.`;
     const longDummyHash = "IAMSKDEV_DUMMY_" + Date.now() + Math.random();
     const shortDummyHash = longDummyHash.substring(0, 7);
-    commitDetails = { message, hash: { long: longDummyHash, short: shortDummyHash, url: "http://dummy.commit/url" }, author: { name: "Dummy", email: "" }, branch: { name: "dummy-branch", url: "http://dummy.branch/url" } };
+    commitDetails = { message, hash: { long: longDummyHash, short: shortDummyHash }, author: { name: "Dummy", email: "" }, branch: { name: "dummy-branch", url: "http://dummy.branch/url" } };
   } else if (process.argv[2] === 'commit' && process.argv[3] === '-F' && process.argv[4]) {
     console.log("🧪 Running in dummy commit mode from file:", process.argv[4]);
     const message = fs.readFileSync(process.argv[4], 'utf-8');
     const longDummyHash = "IAMSKDEV_DUMMY_" + Date.now() + Math.random();
     const shortDummyHash = longDummyHash.substring(0, 7);
-    commitDetails = { message, hash: { long: longDummyHash, short: shortDummyHash, url: "http://dummy.commit/url" }, author: { name: "Dummy", email: "" }, branch: { name: "dummy-branch", url: "http://dummy.branch/url" } };
+    commitDetails = { message, hash: { long: longDummyHash, short: shortDummyHash }, author: { name: "Dummy", email: "" }, branch: { name: "dummy-branch", url: "http://dummy.branch/url" } };
   } else {
     commitDetails = getCommitDetails();
   }

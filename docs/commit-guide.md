@@ -1,6 +1,6 @@
 ---
 DOCUMENT AUDIT:
-  Last Reviewed: Friday, September 5, 2025
+  Last Reviewed: Saturday, September 6, 2025
   Reviewer: Santosh (with Gemini)
 ---
 
@@ -51,7 +51,7 @@ Improve → An enhancement or optimization to an *existing* feature or functiona
 
 Perf → A code change that improves performance. (Triggers a patch version bump)
 
-Refactor → Code restructure without new features or fixes. (Triggers a patch version bump)
+Refactor → Code restructure without new features or fixes. (Does NOT trigger a version bump)
 
 Docs → Documentation-only changes. (Does NOT trigger a version bump)
 
@@ -244,69 +244,88 @@ Here are several examples illustrating well-formed commit messages that adhere t
     ```
 
 ---
-
+## Dummy Commit R
+node versioner/versioner.js commit -F docs/commit_message.txt
 
 ## Example Commit (CLI/Git)
 
 This example demonstrates a comprehensive commit message, as it would appear when authored via the command line interface (CLI) or a Git client:
 
-```
-git add .
-git commit -m "Feat: Implement user authentication module
+### node versioner/versioner.js commit -F docs/commit_message.txt 
+### git commit -F docs/commit_message.txt  
 
-Added login UI with form validation
-Fixed responsive navigation bar issue on mobile devices
-Improved login API response time by optimizing database queries
-Tickets: JIRA-102, GH-55, TSK-900
-Tags: frontend, auth, security
-Note: This commit introduces the core user authentication module
-RollbackPlan: Revert to VRN000000000151 if login functionality introduces critical regressions"
+```
+Feat(banner): Implement banner display on home page and refine card styling
+
+Added:
+- banner successfully added in home view.
+Fixed:
+- husky pre/post-commit issue fixed.
+- description fon size issue in card grid.
+- Ensured consistent CHANGELOG.md updates during versioning.
+Improved:
+- commit body parsing for 'Added', 'Fixed', 'Improved' sections.
 
 ```
 ---
 
 ## Example Generated JSON Output
 ```json
-{
-  "title": "Implement user authentication module",
-  "type": "feat",
-  "commitHash": "IAMSKDEV_1757022000000",
-  "version": "2.3.0",
-  "versionId": "VRN000000000152",
-  "environment": "development",
-  "releaseChannel": "alpha",
-  "status": "pending",
-  "breakingChanges": false,
-
-  "added": [
-    "login UI with form validation"
-  ],
-  "fixed": [
-    "responsive navigation bar issue on mobile devices"
-  ],
-  "improved": [
-    "login API response time by optimizing database queries"
-  ],
-  "tickets": [
-    "JIRA-102",
-    "GH-55",
-    "TSK-900"
-  ],
-  "tags": [
-    "frontend",
-    "auth",
-    "security"
-  ],
-  "note": "This commit introduces the core user authentication module",
-  "rollbackPlan": "Revert to VRN000000000151 if login functionality introduces critical regressions",
-
-  "audit": {
-    "createdBy": "Santosh",
-    "createdAt": "2025-09-04T21:40:00Z",
-    "deployedAt": null,
-    "deployedBy": null
+  {
+    "version": {
+      "new": "1.3.0",
+      "old": "1.2.4",
+      "bump": "minor"
+    },
+    "versionId": "VRN000000000125",
+    "commit": {
+      "hash": {
+        "long": "ab70b9408fa1f8d3effa7f4bb16e2e8ac00710bf",
+        "short": "ab70b94",
+        "url": "https://github.com/iamskdev/apnastore.com/commit/ab70b9408fa1f8d3effa7f4bb16e2e8ac00710bf"
+      },
+      "author": {
+        "name": "ＭＲ.ＳＡＮＴＯＳＨ",
+        "userName": "iamskdev"
+      },
+      "branch": {
+        "name": "main",
+        "url": "https://github.com/iamskdev/apnastore.com/tree/main"
+      }
+    },
+    "type": "feat",
+    "scope": "banner",
+    "subject": "Implement banner display on home page and refine card styling",
+    "revertedCommit": null,
+    "changes": {
+      "added": [
+        "banner successfully added in home view."
+      ],
+      "fixed": [
+        "husky pre/post-commit issue fixed.",
+        "description fon size issue in card grid.",
+        "Ensured consistent CHANGELOG.md updates during versioning."
+      ],
+      "improved": [
+        "commit body parsing for 'Added', 'Fixed', 'Improved' sections."
+      ]
+    },
+    "breakingChanges": [],
+    "notes": [],
+    "tags": [],
+    "tickets": [],
+    "metadata": {
+      "environment": "development",
+      "releaseChannel": "alpha"
+    },
+    "status": "deployed",
+    "audit": {
+      "createdBy": "Santosh",
+      "createdAt": "2025-09-05T18:24:25Z",
+      "deployedAt": "2025-09-05T18:25:01Z",
+      "deployedBy": "Santosh"
+    }
   }
-}
 ---
 
 

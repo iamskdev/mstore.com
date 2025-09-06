@@ -1,5 +1,0 @@
-Fix(zip): Ensure zip creation and output are robust
-
-- Added sys import and explicit flushing for reliable output capture.
-- Ensured clean script exit with sys.exit(0).
-- Corrected zip filename construction to use version['new'], resolving 'Invalid argument' error.

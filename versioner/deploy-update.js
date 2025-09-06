@@ -47,14 +47,14 @@ function updateChangelog(deployedVersions, deployedBy, rollbackPlan) {
   const dateStr = formatIST(deployedVersions[0].audit.deployedAt);
 
   let mdBlock = `## Deployment Update\n\n`;
-  mdBlock += `**Status:** ✅ Deployed by ${deployedBy}\n`;
-  mdBlock += `**Deployed At:** ${dateStr}\n\n`;
+  mdBlock += `**Status**: ✅ Deployed by ${deployedBy}\n`;
+  mdBlock += `**Deployed At**: ${dateStr}\n\n`;
 
   if (rollbackPlan) {
-    mdBlock += `**Rollback Plan:** ${rollbackPlan} (added ${dateStr})\n\n`;
+    mdBlock += `**Rollback Plan**: ${rollbackPlan} (added ${dateStr})\n\n`;
   }
 
-  mdBlock += `**Included Versions:**\n`;
+  mdBlock += `**Included Versions**:\n`;
   deployedVersions.forEach(v => {
     if (v.status === "reverted") {
       mdBlock += `- ${v.version} [${v.versionId}] - ❌ Reverted (${v.subject})
