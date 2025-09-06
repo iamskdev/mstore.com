@@ -10,7 +10,7 @@
         "merchantId": "MRC000000000001"
       },
       "status": {
-        "isActive": true,
+        "isActive": false,
         "priority": 1,
         "visibility": "public"
       },
@@ -23,10 +23,22 @@
     },
     "display": {
       "banner": {
-        "image": "/promotions/banners/icg-banner.jpg",
-        "tagline": "Affordable groceries & fast internet!",
-        "description": "Limited time promotion for our best-selling merchant!"
+        "type": "AD",
+        "title": "Affordable groceries & fast internet!",
+        "subtitle": "Limited time promotion for our best-selling merchant!",
+        "imageUrl": "/promotions/banners/icg-banner.jpg",
+        "priceText": "Shop Now!"
       },
+      "brand": {
+        "logoUrl": "../../source/assets/logos/app-logo.png",
+        "name": "mStore",
+        "itemBrandText": "New Arrivals"
+      },
+      "action": {
+      "type": "LINK",
+      "value": "#",
+      "ctaText": "Explore ➔"
+    },
       "notification": {
         "enabled": true,
         "title": "Promotion Time!",
@@ -102,5 +114,46 @@
       "clicks": 0,
       "conversions": 0
     }
+  },
+  {
+    "meta": {
+      "promoId": "PRM000000000002",
+      "type": "banner",
+      "version": 1,
+      "links": {
+        "userId": null,
+        "merchantId": null
+      },
+      "status": {
+        "isActive": true,
+        "priority": 1,
+        "visibility": "public"
+      },
+      "schedule": {
+        "start": "2025-09-05T00:00:00Z",
+        "end": "2027-07-29T23:59:59Z"
+      },
+      "createdAt": "2025-08-04T12:00:00Z",
+      "updatedAt": "2025-08-04T12:00:00Z"
+    },
+    "display": {
+      "banner": {
+        "type": "AD",
+        "title": "Fresh Stock Daily!",
+        "subtitle": "Discover the latest products at amazing prices.",
+        "imageUrl": "localstore/images/items/red-bull.jpg",
+        "priceText": "Shop Now!"
+      },
+      "brand": {
+        "logoUrl": "../../source/assets/logos/app-logo.png",
+        "name": "mStore",
+        "itemBrandText": "New Arrivals"
+      },
+      "action": {
+      "type": "LINK",
+      "value": "#",
+      "ctaText": "Explore ➔"
+    }
   }
+}
 ]

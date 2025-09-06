@@ -672,12 +672,15 @@ export async function initializeApp() {
     updateProgress(30); // Main data loaded
     sessionStorage.setItem('allItems', JSON.stringify(allItems));
 
-    if (APP_CONFIG.appMode === 'promo') {
+    // Fetch and dispatch active promotion regardless of appMode
+    try {
       const promotionData = await fetchActivePromotion();
       if (promotionData) {
         console.log('🎉 Promotion Activated:', promotionData);
         window.dispatchEvent(new CustomEvent('promotionActivated', { detail: promotionData }));
       }
+    } catch (error) {
+        console.error("Failed to fetch active promotion:", error);
     }
   } catch (error) {
     console.error("❌ Failed to load item data:", error);

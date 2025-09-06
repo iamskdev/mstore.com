@@ -196,35 +196,68 @@ export async function generateSequentialId(collectionName, prefix) {
 }
 
 /**
- * Fetches the first active promotion.
+ * Fetches the first active promotion, respecting the schedule.
  * This function has custom logic that doesn't fit the generic fetcher.
  * @returns {Promise<object|null>} The active promotion object or null.
  */
 export async function fetchActivePromotion() {
     const dataSource = APP_CONFIG.dataSource || 'firebase';
+    const now = new Date(); // Get the current time
 
-    if (dataSource === 'localstore') {
-        try {
+    try {
+        if (dataSource === 'localstore') {
             const promotions = await fetchAllPromotions();
-            return promotions.find(p => p.meta.status.isActive === true) || null;
-        } catch (error) {
-            return null;
-        }
-    } else if (dataSource === 'firebase' || dataSource === 'emulator') {
-        if (!firestore) {
-            return null;
-        }
-        try {
-            const snapshot = await firestore.collection('promotions').where('meta.status.isActive', '==', true).limit(1).get();
+            // Find a promotion that is active AND within its schedule
+            return promotions.find(p => {
+                const status = p.meta?.status;
+                const schedule = p.meta?.schedule;
+
+                if (!status || status.isActive !== true) {
+                    return false; // Must be active
+                }
+
+                // If a schedule exists, check if we are within the time frame
+                if (schedule && schedule.start && schedule.end) {
+                    const startDate = new Date(schedule.start);
+                    const endDate = new Date(schedule.end);
+                    return now >= startDate && now <= endDate;
+                }
+
+                // If it's active and has no schedule, it's always valid
+                return true;
+            }) || null;
+        } else if (dataSource === 'firebase' || dataSource === 'emulator') {
+            if (!firestore) {
+                return null;
+            }
+            // Firestore query to get documents that are active and scheduled correctly.
+            const snapshot = await firestore.collection('promotions')
+                .where('meta.status.isActive', '==', true)
+                .where('meta.schedule.start', '<=', now.toISOString())
+                .get();
+
             if (snapshot.empty) {
                 return null;
             }
-            const promoDoc = snapshot.docs[0];
-            return { promoId: promoDoc.id, ...promoDoc.data() };
-        } catch (error) {
-            return null;
+
+            // Since Firestore can't do two inequality checks on different fields,
+            // we filter the end date in the client.
+            const validPromotion = snapshot.docs.find(doc => {
+                const data = doc.data();
+                const schedule = data.meta?.schedule;
+                if (schedule && schedule.end) {
+                    const endDate = new Date(schedule.end);
+                    return now <= endDate;
+                }
+                // If no end date, it's considered valid.
+                return true; 
+            });
+
+            return validPromotion ? { promoId: validPromotion.id, ...validPromotion.data() } : null;
         }
-    } else {
+    } catch (error) {
+        console.error("Error fetching or filtering active promotion:", error);
         return null;
     }
+    return null;
 }
