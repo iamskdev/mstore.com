@@ -65,7 +65,7 @@ function getBumpType(commitMessage) {
   if (/^revert[: ]/i.test(firstLine)) return "revert";
   if (/BREAKING CHANGE/.test(body) || /!/.test(firstLine.split(":")[0])) return "major";
   if (/^feat[:(]/i.test(firstLine)) return "minor";
-  if (/^(fix|perf)[:(]/i.test(firstLine)) return "patch";
+  if (/^(fix|perf|improve)[:(]/i.test(firstLine)) return "patch";
   return null;
 }
 
