@@ -217,22 +217,14 @@ function updateMarkdown(entry) {
   const commitShort = entry.commit.hash.short;
 
   const dateStr = formatIST(entry.audit.createdAt);
-  let mdBlock = `## Version ${entry.version.new} | ${entry.metadata.environment}
-
-`;
-  mdBlock += `**Type**: [${entry.type}]
-`;
-  mdBlock += `**Author**: [${entry.commit.author.name}]
-`;
-  mdBlock += `**Sort Hash**: [${commitShort}]
-`;
+  let mdBlock = `## ${entry.versionId} | Version ${entry.version.new} | ${entry.metadata.environment}\n\n`;
+  mdBlock += `**Type**: [${entry.type}]\n`;
+  mdBlock += `**Author**: [${entry.commit.author.name}]\n`;
+  mdBlock += `**Sort Hash**: [${commitShort}]\n`;
   if(entry.commit.branch && entry.commit.branch.name) {
-    mdBlock += `**Branch**: [${entry.commit.branch.url}]
-`;
+    mdBlock += `**Branch**: [${entry.commit.branch.url}]\n`;
   }
-  mdBlock += `**Date**: [${dateStr}]
-
-`;
+  mdBlock += `**Date**: [${dateStr}]\n\n`;
 
   const changeTypes = { added: "### Added", fixed: "### Fixed", improved: "### Improved" };
   for (const [key, header] of Object.entries(changeTypes)) {
