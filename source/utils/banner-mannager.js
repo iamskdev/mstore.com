@@ -1,4 +1,14 @@
+import { fetchAllPromotions } from './data-manager.js';
+
 let bannerTemplate = '';
+let allActiveBanners = [];
+let currentBannerIndex = 0;
+let autoSwipeIntervalId = null;
+const AUTO_SWIPE_INTERVAL = 5000; // 5 seconds
+
+let startX = 0;
+let endX = 0;
+const SWIPE_THRESHOLD = 50; // Minimum pixels to consider a swipe
 
 /**
  * Maps a promotion object from the JSON to a flat bannerData object for the template.
@@ -56,41 +66,136 @@ function createBannerFromTemplate(bannerData) {
 }
 
 /**
+ * Updates the active state of pagination dots.
+ */
+function updateActiveDot() {
+    const dotsContainer = document.getElementById('banner-pagination-dots');
+    if (!dotsContainer) return;
+
+    const dots = dotsContainer.children;
+    for (let i = 0; i < dots.length; i++) {
+        if (i === currentBannerIndex) {
+            dots[i].classList.add('active');
+        } else {
+            dots[i].classList.remove('active');
+        }
+    }
+}
+
+/**
  * Renders a banner into the container using the provided promotion data.
  * @param {object} promotionData - The promotion data object from the event detail.
  */
 function renderBanner(promotionData) {
-    const containerId = 'banner-container'; // Standard container ID for the main banner
+    const containerId = 'banner-container';
     const bannerContainer = document.getElementById(containerId);
     if (!bannerContainer) return;
 
-    const fallbackBannerData = {
-        bannerType: "INFO",
-        brandLogo: "source/assets/logos/app-logo.png",
-        brandName: "mStore",
-        itemBrand: "Welcome",
-        contentTitle: "Your One-Stop Shop",
-        contentSubtitle: "Explore products, services, and more.",
-        itemImage: "localstore/images/default-product.jpg",
-        priceText: "Shop Now",
-        ctaText: "Explore",
-        ctaLink: "#"
-    };
-
-    let bannerData;
-    if (promotionData && promotionData.display) {
-        bannerData = mapPromotionToBannerData(promotionData);
-    } else {
-        bannerData = fallbackBannerData;
+    // If there's no valid promotion data, hide the container and exit.
+    if (!promotionData || !promotionData.display) {
+        bannerContainer.style.display = 'none'; // Ensure hidden if no data
+        return;
     }
 
+    // If we have valid data, ensure the container is visible and render the banner.
+    bannerContainer.style.display = 'block'; // Override default display: none; from CSS
+    const bannerData = mapPromotionToBannerData(promotionData);
     const bannerElement = createBannerFromTemplate(bannerData);
-    bannerContainer.innerHTML = '';
+
+    bannerContainer.innerHTML = ''; // Clear previous content
     bannerContainer.appendChild(bannerElement);
+    updateActiveDot(); // Update active dot after rendering
 }
 
 /**
- * Initializes the BannerManager by fetching the template and listening for promotion events.
+ * Navigates to a specific banner by index.
+ * @param {number} index - The index of the banner to show.
+ */
+function goToBanner(index) {
+    if (index < 0) {
+        currentBannerIndex = allActiveBanners.length - 1;
+    } else if (index >= allActiveBanners.length) {
+        currentBannerIndex = 0;
+    } else {
+        currentBannerIndex = index;
+    }
+    renderBanner(allActiveBanners[currentBannerIndex]);
+    startAutoSwipe(); // Restart auto-swipe after manual navigation
+}
+
+/**
+ * Creates pagination dots for each banner.
+ */
+function createPaginationDots() {
+    const dotsContainer = document.getElementById('banner-pagination-dots');
+    if (!dotsContainer) return;
+
+    dotsContainer.innerHTML = ''; // Clear existing dots
+    if (allActiveBanners.length <= 1) {
+        dotsContainer.style.display = 'none'; // Hide dots if 0 or 1 banner
+        return;
+    } else {
+        dotsContainer.style.display = 'flex'; // Show dots if multiple banners
+    }
+
+    for (let i = 0; i < allActiveBanners.length; i++) {
+        const dot = document.createElement('span');
+        dot.classList.add('banner-dot');
+        dot.dataset.index = i;
+        dot.addEventListener('click', () => {
+            goToBanner(i);
+        });
+        dotsContainer.appendChild(dot);
+    }
+}
+
+function showNextBanner() {
+    if (allActiveBanners.length === 0) {
+        renderBanner(null); // Hide banner if no active banners
+        return;
+    }
+
+    currentBannerIndex = (currentBannerIndex + 1) % allActiveBanners.length;
+    renderBanner(allActiveBanners[currentBannerIndex]);
+}
+
+function startAutoSwipe(interval = AUTO_SWIPE_INTERVAL) {
+    if (autoSwipeIntervalId) {
+        clearInterval(autoSwipeIntervalId);
+    }
+    if (allActiveBanners.length > 1) {
+        autoSwipeIntervalId = setInterval(showNextBanner, interval);
+    }
+}
+
+// Touch event handlers for swipe
+function handleTouchStart(event) {
+    startX = event.touches[0].clientX;
+    clearInterval(autoSwipeIntervalId); // Stop auto-swipe on touch
+}
+
+function handleTouchMove(event) {
+    endX = event.touches[0].clientX;
+}
+
+function handleTouchEnd() {
+    const diffX = endX - startX;
+    if (Math.abs(diffX) > SWIPE_THRESHOLD) {
+        if (diffX > 0) {
+            // Swiped right (show previous banner) - Decrement index
+            goToBanner(currentBannerIndex - 1);
+        } else {
+            // Swiped left (show next banner) - Increment index
+            goToBanner(currentBannerIndex + 1);
+        }
+    }
+    startX = 0;
+    endX = 0;
+    startAutoSwipe(); // Restart auto-swipe after swipe
+}
+
+/**
+ * Initializes the BannerManager by fetching the template and setting up auto-swiping.
  */
 export async function initBannerManager() {
     try {
@@ -98,15 +203,46 @@ export async function initBannerManager() {
         if (!templateResponse.ok) throw new Error(`Failed to fetch banner.html: ${templateResponse.statusText}`);
         bannerTemplate = await templateResponse.text();
 
-        // Listen for the global promotion event dispatched by main.js
-        window.addEventListener('promotionActivated', (event) => {
-            console.log("BannerManager: Caught promotionActivated event.", event.detail);
-            renderBanner(event.detail);
+        // Fetch all promotions and filter active ones
+        const allPromotions = await fetchAllPromotions();
+        const now = new Date();
+        allActiveBanners = allPromotions.filter(p => {
+            const status = p.meta?.status;
+            const schedule = p.meta?.schedule;
+
+            if (!status || status.isActive !== true) {
+                return false; // Must be active
+            }
+
+            if (schedule && schedule.start && schedule.end) {
+                const startDate = new Date(schedule.start);
+                const endDate = new Date(schedule.end);
+                return now >= startDate && now <= endDate;
+            }
+
+            return true; // If active and no schedule, it's always valid
         });
+
+        if (allActiveBanners.length > 0) {
+            createPaginationDots(); // Create dots after banners are loaded
+            renderBanner(allActiveBanners[currentBannerIndex]); // Render initial banner
+            startAutoSwipe(); // Start auto-swiping
+
+            // Add touch event listeners for swipe
+            const bannerContainer = document.getElementById('banner-container');
+            if (bannerContainer) {
+                bannerContainer.addEventListener('touchstart', handleTouchStart);
+                bannerContainer.addEventListener('touchmove', handleTouchMove);
+                bannerContainer.addEventListener('touchend', handleTouchEnd);
+            }
+
+        } else {
+            renderBanner(null); // Hide banner if no active banners
+        }
 
     } catch (error) {
         console.error('Error initializing BannerManager:', error);
-        // If the banner manager fails to init, we can render a fallback banner
-        renderBanner(null); 
+        // If the banner manager fails to init, render a fallback banner.
+        // renderFallbackBanner(); // Removed fallback banner call
     }
 }

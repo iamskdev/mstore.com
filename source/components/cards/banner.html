@@ -29,15 +29,6 @@
   </article>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0.2rem;
-    }
-
     .banner-card {
       width: 100%; /* Make it take full width of its container */
       max-width: auto; /* Set a maximum width */
@@ -47,6 +38,8 @@
       overflow: hidden;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       font-size: 14px;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Top Section */
@@ -55,7 +48,10 @@
       align-items: center;
       background: linear-gradient(to right, #1c1c1c, #b86a0d);
       color: #fff;
+      padding: 9px 0; /* Added vertical padding */
+      margin: 0;
       position: relative;
+      flex: 1; /* Take available vertical space */
     }
 
 .banner-top {
@@ -64,6 +60,7 @@
   position: relative;
   height: 80px; /* Fixed height */
   overflow: hidden; /* Hide overflowing content if any */
+  padding-left: 5px; /* Add some padding to the left */
 }
 
 .banner-badge {
@@ -82,13 +79,15 @@
 
 .banner-content {
   position: absolute;
-  top: 25px;
-  align-items: flex-start;
+  top: 20px;
   left: 7px;
-  right: 2px;
+  right: 4px;
   display: flex; /* Keep flex for internal alignment of title/subtitle */
   flex-direction: column;
-  justify-content: center;   /* vertical center */
+  justify-content: center;   /* vertical top-align */
+  align-items: flex-start; /* horizontal left-align */
+  height: calc(100% - 20px); /* Take remaining height after top: 20px */
+  overflow: hidden; /* Clip content if it exceeds calculated height */
 }
 
 .banner-type {
@@ -148,9 +147,9 @@
     .content-title {
       margin: 0;
       font-size: 16px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: nowrap; /* Single line */
+      overflow: hidden; /* Truncate */
+      text-overflow: ellipsis; /* Add ellipsis */
     }
 
     .content-subtitle {
@@ -158,6 +157,10 @@
       font-size: 12px;
       color: #ffae42;
       font-weight: bold;
+      display: -webkit-box; /* For multi-line truncation */
+      -webkit-line-clamp: 2; /* Max 2 lines */
+      -webkit-box-orient: vertical;
+      overflow: hidden; /* Truncate */
     }
 
     .item-image {
@@ -165,7 +168,7 @@
       height: 80px; /* Fixed height */
       flex-shrink: 0;
       display: block;
-      margin: 9px 8px 9px 0px;
+      margin: 0px 8px 0px 0px; /* Removed vertical margins */
       background: #fff;
       border-radius: 5px;
     }
@@ -181,13 +184,15 @@
     /* Bottom Section */
     .bottom-area {
       background: #F1F5FF;
-      padding: 5px 7px;
+      padding: 0 7px; /* Removed vertical padding */
       display: flex;
+      margin: 0;
       justify-content: space-between;
       align-items: center;
       font-size: 14px;
       font-weight: bold;
       border-top: 1px solid #eee;
+      height: 30px; /* Fixed height for the footer */
     }
 
     .bottom-area a {

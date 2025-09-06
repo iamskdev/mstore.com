@@ -1,7 +1,6 @@
-// Define APP_VERSIONa and APP_ENVIRONMENT here as the single source of truth
 const APP_NAME = "mStore";
-const APP_VERSION = "1.3.2"; // auto bump by script implementing soon
-const APP_ENVIRONMENT = "development"; // auto bumping by script
+const APP_VERSION = "0.4.3"; // Auto bump by versioner.js
+const APP_ENVIRONMENT = "development"; 
 const CACHE_NAME = `${APP_NAME}_Cache_v${APP_VERSION}`;
 const OFFLINE_PAGE = './source/common/pages/offline.html';
 const RUNTIME_CACHE = 'runtime-cache';
@@ -32,6 +31,7 @@ const APP_SHELL_URLS = [
   './source/utils/pwa-manager.js',
   './source/utils/theme-switcher.js',
   './source/utils/toast.js',
+  './source/utils/banner-mannager.js', // Added banner-mannager.js
 
   // Firebase Modules
   './source/firebase/auth/auth.js',
@@ -40,11 +40,14 @@ const APP_SHELL_URLS = [
 
   // Components
   './source/components/header.html',
+  './source/components/filter-bar.html',
+  './source/components/footer.html',
   './source/components/drawer.html',
   './source/components/tab-nav.html',
   './source/components/role-switcher.html',
   './source/components/filter-modal.html',
   './source/components/cards/card-grid.html',
+  './source/components/cards/banner.html', // Added banner.html
 
   // Pages & Associated Assets from view-config.
   './source/utils/view-config.js',
@@ -151,11 +154,24 @@ self.addEventListener('install', (event) => {
       try {
         const cache = await caches.open(CACHE_NAME);
         console.log('Service Worker: Caching App Shell...');
-        await cache.addAll(APP_SHELL_URLS);
+        for (const url of APP_SHELL_URLS) {
+          try {
+            const response = await fetch(url);
+            if (response.ok) {
+              await cache.put(url, response);
+              console.log(`Service Worker: Successfully cached ${url}`);
+            } else {
+              console.warn(`Service Worker: Failed to cache ${url} - Response not OK: ${response.status}`);
+            }
+          } catch (error) {
+            console.error(`Service Worker: Failed to cache ${url} - Network error or other issue:`, error);
+          }
+        }
         console.log('Service Worker: App Shell caching complete.');
         await self.skipWaiting();
       } catch (error) {
-        console.error('Service Worker: Failed to cache App Shell during install.', error);
+         // This catch block will now primarily catch errors from caches.open or self.skipWaiting
+        console.error('Service Worker: Failed to open cache or skip waiting during install.', error);
       }
     })()
   );
@@ -183,9 +199,12 @@ self.addEventListener('activate', (event) => {
         requests.map(async request => {
           const response = await runtimeCache.match(request);
           if (response) {
-            const date = new Date(response.headers.get('date'));
-            if (Date.now() - date > MAX_RUNTIME_CACHE_AGE * 1000) {
-              await runtimeCache.delete(request);
+            const dateHeader = response.headers.get('date');
+            if (dateHeader) {
+              const date = new Date(dateHeader);
+              if (!isNaN(date.getTime()) && (Date.now() - date.getTime() > MAX_RUNTIME_CACHE_AGE * 1000)) {
+                await runtimeCache.delete(request);
+              }
             }
           }
         })

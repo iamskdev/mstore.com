@@ -10,7 +10,7 @@
         "merchantId": "MRC000000000001"
       },
       "status": {
-        "isActive": false,
+        "isActive": true,
         "priority": 1,
         "visibility": "public"
       },
@@ -30,15 +30,15 @@
         "priceText": "Shop Now!"
       },
       "brand": {
-        "logoUrl": "../../source/assets/logos/app-logo.png",
+        "logoUrl": "../source/assets/logos/app-logo.png",
         "name": "mStore",
         "itemBrandText": "New Arrivals"
       },
       "action": {
-      "type": "LINK",
-      "value": "#",
-      "ctaText": "Explore ➔"
-    },
+        "type": "LINK",
+        "value": "#",
+        "ctaText": "Explore ➔"
+      },
       "notification": {
         "enabled": true,
         "title": "Promotion Time!",
@@ -141,19 +141,185 @@
         "type": "AD",
         "title": "Fresh Stock Daily!",
         "subtitle": "Discover the latest products at amazing prices.",
-        "imageUrl": "localstore/images/items/red-bull.jpg",
+        "imageUrl": "./localstore/images/items/red-bull.jpg",
         "priceText": "Shop Now!"
       },
       "brand": {
-        "logoUrl": "../../source/assets/logos/app-logo.png",
+        "logoUrl": "./source/assets/logos/app-logo.png",
         "name": "mStore",
         "itemBrandText": "New Arrivals"
       },
       "action": {
-      "type": "LINK",
-      "value": "#",
-      "ctaText": "Explore ➔"
+        "type": "LINK",
+        "value": "#",
+        "ctaText": "Explore ➔"
+      }
+    }
+  },
+  {
+    "meta": {
+      "promoId": "PRM000000000003",
+      "type": "banner",
+      "version": 1,
+      "links": {
+        "userId": null,
+        "merchantId": null
+      },
+      "status": {
+        "isActive": true,
+        "priority": 1,
+        "visibility": "public"
+      },
+      "schedule": {
+        "start": "2025-09-01T00:00:00Z",
+        "end": "2025-09-30T23:59:59Z"
+      },
+      "createdAt": "2025-09-06T10:00:00Z",
+      "updatedAt": "2025-09-06T10:00:00Z"
+    },
+    "display": {
+      "banner": {
+        "type": "INFO",
+        "title": "Limited Time Offer!",
+        "subtitle": "Get 20% off on all electronics.",
+        "imageUrl": "./localstore/images/items/colgate-paste.jpg",
+        "priceText": "Grab it now!"
+      },
+      "brand": {
+        "logoUrl": "./source/assets/logos/app-logo.png",
+        "name": "mStore",
+        "itemBrandText": "Special Deal"
+      },
+      "action": {
+        "type": "LINK",
+        "value": "#",
+        "ctaText": "View Details ➔"
+      }
+    }
+  },
+  {
+    "meta": {
+      "promoId": "PRM000000000004",
+      "type": "banner",
+      "version": 1,
+      "links": {
+        "userId": null,
+        "merchantId": null
+      },
+      "status": {
+        "isActive": true,
+        "priority": 1,
+        "visibility": "public"
+      },
+      "schedule": {
+        "start": "2025-09-01T00:00:00Z",
+        "end": "2025-09-30T23:59:59Z"
+      },
+      "createdAt": "2025-09-06T10:05:00Z",
+      "updatedAt": "2025-09-06T10:05:00Z"
+    },
+    "display": {
+      "banner": {
+        "type": "AD",
+        "title": "New Arrivals in Fashion!",
+        "subtitle": "Explore our trendy collection.",
+        "imageUrl": "./localstore/images/items/lux-soap.jpg",
+        "priceText": "Shop Fashion"
+      },
+      "brand": {
+        "logoUrl": "./source/assets/logos/app-logo.png",
+        "name": "mStore",
+        "itemBrandText": "Fashion"
+      },
+      "action": {
+        "type": "LINK",
+        "value": "#",
+        "ctaText": "Browse Now ➔"
+      }
+    }
+  },
+  {
+    "meta": {
+      "promoId": "PRM000000000005",
+      "title": null,
+      "type": "banner",
+      "version": 1,
+      "links": {
+        "userId": null,
+        "merchantId": null
+      },
+      "status": {
+        "isActive": true,
+        "priority": 1,
+        "visibility": "public"
+      },
+      "schedule": {
+        "start": "2025-09-01T00:00:00Z",
+        "end": "2025-09-30T23:59:59Z"
+      },
+      "createdAt": "2025-09-06T11:00:00Z",
+      "updatedAt": "2025-09-06T11:00:00Z"
+    },
+    "display": {
+      "banner": {
+        "type": "INFO",
+        "title": "Grand Opening Sale!",
+        "subtitle": "Up to 50% off on all items for a limited time. Don't miss out!",
+        "imageUrl": "./localstore/images/items/kurkure.jpg",
+        "priceText": "Shop Now"
+      },
+      "brand": {
+        "logoUrl": "./source/assets/logos/app-logo.png",
+        "name": "mStore",
+        "itemBrandText": "New Store"
+      },
+      "action": {
+        "type": "LINK",
+        "value": "#",
+        "ctaText": "Visit Store ➔"
+      }
+    }
+  },
+  {
+    "meta": {
+      "promoId": "PRM000000000006",
+      "title": null,
+      "type": "banner",
+      "version": 1,
+      "links": {
+        "userId": null,
+        "merchantId": null
+      },
+      "status": {
+        "isActive": true,
+        "priority": 1,
+        "visibility": "public"
+      },
+      "schedule": {
+        "start": "2025-09-01T00:00:00Z",
+        "end": "2025-09-30T23:59:59Z"
+      },
+      "createdAt": "2025-09-06T11:05:00Z",
+      "updatedAt": "2025-09-06T11:05:00Z"
+    },
+    "display": {
+      "banner": {
+        "type": "AD",
+        "title": "Fresh Produce Arrived!",
+        "subtitle": "Organic fruits and vegetables, directly from local farms. Healthy and delicious!",
+        "imageUrl": "./localstore/images/items/rice.jpg",
+        "priceText": "Order Fresh"
+      },
+      "brand": {
+        "logoUrl": "./source/assets/logos/app-logo.png",
+        "name": "mStore",
+        "itemBrandText": "Farm Fresh"
+      },
+      "action": {
+        "type": "LINK",
+        "value": "#",
+        "ctaText": "View Produce ➔"
+      }
     }
   }
-}
 ]

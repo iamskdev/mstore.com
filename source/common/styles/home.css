@@ -8,4 +8,27 @@
 
 #banner-container {
   margin-bottom: 0.5rem;
+  display: none; /* Hidden by default, shown when a banner is available */
+}
+
+#banner-pagination-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.banner-dot {
+  height: 8px;
+  width: 8px;
+  margin: 0 4px;
+  background-color: #717171;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.banner-dot.active {
+  background-color: #bbb;
 }
