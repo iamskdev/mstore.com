@@ -24,7 +24,11 @@
     <div class="stock-status {{STOCK_STATUS_CLASS}}">
       <i class="{{STOCK_ICON_CLASS}}"></i> {{STOCK_STATUS_TEXT}}
     </div>
-    <p class="card-description">{{DESCRIPTION}}</p>
+    <div class="rating">
+      <div class="stars">{{STARS_HTML}}</div>
+      <span class="rating-count">({{RATING_VALUE}})</span>
+    </div>
+    
     <button class="add-to-cart" {{ADD_TO_CART_DISABLED}}>
       <i class="{{ADD_TO_CART_ICON_CLASS}}"></i> {{ADD_TO_CART_TEXT}}
     </button>
@@ -70,7 +74,7 @@
     width: 100%;
     padding-bottom: 100%; /* For 1:1 aspect ratio (square image) */
     overflow: hidden;
-    background-color: var(--bg-tertiary); /* Placeholder for broken images */
+    background-color: none; /* Placeholder for broken images */
   }
 
   .card-img {
@@ -81,6 +85,7 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
+    padding: 0.25rem; /* Added padding to match add-to-cart button */
   }
 
   .card:hover .card-img {
@@ -119,7 +124,7 @@
 
   .card-info {
     --info-vertical-spacing: 0.2rem; /* Consistent vertical spacing for card items */
-    padding: 0.5rem 0.25rem;
+    padding: 0.2rem 0.25rem;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -178,6 +183,32 @@
     color: var(--text-secondary);
   }
 
+  /* Stars */
+  .stars {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .stars span {
+    color: #ccc; /* empty star */
+    display: inline-block;
+    position: relative;
+  }
+  .stars .filled {
+    color: #ffb400; /* full star */
+  }
+  .stars .half {
+    color: #ccc;
+  }
+  .stars .half::before {
+    content: "★";
+    color: #ffb400;
+    position: absolute;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+  }
+
   .stock-status {
     font-size: 0.75rem;
     font-weight: 600;
@@ -195,18 +226,7 @@
     color: var(--accent-danger);
   }
 
-  .card .card-description {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin-top: 0; /* Reset default browser margin */
-    margin-bottom: var(--info-vertical-spacing); /* Apply spacing before button */
-    flex-grow: 1;
-    text-align: left;
-  }
+  
 
   .add-to-cart {
     background: var(--accent-primary);

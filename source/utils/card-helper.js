@@ -28,6 +28,29 @@ function renderTemplate(template, data) {
 }
 
 /**
+ * Generates HTML for star rating display.
+ * @param {number} rating - The rating value (e.g., 3.5).
+ * @returns {string} HTML string for star display.
+ */
+function generateStarsHtml(rating) {
+    let starsHtml = '';
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+    for (let i = 0; i < fullStars; i++) {
+        starsHtml += '<span class="filled">★</span>';
+    }
+    if (hasHalfStar) {
+        starsHtml += '<span class="half">★</span>';
+    }
+    for (let i = 0; i < emptyStars; i++) {
+        starsHtml += '<span>★</span>';
+    }
+    return starsHtml;
+}
+
+/**
  * Creates a card element from the card-grid.html template.
  * @param {object} item - The item data (product or service).
  * @param {boolean} isSkeleton - If true, returns a skeleton card.
@@ -120,7 +143,10 @@ export function createCardFromTemplate(item, isSkeleton = false) {
         STOCK_STATUS_CLASS: stockStatusClass,
         STOCK_ICON_CLASS: stockIconClass,
         STOCK_STATUS_TEXT: stockStatusText,
-        DESCRIPTION: item.info.description || '',
+        STARS_HTML: generateStarsHtml(item.analytics?.rating || 0),
+        NUM_REVIEWS: item.analytics?.numReviews || 0,
+        RATING_VALUE: item.analytics?.rating || 0,
+        
         ADD_TO_CART_DISABLED: addToCartDisabled,
         ADD_TO_CART_ICON_CLASS: addToCartIconClass,
         ADD_TO_CART_TEXT: addToCartText,
