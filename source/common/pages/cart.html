@@ -1,0 +1,50 @@
+
+  <!-- Header Tabs -->
+  <div class="card-header">
+    <div class="tab active" id="tabProducts" onclick="switchTab('products')">Products</div>
+    <div class="tab" id="tabServices" onclick="switchTab('services')">Services</div>
+  </div>
+
+  <!-- Tab Content Area -->
+  <div class="tab-content-container">
+    <div class="tab-panel active" id="products-tab-panel">
+      <!-- Product items will be rendered here by JS -->
+    </div>
+    <div class="tab-panel" id="services-tab-panel">
+      <!-- Service items will be rendered here by JS -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="card-footer">
+    <span class="total-price">₹<span id="cardTotal">0</span></span>
+    <button class="btn-order">Place Order</button>
+  </div>
+
+  <template id="cart-item-template">
+    <div class="card-item">
+      <div class="card-item-body">
+        <div class="card-details">
+            <p class="card-title">{{ITEM_NAME}}</p>
+         <p class="card-price-container">
+            <span class="card-price">₹{{ITEM_PRICE}}</span>
+            <span class="card-old-price">₹{{ITEM_OLD_PRICE}}</span>
+            <span class="card-discount">{{ITEM_DISCOUNT}}</span>
+          </p>
+          <div class="stars">{{STARS_HTML}} <small>({{RATING_VALUE}})</small></div>
+          <div class="stock-status {{STOCK_STATUS_CLASS}}">
+            <i class="{{STOCK_ICON_CLASS}}"></i> {{STOCK_STATUS_TEXT}}
+          </div>
+        </div>
+        <img src="{{ITEM_IMG}}" alt="{{ITEM_NAME}}">
+      </div>
+      <div class="card-actions">
+        <div class="card-actions-wrapper">
+          <div class="quantity-or-date-selector"></div> <!-- Placeholder for dynamic content -->
+          <button class="action-button">{{ACTION_BUTTON_TEXT}}</button>
+          <button class="save-for-later-button">Save for later</button>
+          <button class="remove-item-button">Remove</button>
+        </div>
+      </div>
+    </div>
+  </template>
