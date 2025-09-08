@@ -19,6 +19,7 @@ const APP_SHELL_URLS = [
   './source/assets/logos/app-logo.png',
 
   // Core Scripts & Config
+  './source/config.json',
   './source/utils/app-config.js',
   './source/main.js',
   './source/firebase/firebase-config.js',
