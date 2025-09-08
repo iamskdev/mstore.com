@@ -14,6 +14,38 @@ import { AuthService } from './firebase/auth/auth.js';
 import { viewConfig, defaultViews } from './utils/view-config.js';
 import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.js';
 
+// Global variable to store the loaded app configuration
+let appConfig = null;
+
+/**
+ * Loads the application configuration from config.json.
+ * @returns {Promise<object>} The loaded configuration object.
+ */
+async function loadAppConfig() {
+  if (appConfig) {
+    return appConfig; // Return cached config if already loaded
+  }
+  try {
+    const response = await fetch('./source/config.json');
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    appConfig = await response.json();
+    return appConfig;
+  } catch (error) {
+    console.error("Error loading config.json:", error);
+    // Provide a default or fallback configuration in case of error
+    appConfig = {
+      app: {},
+      urls: {
+        customDomain: "",
+        pageUrl: window.location.origin + window.location.pathname // Fallback to current origin and path
+      }
+    };
+    return appConfig;
+  }
+}
+
 class ViewManager {
   constructor() {
     // Initialize with a null state. The correct state will be determined
@@ -184,20 +216,13 @@ class ViewManager {
     // Use the History API with a hash-based path for SPA compatibility on simple static servers.
     const hashPath = `/#/${role}/${viewId}`; // जैसे: #/guest/home
 
-    // <base> टैग से बेस पाथ प्राप्त करें। यदि नहीं मिलता है तो '/' पर डिफ़ॉल्ट करें।
-    let baseHref = document.querySelector('base')?.getAttribute('href') || '/';
+    // Use the pageUrl from the loaded configuration as the base for the final path.
+    const baseUrl = window.APP_CONFIG.urls.pageUrl;
 
-    // --- baseHref को एक स्वच्छ, एब्सोल्यूट पाथ सुनिश्चित करने के लिए सैनिटाइज करें ---
-    // 1. यदि अंत में स्लैश है तो उसे हटा दें, ताकि बाद में डबल स्लैश न बनें।
-    if (baseHref.endsWith('/')) {
-      baseHref = baseHref.slice(0, -1);
-    }
-    // 2. सुनिश्चित करें कि यह डोमेन रूट से एक एब्सोल्यूट पाथ बनाने के लिए स्लैश से शुरू होता है।
-    if (!baseHref.startsWith('/')) {
-      baseHref = '/' + baseHref;
-    }
+    // Ensure baseUrl ends with a single slash for consistent path construction.
+    const sanitizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 
-    const finalPath = `${baseHref}${hashPath}`;
+    const finalPath = `${sanitizedBaseUrl}${hashPath}`;
 
     // केवल तभी एक नई स्थिति पुश करें जब पाथ वास्तव में बदल रहा हो।
     history.pushState({ role, view: viewId }, '', finalPath);
@@ -621,6 +646,24 @@ export async function loadCoreComponents() {
 // Main application initialization function
 export async function initializeApp() {
   console.log("🚀 🚀 Initializing App...");
+  // Load application configuration
+  const loadedConfig = await loadAppConfig();
+
+  // Ensure window.APP_CONFIG.urls exists
+  if (!window.APP_CONFIG.urls) {
+    window.APP_CONFIG.urls = {}; // Initialize if it doesn't exist
+  }
+
+  // Determine the base URL based on the environment
+  if (window.location.hostname === '127.0.0.1') {
+    window.APP_CONFIG.urls.pageUrl = loadedConfig.urls.localIp;
+  } else if (loadedConfig.urls.customDomain && loadedConfig.urls.customDomain !== "" && window.location.hostname === new URL(loadedConfig.urls.customDomain).hostname) {
+    window.APP_CONFIG.urls.pageUrl = loadedConfig.urls.customDomain;
+  } else {
+    // Default to the pageUrl specified in config.json (e.g., GitHub Pages URL)
+    window.APP_CONFIG.urls.pageUrl = loadedConfig.urls.pageUrl;
+  }
+
   setupPwaRefreshBlockers();
 
   let totalProgress = 0;
