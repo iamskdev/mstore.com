@@ -8,7 +8,7 @@ const products = [
     qty: 1,
     rating: 4.2,
     stock: "In stock",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ const products = [
     qty: 1,
     rating: 4.0,
     stock: "In stock",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ const products = [
     qty: 1,
     rating: 3.8,
     stock: "Only 5 left",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ const products = [
     qty: 1,
     rating: 4.4,
     stock: "In stock",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   },
   {
     id: 5,
@@ -52,7 +52,7 @@ const products = [
     qty: 1,
     rating: 4.1,
     stock: "In stock",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   },
   {
     id: 6,
@@ -63,7 +63,7 @@ const products = [
     qty: 1,
     rating: 3.9,
     stock: "Only 3 left",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   },
   {
     id: 7,
@@ -74,7 +74,7 @@ const products = [
     qty: 1,
     rating: 4.3,
     stock: "In stock",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   },
   {
     id: 8,
@@ -85,7 +85,7 @@ const products = [
     qty: 1,
     rating: 4.5,
     stock: "Only 1 left",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   },
   {
     id: 9,
@@ -96,7 +96,7 @@ const products = [
     qty: 1,
     rating: 4.6,
     stock: "In stock",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   },
   {
     id: 10,
@@ -107,7 +107,7 @@ const products = [
     qty: 1,
     rating: 4.2,
     stock: "Only 4 left",
-    img: "../localstore/images/default-product.jpg"
+    img: "./localstore/images/default-product.jpg"
   }
 ];
 
@@ -121,7 +121,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.7,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   },
   {
     id: 2,
@@ -132,7 +132,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.6,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   },
   {
     id: 3,
@@ -143,7 +143,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.5,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   },
   {
     id: 4,
@@ -154,7 +154,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.8,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   },
   {
     id: 5,
@@ -165,7 +165,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.7,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   },
   {
     id: 6,
@@ -176,7 +176,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.4,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   },
   {
     id: 7,
@@ -187,7 +187,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.5,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   },
   {
     id: 8,
@@ -198,7 +198,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.6,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   },
   {
     id: 9,
@@ -209,7 +209,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.7,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   },
   {
     id: 10,
@@ -220,7 +220,7 @@ const services = [
     qty: 1, // Added qty
     rating: 4.8,
     stock: "Available",
-    img: "../localstore/images/default-service.jpg"
+    img: "./localstore/images/default-service.jpg"
   }
 ];
 
@@ -281,7 +281,7 @@ const services = [
           stockStatusText = 'Out of Stock';
         }
 
-        const actionButtonText = activeTab === 'services' ? 'Book Now' : 'Buy now';
+        const actionButtonText = 'Request';
 
         const cardItem = document.importNode(cartItemTemplate.content, true);
 
@@ -330,11 +330,7 @@ const services = [
       console.log(`Total price updated to: ${total}`);
 
       const orderButton = document.querySelector('.btn-order');
-      if (activeTab === 'services') {
-        orderButton.innerText = 'Book Now';
-      } else {
-        orderButton.innerText = 'Place Order';
-      }
+      orderButton.innerText = 'Request All';
     }
 
     window.updateQty = function(id, qty) {
@@ -384,5 +380,34 @@ const services = [
       }
       rendercard();
     }
+
+    // Swipe to change tabs
+    const tabPanels = document.querySelector('.tab-content-container');
+    let touchstartX = 0;
+    let touchendX = 0;
+
+    function handleGesture() {
+        if (touchendX < touchstartX) {
+            // Swiped left
+            if (activeTab === 'products') {
+                switchTab('services');
+            }
+        }
+        if (touchendX > touchstartX) {
+            // Swiped right
+            if (activeTab === 'services') {
+                switchTab('products');
+            }
+        }
+    }
+
+    tabPanels.addEventListener('touchstart', e => {
+        touchstartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    tabPanels.addEventListener('touchend', e => {
+        touchendX = e.changedTouches[0].screenX;
+        handleGesture();
+    });
 
     rendercard();

@@ -1,5 +1,5 @@
 const APP_NAME = "mStore";
-const APP_VERSION = "0.5.0"; // Auto bump by versioner.js
+const APP_VERSION = "0.5.1"; // Auto bump by versioner.js
 const APP_ENVIRONMENT = "development"; 
 const CACHE_NAME = `${APP_NAME}_Cache_v${APP_VERSION}`;
 const OFFLINE_PAGE = './source/common/pages/offline.html';
@@ -52,6 +52,9 @@ const APP_SHELL_URLS = [
   // Pages & Associated Assets from view-config.
   './source/utils/view-config.js',
   './source/utils/card-helper.js',
+  './source/common/pages/cart.html',
+  './source/common/styles/cart.css',
+  './source/common/scripts/cart.js',
   './source/common/pages/home.html',
   './source/common/styles/home.css',
   './source/common/scripts/home.js',

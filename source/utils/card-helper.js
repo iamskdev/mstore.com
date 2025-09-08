@@ -134,12 +134,12 @@ export function createCardFromTemplate(item, isSkeleton = false) {
     }
     
     const templateData = {
-        HREF: `item-details.html?itemId=${item.meta.itemId}`,
+        HREF: 'javascript:void(0);', // Disabled navigation to item-details
         IMAGE_SRC: item.media?.thumbnail || (item.type === 'product' ? DEFAULT_PRODUCT_IMAGE : DEFAULT_SERVICE_IMAGE),
         ITEM_NAME: item.info.name,
         CURRENT_PRICE: currentPrice.toFixed(2),
         ORIGINAL_PRICE: originalPrice && originalPrice > currentPrice ? originalPrice.toFixed(2) : null,
-        UNIT: (item.info.attributes?.weight || item.info.attributes?.volume) ? `per ${item.info.attributes.weight || item.info.attributes.volume}` : unitSymbol,
+        UNIT: (item.info.attributes?.weight || item.info.attributes?.volume) ? `/ ${item.info.attributes.weight || item.info.attributes.volume}` : (unitSymbol ? `/${unitSymbol}` : ''),
         STOCK_STATUS_CLASS: stockStatusClass,
         STOCK_ICON_CLASS: stockIconClass,
         STOCK_STATUS_TEXT: stockStatusText,
