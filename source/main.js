@@ -664,6 +664,13 @@ export async function initializeApp() {
     window.APP_CONFIG.urls.pageUrl = loadedConfig.urls.pageUrl;
   }
 
+  // Handle fallback URL for old links/domains
+  if (loadedConfig.urls.fallbackUrl && loadedConfig.urls.fallbackUrl !== "" && window.location.href.startsWith(loadedConfig.urls.fallbackUrl) && window.APP_CONFIG.urls.pageUrl !== loadedConfig.urls.fallbackUrl) {
+    console.warn(`Redirecting from old URL: ${window.location.href} to ${window.APP_CONFIG.urls.pageUrl}`);
+    window.location.replace(window.APP_CONFIG.urls.pageUrl);
+    return; // Stop further initialization as we are redirecting
+  }
+
   setupPwaRefreshBlockers();
 
   let totalProgress = 0;

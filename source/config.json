@@ -2,7 +2,8 @@
   "app": {},
   "urls": {
     "localIp": "http://127.0.0.1:3000/",
-    "customDomain": "",
-    "pageUrl": "https://iamskdev.github.io/apnastore.com/"
+    "pageUrl": "https://iamskdev.github.io/mstore.com/",
+    "fallbackUrl": "https://iamskdev.github.io/apnastore.com/",
+    "customDomain": ""
   }
 }

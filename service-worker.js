@@ -1,5 +1,5 @@
 const APP_NAME = "mStore";
-const APP_VERSION = "0.5.1"; // Auto bump by versioner.js
+const APP_VERSION = "0.5.2"; // Auto bump by versioner.js
 const APP_ENVIRONMENT = "development"; 
 const CACHE_NAME = `${APP_NAME}_Cache_v${APP_VERSION}`;
 const OFFLINE_PAGE = './source/common/pages/offline.html';
