@@ -1,413 +1,522 @@
-const products = [
-  {
-    id: 1,
-    name: "Wireless Bluetooth Headphones",
-    price: 899,
-    oldPrice: 1499,
-    discount: "40% off",
-    qty: 1,
-    rating: 4.2,
-    stock: "In stock",
-    img: "./localstore/images/default-product.jpg"
-  },
-  {
-    id: 2,
-    name: "Stainless Steel Water Bottle 1L",
-    price: 250,
-    oldPrice: 499,
-    discount: "50% off",
-    qty: 1,
-    rating: 4.0,
-    stock: "In stock",
-    img: "./localstore/images/default-product.jpg"
-  },
-  {
-    id: 3,
-    name: "Portable USB Mini Fan",
-    price: 399,
-    oldPrice: 799,
-    discount: "50% off",
-    qty: 1,
-    rating: 3.8,
-    stock: "Only 5 left",
-    img: "./localstore/images/default-product.jpg"
-  },
-  {
-    id: 4,
-    name: "Classic Leather Wallet for Men",
-    price: 699,
-    oldPrice: 1299,
-    discount: "46% off",
-    qty: 1,
-    rating: 4.4,
-    stock: "In stock",
-    img: "./localstore/images/default-product.jpg"
-  },
-  {
-    id: 5,
-    name: "Casual Cotton T-Shirt",
-    price: 349,
-    oldPrice: 699,
-    discount: "50% off",
-    qty: 1,
-    rating: 4.1,
-    stock: "In stock",
-    img: "./localstore/images/default-product.jpg"
-  },
-  {
-    id: 6,
-    name: "Non-stick Frying Pan 24cm",
-    price: 560,
-    oldPrice: 999,
-    discount: "44% off",
-    qty: 1,
-    rating: 3.9,
-    stock: "Only 3 left",
-    img: "./localstore/images/default-product.jpg"
-  },
-  {
-    id: 7,
-    name: "Rechargeable LED Torch",
-    price: 480,
-    oldPrice: 850,
-    discount: "43% off",
-    qty: 1,
-    rating: 4.3,
-    stock: "In stock",
-    img: "./localstore/images/default-product.jpg"
-  },
-  {
-    id: 8,
-    name: "Yoga Mat with Carry Strap",
-    price: 750,
-    oldPrice: 1299,
-    discount: "42% off",
-    qty: 1,
-    rating: 4.5,
-    stock: "Only 1 left",
-    img: "./localstore/images/default-product.jpg"
-  },
-  {
-    id: 9,
-    name: "Gaming Mouse RGB Lighting",
-    price: 1200,
-    oldPrice: 1999,
-    discount: "40% off",
-    qty: 1,
-    rating: 4.6,
-    stock: "In stock",
-    img: "./localstore/images/default-product.jpg"
-  },
-  {
-    id: 10,
-    name: "Digital Kitchen Weighing Scale",
-    price: 599,
-    oldPrice: 1099,
-    discount: "45% off",
-    qty: 1,
-    rating: 4.2,
-    stock: "Only 4 left",
-    img: "./localstore/images/default-product.jpg"
+
+let cart = {
+  items: [
+{
+    "itemId": "ITM000000000001",
+    "type": "product",
+    "info": {
+        "name": "Premium Wireless Earbuds",
+        "image": "./localstore/images/items/amul-butter.jpg"
+    },
+    "pricing": {
+        "price": 1299,
+        "oldPrice": 2499,
+        "discount": 48
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 1299
+    },
+    "rating": 4.5,
+    "stock": {
+        "status": "in",
+        "label": "In stock"
+    }
+},
+{
+    "itemId": "ITM000000000002",
+    "type": "product",
+    "info": {
+        "name": "Smart Fitness Tracker",
+        "image": "./localstore/images/items/bread.jpg"
+    },
+    "pricing": {
+        "price": 899,
+        "oldPrice": 1599,
+        "discount": 44
+    },
+    "cart": {
+        "qty": 2,
+        "selectedDate": null,
+        "subtotal": 1798
+    },
+    "rating": 4.0,
+    "stock": {
+        "status": "limited",
+        "label": "Only 3 left"
+    }
+},
+{
+    "itemId": "ITM000000000005",
+    "type": "product",
+    "info": {
+        "name": "Wireless Bluetooth Speaker",
+        "image": "./localstore/images/default-product.jpg"    },
+    "pricing": {
+        "price": 1999,
+        "oldPrice": 2999,
+        "discount": 33
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 1999
+    },
+    "rating": 4.7,
+    "stock": {
+        "status": "in",
+        "label": "In stock"
+    }
+},
+{
+    "itemId": "ITM000000000006",
+    "type": "product",
+    "info": {
+        "name": "Gaming Mouse",
+        "image": "./localstore/images/default-product.jpg"    },
+    "pricing": {
+        "price": 799,
+        "oldPrice": 1299,
+        "discount": 38
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 799
+    },
+    "rating": 4.3,
+    "stock": {
+        "status": "in",
+        "label": "In stock"
+    }
+},
+{
+    "itemId": "ITM000000000003",
+    "type": "service",
+    "info": {
+        "name": "Professional Photography Session",
+        "image": "./localstore/images/default-service.jpg"    },
+    "pricing": {
+        "price": 3500,
+        "oldPrice": 5000,
+        "discount": 30
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 3500
+    },
+    "rating": 4.9,
+    "stock": {
+        "status": "in",
+        "label": "Available"
+    }
+},
+{
+    "itemId": "ITM000000000004",
+    "type": "service",
+    "info": {
+        "name": "Home Cleaning Service",
+        "image": "./localstore/images/default-service.jpg"    
+      },
+    "pricing": {
+        "price": 1200,
+        "oldPrice": 1800,
+        "discount": 33
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 1200
+    },
+    "rating": 4.6,
+    "stock": {
+        "status": "in",
+        "label": "Available"
+    }
+},
+{
+    "itemId": "ITM000000000007",
+    "type": "service",
+    "info": {
+        "name": "Yoga & Wellness Session",
+        "image": "./localstore/images/default-service.jpg"
+          },
+    "pricing": {
+        "price": 1500,
+        "oldPrice": 2500,
+        "discount": 40
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 1500
+    },
+    "rating": 4.8,
+    "stock": {
+        "status": "in",
+        "label": "Available"
+    }
+},
+{
+    "itemId": "ITM000000000008",
+    "type": "service",
+    "info": {
+        "name": "Car Maintenance Service",
+        "image": "./localstore/images/default-service.jpg"    },
+    "pricing": {
+        "price": 2500,
+        "oldPrice": 4000,
+        "discount": 38
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 2500
+    },
+    "rating": 4.5,
+    "stock": {
+        "status": "limited",
+        "label": "Only 2 left"
+    }
+},
+{
+    "itemId": "ITM000000000009",
+    "type": "product",
+    "info": {
+        "name": "Smartphone Stand",
+        "image": "./localstore/images/default-product.jpg"    },
+    "pricing": {
+        "price": 499,
+        "oldPrice": 799,
+        "discount": 38
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 499
+    },
+    "rating": 4.2,
+    "stock": {
+        "status": "in",
+        "label": "In stock"
+    }
+},
+{
+    "itemId": "ITM000000000010",
+    "type": "product",
+    "info": {
+        "name": "Laptop Cooling Pad",
+        "image": "./localstore/images/default-product.jpg"    },
+    "pricing": {
+        "price": 999,
+        "oldPrice": 1499,
+        "discount": 33
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 999
+    },
+    "rating": 4.3,
+    "stock": {
+        "status": "in",
+        "label": "In stock"
+    }
+},
+{
+    "itemId": "ITM000000000011",
+    "type": "product",
+    "info": {
+        "name": "Wireless Keyboard",
+        "image": "./localstore/images/default-product.jpg"    },
+    "pricing": {
+        "price": 1299,
+        "oldPrice": 1999,
+        "discount": 35
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 1299
+    },
+    "rating": 4.5,
+    "stock": {
+        "status": "limited",
+        "label": "Only 4 left"
+    }
+},
+{
+    "itemId": "ITM000000000012",
+    "type": "product",
+    "info": {
+        "name": "Portable Charger",
+        "image": "./localstore/images/default-product.jpg"    },
+    "pricing": {
+        "price": 699,
+        "oldPrice": 1099,
+        "discount": 36
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 699
+    },
+    "rating": 4.4,
+    "stock": {
+        "status": "in",
+        "label": "In stock"
+    }
+},
+{
+    "itemId": "ITM000000000013",
+    "type": "service",
+    "info": {
+        "name": "Gardening Service",
+        "image": "./localstore/images/default-service.jpg"    },
+    "pricing": {
+        "price": 1800,
+        "oldPrice": 2800,
+        "discount": 36
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 1800
+    },
+    "rating": 4.6,
+    "stock": {
+        "status": "in",
+        "label": "Available"
+    }
+},
+{
+    "itemId": "ITM000000000014",
+    "type": "service",
+    "info": {
+        "name": "Personal Training Session",
+        "image": "./localstore/images/default-service.jpg"    },
+    "pricing": {
+        "price": 2000,
+        "oldPrice": 3000,
+        "discount": 33
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 2000
+    },
+    "rating": 4.7,
+    "stock": {
+        "status": "in",
+        "label": "Available"
+    }
+},
+{
+    "itemId": "ITM000000000015",
+    "type": "service",
+    "info": {
+        "name": "Dog Walking Service",
+        "image": "./localstore/images/default-service.jpg"    },
+    "pricing": {
+        "price": 1200,
+        "oldPrice": 1800,
+        "discount": 33
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 1200
+    },
+    "rating": 4.5,
+    "stock": {
+        "status": "limited",
+        "label": "Only 2 left"
+    }
+},
+{
+    "itemId": "ITM000000000016",
+    "type": "service",
+    "info": {
+        "name": "House Painting Service",
+        "image": "./localstore/images/default-service.jpg"    },
+    "pricing": {
+        "price": 5000,
+        "oldPrice": 7000,
+        "discount": 29
+    },
+    "cart": {
+        "qty": 1,
+        "selectedDate": null,
+        "subtotal": 5000
+    },
+    "rating": 4.8,
+    "stock": {
+        "status": "in",
+        "label": "Available"
+    }
+}
+  ]
+};
+
+let activeTab = "products"; // products or services
+
+// ⭐ Render Stars
+function renderStars(rating) {
+  let fullStars = Math.floor(rating);
+  let halfStar = rating % 1 >= 0.5;
+  let starsHtml = "";
+  for (let i = 1; i <= 5; i++) {
+    if (i <= fullStars) starsHtml += `<span class="filled">★</span>`;
+    else if (i === fullStars + 1 && halfStar) starsHtml += `<span class="half">★</span>`;
+    else starsHtml += `<span>★</span>`;
   }
-];
+  return `<div class="stars">${starsHtml} <small>(${rating.toFixed(1)})</small></div>`;
+}
 
-const services = [
-  {
-    id: 1,
-    name: "Chartered Accountant (Tax Filing & GST)",
-    price: 2499,
-    oldPrice: 3999,
-    discount: "38% off",
-    qty: 1, // Added qty
-    rating: 4.7,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
-  },
-  {
-    id: 2,
-    name: "Digital Marketing Service (SEO & Ads)",
-    price: 5999,
-    oldPrice: 9999,
-    discount: "40% off",
-    qty: 1, // Added qty
-    rating: 4.6,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
-  },
-  {
-    id: 3,
-    name: "Graphic Design & Branding",
-    price: 2999,
-    oldPrice: 4999,
-    discount: "42% off",
-    qty: 1, // Added qty
-    rating: 4.5,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
-  },
-  {
-    id: 4,
-    name: "Web Development (Business Website)",
-    price: 9999,
-    oldPrice: 14999,
-    discount: "33% off",
-    qty: 1, // Added qty
-    rating: 4.8,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
-  },
-  {
-    id: 5,
-    name: "Mobile App Development",
-    price: 14999,
-    oldPrice: 24999,
-    discount: "40% off",
-    qty: 1, // Added qty
-    rating: 4.7,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
-  },
-  {
-    id: 6,
-    name: "Legal Consultancy (Contracts & Compliance)",
-    price: 3499,
-    oldPrice: 5999,
-    discount: "41% off",
-    qty: 1, // Added qty
-    rating: 4.4,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
-  },
-  {
-    id: 7,
-    name: "Content Writing & Copywriting",
-    price: 1999,
-    oldPrice: 3499,
-    discount: "43% off",
-    qty: 1, // Added qty
-    rating: 4.5,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
-  },
-  {
-    id: 8,
-    name: "IT Support & Networking",
-    price: 4999,
-    oldPrice: 7999,
-    discount: "37% off",
-    qty: 1, // Added qty
-    rating: 4.6,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
-  },
-  {
-    id: 9,
-    name: "Architecture & Interior Design",
-    price: 12999,
-    oldPrice: 19999,
-    discount: "35% off",
-    qty: 1, // Added qty
-    rating: 4.7,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
-  },
-  {
-    id: 10,
-    name: "Business Consultancy & Startup Advisory",
-    price: 6999,
-    oldPrice: 11999,
-    discount: "42% off",
-    qty: 1, // Added qty
-    rating: 4.8,
-    stock: "Available",
-    img: "./localstore/images/default-service.jpg"
+// ⭐ Render Cart
+function rendercard() {
+  const productsPanel = document.getElementById("products-tab-panel");
+  const servicesPanel = document.getElementById("services-tab-panel");
+  productsPanel.innerHTML = "";
+  servicesPanel.innerHTML = "";
+
+  let total = 0;
+  const data = cart.items.filter(item => item.type === activeTab.slice(0, -1)); // "products" -> "product"
+
+  const cartItemTemplate = document.getElementById("cart-item-template");
+
+  data.forEach(item => {
+    // Calculate subtotal
+    item.cart.subtotal = item.pricing.price * item.cart.qty;
+    total += item.cart.subtotal;
+
+    // Stock CSS
+    let stockStatusClass = "";
+    let stockIconClass = "";
+    switch (item.stock.status) {
+      case "in":
+        stockStatusClass = "in";
+        stockIconClass = "fas fa-check-circle";
+        break;
+      case "limited":
+        stockStatusClass = "in";
+        stockIconClass = "fas fa-exclamation-circle";
+        break;
+      default:
+        stockStatusClass = "out";
+        stockIconClass = "fas fa-times-circle";
+    }
+
+    // Clone template
+    const cardItem = document.importNode(cartItemTemplate.content, true);
+    cardItem.querySelector(".card-title").textContent = item.info.name;
+    cardItem.querySelector(".card-price").textContent = `₹${item.cart.subtotal}`;
+    cardItem.querySelector(".card-old-price").textContent = `₹${item.pricing.oldPrice}`;
+    cardItem.querySelector(".card-discount").textContent = `${item.pricing.discount}% off`;
+    cardItem.querySelector(".stars").innerHTML = renderStars(item.rating);
+
+    const stockStatusElement = cardItem.querySelector(".stock-status");
+    stockStatusElement.classList.add(stockStatusClass);
+    stockStatusElement.querySelector("i").className = stockIconClass;
+    stockStatusElement.lastChild.textContent = ` ${item.stock.label}`;
+
+    cardItem.querySelector(".card-top-area img").src = item.info.image;
+    cardItem.querySelector(".card-top-area img").alt = item.info.name;
+
+    cardItem.querySelector(".action-button").textContent =
+      item.type === "product" ? "Request" : "Request";
+
+    const container = cardItem.querySelector(".quantity-or-date-selector");
+    if (item.type === "service") {
+      const dateSelectorTemplate = document.getElementById("date-selector-template");
+      const dateSelector = document.importNode(dateSelectorTemplate.content, true);
+      dateSelector.querySelector(".date-text").id = `date-text-${item.itemId}`;
+      dateSelector.querySelector(".date-text").textContent = item.cart.selectedDate || "Select Date";
+      dateSelector.querySelector(".date-input").onchange = (e) => updateDate(item.itemId, e.target.value);
+      container.appendChild(dateSelector);
+    } else {
+      const quantitySelectorTemplate = document.getElementById("quantity-selector-template");
+      const quantitySelector = document.importNode(quantitySelectorTemplate.content, true);
+      const selectElement = quantitySelector.querySelector(".quantity-input");
+      selectElement.onchange = (e) => updateQty(item.itemId, e.target.value);
+      for (let q = 1; q <= 5; q++) {
+        const option = document.createElement("option");
+        option.value = q;
+        option.textContent = q;
+        if (q == item.cart.qty) {
+          option.selected = true;
+        }
+        selectElement.appendChild(option);
+      }
+      container.appendChild(quantitySelector);
+    }
+
+    cardItem.querySelector(".remove-item-button").onclick = () => removeItem(item.itemId);
+
+    if (item.type === "product") productsPanel.appendChild(cardItem);
+    else servicesPanel.appendChild(cardItem);
+  });
+
+  document.getElementById("cardTotal").innerText = total;
+  document.querySelector(".btn-order").innerText =
+    activeTab === "products" ? "Request All" : "Request All";
+}
+
+// ⭐ Update Qty
+window.updateQty = function(itemId, qty) {
+  const item = cart.items.find(i => i.itemId === itemId && i.type === "product");
+  if (item) item.cart.qty = parseInt(qty);
+  rendercard();
+};
+
+// ⭐ Update Date
+window.updateDate = function(itemId, dateValue) {
+  const item = cart.items.find(i => i.itemId === itemId && i.type === "service");
+  if (item) {
+    item.cart.selectedDate = dateValue;
+    document.getElementById(`date-text-${itemId}`).textContent = dateValue || "Select Date";
   }
-];
+};
 
-    let activeTab = "products";
+// ⭐ Remove Item
+window.removeItem = function(itemId) {
+  cart.items = cart.items.filter(i => i.itemId !== itemId);
+  rendercard();
+};
 
-    // ⭐ Render Stars Function
-    function renderStars(rating) {
-      let fullStars = Math.floor(rating);
-      let halfStar = rating % 1 >= 0.5;
-      let starsHtml = "";
+// ⭐ Switch Tab
+window.switchTab = function(tab) {
+  activeTab = tab;
+  document.getElementById("tabProducts").classList.remove("active");
+  document.getElementById("tabServices").classList.remove("active");
+  document.getElementById("products-tab-panel").classList.remove("active");
+  document.getElementById("services-tab-panel").classList.remove("active");
 
-      for (let i = 1; i <= 5; i++) {
-        if (i <= fullStars) {
-          starsHtml += `<span class="filled">★</span>`;
-        } else if (i === fullStars + 1 && halfStar) {
-          starsHtml += `<span class="half">★</span>`;
-        } else {
-          starsHtml += `<span>★</span>`;
-        }
-      }
-      return `<div class="stars">${starsHtml} <small>(${rating.toFixed(1)})</small></div>`;
-    }
-    function rendercard() {
-    console.log("rendercard called");
-      const productsPanel = document.getElementById("products-tab-panel");
-      const servicesPanel = document.getElementById("services-tab-panel");
-      productsPanel.innerHTML = ""; // Clear both panels
-      servicesPanel.innerHTML = ""; // Clear both panels
-      let total = 0;
+  if (tab === "products") {
+    document.getElementById("tabProducts").classList.add("active");
+    document.getElementById("products-tab-panel").classList.add("active");
+  } else {
+    document.getElementById("tabServices").classList.add("active");
+    document.getElementById("services-tab-panel").classList.add("active");
+  }
+  rendercard();
+};
 
-      let data = activeTab === "products" ? products : services;
+// ⭐ Swipe Tabs
+const tabPanels = document.querySelector(".cart-container");
+let touchstartX = 0, touchendX = 0;
 
-      const cartItemTemplate = document.getElementById('cart-item-template');
+function handleGesture() {
+  if (touchendX < touchstartX && activeTab === "products") switchTab("services");
+  if (touchendX > touchstartX && activeTab === "services") switchTab("products");
+}
 
-      data.forEach(item => {
-        total += item.price * item.qty;
+tabPanels.addEventListener("touchstart", e => { touchstartX = e.changedTouches[0].screenX; }, { passive: true });
+tabPanels.addEventListener("touchend", e => { touchendX = e.changedTouches[0].screenX; handleGesture(); });
 
-        let stockStatusClass = '';
-        let stockIconClass = '';
-        let stockStatusText = '';
+// Init
+rendercard();
 
-        if (item.stock.toLowerCase().includes('in stock')) {
-          stockStatusClass = 'in';
-          stockIconClass = 'fas fa-check-circle';
-          stockStatusText = 'In Stock';
-        } else if (item.stock.toLowerCase().includes('only') || item.stock.toLowerCase().includes('left')) {
-            stockStatusClass = 'in';
-            stockIconClass = 'fas fa-exclamation-circle';
-            stockStatusText = item.stock;
-        } else if (item.stock.toLowerCase().includes('available')) {
-            stockStatusClass = 'in';
-            stockIconClass = 'fas fa-check-circle';
-            stockStatusText = 'Available';
-        }
-        else {
-          stockStatusClass = 'out';
-          stockIconClass = 'fas fa-times-circle';
-          stockStatusText = 'Out of Stock';
-        }
-
-        const actionButtonText = 'Request';
-
-        const cardItem = document.importNode(cartItemTemplate.content, true);
-
-        cardItem.querySelector('.card-title').textContent = item.name;
-        cardItem.querySelector('.card-price').textContent = `₹${item.price * item.qty}`;
-        cardItem.querySelector('.card-old-price').textContent = `₹${item.oldPrice}`;
-        cardItem.querySelector('.card-discount').textContent = item.discount;
-        cardItem.querySelector('.stars').innerHTML = renderStars(item.rating);
-        cardItem.querySelector('.stars small').textContent = `(${item.rating.toFixed(1)})`;
-        
-        const stockStatusElement = cardItem.querySelector('.stock-status');
-        stockStatusElement.classList.add(stockStatusClass);
-        stockStatusElement.querySelector('i').className = stockIconClass;
-        stockStatusElement.lastChild.textContent = ` ${stockStatusText}`;
-
-        cardItem.querySelector('.card-item-body img').src = item.img;
-        cardItem.querySelector('.card-item-body img').alt = item.name;
-
-        cardItem.querySelector('.action-button').textContent = actionButtonText;
-
-        const quantityOrDateSelectorContainer = cardItem.querySelector('.quantity-or-date-selector');
-        if (activeTab === 'services') {
-            quantityOrDateSelectorContainer.innerHTML = `<label class="date-selector">
-                 <i class="fas fa-calendar-alt"></i>
-                 <span id="date-text-${item.id}">${item.selectedDate || 'Select Date'}</span>
-                 <input type="date" id="date-input-${item.id}" onchange="updateDate(${item.id}, this.value)">
-               </label>`;
-        } else {
-            quantityOrDateSelectorContainer.innerHTML = `<label>Quantity: 
-                <select onchange="updateQty(${item.id}, this.value)">
-                  ${[1,2,3,4,5].map(q => `<option value="${q}" ${q==item.qty?"selected":""}>${q}</option>`).join("")}
-                </select>
-              </label>`;
-        }
-
-        cardItem.querySelector('.remove-item-button').onclick = () => removeItem(item.id);
-
-        if (activeTab === "products") {
-            productsPanel.appendChild(cardItem);
-        } else {
-            servicesPanel.appendChild(cardItem);
-        }
-      });
-
-      document.getElementById("cardTotal").innerText = total;
-      console.log(`Total price updated to: ${total}`);
-
-      const orderButton = document.querySelector('.btn-order');
-      orderButton.innerText = 'Request All';
-    }
-
-    window.updateQty = function(id, qty) {
-      console.log(`updateQty called for id: ${id}, qty: ${qty}`);
-      let data = activeTab === "products" ? products : services;
-      let item = data.find(i => i.id === id);
-      if (item) {
-        item.qty = parseInt(qty);
-        console.log(`Item ${id} new quantity: ${item.qty}`);
-      }
-      rendercard();
-    }
-
-    window.updateDate = function(id, dateValue) {
-      if (activeTab === "services") {
-        let item = services.find(i => i.id === id);
-        if (item) {
-          item.selectedDate = dateValue;
-          document.getElementById(`date-text-${id}`).textContent = dateValue || 'Select Date';
-        }
-      }
-    }
-
-    window.removeItem = function(id) {
-      if (activeTab === "products") {
-        products = products.filter(i => i.id !== id);
-      } else {
-        services = services.filter(i => i.id !== id);
-      }
-      rendercard();
-    }
-
-    window.switchTab = function(tab) {
-      console.log(`switchTab called, new tab: ${tab}`);
-      activeTab = tab;
-      document.getElementById("tabProducts").classList.remove("active");
-      document.getElementById("tabServices").classList.remove("active");
-      document.getElementById("products-tab-panel").classList.remove("active");
-      document.getElementById("services-tab-panel").classList.remove("active");
-
-      if(tab === "products") {
-        document.getElementById("tabProducts").classList.add("active");
-        document.getElementById("products-tab-panel").classList.add("active");
-      } else {
-        document.getElementById("tabServices").classList.add("active");
-        document.getElementById("services-tab-panel").classList.add("active");
-      }
-      rendercard();
-    }
-
-    // Swipe to change tabs
-    const tabPanels = document.querySelector('.tab-content-container');
-    let touchstartX = 0;
-    let touchendX = 0;
-
-    function handleGesture() {
-        if (touchendX < touchstartX) {
-            // Swiped left
-            if (activeTab === 'products') {
-                switchTab('services');
-            }
-        }
-        if (touchendX > touchstartX) {
-            // Swiped right
-            if (activeTab === 'services') {
-                switchTab('products');
-            }
-        }
-    }
-
-    tabPanels.addEventListener('touchstart', e => {
-        touchstartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    tabPanels.addEventListener('touchend', e => {
-        touchendX = e.changedTouches[0].screenX;
-        handleGesture();
-    });
-
-    rendercard();
+export function init() { rendercard(); }
