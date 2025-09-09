@@ -643,11 +643,17 @@ export async function initializeApp() {
   }
 
   // Determine the base URL based on the environment
-  if (window.location.hostname === '127.0.0.1') {
+    if (window.location.hostname === '127.0.0.1') {
     getAppConfig().urls.pageUrl = loadedConfig.urls.localIp;
+  } else if (window.location.hostname === 'localhost') {
+    getAppConfig().urls.pageUrl = loadedConfig.urls.localHost;
   } else if (loadedConfig.urls.customDomain && loadedConfig.urls.customDomain !== "" && window.location.hostname === new URL(loadedConfig.urls.customDomain).hostname) {
     getAppConfig().urls.pageUrl = loadedConfig.urls.customDomain;
-  } else {
+  } else if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !loadedConfig.urls.customDomain) {
+    // If it's not localhost, not 127.0.0.1, and not a custom domain, assume it's a local IP
+    getAppConfig().urls.pageUrl = window.location.origin;
+  }
+  else {
     // Default to the pageUrl specified in config.json (e.g., GitHub Pages URL)
     getAppConfig().urls.pageUrl = loadedConfig.urls.pageUrl;
   }

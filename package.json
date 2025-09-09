@@ -4,7 +4,7 @@
   "description": "Revolutionize your shopping and selling experience with our modern marketplace app.",
   "main": "index.js",
   "scripts": {
-    "start": "npx live-server . --port=3000",
+    "start": "npx live-server . --port=7000",
     "tunnel": "ngrok http 3000",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"npm start\" \"wait-on http://localhost:3000/ && npm run tunnel\""

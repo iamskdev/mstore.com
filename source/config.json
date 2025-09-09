@@ -7,10 +7,11 @@
     "description": ""
   },
   "urls": {
-    "localIp": "http://127.0.0.1:3000/",
+    "localIp": "http://127.0.0.1:7000/",
     "pageUrl": "https://iamskdev.github.io/mstore.com/",
     "fallbackUrl": "",
-    "customDomain": ""
+    "customDomain": "",
+    "localHost": "http://localhost:2201"
   },
   "source": {
     "data": "firebase",
