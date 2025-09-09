@@ -1,5 +1,7 @@
 // notification-view.js
 
+import { getAppConfig } from '../../utils/config-manager.js';
+
 const tabMapping = {
   promotional: "offers",
   reminder: "activities",
@@ -100,6 +102,8 @@ async function loadData() {
 // Tabs switch logic
 // Main initialization function for this view
 export function init() {
+  
+
   // loadData(); // Removed real data fetching
   addDummyNotifications();
 
@@ -302,13 +306,26 @@ const dummyAlerts = [
 function addDummyNotifications() {
   let campaignsToRender = [...dummyCampaigns]; // Create a mutable copy
 
+  // Add maintenance mode notification if active
+  if (getAppConfig().flags.maintenanceMode) {
+    const maintenanceNotification = {
+      content: {
+        title: "Maintenance Mode Active",
+        message: "The application is currently undergoing scheduled maintenance. Some features may be temporarily unavailable. We apologize for any inconvenience.",
+        richContent: { icon: "fas fa-tools" }
+      },
+      meta: { type: "system" }
+    };
+    campaignsToRender.unshift(maintenanceNotification); // Add to the beginning
+  }
+
   // Check if app is in developer mode
-  if (window.APP_CONFIG && window.APP_CONFIG.appMode === 'dev') {
+  if (getAppConfig().app.environment === 'development') {
     const devModeNotification = {
       content: {
-        title: "Developer Mode Active",
-        message: "You are currently running the app in developer mode. This is for testing purposes only and may expose additional features or debug information. To switch to production mode, change 'appMode' in app-config.js.",
-        richContent: { icon: "fas fa-code" }
+        title: "Development Mode: For Testing Only",
+        message: "This application is running in development mode, intended for testing and debugging. Features may be incomplete or behave unexpectedly. Please be aware that this is not a production version.",
+        richContent: { icon: "fas fa-flask" }
       },
       meta: { type: "system" }
     };

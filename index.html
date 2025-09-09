@@ -16,11 +16,24 @@
   <script>
     // This inline script runs before rendering to prevent a "flash of unstyled content" (FOUC).
     // It sets the theme class on the <html> element and updates the theme-color meta tag.
-    (function() {
+    (async function() {
+      let appConfig = {};
+      try {
+        const response = await fetch('./source/config.json');
+        if (response.ok) {
+          appConfig = await response.json();
+        }
+      } catch (error) {
+        console.error("Error loading config.json in inline script:", error);
+      }
+
+      const configTheme = appConfig.ui?.theme;
       const preference = localStorage.getItem('app-theme');
       const systemIsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = preference || (systemIsDark ? 'dark' : 'light');
-      
+
+      // Priority: config.json -> localStorage -> system preference -> default 'light'
+      const theme = configTheme || preference || (systemIsDark ? 'dark' : 'light');
+
       document.documentElement.classList.add(`${theme}-mode`);
       document.documentElement.dataset.theme = theme;
 
@@ -36,7 +49,7 @@
         themeColorMeta.setAttribute('content', themeColors[theme]);
       }
     })();
-  </script>
+</script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -93,21 +106,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script type="module">
   // ✅ Import critical modules at the top.
-  import { APP_CONFIG } from './source/utils/app-config.js';
+  import { getAppConfig } from './source/utils/config-manager.js';
   import { initializePwaInstall, setDeferredPrompt, getDeferredPrompt } from './source/utils/pwa-manager.js';
-    import './source/firebase/firebase-config.js';
   // Import the main app initializer, but don't run it yet.
   import { initializeApp } from './source/main.js';
-
-  // Log the current configuration for easy debugging.
-  if (APP_CONFIG.appMode) {
-    console.log(`%c🚀 App Mode: ${APP_CONFIG.appMode.toUpperCase()}`, 'color: #448aff; font-weight: bold; font-size: 12px;');
-  } else {
-    console.log(`%c🚀 App Mode: PRODUCTION`, 'color: #4caf50; font-weight: bold; font-size: 12px;');
-  }
-  console.log(`%c💾 Data Source: ${APP_CONFIG.dataSource.toUpperCase()}`, 'color: #ff9800; font-weight: bold; font-size: 12px;');
-  console.log(`%c🔒 Verification Flow: ${APP_CONFIG.verificationEnabled ? 'ENABLED' : 'DISABLED'}`, 'color: #e91e63; font-weight: bold; font-size: 12px;');
-  console.log(`%c🎨 Header Style: ${APP_CONFIG.headerStyle.toUpperCase()}`, 'color: #9c27b0; font-weight: bold; font-size: 12px;');
 
     // --- PWA Install Prompt Handling ---
     // This listener captures the event that allows the app to be installed.
@@ -122,40 +124,35 @@
       window.dispatchEvent(new CustomEvent('pwaInstallReady'));
       console.log('`beforeinstallprompt` event was fired and captured.');
     });
-    // --- Service Worker Management ---
-
-  if ('serviceWorker' in navigator) {
-    // This flag can be manually set to true in the console for PWA testing in dev mode.
-    const forceSWInDev = true;
-
-    const register = () => {
-      if (APP_CONFIG.appMode === 'dev' && forceSWInDev) {
-      }
-      // Register the service worker as a module to allow 'import' statements inside it.
-      navigator.serviceWorker.register('./service-worker.js', { type: 'module' })
-        .then(registration => console.log('✅ Service Worker registered successfully:', registration))
-        .catch(error => console.error('❌ Service Worker registration failed:', error, 'Ensure the service worker file is served with the correct MIME type (application/javascript or text/javascript) and not text/html.'));
-    };
-
-    const unregister = () => {
-      console.log('DEV MODE: Unregistering all service workers.');
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        for (let registration of registrations) {
-          registration.unregister();
-        }
-      });
-    };
-
-    (APP_CONFIG.appMode === 'dev' && !forceSWInDev) ? unregister() : register();
-  } else {
-    console.warn('Service Worker not supported in this browser.');
-  }
-
 
   // 2. Initialize the main application.
   initializeApp()
     .then(() => {
       console.log("✅ Application initialized successfully.");
+      // --- Service Worker Management ---
+      if ('serviceWorker' in navigator) {
+        const register = () => {
+          if (getAppConfig().app.environment === 'development') {
+          }
+          // Register the service worker as a module to allow 'import' statements inside it.
+          navigator.serviceWorker.register('./service-worker.js', { type: 'module' })
+            .then(registration => console.log('✅ Service Worker registered successfully:', registration))
+            .catch(error => console.error('❌ Service Worker registration failed:', error, 'Ensure the service worker file is served with the correct MIME type (application/javascript or text/javascript) and not text/html.'));
+        };
+
+        const unregister = () => {
+          console.log('DEV MODE: Unregistering all service workers.');
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            for (let registration of registrations) {
+              registration.unregister();
+            }
+          });
+        };
+
+        getAppConfig().source.offlineCache ? register() : unregister();
+      } else {
+        console.warn('Service Worker not supported in this browser.');
+      }
     })
     .catch(error => {
       // This is a critical error. The app cannot start.

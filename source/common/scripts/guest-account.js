@@ -4,7 +4,7 @@
 // is triggered. This ensures that the UI for this view can be rendered even if
 // the Firebase services fail to load initially, preventing a blank screen for the user.
 
-import { APP_CONFIG } from '../../utils/app-config.js';
+import { getAppConfig } from '../../utils/config-manager.js';
 import { showToast } from '../../utils/toast.js';
 
 /**
@@ -122,11 +122,11 @@ function setupPasswordToggles() {
 
 /**
  * फोन नंबर सत्यापन के लिए UI लॉजिक सेट करता है, जिसमें OTP बटन दिखाना/छिपाना शामिल है।
- * यह केवल तभी काम करता है जब app-config.js में verificationEnabled true हो।
+ * यह केवल तभी काम करता है जब config.json में flags.phoneVerification true हो।
  */
 function setupPhoneVerificationUI() {
     // यदि वैश्विक कॉन्फ़िगरेशन में सत्यापन अक्षम है तो कुछ न करें।
-    if (!APP_CONFIG.verificationEnabled) {
+    if (!getAppConfig().flags.phoneVerification) {
         return;
     }
 
@@ -163,7 +163,7 @@ function setupPhoneVerificationUI() {
             // --- DEV MODE BYPASS ---
             // If in 'dev' mode, we simulate the OTP flow without calling Firebase.
             // Temporarily skip reCAPTCHA initialization for testing purposes
-            // if (APP_CONFIG.appMode !== 'dev') { // Original condition
+            // if (getAppConfig().app.environment !== 'development') { // Original condition
                 // Only initialize reCAPTCHA in production mode.
                 // const recaptchaReady = await AuthService.initRecaptcha();
                 // if (!recaptchaReady) {
@@ -185,7 +185,7 @@ function setupPhoneVerificationUI() {
             otpBtn.innerHTML = `<i class="fas fa-check"></i>`; // सफलता का संकेत दें।
 
             // --- DEV MODE AUTO-FILL ---
-            if (APP_CONFIG.appMode === 'dev') {
+            if (getAppConfig().app.environment === 'development') {
                 otpInput.value = '123456'; // Auto-fill the test OTP
                 showToast('info', 'DEV: Test OTP auto-filled.', 3000);
             }

@@ -22,6 +22,6 @@ if [ $EXIT_CODE -ne 0 ]; then
   exit $EXIT_CODE
 fi
 
-# If versioner.js performed a bump, then add the modified service-worker.js to the commit
-git add service-worker.js
+# If versioner.js performed a bump, then add the modified files to the commit
+git add source/config.json
 git commit --amend --no-edit --allow-empty

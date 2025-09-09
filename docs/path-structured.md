@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 31/08/2025, 19:48
+📅 Last Updated: 09/09/2025, 13:35
 
 ├── .firebaserc
 ├── .gitignore
@@ -10,12 +10,38 @@
 ├── package.json
 ├── readme.md
 ├── service-worker.js
+├── 📁 .github\
+│   └── 📁 workflows\
+│       └── release.yml
+├── 📁 .husky\
+│   ├── 📁 _\
+│   │   ├── .gitignore
+│   │   ├── applypatch-msg
+│   │   ├── commit-msg
+│   │   ├── h
+│   │   ├── husky.sh
+│   │   ├── post-applypatch
+│   │   ├── post-checkout
+│   │   ├── post-commit
+│   │   ├── post-merge
+│   │   ├── post-rewrite
+│   │   ├── pre-applypatch
+│   │   ├── pre-auto-gc
+│   │   ├── pre-commit
+│   │   ├── pre-merge-commit
+│   │   ├── pre-push
+│   │   ├── pre-rebase
+│   │   └── prepare-commit-msg
+│   ├── post-commit
+│   ├── pre-commit
+│   └── pre-push
 ├── 📁 demo\
 │   └── demo-card.html
 ├── 📁 docs\
-│   ├── 📁 versions\
-│   │   └── ApnaStore_Dev_Versions.md
+│   ├── CHANGELOG.md
 │   ├── brands_list.md
+│   ├── commit-guide.md
+│   ├── commit_message.txt
 │   ├── firebase-emulator.md
 │   ├── implementing-new-views.md
 │   ├── media-queries.md
@@ -24,6 +50,7 @@
 │   ├── renaming-the-app.md
 │   ├── schema-guide.md
 │   ├── shortcuts.md
+│   ├── versions-guide.md
 │   └── workflow.md
 ├── 📁 functions\
 │   ├── index.js
@@ -88,7 +115,14 @@
 │       ├── price-logs.json
 │       ├── promotions.json
 │       ├── units.json
-│       └── users.json
+│       ├── users.json
+│       └── versions.json
+├── 📁 python\
+│   ├── markdown_creator.py
+│   ├── timestamp_generator.py
+│   ├── timestamp_usage.json
+│   ├── zip_creator.py
+│   └── zip_creator_manual.py
 ├── 📁 source\
 │   ├── 📁 assets\
 │   │   ├── 📁 icons\
@@ -208,17 +242,20 @@
 │   │   │   ├── hi.json
 │   │   │   └── langs.json
 │   │   ├── 📁 pages\
+│   │   │   ├── cart.html
 │   │   │   ├── guest-account.html
 │   │   │   ├── home.html
 │   │   │   ├── item-details.html
 │   │   │   ├── notification-view.html
 │   │   │   └── offline.html
 │   │   ├── 📁 scripts\
+│   │   │   ├── cart.js
 │   │   │   ├── guest-account.js
 │   │   │   ├── home.js
 │   │   │   ├── item-details.js
 │   │   │   └── notification-view.js
 │   │   └── 📁 styles\
+│   │       ├── cart.css
 │   │       ├── guest-account.css
 │   │       ├── home.css
 │   │       ├── item-details.css
@@ -226,6 +263,7 @@
 │   │       └── theme.css
 │   ├── 📁 components\
 │   │   ├── 📁 cards\
+│   │   │   ├── banner.html
 │   │   │   ├── card-grid.html
 │   │   │   └── card-list.html
 │   │   ├── 📁 feedback-modal\
@@ -278,10 +316,6 @@
 │   │   │       ├── log-reader.js
 │   │   │       ├── mock-inject.js
 │   │   │       └── mode-switcher.js
-│   │   ├── 📁 consumer\
-│   │   │   ├── 📁 pages\
-│   │   │   ├── 📁 scripts\
-│   │   │   └── 📁 styles\
 │   │   └── 📁 merchant\
 │   │       ├── 📁 pages\
 │   │       │   └── merchant-home.html
@@ -289,7 +323,9 @@
 │   │       ├── analytics.html
 │   │       └── merchant-home.html
 │   ├── 📁 utils\
-│   │   ├── app-config.js
+│   │   ├── banner-mannager.js
+│   │   ├── card-helper.js
+│   │   ├── config-manager.js
 │   │   ├── cursor-zoom.js
 │   │   ├── data-manager.js
 │   │   ├── filter-helper.js
@@ -302,6 +338,7 @@
 │   │   ├── theme-switcher.js
 │   │   ├── toast.js
 │   │   └── view-config.js
+│   ├── config.json
 │   ├── main.css
 │   └── main.js
 ├── 📁 tools\
@@ -313,7 +350,12 @@
 │   │   ├── import-data.js
 │   │   ├── item-seeds.js
 │   │   ├── path-generator.js
-│   │   ├── upload-to-emulator.js
-│   │   └── zipmaker.py
+│   │   └── upload-to-emulator.js
 │   ├── field-inject.json
 │   └── firebase-inject.md
+├── 📁 versioner\
+│   ├── config-updater.js
+│   ├── deploy-update.js
+│   ├── validate-config.js
+│   ├── versioner.js
+│   └── versioner.json

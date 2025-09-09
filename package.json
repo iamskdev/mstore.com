@@ -1,6 +1,6 @@
 {
-  "name": "mstore",
-  "version": "7.0.0",
+  "name": "mStore",
+  "version": "0.5.0",
   "description": "Revolutionize your shopping and selling experience with our modern marketplace app.",
   "main": "index.js",
   "scripts": {

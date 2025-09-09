@@ -2,7 +2,7 @@ import { fetchAllUsers, generateSequentialId } from '../../utils/data-manager.js
 import { createLog } from '../firestore/logs-collection.js';
 import { showToast } from '../../utils/toast.js';
 import { viewManager } from '../../main.js';
-import { APP_CONFIG } from '../../utils/app-config.js';
+import { getAppConfig } from '../../utils/config-manager.js';
 import { auth, firestore, firebase } from '../firebase-config.js'; // ✅ Import services directly
 
 export const AuthService = (() => {
@@ -224,9 +224,9 @@ export const AuthService = (() => {
         const passwordInput = form.querySelector('#login-password');
         const credentialValue = credentialInput.value;
         const passwordValue = passwordInput.value;
-        const dataSource = APP_CONFIG.dataSource || 'firebase';
+        const dataSource = getAppConfig().source.data || 'firebase';
 
-        if (dataSource === 'local') {
+        if (dataSource === 'localstore') {
             try {
                 const users = await fetchAllUsers();
                 const user = users.find(u => (u.info.email === credentialValue || u.info.phone === credentialValue) && u.auth.passwordHash === passwordValue);
@@ -309,7 +309,7 @@ export const AuthService = (() => {
         } catch (error) {
             console.error("Login Error:", error);
  
-            const isDevMode = APP_CONFIG.appMode === 'dev';
+            const isDevMode = getAppConfig().app.environment === 'development';
             let prodMessage;
             let devMessage;
             let errorInput = credentialInput; // Default to the main credential input
@@ -372,9 +372,9 @@ export const AuthService = (() => {
         };
         const phoneCode = countryCodeMap[countryName] || '';
         const phone = phoneNumber ? `${phoneCode}${phoneNumber}` : ''; // Combine code and number (E.164 standard)
-        const dataSource = APP_CONFIG.dataSource || 'firebase';
+        const dataSource = getAppConfig().source.data || 'firebase';
         
-        if (dataSource === 'local') {
+        if (dataSource === 'localstore') {
             // This is a simulation. For a real app, you'd need a backend to write to the JSON file.
             console.log('Simulating local signup...');
             showToast('account');
@@ -386,7 +386,7 @@ export const AuthService = (() => {
         }
 
         // If verification is enabled, check if the phone has been verified.
-        if (APP_CONFIG.verificationEnabled && phoneNumber && !isPhoneVerified) {
+        if (getAppConfig().flags.phoneVerification && phoneNumber && !isPhoneVerified) {
             showError(phoneInput, 'Please verify your phone number first by clicking the icon.');
             return false;
         }
@@ -407,7 +407,7 @@ export const AuthService = (() => {
             // --- Step 2: Phone Number Uniqueness Check (when verification is OFF) ---
             // This check runs AFTER Auth user creation but BEFORE Firestore document creation.
             // It leverages the temporary authenticated state to query the database.
-            if (phone && !APP_CONFIG.verificationEnabled) {
+            if (phone && !getAppConfig().flags.phoneVerification) {
                 console.warn("Performing Firestore lookup for phone number uniqueness. This is for testing only.");
                 const usersRef = firestore.collection('users');
                 const phoneQuery = await usersRef.where('info.phone', '==', phone).limit(1).get();
@@ -431,7 +431,7 @@ export const AuthService = (() => {
             // --- Step 4: Post-creation Actions (Login & Verification) ---
             viewManager.handleRoleChange('user', userId);
 
-            if (APP_CONFIG.verificationEnabled) {
+            if (getAppConfig().flags.phoneVerification) {
                 await user.sendEmailVerification();
                 showToast('info', 'Account created! Please check your email to verify.', 6000);
             } else {
@@ -505,7 +505,7 @@ export const AuthService = (() => {
     async function sendVerificationOtp(phoneNumber) {
         // --- DEV MODE BYPASS ---
         // If in 'dev' mode, we simulate the OTP flow without sending a real SMS or using reCAPTCHA.
-        if (APP_CONFIG.appMode === 'dev') {
+        if (getAppConfig().app.environment === 'development') {
             console.warn("DEV MODE: Bypassing real OTP sending. Simulating success.");
             showToast('info', 'DEV: OTP Sent (Simulated)');
             // The UI in guest-account.js will handle showing the OTP field and auto-filling it.
@@ -542,7 +542,7 @@ export const AuthService = (() => {
     async function verifyPhoneOtp(otpCode) {
         // --- DEV MODE BYPASS ---
         // In dev mode, we can use a fixed OTP to bypass the real verification.
-        if (APP_CONFIG.appMode === 'dev') { // Check app mode
+        if (getAppConfig().app.environment === 'development') { // Check app mode
             if (otpCode === '123456') {
                 console.warn("DEV MODE: Bypassing OTP verification. Simulating success.");
                 isPhoneVerified = true;
@@ -740,7 +740,7 @@ export const AuthService = (() => {
             localStorage.removeItem('currentUserId');
             console.log("AuthService: Local storage cleared immediately on logout attempt.");
 
-            if (APP_CONFIG.dataSource !== 'local' && auth && auth.currentUser) {
+            if (getAppConfig().source.data !== 'localstore' && auth && auth.currentUser) {
                 await auth.signOut();
                 console.log("AuthService: Firebase user signed out successfully.");
             }

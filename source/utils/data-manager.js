@@ -3,7 +3,7 @@
  * Implements a caching mechanism to prevent redundant network requests for static data.
  */
 
-import { APP_CONFIG } from './app-config.js';
+import { getAppConfig } from './config-manager.js';
 import { firestore } from '../firebase/firebase-config.js'; // ✅ Import firestore service
 
 /**
@@ -22,7 +22,7 @@ const createDataFetcher = (collectionName, idKey) => {
      * @returns {Promise<Array>} A promise that resolves to an array of documents.
      */
     const fetchAll = (force = false) => {
-        const dataSource = APP_CONFIG.dataSource || 'firebase';
+        const dataSource = getAppConfig().source.data || 'firebase';
 
         if (cachePromise && !force) {
             return cachePromise;
@@ -72,7 +72,7 @@ const createDataFetcher = (collectionName, idKey) => {
      */
     const fetchById = async (id) => {
         if (!id) return null;
-        const dataSource = APP_CONFIG.dataSource || 'firebase';
+        const dataSource = getAppConfig().source.data || 'firebase';
 
         if (dataSource === 'localstore') {
             try {
@@ -201,7 +201,7 @@ export async function generateSequentialId(collectionName, prefix) {
  * @returns {Promise<object|null>} The active promotion object or null.
  */
 export async function fetchActivePromotion() {
-    const dataSource = APP_CONFIG.dataSource || 'firebase';
+    const dataSource = getAppConfig().source.data || 'firebase';
     const now = new Date(); // Get the current time
 
     try {

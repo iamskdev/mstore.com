@@ -1,13 +1,10 @@
-const APP_NAME = "mStore";
-const APP_VERSION = "0.5.2"; // Auto bump by versioner.js
-const APP_ENVIRONMENT = "development"; 
-const CACHE_NAME = `${APP_NAME}_Cache_v${APP_VERSION}`;
 const OFFLINE_PAGE = './source/common/pages/offline.html';
 const RUNTIME_CACHE = 'runtime-cache';
 const MAX_RUNTIME_CACHE_AGE = 24 * 60 * 60; // 24 hours in seconds
 
+let dynamicCacheName;
+
 // --- App Shell + Critical Assets ---
-// This list is now manually maintained. All critical app files must be listed here.
 const APP_SHELL_URLS = [
   // Core App Shell
   './index.html',
@@ -20,7 +17,7 @@ const APP_SHELL_URLS = [
 
   // Core Scripts & Config
   './source/config.json',
-  './source/utils/app-config.js',
+  './source/utils/config-manager.js',
   './source/main.js',
   './source/firebase/firebase-config.js',
 
@@ -32,7 +29,7 @@ const APP_SHELL_URLS = [
   './source/utils/pwa-manager.js',
   './source/utils/theme-switcher.js',
   './source/utils/toast.js',
-  './source/utils/banner-mannager.js', // Added banner-mannager.js
+  './source/utils/banner-mannager.js',
 
   // Firebase Modules
   './source/firebase/auth/auth.js',
@@ -48,7 +45,7 @@ const APP_SHELL_URLS = [
   './source/components/role-switcher.html',
   './source/components/filter-modal.html',
   './source/components/cards/card-grid.html',
-  './source/components/cards/banner.html', // Added banner.html
+  './source/components/cards/banner.html',
 
   // Pages & Associated Assets from view-config.
   './source/utils/view-config.js',
@@ -74,6 +71,21 @@ const APP_SHELL_URLS = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap'
 ];
+
+async function getCacheName() {
+    if (dynamicCacheName) {
+        return dynamicCacheName;
+    }
+    try {
+        const response = await fetch('./source/config.json');
+        const config = await response.json();
+        dynamicCacheName = `${config.app.name}_Cache_v${config.app.version}`;
+        return dynamicCacheName;
+    } catch (error) {
+        console.error('Failed to fetch config to generate cache name. Using a default.', error);
+        return 'mStore_Cache_v_default';
+    }
+}
 
 // Helper to normalize URLs for caching
 function normalizeUrl(url) {
@@ -121,7 +133,8 @@ const addToCache = async (cacheName, request, response) => {
 
 const fromCache = async (request) => {
   try {
-    const cache = await caches.open(CACHE_NAME);
+    const cacheName = await getCacheName();
+    const cache = await caches.open(cacheName);
     const cached = await cache.match(normalizeUrl(request.url));
     if (cached) return cached;
     
@@ -156,7 +169,8 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     (async () => {
       try {
-        const cache = await caches.open(CACHE_NAME);
+        const cacheName = await getCacheName();
+        const cache = await caches.open(cacheName);
         console.log('Service Worker: Caching App Shell...');
         for (const url of APP_SHELL_URLS) {
           try {
@@ -186,15 +200,17 @@ self.addEventListener('activate', (event) => {
   console.log('Service Worker: Activating...');
   event.waitUntil(
     (async () => {
-      const keys = await caches.keys();
-      await Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME && key !== RUNTIME_CACHE) {
-            console.log('Deleting old cache:', key);
-            return caches.delete(key);
-          }
-        })
-      );
+        const currentCacheName = await getCacheName();
+        console.log(`Service Worker activated. Using cache: ${currentCacheName}`);
+        const keys = await caches.keys();
+        await Promise.all(
+            keys.map(key => {
+                if (key !== currentCacheName && key !== RUNTIME_CACHE) {
+                    console.log('Deleting old cache:', key);
+                    return caches.delete(key);
+                }
+            })
+        );
       
       const runtimeCache = await caches.open(RUNTIME_CACHE);
       const requests = await runtimeCache.keys();
@@ -223,18 +239,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Listen for messages from clients (e.g., to request version info if not received initially)
-self.addEventListener('message', (event) => {
-  if (event.data === "GET_VERSION") {
-    console.log('Service Worker: Sending version info', { app: APP_NAME, version: APP_VERSION, env: APP_ENVIRONMENT });
-    event.source.postMessage({
-      app: APP_NAME,
-      version: APP_VERSION,
-      env: APP_ENVIRONMENT
-    });
-  }
-});
-
 // --- Fetch Handling ---
 self.addEventListener('fetch', (event) => {
   const { request } = event;
@@ -252,12 +256,13 @@ self.addEventListener('fetch', (event) => {
   if (isAppShellAsset) {
     event.respondWith(
       (async () => {
+        const cacheName = await getCacheName();
         const cached = await fromCache(request);
         if (cached) {
-          event.waitUntil(fromNetwork(request, CACHE_NAME).catch(() => {}));
+          event.waitUntil(fromNetwork(request, cacheName).catch(() => {}));
           return cached;
         }
-        return fromNetwork(request, CACHE_NAME);
+        return fromNetwork(request, cacheName);
       })()
     );
     return;

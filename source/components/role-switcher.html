@@ -215,7 +215,7 @@
 <script type="module">
   import { viewManager } from './source/main.js';
   import { showToast } from './source/utils/toast.js';
-  import { APP_CONFIG } from './source/utils/app-config.js';
+  import { getAppConfig } from './source/utils/config-manager.js';
 
   (async function() {
     // --- Initialization and Role Button Logic ---
@@ -243,18 +243,18 @@
         btn.classList.toggle('active', isActive);
       });
     }
-    const appMode = APP_CONFIG.appMode;
+    const appMode = getAppConfig().app.environment;
     const loggedInUserType = localStorage.getItem('currentUserType');
 
     // Switcher visible in "dev" or "promo" modes, OR if super-admin logged in
     const isAdminLoggedIn = loggedInUserType === 'admin';
     console.log("RoleSwitcher: loggedInUserType:", loggedInUserType, "isAdminLoggedIn:", isAdminLoggedIn); // ADDED LOG
 
-    if (appMode === 'dev' || appMode === 'promo' || isAdminLoggedIn) {
-      if (isAdminLoggedIn && appMode !== 'dev' && appMode !== 'promo') {
-        console.log(`ADMIN_LOGIN_OVERRIDE: Switcher enabled because admin is logged in (AppMode: '${appMode || 'null'}').`);
-      } else {
-        console.log(`TESTING MODE ('${appMode}'): Switcher enabled.`);
+    if (getAppConfig().flags.roleSwitcher || isAdminLoggedIn) {
+      if (isAdminLoggedIn && !getAppConfig().flags.roleSwitcher) {
+        console.log(`ADMIN_LOGIN_OVERRIDE: Switcher enabled because admin is logged in (RoleSwitcher flag is false).`);
+      } else if (getAppConfig().flags.roleSwitcher) {
+        console.log(`RoleSwitcher enabled via config.json.`);
       }
 
       // --- FIX: Ensure Admin UI is correctly loaded on login ---
@@ -293,7 +293,7 @@
       // and all subsequent state changes, keeping the switcher perfectly in sync.
       viewManager.subscribe(updateActiveButton);
     } else {
-      console.log(`APP_MODE: '${appMode || 'production'}'. Dev switcher is hidden.`);
+      console.log(`RoleSwitcher disabled via config.json. Dev switcher is hidden.`);
       devContainer.remove();
     }
 

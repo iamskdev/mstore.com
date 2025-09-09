@@ -571,15 +571,17 @@
   import { AuthService } from './source/firebase/auth/auth.js'; 
   import { viewManager } from './source/main.js';
   import { getDeferredPrompt, initializePwaInstall } from './source/utils/pwa-manager.js';
-
-  let appVersion = 'N/A';
-  let appEnvironment = 'N/A';
-  let appName = 'N/A';
+  import { getAppConfig } from './source/utils/config-manager.js';
 
   /**
    * Updates the version information in the drawer footer.
    */
   function updateVersionInfo() {
+    const config = getAppConfig();
+    const appName = config.app.name || 'mStore';
+    const appVersion = config.app.version || '0.0.0';
+    const appEnvironment = config.app.environment || 'development';
+
     document.querySelectorAll(".app-version").forEach(el => {
       el.innerHTML = `© 2025 ${appName} | v${appVersion} | ${appEnvironment}`;
     });
@@ -864,25 +866,7 @@
   viewManager.subscribe(updateDrawerUI);
   
   // --- Initialize Version Info ---
-  // Listen for messages from the Service Worker to get version and environment info
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.addEventListener('message', (event) => {
-      console.log('Drawer: Received message from Service Worker', event.data);
-      if (event.data && event.data.version) { // Check for event.data.version as per idea.md
-        appName = event.data.app; // New
-        appVersion = event.data.version;
-        appEnvironment = event.data.env;
-        updateVersionInfo(); // Update the UI once data is received
-      }
-    });
-
-    // Request version info from the Service Worker once it's ready and controlling the page
-    navigator.serviceWorker.ready.then(registration => {
-      if (registration.active) {
-        registration.active.postMessage("GET_VERSION"); // Send "GET_VERSION" as per idea.md
-      }
-    });
-  }
+  updateVersionInfo();
 
   console.log("✅ Drawer: Subscribed to ViewManager for state updates.");
 </script>

@@ -6,7 +6,6 @@
       right: 0;
       z-index: 1000;
       /* This container will hold the banner and the header bar */
-      transition: transform 0.3s ease-out; /* Add transition for smooth animation */
     }
 
     /* New classes for header toggle items */
@@ -16,18 +15,6 @@
     .header-toggle-item.hidden {
       display: none !important; /* This will override the default flex */
     }
-
-    /* Banners for different modes */
-    .mode-banner {
-      text-align: center;
-      padding: 8px;
-      font-weight: bold;
-      font-size: 14px;
-      display: none; /* Hidden by default */
-    }
-    .dev-banner { background-color: var(--header-banner-dev-bg); color: var(--header-banner-dev-text); }
-    .admin-storefront-banner { background-color: var(--header-banner-promo-bg); color: var(--header-banner-promo-text); }
-    .admin-panel-banner { background-color: var(--header-banner-admin-bg); color: var(--header-banner-admin-text); }
 
     .apna-header-content {
       /* Updated height to accommodate banner space */
@@ -39,9 +26,7 @@
       display: flex;
       align-items: center;
       padding: 0 12px; /* Reduced horizontal padding */
-      /* Added padding to top and bottom to vertically center content when banner is active */
-      padding-top: 8px;
-      padding-bottom: 8px;
+      /* This is CRUCIAL for positioning the suggestions box correctly */
       /* This is CRUCIAL for positioning the suggestions box correctly */
       box-shadow: none;
       position: relative; /* This is CRUCIAL for positioning the suggestions box correctly */
@@ -251,7 +236,7 @@
     }
   </style>
   <div class="header-container">
-    <div id="mode-banner" class="mode-banner"></div>
+    
     <header class="apna-header-content" id="main-header">
       <i class="fas fa-arrow-left header-icon" id="search-back"></i>
       <!-- NEW: Notification Header Content -->
@@ -290,6 +275,7 @@
     import { fetchUserById, fetchMerchantById } from './source/utils/data-manager.js';
     import { loadComponent } from './source/main.js';
     import { filterManager } from './source/utils/filter-helper.js';
+    import { getAppConfig } from './source/utils/config-manager.js';
 
     // --- Elements ---
     const headerContainer = document.querySelector('.header-container');
@@ -299,7 +285,7 @@
     const searchInput = document.getElementById('header-search-input');
     const searchClearBtn = document.getElementById('search-clear');
     const mainHeader = document.getElementById('main-header');
-    const modeBanner = document.getElementById('mode-banner');
+    
     const notificationIcon = document.getElementById('notification-icon');
     const bellIcon = notificationIcon?.querySelector('i');
     const badge = notificationIcon?.querySelector('.notification-badge');
@@ -323,7 +309,7 @@
 
     // --- Functions ---
     function initializeHeaderStyle() {
-      const headerStyle = window.APP_CONFIG?.headerStyle || 'logo';
+      const headerStyle = getAppConfig().ui.headerStyle || 'logo';
       const menuIconEl = document.querySelector('[data-header-item="menu"]');
       if (logoContainer && menuIconEl) {
         logoContainer.classList.toggle('hidden', headerStyle === 'menu');
@@ -354,7 +340,7 @@
 
     function updateHeaderUI({ role, view, config }) {
       const userType = role;
-      const appMode = window.APP_CONFIG?.appMode;
+      const appMode = getAppConfig().app.environment;
       const userId = localStorage.getItem('currentUserId');
       const defaultLogo = './source/assets/logos/app-logo.png';
       const defaultName = 'mStore';
@@ -409,8 +395,6 @@
       }
 
       // Reset indicators
-      modeBanner.style.display = 'none';
-      modeBanner.textContent = '';
       if (bellIcon && badge) {
         bellIcon.className = 'fas fa-bell';
         badge.className = 'notification-badge hidden';
@@ -419,21 +403,30 @@
       }
 
       // Set indicators based on mode/role
-      if (appMode === 'dev') {
+      if (getAppConfig().flags.maintenanceMode) {
+        if (bellIcon && badge) {
+          badge.textContent = 'M'; // Example: Use 'M' for maintenance
+          badge.className = 'notification-badge maintenance-indicator'; // New class for maintenance
+          notificationIcon.title = 'Maintenance mode is active.';
+        }
+      } else if (appMode === 'development') {
         if (bellIcon && badge) {
           badge.textContent = '!';
           badge.className = 'notification-badge dev-indicator';
           notificationIcon.title = 'Developer mode is active.';
         }
-      } else if (appMode === 'promo') {
+      } else if (getAppConfig().flags.promotionEnabled) {
         if (bellIcon && badge) {
           badge.textContent = '★';
           badge.className = 'notification-badge storefront-indicator';
           notificationIcon.title = 'You are viewing a featured store.';
         }
       } else if (userType === 'admin') {
-        modeBanner.textContent = 'Admin Panel';
-        modeBanner.className = 'mode-banner admin-panel-banner';
+        if (bellIcon && badge) {
+          badge.textContent = 'A'; // Example: Use 'A' for admin
+          badge.className = 'notification-badge admin-indicator'; // New class for admin
+          notificationIcon.title = 'Admin panel is active.';
+        }
       }
 
       // Manage filter bar visibility

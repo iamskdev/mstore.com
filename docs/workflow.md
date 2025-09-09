@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Up-to-Date`
-> - **Last Reviewed:** 31/08/2025 19:25:00 IST (Updated by Gemini)
+> - **Last Reviewed:** 09/09/2025 13:25:00 IST (Updated by Gemini)
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides step-by-step instructions for testing the application using various methods, including admin-driven setup, UI-driven flows, and advanced developer tools. It is essential for quality assurance.
 
@@ -14,8 +14,8 @@
 किसी भी प्रकार का परीक्षण शुरू करने से पहले, यह सुनिश्चित करना महत्वपूर्ण है कि आपका स्थानीय विकास वातावरण सही ढंग से चल रहा है।
 
 1.  **डेटा स्रोत की जाँच करें (Check Data Source):**
-    -   `/source/utils/app-config.js` फ़ाइल खोलें।
-    -   सुनिश्चित करें कि `DATA_SOURCE` को `'emulator'` पर सेट किया गया है। यह ऐप को आपके कंप्यूटर पर चल रहे फायरबेस एम्युलेटर सूट से कनेक्ट करने के लिए कहता है।
+    -   `/source/config.json` फ़ाइल खोलें।
+    -   सुनिश्चित करें कि `source.data` को `'emulator'` पर सेट किया गया है। यह ऐप को आपके कंप्यूटर पर चल रहे फायरबेस एम्युलेटर सूट से कनेक्ट करने के लिए कहता है।
 
 2.  **एम्युलेटर शुरू करें (Start the Emulators):**
     -   अपने प्रोजेक्ट की रूट डायरेक्टरी में एक टर्मिनल खोलें।
@@ -45,7 +45,7 @@
 3.  **त्वरित भूमिका स्विचिंग और उपयोगकर्ता प्रतिरूपण (Developer Mode):** यह विभिन्न भूमिका-आधारित UI और सुविधाओं का परीक्षण करने का सबसे तेज़ और सबसे शक्तिशाली तरीका है।
 4.  **PWA सुविधाओं का परीक्षण (Testing PWA Features):** ऐप इंस्टॉलेशन और ऑफ़लाइन क्षमताओं का परीक्षण कैसे करें।
 5.  **UI कंपोनेंट्स का परीक्षण (Testing UI Components):** अलग-अलग UI टुकड़ों को स्वतंत्र रूप से कैसे जांचें।
-6.  **विभिन्न कॉन्फ़िगरेशन का परीक्षण (Testing Different Configurations):** आप `/source/utils/app-config.js` फ़ाइल को संपादित करके ऐप के व्यवहार को बदल सकते हैं।
+6.  **विभिन्न कॉन्फ़िगरेशन का परीक्षण (Testing Different Configurations):** आप `/source/config.json` फ़ाइल को संपादित करके ऐप के व्यवहार को बदल सकते हैं।
 ---
 
 ### 1. व्यवस्थापक-संचालित परीक्षण (Admin-Driven Testing)
@@ -135,10 +135,12 @@
 यह विभिन्न भूमिका-आधारित UI और सुविधाओं का परीक्षण करने का सबसे तेज़ और सबसे शक्तिशाली तरीका है।
 
 #### चरण 1: डेवलपर मोड सक्षम करें
-1.  **फ़ाइल खोलें:** `/source/utils/app-config.js`
-2.  `APP_MODE` को `'dev'` पर सेट करें:
-    ```javascript
-    const APP_MODE = "dev";
+1.  **फ़ाइल खोलें:** `/source/config.json`
+2.  `flags.roleSwitcher` को `true` पर सेट करें:
+    ```json
+    "flags": {
+      "roleSwitcher": true
+    }
     ```
 
 #### चरण 2: भूमिकाओं के बीच स्विच करना
@@ -207,14 +209,14 @@
 ---
 
 ### 6. विभिन्न कॉन्फ़िगरेशन का परीक्षण (Testing Different Configurations)
-आप `/source/utils/app-config.js` फ़ाइल को संपादित करके ऐप के व्यवहार को बदल सकते हैं।
+आप `/source/config.json` फ़ाइल को संपादित करके ऐप के व्यवहार को बदल सकते हैं।
 
-*   **`DATA_SOURCE`**:
+*   **`source.data`**:
     *   `'firebase'`: सभी डेटा फायरबेस से आएगा (लाइव परीक्षण)।
     *   `'emulator'`: सभी डेटा आपके स्थानीय फायरबेस एम्युलेटर से आएगा (**विकास और परीक्षण के लिए अनुशंसित**)।
     *   `'localstore'`: सभी डेटा `/localstore/jsons/` फ़ोल्डरों से आएगा (ऑफ़लाइन UI विकास के लिए उपयोगी जब एम्युलेटर की आवश्यकता न हो)।
 
-*   **`VERIFICATION_ENABLED`**:
+*   **`flags.phoneVerification`**:
     *   `false` (वर्तमान परीक्षण सेटिंग):
         *   **साइन-अप:** फ़ोन नंबर की विशिष्टता की जाँच सीधे फायरस्टोर से की जाती है। **चेतावनी:** यह एक **असुरक्षित तरीका** है जो केवल परीक्षण के लिए है और फायरस्टोर नियमों में एक अस्थायी, ढीले नियम (`allow list`) पर निर्भर करता है।
         *   **लॉगिन:** फ़ोन नंबर और पासवर्ड से लॉगिन सक्षम है (यह भी एक असुरक्षित परीक्षण-केवल सुविधा है)।
@@ -222,7 +224,7 @@
         *   **साइन-अप:** फ़ोन नंबर दर्ज करने पर OTP सत्यापन अनिवार्य होगा।
         *   **लॉगिन:** फ़ोन नंबर और पासवर्ड से लॉगिन अक्षम हो जाएगा।
 
-*   **`HEADER_STYLE`**:
+*   **`ui.headerStyle`**:
     *   `'logo'` (डिफ़ॉल्ट): हेडर में एक डायनामिक लोगो/अवतार दिखाता है। ड्रॉअर खोलने के लिए लोगो पर क्लिक करें।
     *   `'menu'`: हेडर में लोगो के बजाय एक स्थिर 3-लाइन (हैमबर्गर) मेनू आइकन दिखाता है। ड्रॉअर खोलने के लिए मेनू आइकन पर क्लिक करें।
 
@@ -242,7 +244,7 @@
     *   `tools/scripts/upload-to-emulator.js` और `tools/scripts/export-data.js` स्क्रिप्ट्स आपके फायरस्टोर (एम्युलेटर या लाइव) में मौजूदा डेटा को `/localstore/jsons/` की सामग्री से **पूरी तरह से ओवरराइट** कर देंगी। इन स्क्रिप्ट्स को चलाने से पहले सावधान रहें।
 
 4.  **असुरक्षित परीक्षण प्रवाह (Insecure Testing Flows):**
-    *   जब `VERIFICATION_ENABLED` को `false` पर सेट किया जाता है, तो ऐप सीधे फायरस्टोर से फ़ोन नंबर की विशिष्टता की जाँच करता है। यह एक **अस्थायी और असुरक्षित नियम** पर निर्भर करता है। उत्पादन में, इस नियम को हटा दिया जाना चाहिए और फ़ोन सत्यापन को क्लाउड फ़ंक्शन के माध्यम से नियंत्रित किया जाना चाहिए।
+    *   जब `flags.phoneVerification` को `false` पर सेट किया जाता है, तो ऐप सीधे फायरस्टोर से फ़ोन नंबर की विशिष्टता की जाँच करता है। यह एक **अस्थायी और असुरक्षित नियम** पर निर्भर करता है। उत्पादन में, इस नियम को हटा दिया जाना चाहिए और फ़ोन सत्यापन को क्लाउड फ़ंक्शन के माध्यम से नियंत्रित किया जाना चाहिए।
 
 5.  **ब्राउज़र कैश (Browser Cache):**
     *   यदि आप JavaScript (`.js`) फ़ाइलों में बदलाव करने के बाद अपेक्षित परिणाम नहीं देख रहे हैं, तो **हार्ड रीफ़्रेश** (Ctrl+Shift+R या Cmd+Shift+R) करने का प्रयास करें या अपने ब्राउज़र का कैश साफ़ करें।
@@ -300,6 +302,13 @@
 ---
 
 ## हाल के परिवर्तन (Recent Changes)
+
+### September 09, 2025
+- **Configuration Refactor:** Refactored the application's configuration system by replacing the static `app-config.js` file with a dynamic `config.json`. This centralizes all settings, including app environment, data source, UI preferences, and feature flags.
+- **Dynamic Config Loading:** Implemented a `config-manager.js` to fetch and provide the `config.json` settings to the entire application at runtime.
+- **Firebase Initialization Update:** Modified Firebase to initialize dynamically based on the configuration loaded from `config.json`, allowing for easier switching between live and emulator environments.
+- **UI Indicators:** Replaced intrusive header banners (e.g., for dev mode) with subtle notification badges to indicate application states like development, maintenance, or admin mode.
+- **Codebase Migration:** Updated all relevant modules and components to use the new `getAppConfig()` utility instead of the legacy `APP_CONFIG` object.
 
 ### August 31, 2025
 

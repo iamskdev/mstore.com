@@ -257,6 +257,31 @@ function updateServiceWorker(entry) {
   console.log("✅ service-worker.js updated");
 }
 
+// --- Update config.json ---
+function updateConfigFile(entry) {
+    if (!entry || !entry.version || !entry.version.new) {
+        console.error('❌ Invalid entry provided to update config.json.');
+        return;
+    }
+    const configJsonPath = path.resolve(__dirname, '..', 'source', 'config.json');
+    try {
+        const configJson = JSON.parse(fs.readFileSync(configJsonPath, 'utf-8'));
+        if (!configJson.app) {
+            configJson.app = {};
+        }
+        configJson.app.version = entry.version.new;
+        if (!configJson.audit) {
+            configJson.audit = {};
+        }
+        configJson.audit.modifyAt = nowISO();
+        configJson.audit.modifyBy = "System"; // Or a more specific value if available from commitDetails
+        fs.writeFileSync(configJsonPath, JSON.stringify(configJson, null, 2));
+        console.log(`✅ config.json updated to version ${entry.version.new}`);
+    } catch (e) {
+        console.error(`❌ Failed to update config.json:`, e.message);
+    }
+}
+
 // --- Main ---
 (function main() {
   let commitDetails;
@@ -289,7 +314,8 @@ function updateServiceWorker(entry) {
   const newEntry = updateJsonFile(commitDetails);
   if (newEntry) {
     updateMarkdown(newEntry);
-    updateServiceWorker(newEntry);
+    updateConfigFile(newEntry); // Update config.json
+    // updateServiceWorker(newEntry);
     console.log(`🎉 Version bumped to ${newEntry.version.new} [${newEntry.versionId}]`);
   } else {
     console.log("✅ Commit did not trigger version bump or was a duplicate.");

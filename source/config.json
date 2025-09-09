@@ -1,9 +1,35 @@
 {
-  "app": {},
+  "app": {
+    "owner": "santosh",
+    "name": "mStore",
+    "version": "0.6.0",
+    "environment": "development",
+    "description": ""
+  },
   "urls": {
     "localIp": "http://127.0.0.1:3000/",
     "pageUrl": "https://iamskdev.github.io/mstore.com/",
-    "fallbackUrl": "https://iamskdev.github.io/apnastore.com/",
+    "fallbackUrl": "",
     "customDomain": ""
+  },
+  "source": {
+    "data": "firebase",
+    "offlineCache": false
+  },
+  "ui": {
+    "theme": "dark",
+    "headerStyle": "logo"
+  },
+  "flags": {
+    "maintenanceMode": false,
+    "phoneVerification": true,
+    "roleSwitcher": true,
+    "promotionEnabled": false
+  },
+  "audit": {
+    "createdAt": "2025-09-08T09:56:14Z",
+    "createdBy": "Santosh",
+    "modifyAt": "2025-09-09T10:11:16Z",
+    "modifyBy": "System"
   }
 }

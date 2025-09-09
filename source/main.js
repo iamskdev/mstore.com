@@ -8,43 +8,12 @@
  * The header will move up/down based on the scroll direction of the page-view-area.
  
  */
-import { APP_CONFIG } from './utils/app-config.js';
-window.APP_CONFIG = APP_CONFIG;
 import { AuthService } from './firebase/auth/auth.js';
 import { viewConfig, defaultViews } from './utils/view-config.js';
 import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.js';
+import { initializeFirebase } from './firebase/firebase-config.js';
+import { setAppConfig, getAppConfig } from './utils/config-manager.js';
 
-// Global variable to store the loaded app configuration
-let appConfig = null;
-
-/**
- * Loads the application configuration from config.json.
- * @returns {Promise<object>} The loaded configuration object.
- */
-async function loadAppConfig() {
-  if (appConfig) {
-    return appConfig; // Return cached config if already loaded
-  }
-  try {
-    const response = await fetch('./source/config.json');
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    appConfig = await response.json();
-    return appConfig;
-  } catch (error) {
-    console.error("Error loading config.json:", error);
-    // Provide a default or fallback configuration in case of error
-    appConfig = {
-      app: {},
-      urls: {
-        customDomain: "",
-        pageUrl: window.location.origin + window.location.pathname // Fallback to current origin and path
-      }
-    };
-    return appConfig;
-  }
-}
 
 class ViewManager {
   constructor() {
@@ -217,7 +186,7 @@ class ViewManager {
     const hashPath = `/#/${role}/${viewId}`; // जैसे: #/guest/home
 
     // Use the pageUrl from the loaded configuration as the base for the final path.
-    const baseUrl = window.APP_CONFIG.urls.pageUrl;
+    const baseUrl = getAppConfig().urls.pageUrl;
 
     // Ensure baseUrl ends with a single slash for consistent path construction.
     const sanitizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
@@ -317,7 +286,7 @@ class ViewManager {
 
         // Add cache-busting query parameter only in development mode to ensure fresh scripts
         // without breaking production caching.
-        const modulePath = APP_CONFIG.appMode === 'dev' ? `${absoluteJsPath}?v=${new Date().getTime()}` : absoluteJsPath;
+        const modulePath = getAppConfig().app.environment === 'development' ? `${absoluteJsPath}?v=${new Date().getTime()}` : absoluteJsPath;
         const module = await import(modulePath);
         if (module.init && typeof module.init === 'function') {
           console.log(`ViewManager: Calling init() for ${config.id}`);
@@ -382,8 +351,8 @@ class ViewManager {
     // (either logged in or logged out) and has updated localStorage accordingly.
     // By waiting here, we ensure that when we read from localStorage in the next steps,
     // the data is guaranteed to be correct and not stale.
-    // This check is skipped for 'local' data source mode where there's no live auth.
-    if (APP_CONFIG.dataSource !== 'local') {
+    // This check is skipped for 'localstore' data source mode where there's no live auth.
+    if (getAppConfig().source.data !== 'localstore') {
       await AuthService.initializeAuthListener();
     }
 
@@ -609,8 +578,8 @@ export async function loadCoreComponents() {
     const loggedInUserType = localStorage.getItem('currentUserType');
     const isAdminLoggedIn = loggedInUserType === 'admin';
 
-    // Show dev-only partials if appMode is 'dev' or 'promo', OR if an admin is logged in
-    const allowDevOnly = APP_CONFIG.appMode === 'dev' || APP_CONFIG.appMode === 'promo' || isAdminLoggedIn;
+    // Show dev-only partials if the app is in development mode, OR if an admin is logged in
+    const allowDevOnly = getAppConfig().app.environment === 'development' || isAdminLoggedIn;
 
     const promises = [];
 
@@ -647,27 +616,46 @@ export async function loadCoreComponents() {
 export async function initializeApp() {
   console.log("🚀 🚀 Initializing App...");
   // Load application configuration
-  const loadedConfig = await loadAppConfig();
+  let loadedConfig = {};
+  try {
+    const response = await fetch('./source/config.json');
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    loadedConfig = await response.json();
+  } catch (error) {
+    console.error("Error loading config.json:", error);
+    // Provide a default or fallback configuration in case of error
+    loadedConfig = {
+      app: {},
+      urls: {
+        customDomain: "",
+        pageUrl: window.location.origin + window.location.pathname // Fallback to current origin and path
+      }
+    };
+  }
+  setAppConfig(loadedConfig);
+  initializeFirebase(loadedConfig);
 
-  // Ensure window.APP_CONFIG.urls exists
-  if (!window.APP_CONFIG.urls) {
-    window.APP_CONFIG.urls = {}; // Initialize if it doesn't exist
+  // Ensure getAppConfig().urls exists
+  if (!getAppConfig().urls) {
+    getAppConfig().urls = {}; // Initialize if it doesn't exist
   }
 
   // Determine the base URL based on the environment
   if (window.location.hostname === '127.0.0.1') {
-    window.APP_CONFIG.urls.pageUrl = loadedConfig.urls.localIp;
+    getAppConfig().urls.pageUrl = loadedConfig.urls.localIp;
   } else if (loadedConfig.urls.customDomain && loadedConfig.urls.customDomain !== "" && window.location.hostname === new URL(loadedConfig.urls.customDomain).hostname) {
-    window.APP_CONFIG.urls.pageUrl = loadedConfig.urls.customDomain;
+    getAppConfig().urls.pageUrl = loadedConfig.urls.customDomain;
   } else {
     // Default to the pageUrl specified in config.json (e.g., GitHub Pages URL)
-    window.APP_CONFIG.urls.pageUrl = loadedConfig.urls.pageUrl;
+    getAppConfig().urls.pageUrl = loadedConfig.urls.pageUrl;
   }
 
   // Handle fallback URL for old links/domains
-  if (loadedConfig.urls.fallbackUrl && loadedConfig.urls.fallbackUrl !== "" && window.location.href.startsWith(loadedConfig.urls.fallbackUrl) && window.APP_CONFIG.urls.pageUrl !== loadedConfig.urls.fallbackUrl) {
-    console.warn(`Redirecting from old URL: ${window.location.href} to ${window.APP_CONFIG.urls.pageUrl}`);
-    window.location.replace(window.APP_CONFIG.urls.pageUrl);
+  if (loadedConfig.urls.fallbackUrl && loadedConfig.urls.fallbackUrl !== "" && window.location.href.startsWith(loadedConfig.urls.fallbackUrl) && getAppConfig().urls.pageUrl !== loadedConfig.urls.fallbackUrl) {
+    console.warn(`Redirecting from old URL: ${window.location.href} to ${getAppConfig().urls.pageUrl}`);
+    window.location.replace(getAppConfig().urls.pageUrl);
     return; // Stop further initialization as we are redirecting
   }
 
@@ -708,14 +696,21 @@ export async function initializeApp() {
   initializeLayoutObservers();
 
   // Log the current configuration for easy debugging.
-  if (APP_CONFIG.appMode) {
-    console.log(`%c🚀 App Mode: ${APP_CONFIG.appMode.toUpperCase()}`, 'color: #448aff; font-weight: bold; font-size: 12px;');
+  if (getAppConfig().app.environment) {
+    console.log(`%c🚀 App Mode: ${getAppConfig().app.environment.toUpperCase()}`, 'color: #448aff; font-weight: bold; font-size: 12px;');
   } else {
     console.log(`%c🚀 App Mode: PRODUCTION`, 'color: #4caf50; font-weight: bold; font-size: 12px;');
   }
-  console.log(`%c💾 Data Source: ${APP_CONFIG.dataSource.toUpperCase()}`, 'color: #ff9800; font-weight: bold; font-size: 12px;');
-  console.log(`%c🔒 Verification Flow: ${APP_CONFIG.verificationEnabled ? 'ENABLED' : 'DISABLED'}`, 'color: #e91e63; font-weight: bold; font-size: 12px;');
-  console.log(`%c🎨 Header Style: ${APP_CONFIG.headerStyle.toUpperCase()}`, 'color: #9c27b0; font-weight: bold; font-size: 12px;');
+  console.log(`%c💾 Data Source: ${getAppConfig().source.data.toUpperCase()}`, 'color: #ff9800; font-weight: bold; font-size: 12px;');
+  console.log(`%c🔒 Verification Flow: ${getAppConfig().flags.phoneVerification ? 'ENABLED' : 'DISABLED'}`, 'color: #e91e63; font-weight: bold; font-size: 12px;');
+  console.log(`%c🎨 Header Style: ${getAppConfig().ui.headerStyle.toUpperCase()}`, 'color: #9c27b0; font-weight: bold; font-size: 12px;');
+
+  // Show maintenance mode toast if enabled
+  const appConfig = getAppConfig();
+  if (appConfig.flags.maintenanceMode) {
+    const { showToast } = await import('./utils/toast.js');
+    showToast('warning', 'Application is currently in maintenance mode. Some features may be unavailable.', 0);
+  }
 
   try {
     const allItems = await fetchAllItems();
