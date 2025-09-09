@@ -1,7 +1,7 @@
 #cart-view {
   flex-grow: 1;
   width: 100%;
-  height: 100%; /* Ensure it takes full height of flex container */
+  height: calc(100% - 65px);
   display: flex; /* Add this */
   flex-direction: column; /* Add this */
 }
