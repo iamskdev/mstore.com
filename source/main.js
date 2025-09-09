@@ -649,12 +649,18 @@ export async function initializeApp() {
     getAppConfig().urls.pageUrl = loadedConfig.urls.localHost;
   } else if (loadedConfig.urls.customDomain && loadedConfig.urls.customDomain !== "" && window.location.hostname === new URL(loadedConfig.urls.customDomain).hostname) {
     getAppConfig().urls.pageUrl = loadedConfig.urls.customDomain;
-  } else if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !loadedConfig.urls.customDomain) {
-    // If it's not localhost, not 127.0.0.1, and not a custom domain, assume it's a local IP
+  } else if (window.location.hostname.endsWith('github.io') && window.location.pathname.length > 1) {
+    // This is a GitHub Pages deployment in a subdirectory (e.g., https://username.github.io/repo-name/)
+    // The base URL should include the repository name.
+    const repoName = window.location.pathname.split('/')[1]; // Get the first part of the path after the leading slash
+    getAppConfig().urls.pageUrl = `${window.location.origin}/${repoName}`;
+  }
+  else if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !loadedConfig.urls.customDomain) {
+    // If it's not localhost, not 127.0.0.1, and not a custom domain, assume it's a local IP or root domain GitHub Pages
     getAppConfig().urls.pageUrl = window.location.origin;
   }
   else {
-    // Default to the pageUrl specified in config.json (e.g., GitHub Pages URL)
+    // Default to the pageUrl specified in config.json (e.g., GitHub Pages URL for root domain or other custom setups)
     getAppConfig().urls.pageUrl = loadedConfig.urls.pageUrl;
   }
 

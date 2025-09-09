@@ -12,7 +12,7 @@ const APP_SHELL_URLS = [
   OFFLINE_PAGE,
   './source/main.css',
   './source/common/styles/theme.css',
-  './source/assets/logos/app-logo-192.png',
+  './source/assets/logos/app-logo.png',
   './source/assets/logos/app-logo.png',
 
   // Core Scripts & Config
