@@ -1,14 +1,13 @@
 <!-- 🔁 Reusable Item Grid Card Component -->
-<a class="card" href="{{HREF}}">
+<a class="card" href="{{HREF}}" data-item-id="{{ITEM_ID}}">
   <div class="card-image-wrapper">
     <img
       src="{{IMAGE_SRC}}"
       alt="{{ITEM_NAME}}"
       class="card-img"
-      onerror="this.src='{{DEFAULT_IMAGE_SRC}}'"
-    />
-    <button class="wishlist-btn {{WISHLIST_ACTIVE_CLASS}}">
-      <i class="{{WISHLIST_ICON_CLASS}}"></i>
+      onerror="this.src='{{DEFAULT_IMAGE_SRC}}'"/>
+    <button class="wishlist-btn {{#if IS_SAVED}}active{{/if}}">
+      <i class="{{HEART_ICON_CLASS}}"></i>
     </button>
   </div>
   <div class="card-info">
@@ -75,6 +74,7 @@
     overflow: hidden;
     margin: 0.25rem;
     background-color: var(--bg-tertiary); /* Placeholder for broken images */
+    position: relative; /* Added for correct positioning of wishlist-btn */
   }
 
   .card-img {
@@ -101,6 +101,7 @@
     color: var(--text-secondary);
     background: transparent; /* Ensure no background */
     box-shadow: none; /* Ensure no box-shadow */
+    z-index: 10000000;
    }
 
 

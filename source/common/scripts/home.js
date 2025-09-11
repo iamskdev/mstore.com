@@ -1,6 +1,7 @@
 import { fetchAllItems, fetchAllUnits, fetchAllCategories, fetchActivePromotion } from '../../utils/data-manager.js';
 import { createCardFromTemplate, initCardHelper } from '../../utils/card-helper.js';
 import { initBannerManager } from '../../utils/banner-mannager.js'; // Add this line
+import { isItemSaved } from '../../utils/saved-manager.js';
 
 let allItems = []; // Global variable to store all fetched items
 let currentFilter = 'all'; // Global variable to store the current filter
@@ -36,7 +37,10 @@ async function populateAllItemsGrid(itemsToDisplay = allItems) {
 
         const fragment = document.createDocumentFragment();
         for (const item of filteredItems) { // Use filteredItems here
-            const card = createCardFromTemplate(item);
+            const card = createCardFromTemplate({
+                ...item,
+                isSaved: isItemSaved(item.meta.itemId) // Pass the saved status
+            });
             if (card) fragment.appendChild(card);
         }
         grid.appendChild(fragment);

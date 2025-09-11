@@ -8,13 +8,18 @@
  * The header will move up/down based on the scroll direction of the page-view-area.
  
  */
+
+// Add a global message listener to the main thread
+window.addEventListener('message', (event) => {
+});
+
+
 import { AuthService } from './firebase/auth/auth.js';
 import { viewConfig, defaultViews } from './utils/view-config.js';
 import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.js';
 import { initializeFirebase } from './firebase/firebase-config.js';
 import { setAppConfig, getAppConfig } from './utils/config-manager.js';
-
-
+import { initWishlistHandler } from './utils/saved-manager.js';
 class ViewManager {
   constructor() {
     // Initialize with a null state. The correct state will be determined
@@ -697,6 +702,9 @@ export async function initializeApp() {
   await viewManager.init();
   updateProgress(30); // Initial view loaded
 
+    // Initialize global wishlist handler
+  initWishlistHandler();
+
   // 1. Load core static components like header and navigation.
   //    Now, loadCoreComponents can reliably check localStorage for currentUserType.
   console.log("initializeApp: currentUserType before loadCoreComponents:", localStorage.getItem('currentUserType')); // ADDED LOG
@@ -710,7 +718,7 @@ export async function initializeApp() {
   }
 
   // Initialize the scroll-aware header behavior
-  initializeScrollAwareHeader();
+  // initializeScrollAwareHeader();
   
   // Attempt to hide the browser's address bar on mobile devices.
   attemptHideAddressBar();
@@ -865,7 +873,7 @@ function initializePullToRefresh() {
       e.preventDefault(); // Prevent default browser scroll only when our custom PTR is active
       const pullDistance = Math.max(0, diff);
       // FIX: Calculate top relative to its hidden position (-offsetHeight)
-      ptr.style.top = `${-ptr.offsetHeight + Math.min(pullDistance, 120)}px`;
+      ptr.style.top = `${-ptr.offsetHeight + Math.min(pullDistance, 212)}px`;
       
       const rotation = Math.min((pullDistance / pullThreshold) * 180, 180);
       arrow.style.transform = `rotate(${rotation}deg)`;

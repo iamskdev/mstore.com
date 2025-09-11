@@ -27,7 +27,13 @@ const viewConfig = {
       title: 'Home'
     },
     chat: { id: 'guest-chat-view', path: null, title: 'Chat' },
-    saved: { id: 'guest-saved-view', path: null, title: 'Saved' },
+    saved: {
+      id: 'guest-saved-view',
+      path: './source/common/pages/saved.html',
+      cssPath: './source/common/styles/saved.css',
+      jsPath: './source/common/scripts/saved.js',
+      title: 'Saved'
+    },
     cart: {
       id: 'cart-view',
       path: './source/common/pages/cart.html',
@@ -62,7 +68,13 @@ const viewConfig = {
       title: 'Home'
     },
     chat: { id: 'user-chat-view', path: null, title: 'Chat' },
-    saved: { id: 'user-saved-view', path: null, title: 'Saved' },
+    saved: {
+      id: 'user-saved-view',
+      path: './source/common/pages/saved.html',
+      cssPath: './source/common/styles/saved.css',
+      jsPath: './source/common/scripts/saved.js',
+      title: 'Saved'
+    },
     cart: {
       id: 'cart-view',
       path: './source/common/pages/cart.html',

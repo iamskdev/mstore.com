@@ -256,8 +256,10 @@ class FilterManager {
      */
     _areFiltersActive() {
         const values = this._getAdvancedFilterValues();
+        console.log("Checking active filters. Current values:", values);
         const minSlider = this.modalContainer.querySelector('#adv-min-price-slider');
         const maxSlider = this.modalContainer.querySelector('#adv-max-price-slider');
+        console.log("Min/Max slider values:", minSlider?.min, maxSlider?.max);
 
         // Check if any value is different from its default
         if (values.sort !== 'relevance') return true;
@@ -275,7 +277,10 @@ class FilterManager {
      * @private
      */
     _updateFilterIconState() {
-        const iconBtn = this.placeholder.querySelector('.filter-icon-btn'); // This still targets the filter bar icon
+        const filterBarContainer = document.getElementById('filter-bar');
+        if (!filterBarContainer) return; // Main filter bar not found
+
+        const iconBtn = filterBarContainer.querySelector('.filter-icon-btn');
         if (!iconBtn) return;
 
         // The toggle method with the second argument is perfect for this.
@@ -331,7 +336,13 @@ class FilterManager {
      * @private
      */
     _syncHorizontalBar(categorySlug) {
+        if (!this.isLoaded || !this.placeholder) {
+            console.log("Filter bar not loaded or placeholder is null in _syncHorizontalBar.");
+            return;
+        }
+        console.log("Placeholder in _syncHorizontalBar:", this.placeholder);
         const container = this.placeholder.querySelector('#filter-bar'); // This still targets the filter bar
+        console.log("Container (#filter-bar) in _syncHorizontalBar:", container);
         if (!container) return;
 
         container.querySelectorAll('.filter-bar-tab.active').forEach(tab => tab.classList.remove('active'));
@@ -462,6 +473,9 @@ class FilterManager {
             panel.classList.remove('visible');
             document.body.style.overflow = '';
             this._updateFilterIconState(); // Update icon state when modal is hidden
+            // Explicitly hide the modal elements after transition
+            panel.style.display = 'none';
+            overlay.style.display = 'none';
         }
     }
 

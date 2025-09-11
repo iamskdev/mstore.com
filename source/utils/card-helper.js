@@ -57,6 +57,7 @@ function generateStarsHtml(rating) {
  * @returns {HTMLElement} The card element.
  */
 export function createCardFromTemplate(item, isSkeleton = false) {
+    console.log('createCardFromTemplate called for item:', item?.meta?.itemId);
     const cardWrapper = document.createElement('div');
     cardWrapper.className = 'card-wrapper';
 
@@ -115,7 +116,8 @@ export function createCardFromTemplate(item, isSkeleton = false) {
             addToCartIconClass = 'fas fa-exclamation-circle';
             addToCartDisabled = 'disabled';
         }
-    } else {
+    }
+    else {
         if (item.inventory?.stockQty > 0) {
             stockStatusText = 'In Stock';
             stockStatusClass = 'in';
@@ -135,6 +137,7 @@ export function createCardFromTemplate(item, isSkeleton = false) {
     
     const templateData = {
         HREF: 'javascript:void(0);', // Disabled navigation to item-details
+        ITEM_ID: item.meta.itemId,
         IMAGE_SRC: item.media?.thumbnail || (item.type === 'product' ? DEFAULT_PRODUCT_IMAGE : DEFAULT_SERVICE_IMAGE),
         ITEM_NAME: item.info.name,
         CURRENT_PRICE: currentPrice.toFixed(2),
@@ -151,8 +154,8 @@ export function createCardFromTemplate(item, isSkeleton = false) {
         ADD_TO_CART_ICON_CLASS: addToCartIconClass,
         ADD_TO_CART_TEXT: addToCartText,
         DEFAULT_IMAGE_SRC: item.type === 'product' ? DEFAULT_PRODUCT_IMAGE : DEFAULT_SERVICE_IMAGE,
-        WISHLIST_ACTIVE_CLASS: '',
-        WISHLIST_ICON_CLASS: 'far fa-heart',
+        IS_SAVED: item.isSaved || false,
+        HEART_ICON_CLASS: item.isSaved ? 'fa-solid fa-heart' : 'far fa-heart',
     };
 
     cardWrapper.innerHTML = renderTemplate(cardGridTemplate, templateData);
@@ -160,15 +163,11 @@ export function createCardFromTemplate(item, isSkeleton = false) {
     const cardElement = cardWrapper.querySelector('.card');
     if (cardElement) {
         cardElement.addEventListener('click', (e) => {
-            if (e.target.closest('.add-to-cart') || e.target.closest('.wishlist-btn')) {
+            if (e.target.closest('.add-to-cart')) {
                 e.preventDefault();
-                e.stopPropagation();
-                if (e.target.closest('.add-to-cart')) {
-                    // Handle add to cart
-                } else if (e.target.closest('.wishlist-btn')) {
-                    // Handle wishlist
-                }
-            } else {
+                // Handle add to cart
+            }
+            else {
                 sessionStorage.setItem('selectedItem', JSON.stringify(item));
                 window.dispatchEvent(new CustomEvent('navigateToItem', { detail: item }));
             }

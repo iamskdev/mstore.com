@@ -5,7 +5,7 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      /* This container will hold the banner and the header bar */
+      transform: translateY(0); /* Force header to stay at the top */
     }
 
     /* New classes for header toggle items */
@@ -19,16 +19,14 @@
     .apna-header-content {
       /* Updated height to accommodate banner space */
       min-height: 56px;
-      border-top: none !important;
       height: auto;
       background: var(--bg-primary);
-      border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       padding: 0 12px; /* Reduced horizontal padding */
       /* This is CRUCIAL for positioning the suggestions box correctly */
       /* This is CRUCIAL for positioning the suggestions box correctly */
-      box-shadow: none;
+      box-shadow: 0 1px 0 0 var(--border-color); /* Simulates a border-bottom */
       position: relative; /* This is CRUCIAL for positioning the suggestions box correctly */
     }
 

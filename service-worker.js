@@ -56,6 +56,10 @@ const APP_SHELL_URLS = [
   './source/common/pages/home.html',
   './source/common/styles/home.css',
   './source/common/scripts/home.js',
+  './source/common/pages/saved.html',
+  './source/common/scripts/saved.js',
+  './source/common/styles/saved.css',
+  './source/utils/saved-manager.js',
   './source/common/pages/guest-account.html',
   './source/common/styles/guest-account.css',
   './source/common/scripts/guest-account.js',
@@ -240,6 +244,14 @@ self.addEventListener('activate', (event) => {
 });
 
 // --- Fetch Handling ---
+self.addEventListener('message', (event) => {
+  console.log('Service Worker: Received message:', event.data);
+  // If the client expects a response, send one back.
+  if (event.ports && event.ports[0]) {
+    event.ports[0].postMessage({ status: 'Service Worker: Message received' });
+  }
+});
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   
