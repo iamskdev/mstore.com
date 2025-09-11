@@ -506,15 +506,40 @@ window.switchTab = function(tab) {
 
 // ⭐ Swipe Tabs
 const tabPanels = document.querySelector(".cart-container");
-let touchstartX = 0, touchendX = 0;
+let touchstartX = 0, touchstartY = 0;
+let touchendX = 0, touchendY = 0;
+
+const swipeThreshold = 30; // Minimum pixels for a swipe
+const verticalThreshold = 30; // Maximum vertical deviation for a horizontal swipe
 
 function handleGesture() {
-  if (touchendX < touchstartX && activeTab === "products") switchTab("services");
-  if (touchendX > touchstartX && activeTab === "services") switchTab("products");
+  const diffX = touchendX - touchstartX;
+  const diffY = touchendY - touchstartY;
+
+  // Check if it's primarily a horizontal swipe and exceeds threshold
+  if (Math.abs(diffX) > swipeThreshold && Math.abs(diffY) < verticalThreshold) {
+    if (diffX < 0 && activeTab === "products") {
+      switchTab("services");
+    } else if (diffX > 0 && activeTab === "services") {
+      switchTab("products");
+    }
+  }
 }
 
-tabPanels.addEventListener("touchstart", e => { touchstartX = e.changedTouches[0].screenX; }, { passive: true });
-tabPanels.addEventListener("touchend", e => { touchendX = e.changedTouches[0].screenX; handleGesture(); });
+tabPanels.addEventListener("touchstart", e => {
+  touchstartX = e.changedTouches[0].screenX;
+  touchstartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+tabPanels.addEventListener("touchmove", e => {
+  // We don't prevent default here to allow normal scrolling
+  // unless a clear horizontal swipe is detected later.
+  // This listener is primarily to update touchendX/Y for gesture calculation.
+  touchendX = e.changedTouches[0].screenX;
+  touchendY = e.changedTouches[0].screenY;
+});
+
+tabPanels.addEventListener("touchend", handleGesture);
 
 // Init
 rendercard();

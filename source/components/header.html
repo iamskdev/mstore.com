@@ -267,9 +267,7 @@
       <!-- Search Suggestions Box: Moved INSIDE the header content for correct positioning. -->
       <ul id="search-suggestions" class="search-suggestions"></ul>
     </header>
-    <!-- NEW: Container for the filter bar, managed by the header script -->
-    <div id="filter-bar-placeholder" style="display: none;"></div>
-  </div>
+    </div>
 
   <script type="module">
     import { fetchUserById, fetchMerchantById } from './source/utils/data-manager.js';
@@ -279,7 +277,6 @@
 
     // --- Elements ---
     const headerContainer = document.querySelector('.header-container');
-    const filterBarContainer = document.getElementById('filter-bar-placeholder');
     const searchToggleBtn = document.getElementById('search-toggle');
     const searchBackBtn = document.getElementById('search-back');
     const searchInput = document.getElementById('header-search-input');
@@ -297,16 +294,6 @@
     const notificationBackBtn = document.getElementById('notification-back-btn');
     const notificationTitle = document.getElementById('notification-title');
 
-    // --- Observers ---
-    const filterBarObserver = new ResizeObserver(entries => {
-      for (let entry of entries) {
-        document.documentElement.style.setProperty('--filter-bar-height', `${entry.contentRect.height}px`);
-      }
-    });
-    if (filterBarContainer) {
-        filterBarObserver.observe(filterBarContainer);
-    }
-
     // --- Functions ---
     function initializeHeaderStyle() {
       const headerStyle = getAppConfig().ui.headerStyle || 'logo';
@@ -315,11 +302,6 @@
         logoContainer.classList.toggle('hidden', headerStyle === 'menu');
         menuIconEl.classList.toggle('hidden', headerStyle !== 'menu');
       }
-    }
-
-    async function manageFilterBar(show) {
-        // Delegate directly to the filterManager. It will handle loading, initialization, and visibility.
-        await filterManager.manageVisibility(show);
     }
 
     function openSearchView() {
@@ -428,9 +410,6 @@
           notificationIcon.title = 'Admin panel is active.';
         }
       }
-
-      // Manage filter bar visibility
-      manageFilterBar(config.showFilterBar || false);
 
       // Re-apply header style
       initializeHeaderStyle();

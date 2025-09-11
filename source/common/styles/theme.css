@@ -1,10 +1,3 @@
-:root {
-  --header-height: 56px;  /* Default header height */
-  --nav-tab-height: 65px;  /* Default bottom bar height, matches tab-nav height */
-  --filter-bar-height: 36px; /* Default filter bar height */
- }
-
-
 /* ========================================
    2. THEME VARIABLES (LIGHT & DARK)
    ========================================

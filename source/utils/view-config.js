@@ -22,7 +22,7 @@ const viewConfig = {
       path: './source/common/pages/home.html',
       cssPath: './source/common/styles/home.css',
       jsPath: './source/common/scripts/home.js',
-      showFilterBar: true, // No filter bar on the welcome 
+      showFilterBar: true,
       embedFooter: true,
       title: 'Home'
     },
@@ -109,7 +109,6 @@ const viewConfig = {
       path: "./source/modules/admin/pages/admin-home.html",
       cssPath: "./source/modules/admin/pages/admin-home.css",
       jsPath: "./source/modules/admin/pages/admin-home.js",
-      showFooter: false,
       embedFooter: true,
       title: 'Home'
     },

@@ -8,8 +8,8 @@
   flex-direction: column;
   background: var(--bg-primary);
   color: var(--text-primary);
-  overflow: hidden;
-  height: 100%;
+  overflow-y: auto; /* Changed from hidden to auto */
+  height: 100vh; /* Use viewport height */
   z-index: 999;
 }
 
@@ -21,6 +21,9 @@
   justify-content: flex-start; /* Add for left alignment */
   gap: 20px; /* Add for equal gap between tabs */
   padding: 0 10px; /* Add horizontal padding to the bar itself if needed */
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .tab-btn {
@@ -56,7 +59,7 @@
 /* ---------- CONTENT AREA ---------- */
 .notification-content {
   flex: 1 1 auto;
-  overflow-y: auto;
+  /* Removed overflow-y: auto; as parent will handle scrolling */
 }
 
 .tab-panel { display: none; }

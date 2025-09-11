@@ -130,6 +130,31 @@ class FilterManager {
             window.dispatchEvent(new CustomEvent('filterChanged', { detail: { filter: filterValue } }));
         });
 
+        // --- Scroll-to-hide/show logic for filter bar ---
+        let lastScrollTop = 0;
+        const pageViewArea = document.querySelector('.page-view-area'); // The main scrollable area
+
+        if (pageViewArea) {
+            pageViewArea.addEventListener('scroll', () => {
+                const currentScrollTop = pageViewArea.scrollTop;
+                const filterBarHeight = container.offsetHeight; // Get the height of the filter bar
+
+                // Determine scroll direction
+                const scrollThreshold = 20; // Smaller threshold for hiding
+
+                if (currentScrollTop > lastScrollTop && currentScrollTop > scrollThreshold) {
+                    // Scrolling down and scrolled past the threshold
+                    container.classList.add('filter-bar-hidden');
+                } else if (currentScrollTop < lastScrollTop) {
+                    // Scrolling up
+                    container.classList.remove('filter-bar-hidden');
+                }
+                lastScrollTop = currentScrollTop;
+            });
+        } else {
+            console.warn('FilterManager: .page-view-area not found for scroll-to-hide functionality.');
+        }
+
         // Fetch and populate dynamic category tabs
         try {
             const allCategories = await fetchAllCategories(true);
@@ -474,8 +499,8 @@ class FilterManager {
      */
     async initializeEmbeddedFilterBar(viewElement) {
         // Temporarily set the placeholder to the viewElement to reuse existing logic
-        const originalPlaceholder = this.placeholder;
-        this.placeholder = viewElement;
+        const originalPlaceholder = this._placeholder; // Use the private variable
+        this._placeholder = viewElement; // Use the private variable
 
         try {
             // Re-use the component initialization logic, but target the embedded filter bar
@@ -488,7 +513,7 @@ class FilterManager {
             console.error('FilterManager: Failed to initialize embedded filter bar logic.', error);
         } finally {
             // Restore the original placeholder
-            this.placeholder = originalPlaceholder;
+            this._placeholder = originalPlaceholder; // Use the private variable
         }
     }
 }

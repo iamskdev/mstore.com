@@ -9,7 +9,7 @@
     .cart-tabs {
       display: flex;
       justify-content: center;
-      background: var(--bg-secondary);
+      background: var(--bg-primary);
       border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
@@ -47,7 +47,7 @@
     }
 
     .card-item-body {
-      background: var(--bg-secondary);
+      background: var(--bg-primary);
       border-radius: 0px;
       margin-bottom: 0px;
       border-bottom: 0.1rem solid var(--border-color);
@@ -212,7 +212,7 @@
     .cart-footer-area {
       position: sticky;
       bottom: 0;
-      background: var(--bg-secondary);
+      background: var(--bg-primary);
       padding: 14px;
       display: flex;
       justify-content: space-between;

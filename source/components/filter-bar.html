@@ -19,22 +19,33 @@
 
 
 <style>
+  
   .filter-bar-container {
     background-color: var(--bg-primary);
     padding: 3px 4px; /* Reduced left/right padding */
     align-items: center;
     left: 0;
-    /* REMOVED height: var(--filter-bar-height); It will now be determined by its content */
+    /* Ensure it doesn't grow or shrink unexpectedly */
+    flex-shrink: 0;
+    flex-grow: 0;
     display: flex;
     gap: 5px; /* Space between tabs */
     border-bottom: 1px solid var(--border-color);
-    /* REMOVED: position: fixed, top, z-index, width. These are no longer needed as it's part of the header flow. */
     width: 100%;
     box-sizing: border-box; /* Ensure padding is included in width */
     overflow-x: auto; /* Enable horizontal scrolling */
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+    position: sticky; /* Isse element apni normal position par rahega jab tak scroll na ho */
+    top: 0; /* Header ki height ke theek neeche chipka rahega */
+    z-index: 100; /* Yeh ensure karega ki yeh doosre scrolling content ke upar rahe */
+    transition: transform 0.3s ease-out; /* Smooth transition for hiding/showing */
+
   }
+    /* Naya class filter bar ko hide karne ke liye */
+  .filter-bar-container.filter-bar-hidden {
+    transform: translateY(-100%); /* Upar ki taraf move karke hide karega */
+  } 
   .filter-bar-container::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }

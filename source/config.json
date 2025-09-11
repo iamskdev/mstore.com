@@ -2,12 +2,12 @@
   "app": {
     "owner": "santosh",
     "name": "mStore",
-    "version": "0.6.2",
+    "version": "0.6.3",
     "environment": "development",
     "description": ""
   },
   "urls": {
-    "localIp": "http://127.0.0.1:7000/",
+    "localIp": "http://127.0.0.1:3000/",
     "pageUrl": "https://iamskdev.github.io/mstore.com/",
     "fallbackUrl": "",
     "customDomain": "",
@@ -30,7 +30,7 @@
   "audit": {
     "createdAt": "2025-09-08T09:56:14Z",
     "createdBy": "Santosh",
-    "modifyAt": "2025-09-09T18:19:48Z",
+    "modifyAt": "2025-09-11T08:09:28Z",
     "modifyBy": "System"
   }
 }

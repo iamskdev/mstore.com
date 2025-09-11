@@ -63,24 +63,17 @@ class ViewManager {
    * @param {HTMLElement} viewElement - The view container element.
    * @param {string} [existingHtml=''] - The existing HTML content of the view to prepend.
    */
-  async _loadAndEmbedFooter(viewElement, role, existingHtml = '') {
+  async _loadAndEmbedFooter(role, existingHtml = '') { // Removed viewElement from params
     try {
       const footerResponse = await fetch('./source/components/footer.html');
       if (!footerResponse.ok) throw new Error('Footer HTML not found');
 
       const footerHtml = await footerResponse.text();
       // NEW: Wrap content in a div that can grow, ensuring the footer is pushed down.
-      viewElement.innerHTML = `<div class="view-content-wrapper">${existingHtml}</div>` + footerHtml;
-      viewElement.classList.add('embedded-footer'); // Add class for CSS layout targeting
-
-      // Lazy-load and initialize footer logic
-      if (!this.footerHelper) {
-        const { initializeFooter } = await import('./utils/footer-helper.js');
-        this.footerHelper = { initialize: initializeFooter };
-      }
-      this.footerHelper.initialize(viewElement, role);
+      return `<div class="view-content-wrapper">${existingHtml}</div>` + footerHtml; // Return the HTML
     } catch (e) {
-      console.warn(`ViewManager: Could not embed footer for ${viewElement.id}`, e);
+      console.warn(`ViewManager: Could not embed footer`, e); // Removed viewElement.id
+      return existingHtml; // Return original HTML on error
     }
   }
 
@@ -89,17 +82,17 @@ class ViewManager {
    * @param {HTMLElement} viewElement - The view container element.
    * @param {string} [existingHtml=''] - The existing HTML content of the view to prepend.
    */
-  async _loadAndEmbedFilterBar(viewElement, existingHtml = '') {
+  async _loadAndEmbedFilterBar(existingHtml = '') {
     try {
       const filterBarResponse = await fetch('./source/components/filter-bar.html');
       if (!filterBarResponse.ok) throw new Error('Filter Bar HTML not found');
 
       const filterBarHtml = await filterBarResponse.text();
       // Prepend the filter bar HTML and wrap existing content
-      viewElement.innerHTML = filterBarHtml + `<div class="view-content-wrapper">${existingHtml}</div>`;
-      viewElement.classList.add('view-with-embedded-filter-bar'); // Add class for CSS layout targeting
+      return filterBarHtml + `<div class="view-content-wrapper">${existingHtml}</div>`; // Return the HTML
     } catch (e) {
-      console.warn(`ViewManager: Could not embed filter bar for ${viewElement.id}`, e);
+      console.warn(`ViewManager: Could not embed filter bar`, e); // Removed viewElement.id
+      return existingHtml; // Return original HTML on error
     }
   }
 
@@ -242,12 +235,29 @@ class ViewManager {
         throw new Error(`Content from ${config.path} appears to be a full HTML document, not a view fragment. Aborting load.`);
       }
 
-      // If the view config requests an embedded footer, fetch and append it.
-      // This is used for views where the footer should be part of the scrollable content.
+
       // If the view config requests an embedded filter bar, fetch and prepend it.
-      if (config.embedFilterBar) {
-        await this._loadAndEmbedFilterBar(viewElement, viewHtml);
-        // After embedding, initialize the filter bar logic for this specific view element
+      let finalHtml = viewHtml; // Start with the base view HTML
+
+      // If the view config requests an embedded filter bar, fetch and prepend it.
+      if (config.showFilterBar) {
+        finalHtml = await this._loadAndEmbedFilterBar(finalHtml);
+        viewElement.classList.add('view-with-embedded-filter-bar'); // Add class here
+      }
+
+      // If the view config requests an embedded footer, fetch and append it.
+      if (config.embedFooter) {
+        finalHtml = await this._loadAndEmbedFooter(role, finalHtml);
+        viewElement.classList.add('embedded-footer'); // Add class here
+      }
+
+      // Set the final HTML content of the view element
+      viewElement.innerHTML = finalHtml;
+
+      console.log(`ViewManager: Successfully loaded content for ${config.id} from ${config.path}`);
+
+      // Initialize filter bar logic AFTER the HTML is in the DOM
+      if (config.showFilterBar) {
         // Lazy-load FilterManager if not already loaded
         if (!this.filterManager) {
           const { filterManager } = await import('./utils/filter-helper.js');
@@ -255,22 +265,23 @@ class ViewManager {
         }
         // Call a new method on filterManager to initialize the embedded filter bar
         this.filterManager.initializeEmbeddedFilterBar(viewElement);
-      } else if (config.embedFooter) { // Existing footer embedding logic
-        await this._loadAndEmbedFooter(viewElement, role, viewHtml);
       }
-      else {
-        // Also wrap non-footer views for consistency, though it has less impact.
-        viewElement.innerHTML = `<div class="view-content-wrapper">${viewHtml}</div>`;
-      }
-      console.log(`ViewManager: Successfully loaded content for ${config.id} from ${config.path}`);
 
       // If the view has an embedded footer, initialize its interactive logic.
       if (config.embedFooter) {
         try {
-          // The initialization is now handled inside _loadAndEmbedFooter
+          // The initialization is now handled here, after innerHTML is set
+          if (!this.footerHelper) {
+            const { initializeFooter } = await import('./utils/footer-helper.js');
+            this.footerHelper = { initialize: initializeFooter };
+          }
+          this.footerHelper.initialize(viewElement, role);
         } catch (e) {
           console.error(`ViewManager: Failed to initialize embedded footer for ${config.id}`, e);
         }
+      } else if (!config.showFilterBar) { // Only wrap if neither filter bar nor footer is embedded
+        // Also wrap non-footer views for consistency, though it has less impact.
+        viewElement.innerHTML = `<div class="view-content-wrapper">${viewHtml}</div>`;
       }
 
       // 3. Load and execute associated JS module if it exists.
@@ -812,7 +823,8 @@ function initializePullToRefresh() {
   const updateHeaderHeight = () => {
     currentHeaderHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
     if (ptr.offsetHeight > 0) {
-        ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
+        // FIX: Set top to a negative value to hide it completely above the screen
+        ptr.style.top = `-${ptr.offsetHeight}px`;
     }
   };
 
@@ -852,7 +864,8 @@ function initializePullToRefresh() {
     if (isPulling) {
       e.preventDefault(); // Prevent default browser scroll only when our custom PTR is active
       const pullDistance = Math.max(0, diff);
-      ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight + Math.min(pullDistance, 120)}px`;
+      // FIX: Calculate top relative to its hidden position (-offsetHeight)
+      ptr.style.top = `${-ptr.offsetHeight + Math.min(pullDistance, 120)}px`;
       
       const rotation = Math.min((pullDistance / pullThreshold) * 180, 180);
       arrow.style.transform = `rotate(${rotation}deg)`;
@@ -869,7 +882,7 @@ function initializePullToRefresh() {
     ptr.style.transition = 'top 0.3s ease'; // Restore animation.
 
     if (diff > pullThreshold) {
-      // Trigger Refresh
+      // Trigger Refresh: Position it below the header
       ptr.style.top = `${currentHeaderHeight}px`;
       arrow.style.display = "none";
       spinner.style.display = "inline-block";
@@ -878,7 +891,8 @@ function initializePullToRefresh() {
       window.dispatchEvent(new CustomEvent('appRefreshRequested'));
 
       setTimeout(() => {
-        ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
+        // FIX: Hide it above the screen again
+        ptr.style.top = `-${ptr.offsetHeight}px`;
         arrow.style.display = "inline-block";
         spinner.style.display = "none";
         spinner.classList.remove("spinning");
@@ -886,7 +900,8 @@ function initializePullToRefresh() {
       }, 1500);
     } else {
       // Cancel pull, snap back.
-      ptr.style.top = `${currentHeaderHeight - ptr.offsetHeight}px`;
+      // FIX: Hide it above the screen again
+      ptr.style.top = `-${ptr.offsetHeight}px`;
       arrow.style.transform = 'rotate(0deg)';
     }
   });
