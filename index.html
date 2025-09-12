@@ -130,12 +130,35 @@
       console.log("✅ Application initialized successfully.");
       // --- Service Worker Management ---
       if ('serviceWorker' in navigator) {
+        const appConfig = getAppConfig();
+        const swName = appConfig.app.name;
+        const swVersion = appConfig.app.version;
+
+        // Log the currently active service worker's version if it exists
+        if (navigator.serviceWorker.controller) {
+                    console.log(`ℹ️ Active Service Worker Script URL: ${navigator.serviceWorker.controller.scriptURL}`);
+        }
+
         const register = () => {
-          if (getAppConfig().app.environment === 'development') {
+          if (appConfig.app.environment === 'development') {
           }
           // Register the service worker as a module to allow 'import' statements inside it.
           navigator.serviceWorker.register('./service-worker.js', { type: 'module' })
-            .then(registration => console.log('✅ Service Worker registered successfully:', registration))
+            .then(registration => {
+              console.log(`✅ Service Worker registered successfully:`, registration);
+              if (registration.active) {
+                console.log(`ℹ️ Registered Service Worker Script URL: ${registration.active.scriptURL}`);
+
+                // Request actual cache name from newly registered service worker
+                const messageChannel = new MessageChannel();
+                messageChannel.port1.onmessage = (event) => {
+                    if (event.data && event.data.command === 'CACHE_NAME_RESPONSE') {
+                        console.log(`✅ Registered Service Worker Cache Name: ${event.data.cacheName}`);
+                    }
+                };
+                registration.active.postMessage({ command: 'GET_CACHE_NAME' }, [messageChannel.port2]);
+              }
+            })
             .catch(error => console.error('❌ Service Worker registration failed:', error, 'Ensure the service worker file is served with the correct MIME type (application/javascript or text/javascript) and not text/html.'));
         };
 
@@ -148,7 +171,7 @@
           });
         };
 
-        getAppConfig().source.offlineCache ? register() : unregister();
+        appConfig.source.offlineCache ? register() : unregister();
       } else {
         console.warn('Service Worker not supported in this browser.');
       }

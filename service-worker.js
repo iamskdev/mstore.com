@@ -244,10 +244,14 @@ self.addEventListener('activate', (event) => {
 });
 
 // --- Fetch Handling ---
-self.addEventListener('message', (event) => {
+self.addEventListener('message', async (event) => {
   console.log('Service Worker: Received message:', event.data);
-  // If the client expects a response, send one back.
-  if (event.ports && event.ports[0]) {
+  if (event.data && event.data.command === 'GET_CACHE_NAME') {
+    const cacheName = await getCacheName();
+    if (event.ports && event.ports[0]) {
+      event.ports[0].postMessage({ command: 'CACHE_NAME_RESPONSE', cacheName: cacheName });
+    }
+  } else if (event.ports && event.ports[0]) {
     event.ports[0].postMessage({ status: 'Service Worker: Message received' });
   }
 });
