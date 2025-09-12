@@ -303,6 +303,10 @@
 
 ## हाल के परिवर्तन (Recent Changes)
 
+### September 12, 2025
+- **डेटा निर्भरताएँ और पुल-टू-रिफ्रेश:** `view-config.js` में व्यू-आधारित डेटा निर्भरताओं को लागू किया गया है, जिससे `main.js` केवल आवश्यक डेटा को प्री-फ़ेच कर सके। पुल-टू-रिफ्रेश कार्यक्षमता को `config.json` में `flags.ptrEnabled` के माध्यम से नियंत्रित किया जाता है और अब यह वर्तमान व्यू सामग्री को रीफ़्रेश करता है।
+- **मुख्य ऐप लॉजिक अपडेट:** `main.js` में `ViewManager` को डेटा निर्भरताओं को संभालने और पुल-टू-रिफ्रेश के माध्यम से व्यू सामग्री को रीफ़्रेश करने के लिए अपडेट किया गया है।
+
 ### September 09, 2025
 - **Configuration Refactor:** Refactored the application's configuration system by replacing the static `app-config.js` file with a dynamic `config.json`. This centralizes all settings, including app environment, data source, UI preferences, and feature flags.
 - **Dynamic Config Loading:** Implemented a `config-manager.js` to fetch and provide the `config.json` settings to the entire application at runtime.

@@ -9,9 +9,7 @@
  
  */
 
-// Add a global message listener to the main thread
-window.addEventListener('message', (event) => {
-});
+
 
 
 import { AuthService } from './firebase/auth/auth.js';
@@ -199,6 +197,10 @@ class ViewManager {
 
   async loadViewContent(viewElement, config, role) {
     showPageLoader(); // Show page loader at the beginning of content loading
+    // Fetch data dependencies before loading view content
+    if (config.dataDependencies && config.dataDependencies.length > 0) {
+      await this._fetchDataDependencies(config.dataDependencies);
+    }
     try {
       viewElement.innerHTML = `<div class="view-placeholder"><div class="loading-spinner"><div class="spinner"></div></div></div>`;
 
@@ -330,6 +332,46 @@ class ViewManager {
     }
   }
 
+    /**
+   * @private Fetches data based on the view's dataDependencies.
+   * @param {Array<string>} dependencies - An array of data dependency names (e.g., ['items', 'users']).
+   */
+  async _fetchDataDependencies(dependencies) {
+    console.log(`ViewManager: Entering _fetchDataDependencies for: ${dependencies.join(', ')}`);
+    if (!dependencies || dependencies.length === 0) {
+      return;
+    }
+
+    console.log(`ViewManager: Fetching data dependencies: ${dependencies.join(', ')}`);
+    const fetchPromises = [];
+
+    if (dependencies.includes('all')) {
+      // If 'all' is specified, fetch all available data
+      for (const key in dataFetchers) {
+        if (Object.hasOwnProperty.call(dataFetchers, key)) {
+          fetchPromises.push(dataFetchers[key]());
+        }
+      }
+    } else {
+      // Fetch only specified dependencies
+      for (const dep of dependencies) {
+        if (dataFetchers[dep]) {
+          fetchPromises.push(dataFetchers[dep]());
+        } else {
+          console.warn(`ViewManager: Unknown data dependency: ${dep}. Skipping fetch.`);
+        }
+      }
+    }
+
+    try {
+      const results = await Promise.all(fetchPromises);
+      console.log('ViewManager: All data dependencies fetched successfully.', results); // Log the fetched data
+    } catch (error) {
+      console.error('ViewManager: Error fetching data dependencies:', error);
+      showToast('error', 'Failed to load some data. Please refresh.', 5000);
+    }
+  }
+
     handleRoleChange(newRole, userId = null) {
     console.trace(`ViewManager: handleRoleChange called. New Role: ${newRole}, User ID: ${userId}`); // Added trace
 
@@ -456,8 +498,38 @@ class ViewManager {
 export const viewManager = new ViewManager();
 window.viewManager = viewManager;
 
-import { fetchAllItems, fetchActivePromotion } from './utils/data-manager.js';
+import {
+  fetchAllItems,
+  fetchAllUsers,
+  fetchAllMerchants,
+  fetchAllCategories,
+  fetchAllBrands,
+  fetchAllUnits,
+  fetchAllAlerts,
+  fetchAllOrders,
+  fetchAllPriceLogs,
+  fetchAllLogs,
+  fetchAllAccounts,
+  fetchAllPromotions,
+  fetchActivePromotion // Added this line
+} from './utils/data-manager.js';
 import { showToast } from './utils/toast.js';
+
+// Map data dependency names to their respective fetch functions
+const dataFetchers = {
+  items: fetchAllItems,
+  users: fetchAllUsers,
+  merchants: fetchAllMerchants,
+  categories: fetchAllCategories,
+  brands: fetchAllBrands,
+  units: fetchAllUnits,
+  alerts: fetchAllAlerts,
+  orders: fetchAllOrders,
+  'price-logs': fetchAllPriceLogs,
+  logs: fetchAllLogs,
+  accounts: fetchAllAccounts,
+  promotions: fetchAllPromotions,
+};
 
 let originalBodyPaddingRight = '';
 let scrollbarWidth = 0;
@@ -829,9 +901,10 @@ function initializeLayoutObservers() {
 }
 
 function initializePullToRefresh() {
-  // Only initialize Pull-to-Refresh if the app is running in standalone mode (PWA)
-  if (!window.matchMedia('(display-mode: standalone)').matches) {
-    console.log("Pull-to-Refresh not initialized: Not in standalone mode.");
+  // Only initialize Pull-to-Refresh if ptrEnabled flag is true in config.json
+  const appConfig = getAppConfig();
+  if (!appConfig.flags.ptrEnabled) {
+    console.log("Pull-to-Refresh not initialized: ptrEnabled is false in config.");
     return;
   }
   const ptr = document.getElementById("pullToRefresh");
@@ -895,14 +968,14 @@ function initializePullToRefresh() {
       e.preventDefault(); // Prevent default browser scroll only when our custom PTR is active
       const pullDistance = Math.max(0, diff);
       // FIX: Calculate top relative to its hidden position (-offsetHeight)
-      ptr.style.top = `${-ptr.offsetHeight + Math.min(pullDistance, 212)}px`;
+      ptr.style.top = `${-ptr.offsetHeight + Math.min(pullDistance, 250)}px`;
       
-      const rotation = Math.min((pullDistance / pullThreshold) * 180, 180);
+      const rotation = (pullDistance / pullThreshold) * 180;
       arrow.style.transform = `rotate(${rotation}deg)`;
     }
   }, { passive: false }); // Must be passive: false to allow preventDefault
 
-  mainContent.addEventListener('touchend', e => {
+  mainContent.addEventListener('touchend', async e => { // Added async here
     if (!isPulling) return;
 
     const currentY = e.changedTouches[0].clientY;
@@ -916,18 +989,36 @@ function initializePullToRefresh() {
       ptr.style.top = `${currentHeaderHeight}px`;
       arrow.style.display = "none";
       spinner.style.display = "inline-block";
-      spinner.classList.add("spinning");
+      spinner.classList.add("spinning"); // Start spinning
 
       window.dispatchEvent(new CustomEvent('appRefreshRequested'));
 
-      setTimeout(() => {
-        // FIX: Hide it above the screen again
-        ptr.style.top = `-${ptr.offsetHeight}px`;
-        arrow.style.display = "inline-block";
-        spinner.style.display = "none";
-        spinner.classList.remove("spinning");
-        arrow.style.transform = 'rotate(0deg)';
-      }, 1500);
+      // Trigger a refresh of the current view
+      const currentRole = viewManager.currentRole;
+      const currentView = viewManager.currentView;
+      const config = viewManager.viewConfig[currentRole]?.[currentView];
+      const newViewElement = document.getElementById(config.id);
+
+      if (currentRole && currentView && config && newViewElement) {
+        console.log(`Pull-to-Refresh: Forcing content reload for: ${currentRole}/${currentView}.`);
+
+        // Wait for content to load AND for a minimum spinner display time
+        await Promise.all([
+          viewManager.loadViewContent(newViewElement, config, currentRole),
+          new Promise(resolve => setTimeout(resolve, 500)) // Minimum 0.5 second display for spinner
+        ]);
+
+        console.log(`Pull-to-Refresh: Successfully refreshed view content: ${currentRole}/${currentView}.`);
+      } else {
+        console.warn(`Pull-to-Refresh: Could not determine current view for refresh.`);
+      }
+
+      // Hide the PTR animation after content is loaded and minimum display time is met
+      ptr.style.top = `-${ptr.offsetHeight}px`; // Hide it above the screen again
+      arrow.style.display = "inline-block";
+      spinner.style.display = "none";
+      spinner.classList.remove("spinning");
+      arrow.style.transform = 'rotate(0deg)';
     } else {
       // Cancel pull, snap back.
       // FIX: Hide it above the screen again

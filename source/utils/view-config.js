@@ -24,29 +24,33 @@ const viewConfig = {
       jsPath: './source/common/scripts/home.js',
       showFilterBar: true,
       embedFooter: true,
-      title: 'Home'
+      title: 'Home',
+      dataDependencies: ['items', 'promotions', 'categories', 'brands']
     },
-    chat: { id: 'guest-chat-view', path: null, title: 'Chat' },
+    chat: { id: 'guest-chat-view', path: null, title: 'Chat', dataDependencies: [] },
     saved: {
       id: 'guest-saved-view',
       path: './source/common/pages/saved.html',
       cssPath: './source/common/styles/saved.css',
       jsPath: './source/common/scripts/saved.js',
-      title: 'Saved'
+      title: 'Saved',
+      dataDependencies: ['items']
     },
     cart: {
       id: 'cart-view',
       path: './source/common/pages/cart.html',
       cssPath: './source/common/styles/cart.css',
       jsPath: './source/common/scripts/cart.js',
-      title: 'Cart'
+      title: 'Cart',
+      dataDependencies: ['items']
     },
     account: {
       id: 'guest-account-view',
       path: './source/common/pages/guest-account.html',
       cssPath: './source/common/styles/guest-account.css',
       jsPath: './source/common/scripts/guest-account.js',
-      title: 'Account'
+      title: 'Account',
+      dataDependencies: ['users', 'accounts', 'merchants']
     },
     notifications: {
       id: 'notifications-view',
@@ -54,7 +58,8 @@ const viewConfig = {
       cssPath: './source/common/styles/notification-view.css',
       jsPath: './source/common/scripts/notification-view.js',
       title: 'Notifications',
-      allowedTypes: ['promotions', 'general']
+      allowedTypes: ['promotions', 'general'],
+      dataDependencies: ['alerts', 'promotions']
     }
   },
   user: {
@@ -65,31 +70,34 @@ const viewConfig = {
       jsPath: './source/common/scripts/home.js',
       showFilterBar: true,
       embedFooter: true, // Embed it directly into the view content
-      title: 'Home'
+      title: 'Home',
+      dataDependencies: ['items', 'promotions', 'categories', 'brands']
     },
-    chat: { id: 'user-chat-view', path: null, title: 'Chat' },
+    chat: { id: 'user-chat-view', path: null, title: 'Chat', dataDependencies: [] },
     saved: {
       id: 'user-saved-view',
       path: './source/common/pages/saved.html',
       cssPath: './source/common/styles/saved.css',
       jsPath: './source/common/scripts/saved.js',
-      title: 'Saved'
+      title: 'Saved',
+      dataDependencies: ['items']
     },
     cart: {
       id: 'cart-view',
       path: './source/common/pages/cart.html',
       cssPath: './source/common/styles/cart.css',
       jsPath: './source/common/scripts/cart.js',
-      title: 'Cart'
+      title: 'Cart',
+      dataDependencies: ['items']
     },
-    account: { id: 'user-account-view', path: null, title: 'Account' },
+    account: { id: 'user-account-view', path: null, title: 'Account', dataDependencies: ['users'] },
     notifications: {
       id: 'notifications-view',
       path: './source/common/pages/notification-view.html',
       cssPath: './source/common/styles/notification-view.css',
       jsPath: './source/common/scripts/notification-view.js',
       title: 'Notifications',
-      allowedTypes: ['promotions', 'order_status', 'general']
+      dataDependencies: ['alerts', 'promotions', 'orders']
     }
   },
   merchant: {
@@ -100,19 +108,20 @@ const viewConfig = {
       jsPath: './source/common/scripts/home.js',
       showFilterBar: true,
       embedFooter: true,
-      title: 'Home'
+      title: 'Home',
+      dataDependencies: ['items', 'promotions', 'categories', 'brands', 'orders', 'price-logs', 'alerts']
     },
-    chat: { id: 'merchant-chat-view', path: null, title: 'Chat' },
-    add: { id: 'merchant-add-view', path: null, title: 'Add' },
-    analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics' },
-    account: { id: 'merchant-account-view', path: null, title: 'Account' },
+    chat: { id: 'merchant-chat-view', path: null, title: 'Chat', dataDependencies: [] },
+    add: { id: 'merchant-add-view', path: null, title: 'Add', dataDependencies: ['categories', 'brands', 'units'] },
+    analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items'] },
+    account: { id: 'merchant-account-view', path: null, title: 'Account', dataDependencies: ['merchants'] },
     notifications: {
       id: 'notifications-view',
       path: './source/common/pages/notification-view.html',
       cssPath: './source/common/styles/notification-view.css',
       jsPath: './source/common/scripts/notification-view.js',
       title: 'Notifications',
-      allowedTypes: ['new_order', 'stock_alert', 'order_status']
+      dataDependencies: ['alerts', 'orders']
     }
   },
   admin: {
@@ -122,22 +131,23 @@ const viewConfig = {
       cssPath: "./source/modules/admin/pages/admin-home.css",
       jsPath: "./source/modules/admin/pages/admin-home.js",
       embedFooter: true,
-      title: 'Home'
+      title: 'Home',
+      dataDependencies: ['items', 'promotions', 'users', 'merchants', 'categories', 'brands', 'alerts', 'orders', 'logs', 'accounts', 'campaigns', 'counters']
     },
-    users: { id: 'admin-users-view', path: null, title: 'User Data' },
-    analytics: { id: 'admin-analytics-view', path: null, title: 'Analytics' },
-    requests: { id: 'admin-request-view', path: null, title: 'Request' },
-    logs: { id: 'admin-logs-view', path: null, title: 'Logs' },
-    promo: { id: 'admin-promo-view', path: null, title: 'Promo' },
-    campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns' },
-    account: { id: 'admin-account-view', path: null, title: 'Account' },
+    users: { id: 'admin-users-view', path: null, title: 'User Data', dataDependencies: ['users', 'accounts'] },
+    analytics: { id: 'admin-analytics-view', path: null, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items', 'merchants', 'users', 'logs'] },
+    requests: { id: 'admin-request-view', path: null, title: 'Request', dataDependencies: ['orders', 'users', 'merchants'] },
+    logs: { id: 'admin-logs-view', path: null, title: 'Logs', dataDependencies: ['logs'] },
+    promo: { id: 'admin-promo-view', path: null, title: 'Promo', dataDependencies: ['promotions', 'campaigns'] },
+    campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns', dataDependencies: [] },
+    account: { id: 'admin-account-view', path: null, title: 'Account', dataDependencies: ['users', 'accounts'] },
     notifications: {
       id: 'notifications-view',
       path: './source/common/pages/notification-view.html',
       cssPath: './source/common/styles/notification-view.css',
       jsPath: './source/common/scripts/notification-view.js',
       title: 'Notifications',
-      allowedTypes: ['all']
+      dataDependencies: ['alerts', 'promotions', 'orders', 'logs'] // Keeping original dependencies
     }
   },
   };
