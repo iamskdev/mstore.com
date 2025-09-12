@@ -495,10 +495,12 @@ function showPageLoader() { // Renamed function
 function hidePageLoader() { // Renamed function
   const pageLoader = document.querySelector('.page-loader'); // Renamed variable and class selector
   if (pageLoader) {
-    pageLoader.classList.add('hidden');
+    setTimeout(() => {
+      pageLoader.classList.add('hidden');
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.paddingRight = originalBodyPaddingRight;
+    }, 2000); // Keep loader visible for 2 seconds for debugging
   }
-  document.documentElement.style.overflow = '';
-  document.documentElement.style.paddingRight = originalBodyPaddingRight;
 }
 
 /**
@@ -513,6 +515,28 @@ function updateSplashScreenProgressBar(percentage) {
 }
 
 
+let currentProgress = 0; // Keep track of the progress globally
+
+/**
+ * Smoothly animates the splash screen progress bar to a target percentage.
+ * @param {number} targetPercentage - The percentage to animate to (0-100).
+ * @returns {Promise<void>} A promise that resolves when the animation is complete.
+ */
+function simulateProgress(targetPercentage) {
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      if (currentProgress >= targetPercentage) {
+        clearInterval(interval);
+        resolve();
+      } else {
+        // Increment by a small random amount to look more natural
+        const increment = Math.random() * 2 + 1; // Increment between 1 and 3
+        currentProgress = Math.min(currentProgress + increment, targetPercentage);
+        updateSplashScreenProgressBar(currentProgress);
+      }
+    }, 80); // Update every 80ms
+  });
+}
 
 
 // Listen for navigation requests from dynamically loaded views
@@ -689,27 +713,37 @@ export async function initializeApp() {
 
   setupPwaRefreshBlockers();
 
-  let totalProgress = 0;
-  const updateProgress = (increment) => {
-    totalProgress += increment;
-    updateSplashScreenProgressBar(totalProgress);
-  };
+  const splashEnabled = getAppConfig().ui?.splashEnabled;
 
-  updateProgress(10); // Initial start
+  if (splashEnabled) {
+    // --- Run with Splash Screen ---
+    const splashScreen = document.getElementById('splashScreen');
+    if (splashScreen) {
+        splashScreen.style.display = 'flex'; // Make it visible
+    }
+    await simulateProgress(20);
+    await viewManager.init();
+    await simulateProgress(60);
+    initWishlistHandler();
+    await loadCoreComponents();
+    await simulateProgress(100);
 
-  // 2. Initialize the View Manager. This sets up the dynamic content views.
-  //    This also ensures authentication state is resolved and localStorage is updated.
-  await viewManager.init();
-  updateProgress(30); // Initial view loaded
+    if (splashScreen) {
+        setTimeout(() => {
+            splashScreen.classList.add('hidden'); // Start fade out
+            setTimeout(() => {
+                splashScreen.style.display = 'none'; // Fully hide after transition
+            }, 800);
+        }, 200);
+    }
+  } else {
+      // --- Run without Splash Screen ---
+      // Splash screen is already hidden by CSS by default.
+      await viewManager.init();
+      initWishlistHandler();
+      await loadCoreComponents();
+  }
 
-    // Initialize global wishlist handler
-  initWishlistHandler();
-
-  // 1. Load core static components like header and navigation.
-  //    Now, loadCoreComponents can reliably check localStorage for currentUserType.
-  console.log("initializeApp: currentUserType before loadCoreComponents:", localStorage.getItem('currentUserType')); // ADDED LOG
-  await loadCoreComponents();
-  updateProgress(20); // Core components loaded
 
   // Set --header-height immediately after core components are loaded
   const headerContainer = document.querySelector('.header-container');
@@ -745,7 +779,6 @@ export async function initializeApp() {
 
   try {
     const allItems = await fetchAllItems();
-    updateProgress(30); // Main data loaded
     sessionStorage.setItem('allItems', JSON.stringify(allItems));
 
     // Fetch and dispatch active promotion regardless of appMode
@@ -766,17 +799,6 @@ export async function initializeApp() {
     }));
   } finally {
     initializePullToRefresh();
-
-    const splashScreen = document.getElementById('splashScreen');
-    if (splashScreen) {
-      updateSplashScreenProgressBar(100); // Ensure it reaches 100%
-      setTimeout(() => {
-        splashScreen.classList.add('hidden');
-        setTimeout(() => {
-          splashScreen.style.display = 'none';
-        }, 800);
-      }, 100);
-    }
   }
 
   if (!sessionStorage.getItem('cart')) {
@@ -785,7 +807,6 @@ export async function initializeApp() {
   if (!sessionStorage.getItem('savedItems')) {
     sessionStorage.setItem('savedItems', '[]');
   }
-  updateProgress(10); // Final setup
 }
 
 function initializeLayoutObservers() {
@@ -815,6 +836,7 @@ function initializePullToRefresh() {
   }
   const ptr = document.getElementById("pullToRefresh");
   const arrow = document.getElementById("arrowIcon");
+  arrow.style.transition = 'transform 0.2s ease-out'; // Add a smooth transition for rotation
   const spinner = document.getElementById("spinnerIcon");
   const mainContent = document.getElementById('page-view-area');
 
@@ -825,7 +847,7 @@ function initializePullToRefresh() {
 
   let startY = 0;
   let isPulling = false;
-  const pullThreshold = 60;
+  const pullThreshold = 100;
   let currentHeaderHeight = 0;
 
   const updateHeaderHeight = () => {
