@@ -1,12 +1,4 @@
 <style>
-    .header-container {
-      position: fixed; /* Changed from sticky to fixed for JS control */
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      transform: translateY(0); /* Force header to stay at the top */
-    }
 
     /* New classes for header toggle items */
     .header-toggle-item {
@@ -27,7 +19,7 @@
       /* This is CRUCIAL for positioning the suggestions box correctly */
       /* This is CRUCIAL for positioning the suggestions box correctly */
       box-shadow: 0 1px 0 0 var(--border-color); /* Simulates a border-bottom */
-      position: relative; /* This is CRUCIAL for positioning the suggestions box correctly */
+      position: absolute; /* This is CRUCIAL for positioning the suggestions box correctly */
     }
 
     /* This class is toggled by JS to show/hide search elements */
@@ -233,9 +225,7 @@
       }
     }
   </style>
-  <div class="header-container">
-    
-    <header class="apna-header-content" id="main-header">
+  <header class="app-header apna-header-content" id="main-header">
       <i class="fas fa-arrow-left header-icon" id="search-back"></i>
       <!-- NEW: Notification Header Content -->
       <div class="notification-header-content hidden">
@@ -265,7 +255,6 @@
       <!-- Search Suggestions Box: Moved INSIDE the header content for correct positioning. -->
       <ul id="search-suggestions" class="search-suggestions"></ul>
     </header>
-    </div>
 
   <script type="module">
     import { fetchUserById, fetchMerchantById } from './source/utils/data-manager.js';

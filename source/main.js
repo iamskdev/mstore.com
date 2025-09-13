@@ -818,7 +818,7 @@ export async function initializeApp() {
 
 
   // Set --header-height immediately after core components are loaded
-  const headerContainer = document.querySelector('.header-container');
+  const headerContainer = document.querySelector('.app-header');
   if (headerContainer) {
     document.documentElement.style.setProperty('--header-height', `${headerContainer.offsetHeight}px`);
   }
@@ -882,13 +882,13 @@ export async function initializeApp() {
 }
 
 function initializeLayoutObservers() {
-  const header = document.querySelector('.header-container');
+  const header = document.querySelector('.app-header');
   const bottomBar = document.querySelector('.app-tab-nav');
 
   const observer = new ResizeObserver(entries => {
     for (let entry of entries) {
       const height = entry.contentRect.height;
-      if (entry.target.matches('.header-container')) {
+      if (entry.target.matches('.app-header')) {
         document.documentElement.style.setProperty('--header-height', `${height}px`);
       } else if (entry.target.matches('.bottom-tab-bar')) {
         document.documentElement.style.setProperty('--nav-tab-height', `${height}px`);
@@ -1045,7 +1045,7 @@ function attemptHideAddressBar() {
  * The header will move up/down based on the scroll direction of the page-view-area.
  */
 function initializeScrollAwareHeader() {
-  const header = document.querySelector('.header-container');
+  const header = document.querySelector('.app-header');
   const pageViewArea = document.getElementById('main-content');
 
   if (!header || !pageViewArea) {

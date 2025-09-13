@@ -1,16 +1,9 @@
-/* ===============================
-   Notification View - Final Style
-   =============================== */
-
 /* ---------- LAYOUT ---------- */
 .notification-view {
   display: flex;
   flex-direction: column;
   background: var(--bg-primary);
   color: var(--text-primary);
-  overflow-y: auto; /* Changed from hidden to auto */
-  height: 100vh; /* Use viewport height */
-  z-index: 999;
 }
 
 /* ---------- TAB BAR ---------- */
