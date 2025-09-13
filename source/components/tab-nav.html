@@ -1,25 +1,13 @@
 <style>
-/*
- * 🎨 TAB NAVIGATION STYLES
- * This block contains all the CSS for the bottom navigation bar,
- * including general layout, button styles, states, dark mode, and responsiveness.
- */
-
 /* --- 1. Main Container & Theming Variables --- */
-.bottom-tab-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 65px; /* Slightly taller for better ergonomics */
-  background: var(--bg-primary); /* Use global theme variable */
-  backdrop-filter: blur(10px); /* Subtle blur for depth */
-  /* Use global shadow variable for consistency. The dark mode shadow is now consistent with the rest of the app. */
-  box-shadow: 0 -1px 3px var(--shadow-color); /* MODIFIED: Shadow moved to the top */
+.app-tab-nav {
+  height: var(--bottom-bar-height); 
+  position: absolute;
+  background: var(--bg-primary);
+  backdrop-filter: blur(10px); 
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 1000;
   border-top: 1px solid var(--border-color);
   padding: 0 8px;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Smoothly slide up/down with footer */
@@ -128,7 +116,7 @@
 
 
 /* --- 7. Utility Classes --- */
-.bottom-tab-bar.dev-mode {
+.app-tab-nav.dev-mode {
   border: 2px dashed rgba(255, 59, 48, 0.3);
   background: rgba(255, 59, 48, 0.05);
 }
@@ -136,7 +124,7 @@
 </style>
 
 <!-- 🔻 Enhanced Bottom Navigation -->
-<nav class="bottom-tab-bar">
+<nav class="app-tab-nav">
 
   <!-- 🌐 Guest Tabs -->
   <button class="nav-btn" data-role="guest" data-path="home">
@@ -299,7 +287,7 @@
     }
     window.tabNavInitialized = true;
 
-    const navBar = document.querySelector('.bottom-tab-bar');
+    const navBar = document.querySelector('.app-tab-nav');
 
     // --- UI Update Function ---
     function updateNavUI({ role, view }) {

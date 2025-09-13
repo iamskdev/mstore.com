@@ -1,5 +1,13 @@
 <style>
-
+    .app-header {
+      height: var(--header-height);
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      padding: 0 12px; 
+      box-shadow: 0 1px 0 0 var(--border-color); 
+      position: absolute; 
+    }
     /* New classes for header toggle items */
     .header-toggle-item {
       display: flex; /* Default to flex */
@@ -8,25 +16,11 @@
       display: none !important; /* This will override the default flex */
     }
 
-    .apna-header-content {
-      /* Updated height to accommodate banner space */
-      min-height: 56px;
-      height: auto;
-      background: var(--bg-primary);
-      display: flex;
-      align-items: center;
-      padding: 0 12px; /* Reduced horizontal padding */
-      /* This is CRUCIAL for positioning the suggestions box correctly */
-      /* This is CRUCIAL for positioning the suggestions box correctly */
-      box-shadow: 0 1px 0 0 var(--border-color); /* Simulates a border-bottom */
-      position: absolute; /* This is CRUCIAL for positioning the suggestions box correctly */
-    }
-
     /* This class is toggled by JS to show/hide search elements */
-    .apna-header-content.search-active .header-branding,
-    .apna-header-content.search-active .pwa-install-button,
-    .apna-header-content.search-active #search-toggle,
-    .apna-header-content.search-active #notification-icon {
+    .app-header.search-active .header-branding,
+    .app-header.search-active .pwa-install-button,
+    .app-header.search-active #search-toggle,
+    .app-header.search-active #notification-icon {
       display: none;
     }
 
@@ -112,7 +106,7 @@
       display: none; /* Hidden by default */
       margin-right: 8px;
     }
-    .apna-header-content.search-active #search-back {
+    .app-header.search-active #search-back {
       display: block; /* Visible in search mode */
     }
 
@@ -133,7 +127,7 @@
       box-sizing: border-box;
     }
 
-        .apna-header-content.search-active .header-search-input-container {
+        .app-header.search-active .header-search-input-container {
       display: block; /* Visible in search mode */
     }
 
@@ -144,13 +138,13 @@
       gap: 12px;
     }
 
-    .apna-header-content.notification-active .header-branding,
-    .apna-header-content.notification-active .header-actions,
-    .apna-header-content.notification-active .header-search-input-container {
+    .app-header.notification-active .header-branding,
+    .app-header.notification-active .header-actions,
+    .app-header.notification-active .header-search-input-container {
       display: none;
     }
 
-    .apna-header-content.notification-active .notification-header-content {
+    .app-header.notification-active .notification-header-content {
       display: flex; /* Show notification header content */
     }
 
@@ -225,7 +219,7 @@
       }
     }
   </style>
-  <header class="app-header apna-header-content" id="main-header">
+  <header class="app-header" id="main-header">
       <i class="fas fa-arrow-left header-icon" id="search-back"></i>
       <!-- NEW: Notification Header Content -->
       <div class="notification-header-content hidden">

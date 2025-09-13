@@ -890,14 +890,15 @@ function initializeLayoutObservers() {
       const height = entry.contentRect.height;
       if (entry.target.matches('.app-header')) {
         document.documentElement.style.setProperty('--header-height', `${height}px`);
-      } else if (entry.target.matches('.bottom-tab-bar')) {
-        document.documentElement.style.setProperty('--nav-tab-height', `${height}px`);
+      } else if (entry.target.matches('.app-tab-nav')) {
+        document.documentElement.style.setProperty('--bottom-bar-height', `${height}px`);
       }
     }
   });
 
   if (header) observer.observe(header);
-  if (bottomBar) observer.observe(bottomBar);
+  // Removed ResizeObserver for bottomBar as its height is controlled by a CSS variable
+  // and observing it could lead to circular dependencies or unexpected behavior.
 }
 
 function initializePullToRefresh() {

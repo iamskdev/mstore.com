@@ -1,8 +1,8 @@
 /*1. GLOBAL VARIABLES & RESETS*/
 :root {
-  --header-height: 56px;  /* Default header height */
-  --nav-tab-height: 65px;  /* Default bottom bar height, matches tab-nav height */
-  --filter-bar-height: 30px; /* Default filter bar height */
+  --header-height: 56px;  
+  --bottom-bar-height: 65px; 
+  --filter-bar-height: 30px; 
 
   /* Z-Index Management */
   --z-index-pull-to-refresh: 998;
@@ -27,8 +27,6 @@ html, body {
   color: var(--text-primary);
   overscroll-behavior-y: contain;
   -webkit-tap-highlight-color: transparent;
-
-  /* scrollable rakhna zaruri hai tabhi address bar hide/show karega */
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -44,7 +42,7 @@ html, body {
 .app-body {
   position: absolute;
   top: var(--header-height);
-  bottom: var(--nav-tab-height);
+  bottom: var(--bottom-bar-height);
   left: 0;
   right: 0;
   -webkit-overflow-scrolling: touch;
@@ -68,7 +66,7 @@ html, body {
   bottom: 0;
   left: 0;
   right: 0;
-  height: var(--nav-tab-height);
+  height: var(--bottom-bar-height);
   z-index: var(--z-index-tab-nav);
   background: var(--bg-primary);
 }
@@ -106,7 +104,7 @@ html, body {
 .page-view-loader {
   position: fixed;
   top: var(--header-height);
-  bottom: var(--nav-tab-height);
+  bottom: var(--bottom-bar-height);
   left: 0;
   width: 100%;
   background-color: transparent;
@@ -172,8 +170,8 @@ html, body {
 
 /* 5. SEARCH SUGGESTIONS */
 .search-suggestions {
-  position: absolute; /* Relative to the .header-container */
-  top: 100%; /* Position it right below its parent */
+  position: absolute; 
+  top: 100%; 
   left: 0;
   right: 0;
   background: var(--bg-secondary);
