@@ -126,7 +126,7 @@ class ViewManager {
       newViewElement = document.createElement('div');
       newViewElement.id = config.id;
       newViewElement.classList.add('page-view-area'); // Add the class for styling and identification
-      document.getElementById('page-view-area').appendChild(newViewElement);
+      document.getElementById('main-content').appendChild(newViewElement);
       console.log(`Dynamically created view element: #${config.id}`);
     }
   
@@ -824,7 +824,7 @@ export async function initializeApp() {
   }
 
   // Initialize the scroll-aware header behavior
-  // initializeScrollAwareHeader();
+  initializeScrollAwareHeader();
   
   // Attempt to hide the browser's address bar on mobile devices.
   attemptHideAddressBar();
@@ -883,7 +883,7 @@ export async function initializeApp() {
 
 function initializeLayoutObservers() {
   const header = document.querySelector('.header-container');
-  const bottomBar = document.querySelector('.bottom-tab-bar');
+  const bottomBar = document.querySelector('.app-tab-nav');
 
   const observer = new ResizeObserver(entries => {
     for (let entry of entries) {
@@ -911,7 +911,7 @@ function initializePullToRefresh() {
   const arrow = document.getElementById("arrowIcon");
   arrow.style.transition = 'transform 0.2s ease-out'; // Add a smooth transition for rotation
   const spinner = document.getElementById("spinnerIcon");
-  const mainContent = document.getElementById('page-view-area');
+  const mainContent = document.getElementById('main-content');
 
   if (!mainContent) {
     console.error("PTR Error: .page-view-area container not found.");
@@ -1046,7 +1046,7 @@ function attemptHideAddressBar() {
  */
 function initializeScrollAwareHeader() {
   const header = document.querySelector('.header-container');
-  const pageViewArea = document.getElementById('page-view-area');
+  const pageViewArea = document.getElementById('main-content');
 
   if (!header || !pageViewArea) {
     console.warn('Scroll-aware header: Header or page-view-area not found. Skipping initialization.');

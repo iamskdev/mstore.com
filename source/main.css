@@ -3,58 +3,107 @@
   --header-height: 56px;  /* Default header height */
   --nav-tab-height: 65px;  /* Default bottom bar height, matches tab-nav height */
   --filter-bar-height: 30px; /* Default filter bar height */
+
+  /* Z-Index Management */
+  --z-index-pull-to-refresh: 998;
+  --z-index-header: 1000;
+  --z-index-tab-nav: 1000;
+  --z-index-suggestions: 1002;
+  --z-index-page-loader: 9999;
+  --z-index-splash-screen: 9999;
+  --z-index-pwa-toast: 10000;
 }
 
- 
+/* ===== Global Reset & Base ===== */
 html, body {
   box-sizing: border-box;
   font-family: 'Noto Sans', sans-serif;
   height: 100%;
-  min-height: 100vh; /* Added to ensure body is at least viewport height */
+  min-height: 100vh;
   margin: 0;
-  top: var(--header-height);
+  padding: 0;
   border: none;
   background-color: var(--bg-primary);
+  color: var(--text-primary);
   overscroll-behavior-y: contain;
-  -webkit-tap-highlight-color: transparent;  
+  -webkit-tap-highlight-color: transparent;
+
+  /* scrollable rakhna zaruri hai tabhi address bar hide/show karega */
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 *, *::before, *::after {
-  /* Inherit box-sizing from html for all elements */
   box-sizing: inherit;
 }
 
+/* ===== App Layout ===== */
 
-.page-view-area {
-  width: 100%; /* Re-added */
-  box-sizing: border-box;
-  display: flex;  
-  left: 0;
-  flex-direction: column;
-  right: 0;
+/* Main Scrollable Area */
+.app-body {
   position: absolute;
+  top: var(--header-height);
+  bottom: var(--nav-tab-height);
+  left: 0;
+  right: 0;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg-primary);
+}
+
+/* App Header */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  z-index: var(--z-index-header);
+  background: var(--bg-primary);
+}
+
+/* App Bottom Navigation (Tab Bar) */
+.app-tab-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-tab-height);
+  z-index: var(--z-index-tab-nav);
+  background: var(--bg-primary);
+}
+
+/* Individual Page Views (multi-page support) */
+.page-view-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+
+  opacity: 0;
+  transform: translateY(10px);
   pointer-events: none;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
-              transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* Removed top and height transitions */
-  background: var(--bg-primary);
-  top: var(--header-height);
-  bottom: var(--nav-tab-height);
-  min-height: calc(100vh - var(--header-height) - var(--nav-tab-height)); /* Ensure content area fills remaining space */
+  transition:
+    opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
+/* Active view (visible page) */
 .page-view-area.view-active {
-  opacity: 1 ; 
+  opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-
-
+/* 3. PAGE LOADER */
 .page-view-loader {
   position: fixed;
   top: var(--header-height);
@@ -65,8 +114,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999
-  ; /* Highest z-index to be on top of everything */
+  z-index: var(--z-index-page-loader);
   opacity: 1;
   visibility: visible;
   transition: opacity 0.3s ease, visibility 0s linear 0s;
@@ -98,7 +146,7 @@ html, body {
   100% { transform: rotate(360deg); }
 }
 
-/* --- 5.2. Pull-to-Refresh --- */
+/* 4. PULL TO REFRESH */
 #pullToRefresh {
   position: fixed;
   left: 0;
@@ -109,7 +157,7 @@ html, body {
   align-items: flex-end;
   justify-content: center;
   transition: top 0.3s ease;
-  z-index: 998;
+  z-index: var(--z-index-pull-to-refresh);
 }
 
 #pullToRefresh .material-icons {
@@ -119,37 +167,30 @@ html, body {
   transform: rotate(0deg); /* Initial state for arrow */
 }
 
-/* Spinner animation */
 .spinning {
   animation: spin 1s linear infinite;
 }
 
-
-/* ======================== */
-/* 🔍 SEARCH SUGGESTIONS */
-/* ======================== */
+/* 5. SEARCH SUGGESTIONS */
 .search-suggestions {
   position: absolute; /* Relative to the .header-container */
   top: 100%; /* Position it right below its parent */
   left: 0;
   right: 0;
   background: var(--bg-secondary);
-  /* The shadow has no vertical offset, making it appear directly behind the box. */
   box-shadow: 0 0 8px var(--shadow-color);
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  /* The top border is removed to prevent a "double border" effect with the header's bottom border. */
   max-height: 60vh;
   overflow-y: auto;
   display: none;
-  z-index: 1002;
+  z-index: var(--z-index-suggestions);
   list-style: none;
   padding: 0;
-  margin: 0; /* CRUCIAL: Resets the browser's default margin on <ul> elements, removing the visual gap. */
+  margin: 0;
 }
 
 .suggestion-item {
-  /* Aligning with the search bar's container padding (16px) */
   padding: 8px 16px;
   display: flex;
   align-items: center;
@@ -166,7 +207,6 @@ html, body {
   background-color: var(--bg-tertiary);
 }
 
-/* This is the container for the icon and text on the left */
 .suggestion-item > span:first-child {
     display: flex;
     align-items: center;
@@ -174,22 +214,13 @@ html, body {
     min-width: 0;
 }
 
-/* Icon for search suggestions (e.g., magnifying glass). */
 ul#search-suggestions .suggestion-item .suggestion-icon {
-  /* 
-    This margin is crucial for aligning the suggestion text with the search input text.
-    Calculation:
-    - Search Input Start = (search-mode padding-left) + (back-arrow width) + (back-arrow margin-right) + (input padding-left)
-                          = 12px + 20px + 8px + 12px = 52px
-    - Suggestion Text Start = (suggestion-item padding-left) + (icon width) + (this margin-right)
-                            = 16px + 20px + 16px = 52px
-  */
   margin-right: 16px;
   color: var(--text-tertiary);
   width: 20px;
   text-align: center;
-  flex-shrink: 0; /* Prevents icon from shrinking */
-  display: inline-block; /* Ensure it is visible */
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .highlight {
@@ -197,7 +228,6 @@ ul#search-suggestions .suggestion-item .suggestion-icon {
   color: var(--accent-primary);
 }
 
-/* Action icon on the right of the suggestion */
 .suggestion-item .fa-arrow-up {
   transform: rotate(-90deg);
   transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
@@ -216,7 +246,7 @@ ul#search-suggestions .suggestion-item .suggestion-icon {
   font-weight: 900;
 }
 
-/* --- 5.3. PWA Install Prompt Toast --- */
+/* 6. PWA INSTALL PROMPT TOAST */
 .install-prompt-toast {
   position: fixed;
   bottom: 20px;
@@ -227,7 +257,7 @@ ul#search-suggestions .suggestion-item .suggestion-icon {
   background-color: var(--bg-secondary);
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  z-index: 10000;
+  z-index: var(--z-index-pwa-toast);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -293,19 +323,19 @@ ul#search-suggestions .suggestion-item .suggestion-icon {
   background-color: var(--accent-primary-hover);
 }
 
-/* Splash Screen Styles from splash-demo.html */
+/* 7. SPLASH SCREEN */
 .splash-screen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--bg-primary); /* Changed here */
-  display: none; /* Hidden by default */
+  background: var(--bg-primary);
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: var(--z-index-splash-screen);
   opacity: 1;
   transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
 }
@@ -338,7 +368,7 @@ ul#search-suggestions .suggestion-item .suggestion-icon {
 .progress-bar {
   height: 100%;
   width: 0%;
-  background: var(--accent-primary); /* Changed to accent color */
+  background: var(--accent-primary);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
