@@ -1,11 +1,8 @@
 #cart-view {
   flex-grow: 1;
   width: 100%;
-  height: calc(100vh - var(--tab-nav-height));
   display: flex;
   flex-direction: column;
-  overflow-y: auto; /* Make this the scroller */
-  -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
 }
     /* Header Tabs */
     .cart-tabs {

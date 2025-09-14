@@ -86,7 +86,12 @@
     
     .footer-wrapper.is-expanded {
       /* Ensure it's above page content but below modals/drawer */ 
-      z-index: 1000; 
+      z-index: 997; 
+}
+
+    /* Adjust padding for the main content area when footer is expanded and fixed */
+    .page-view-area.footer-fixed-expanded {
+        padding-bottom: 0 !important; /* Remove any existing bottom padding */
     }
     
     .footer-content {

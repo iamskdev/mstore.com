@@ -72,11 +72,23 @@
   <div class="spinner"></div>
 </div>
 
-<!-- Header Partial -->
-<header id="main-header-placeholder" class="app-header"></header>
+<!-- Top Navigation: Always visible at top -->
+<nav id="top-nav" class="top-navigation"></nav>
 
-<!-- Drawer Partial -->
-<aside id="drawer-placeholder"></aside>  
+<!-- Header: Currently Use for Margin/padding -->
+<header id="app-header" class="header-view-area"></header>
+
+<!-- Main: Main content area -->
+<main id="main-content" ></main>
+
+<!-- Footer: Currently Use for Margin/padding -->
+<footer id="app-footer" class="footer-view-area"></footer>
+
+<!-- Bottom Navigation: Always visible at bottom -->
+<nav id="bottom-nav" class="bottom-navigation"></nav>
+
+<!-- Drawer / Sidebar: Hidden toggle menu -->
+<aside id="app-drawer" class="navigation-drawer"></aside>  
 
 <div id="pullToRefresh">
     <!-- Arrow icon -->
@@ -86,13 +98,10 @@
   </div>
 
 
-<!-- Page Main Content -->
-<main id="main-content" class="page-veiw-area app-body"></main>
 <!-- Dev Mode Switcher (should be last) -->
 <div id="role-switcher-placeholder"></div>
 
-<!-- Bottom Navigation Partial (should be last for stacking context) -->
-<nav id="bottom-nav-placeholder" class="app-tab-nav"></nav>
+
 
   <!-- 8. Scripts -->
   <!-- This single module is the main entry point for the application's logic. -->
@@ -175,11 +184,6 @@
       } else {
         console.warn('Service Worker not supported in this browser.');
       }
-    })
-    .catch(error => {
-      // This is a critical error. The app cannot start.
-      console.error("❌ CRITICAL: Failed to load essential app components. App cannot start.", error);
-      document.body.innerHTML = `<div style="padding: 40px 20px; text-align: center; font-family: sans-serif; color: #333;"><h1 style="color: #d9534f;">Application Error</h1><p>The application could not be started due to a critical error.</p><p>Please try refreshing the page. If the problem persists, check the browser console for details.</p></div>`;
     });
 </script>
 </body>

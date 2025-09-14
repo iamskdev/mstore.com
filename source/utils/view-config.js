@@ -4,7 +4,7 @@ const defaultViews = {
   guest: 'home',
   user: 'home',
   merchant: 'add',
-  admin: 'home' // Changed from 'home' to 'admin-home'
+  admin: 'admin-home' // Changed from 'home' to 'admin-home'
 };
 
 

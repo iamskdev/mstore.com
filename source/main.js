@@ -9,15 +9,17 @@
  
  */
 
-
-
-
 import { AuthService } from './firebase/auth/auth.js';
 import { viewConfig, defaultViews } from './utils/view-config.js';
 import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.js';
 import { initializeFirebase } from './firebase/firebase-config.js';
 import { setAppConfig, getAppConfig } from './utils/config-manager.js';
 import { initWishlistHandler } from './utils/saved-manager.js';
+import { loadTopNavigation } from './components/top/top-navigation.js';
+import { loadBottomNavigation } from './components/bottom/bottom-navigation.js';
+import { getFooterHtml } from './components/footer/footer.js';
+import { loadDrawer } from './components/drawer/drawer.js';
+import { initializeFilterManager } from './utils/filter-helper.js';
 class ViewManager {
   constructor() {
     // Initialize with a null state. The correct state will be determined
@@ -66,17 +68,13 @@ class ViewManager {
    * @param {HTMLElement} viewElement - The view container element.
    * @param {string} [existingHtml=''] - The existing HTML content of the view to prepend.
    */
-  async _loadAndEmbedFooter(role, existingHtml = '') { // Removed viewElement from params
+  async _loadAndEmbedFooter(role, existingHtml = '') {
     try {
-      const footerResponse = await fetch('./source/components/footer.html');
-      if (!footerResponse.ok) throw new Error('Footer HTML not found');
-
-      const footerHtml = await footerResponse.text();
-      // NEW: Wrap content in a div that can grow, ensuring the footer is pushed down.
-      return `<div class="view-content-wrapper">${existingHtml}</div>` + footerHtml; // Return the HTML
+      const footerHtml = await getFooterHtml(); // Use the new function
+      return `<div class="view-content-wrapper">${existingHtml}</div>` + footerHtml;
     } catch (e) {
-      console.warn(`ViewManager: Could not embed footer`, e); // Removed viewElement.id
-      return existingHtml; // Return original HTML on error
+      console.warn(`ViewManager: Could not embed footer`, e);
+      return existingHtml;
     }
   }
 
@@ -118,7 +116,13 @@ class ViewManager {
     let resolvedConfig = { ...config }; // Start with role-specific config
 
     
-    const currentViewElement = document.querySelector('.page-view-area.view-active');
+    // --- NEW: Explicitly hide all view containers before switching ---
+    document.querySelectorAll('.page-view-area').forEach(element => {
+      element.style.display = 'none'; // Explicitly hide
+      element.classList.remove('view-active'); // Also remove the class
+    });
+    // --- END NEW ---
+
     let newViewElement = document.getElementById(resolvedConfig.id);
 
     // If the view element doesn't exist, create it dynamically
@@ -136,15 +140,10 @@ class ViewManager {
     // within that view (like the auth form) to reset their state based on a new
     // user action (e.g., clicking 'Login' in the drawer).
     // FIX: Also ensure the view is actually visible. If not, make it active.
-    if (currentViewElement === newViewElement) {
-      if (!currentViewElement.classList.contains('view-active')) {
-        currentViewElement.classList.add('view-active');
-      }
+    if (newViewElement.classList.contains('view-active') && newViewElement.style.display !== 'none') {
       this._notifySubscribers(); // Re-notify for state resets
       return;
     }
-
-    if (currentViewElement) currentViewElement.classList.remove('view-active');
 
     if (resolvedConfig.path && !this.loadedViews.has(resolvedConfig.id)) {
       await this.loadViewContent(newViewElement, resolvedConfig, role);
@@ -162,7 +161,8 @@ class ViewManager {
     }
 
     newViewElement.classList.add('view-active');
-    console.log(`Applied 'view-active' to ${newViewElement.id}. Class list:`, newViewElement.classList);
+    newViewElement.style.display = 'flex'; // Explicitly show the new active view
+    console.log(`Applied 'view-active' and 'display: flex' to ${newViewElement.id}. Class list:`, newViewElement.classList);
     this.currentRole = role;
     this.currentView = viewId;
 
@@ -267,8 +267,7 @@ class ViewManager {
       if (config.showFilterBar) {
         // Lazy-load FilterManager if not already loaded
         if (!this.filterManager) {
-          const { filterManager } = await import('./utils/filter-helper.js');
-          this.filterManager = filterManager;
+          this.filterManager = initializeFilterManager(loadComponent); // Pass loadComponent
         }
         // Call a new method on filterManager to initialize the embedded filter bar
         this.filterManager.initializeEmbeddedFilterBar(viewElement);
@@ -279,10 +278,10 @@ class ViewManager {
         try {
           // The initialization is now handled here, after innerHTML is set
           if (!this.footerHelper) {
-            const { initializeFooter } = await import('./utils/footer-helper.js');
+            const { initializeFooter } = await import('./components/footer/footer.js');
             this.footerHelper = { initialize: initializeFooter };
           }
-          this.footerHelper.initialize(viewElement, role);
+          this.footerHelper.initialize(document.getElementById('main-content'), role);
         } catch (e) {
           console.error(`ViewManager: Failed to initialize embedded footer for ${config.id}`, e);
         }
@@ -621,13 +620,7 @@ window.addEventListener('requestViewChange', (e) => {
   }
 });
 
-// Centralized configuration for all static partials.
-const partialsMap = {
-  'main-header-placeholder': { path: './source/components/header.html' },
-  'drawer-placeholder': { path: './source/components/drawer.html' },
-  'bottom-nav-placeholder': { path: './source/components/tab-nav.html' },
-  'role-switcher-placeholder': { path: './source/components/role-switcher.html', devOnly: true }
-};
+
 
 /**
  * A reusable function to load an HTML partial into a given element
@@ -682,46 +675,7 @@ export async function loadComponent(element, path) {
   }
 }
 
-/**
- * Finds all elements with a `data-partial` attribute and loads them using the loadComponent helper.
- */
-export async function loadCoreComponents() {
-    // Determine if the current user is an admin
-    const loggedInUserType = localStorage.getItem('currentUserType');
-    const isAdminLoggedIn = loggedInUserType === 'admin';
 
-    // Show dev-only partials if the app is in development mode, OR if an admin is logged in
-    const allowDevOnly = getAppConfig().app.environment === 'development' || isAdminLoggedIn;
-
-    const promises = [];
-
-    for (const [id, config] of Object.entries(partialsMap)) {
-        const element = document.getElementById(id);
-
-        if (!element) {
-            // It's okay if a dev-only placeholder is not found in production.
-            if (!config.devOnly) {
-                console.warn(`Partial loader: Element with ID #${id} not found.`);
-            }
-            continue;
-        }
-
-        // Skip dev-only partials if not in the correct mode
-        // The 'allowDevOnly' now includes the isAdminLoggedIn check
-        if (config.devOnly && !allowDevOnly) {
-            element.remove(); // Clean up the placeholder
-            continue;
-        }
-
-        // Use the reusable function for each partial
-        promises.push(loadComponent(element, config.path));
-    }
-
-    // Wait for all partials to finish loading and executing their scripts
-    await Promise.all(promises);
-    // Dispatch a global event to notify that all initial partials are ready.
-    window.dispatchEvent(new CustomEvent('partialsLoaded'));
-}
 
 
 // Main application initialization function
@@ -793,34 +747,50 @@ export async function initializeApp() {
     if (splashScreen) {
         splashScreen.style.display = 'flex'; // Make it visible
     }
-    await simulateProgress(20);
-    await viewManager.init();
     await simulateProgress(60);
     initWishlistHandler();
-    await loadCoreComponents();
+
+    await loadTopNavigation(); // Load the top navigation
+    await loadDrawer(); // Load the side drawer
+    await loadBottomNavigation(); // Load the bottom navigation
     await simulateProgress(100);
 
     if (splashScreen) {
-        setTimeout(() => {
-            splashScreen.classList.add('hidden'); // Start fade out
+        // Wait for the splash screen to fully hide before proceeding with viewManager.init()
+        await new Promise(resolve => {
             setTimeout(() => {
-                splashScreen.style.display = 'none'; // Fully hide after transition
-            }, 800);
-        }, 200);
+                splashScreen.classList.add('hidden'); // Start fade out
+                setTimeout(() => {
+                    splashScreen.style.display = 'none'; // Fully hide after transition
+                    resolve(); // Resolve the promise after splash screen is hidden
+                }, 800);
+            }, 200);
+        });
     }
-  } else {
-      // --- Run without Splash Screen ---
-      // Splash screen is already hidden by CSS by default.
-      await viewManager.init();
-      initWishlistHandler();
-      await loadCoreComponents();
+  }
+
+  // --- Common Initialization Steps (run after splash or immediately if no splash) ---
+  await viewManager.init(); // This ensures viewManager is always initialized
+  initWishlistHandler();
+  await loadDrawer();
+  await loadTopNavigation();
+  await loadBottomNavigation();
+  // --- End Common Initialization Steps ---
+
+  // Load role-switcher directly if enabled in config (outside splashEnabled check)
+  const roleSwitcherEnabled = getAppConfig().flags?.roleSwitcher;
+  if (roleSwitcherEnabled) {
+    const roleSwitcherElement = document.getElementById('role-switcher-placeholder');
+    if (roleSwitcherElement) {
+        await loadComponent(roleSwitcherElement, './source/components/role-switcher.html');
+    }
   }
 
 
-  // Set --header-height immediately after core components are loaded
+  // Set --top-height immediately after core components are loaded
   const headerContainer = document.querySelector('.app-header');
   if (headerContainer) {
-    document.documentElement.style.setProperty('--header-height', `${headerContainer.offsetHeight}px`);
+    document.documentElement.style.setProperty('--top-height', `${headerContainer.offsetHeight}px`);
   }
 
   // Initialize the scroll-aware header behavior
@@ -889,9 +859,9 @@ function initializeLayoutObservers() {
     for (let entry of entries) {
       const height = entry.contentRect.height;
       if (entry.target.matches('.app-header')) {
-        document.documentElement.style.setProperty('--header-height', `${height}px`);
+        document.documentElement.style.setProperty('--top-height', `${height}px`);
       } else if (entry.target.matches('.app-tab-nav')) {
-        document.documentElement.style.setProperty('--bottom-bar-height', `${height}px`);
+        document.documentElement.style.setProperty('--bottom-height', `${height}px`);
       }
     }
   });
@@ -925,7 +895,7 @@ function initializePullToRefresh() {
   let currentHeaderHeight = 0;
 
   const updateHeaderHeight = () => {
-    currentHeaderHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
+    currentHeaderHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-height')) || 0;
     if (ptr.offsetHeight > 0) {
         // FIX: Set top to a negative value to hide it completely above the screen
         ptr.style.top = `-${ptr.offsetHeight}px`;
@@ -954,7 +924,7 @@ function initializePullToRefresh() {
     if (!activeView) return;
 
     // Use a more robust check for activeView being at the top
-    const isAtTop = activeView.scrollTop === 0; // Keep this for the active view's scroll
+    const isAtTop = mainContent.scrollTop === 0; // Check scroll position of the main container
 
     const currentY = e.touches[0].clientY;
     const diff = currentY - startY;
@@ -1064,7 +1034,7 @@ function initializeScrollAwareHeader() {
     const activeView = pageViewArea.querySelector('.page-view-area.view-active');
     if (!activeView) return; // No active view, nothing to scroll
 
-    const scrollTop = activeView.scrollTop;
+    const scrollTop = pageViewArea.scrollTop;
     const scrollDelta = scrollTop - lastScrollTop;
 
     // If scrolling down, hide the header

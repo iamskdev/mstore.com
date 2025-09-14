@@ -3,7 +3,7 @@
  * This module encapsulates the logic for loading, displaying, and interacting with the filter bar and advanced panel.
  */
 
-import { loadComponent } from '../main.js';
+
 import { fetchAllCategories, fetchAllBrands } from './data-manager.js';
 import { showToast } from './toast.js'; // Import the toast utility
 
@@ -11,7 +11,7 @@ const PLACEHOLDER_ID = 'filter-bar-placeholder';
 const COMPONENT_PATH = './source/components/filter-bar.html';
 
 class FilterManager {
-    constructor() {
+    constructor(loadComponentFn) {
         this._placeholder = null; // Private property to hold the element
         this.isLoaded = false;
         this.isInitialized = false;
@@ -19,6 +19,7 @@ class FilterManager {
         this.isModalLoaded = false;
         this.isAdvancedPanelInitialized = false;
         this.allCategoriesData = [];
+        this.loadComponent = loadComponentFn; // Store loadComponent function
     }
 
     // Public getter for the placeholder element
@@ -41,7 +42,7 @@ class FilterManager {
         // If it should be shown, load it if it hasn't been already.
         if (shouldShow && !this.isLoaded) {
             try {
-                await loadComponent(this.placeholder, COMPONENT_PATH);
+                await this.loadComponent(this.placeholder, COMPONENT_PATH);
                 this.isLoaded = true;
                 // Initialize the component's logic right after it's loaded
                 this._initializeComponentLogic();
@@ -447,7 +448,7 @@ class FilterManager {
                 document.body.appendChild(this.modalContainer);
             }
             try {
-                await loadComponent(this.modalContainer, './source/components/filter-modal.html');
+                await this.loadComponent(this.modalContainer, './source/components/filter-modal.html');
                 this.isModalLoaded = true;
                 this._initializeAdvancedPanelLogic(); // Initialize logic after component is loaded
             } catch (error) {
@@ -533,4 +534,6 @@ class FilterManager {
 }
 
 // Export a single instance to act as a singleton, maintaining state across the app.
-export const filterManager = new FilterManager();
+export function initializeFilterManager(loadComponentFn) {
+    return new FilterManager(loadComponentFn);
+}

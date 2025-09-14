@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Updated`
-> - **Last Reviewed:** 12/09/2025 23:00:00 IST (Updated by Gemini)
+> - **Last Reviewed:** 14/09/2025 21:00:00 IST (Updated by Gemini)
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document serves as the main entry point for understanding the project's features, architecture, and setup instructions. It is intended for all developers joining the project.
 
@@ -60,10 +60,17 @@ mstore/
 ├── localstore/
 │   ├── jsons/           # स्थानीय विकास के लिए मॉक JSON डेटा
 │   └── ...              # बैकअप और अन्य स्थानीय डेटा
-├── /source/
+├── source/
 │   ├── assets/          # लोगो, आइकन जैसे स्थिर एसेट
 │   ├── common/          # सभी भूमिकाओं द्वारा साझा की गई स्क्रिप्ट और स्टाइल
-│   ├── components/      # पुन: प्रयोज्य HTML, CSS, JS कंपोनेंट्स (जैसे हेडर, कार्ड)
+│   ├── components/      # पुन: प्रयोज्य HTML, CSS, JS कंपोनेंट्स
+│   │   ├── bottom/      # बॉटम नेविगेशन कंपोनेंट्स
+│   │   ├── cards/       # कार्ड कंपोनेंट्स
+│   │   ├── drawer/      # ड्रॉअर कंपोनेंट्स
+│   │   ├── feedback-modal/ # फीडबैक मोडल कंपोनेंट्स
+│   │   ├── footer/      # फुटर कंपोनेंट्स
+│   │   ├── top/         # टॉप नेविगेशन कंपोनेंट्स
+│   │   └── ...          # अन्य कंपोनेंट्स
 │   ├── firebase/        # फायरबेस कॉन्फ़िगरेशन, नियम और व्यवस्थापक कुंजियाँ
 │   ├── modules/         # भूमिका-विशिष्ट मॉड्यूल (जैसे उपभोक्ता, व्यापारी)
 │   └── utils/           # ऐप-व्यापी उपयोगिताएँ (जैसे data-manager)
@@ -115,8 +122,8 @@ mstore/
         -   यह फायरबेस सेवाओं को प्रारंभ करता है।
         -   यह सर्विस वर्कर को पंजीकृत करता है।
 
-2.  **कंपोनेंट लोडिंग (`main.js` में `loadCoreComponents()`):**
-    -   `main.js` में `loadCoreComponents()` फ़ंक्शन `partialsMap` (जो अब `main.js` में परिभाषित है) में परिभाषित सभी HTML पार्शियल (जैसे हेडर, ड्रॉअर) को उनके प्लेसहोल्डर्स में इंजेक्ट करता है। यह इन पार्शियल के अंदर पाए गए किसी भी `<script type="module">` टैग को भी निष्पादित करता है, जिससे प्रत्येक कंपोनेंट का अपना एनकैप्सुलेटेड लॉजिक हो सकता है।
+2.  **कंपोनेंट लोडिंग:**
+    -   `main.js` में `initializeApp()` फ़ंक्शन अब `loadTopNavigation()`, `loadDrawer()`, और `loadBottomNavigation()` जैसे विशिष्ट फ़ंक्शंस का उपयोग करके UI कंपोनेंट्स को गतिशील रूप से लोड करता है। ये फ़ंक्शंस संबंधित HTML फ़ाइलों को फ़ेच करते हैं और उनके JavaScript लॉजिक को निष्पादित करते हैं, जिससे प्रत्येक कंपोनेंट का अपना एनकैप्सुलेटेड लॉजिक हो सकता है।
 
 3.  **मुख्य ऐप लॉजिक (`main.js`):**
     -   एक बार जब सभी कोर कंपोनेंट्स सफलतापूर्वक लोड हो जाते हैं, तो `main.js` में `initializeApp()` फ़ंक्शन `viewManager.init()` को कॉल करके ऐप के नेविगेशन और स्टेट मैनेजमेंट को प्रारंभ करता है। `viewManager` अब `view-config.js` में परिभाषित `dataDependencies` के आधार पर प्रत्येक व्यू के लिए आवश्यक डेटा को प्री-फ़ेच करने का भी प्रबंधन करता है। `main.js` अब ऐप के नेविगेशन का "मस्तिष्क" है। यह URL हैश और उपयोगकर्ता की क्रियाओं के आधार पर प्रबंधित करता है कि कौन सा व्यू वर्तमान में दिखाई दे रहा है।
@@ -127,7 +134,7 @@ mstore/
     -   व्यू मैनेजर `localStorage` में स्थिति को अपडेट करता है और फिर सभी सब्सक्राइब किए गए कंपोनेंट्स को सूचित करता है।
 
 5.  **डायनामिक UI अपडेट:**
-    -   `drawer.html` और `tab-nav.html` जैसे कंपोनेंट्स व्यू मैनेजर से सूचना प्राप्त करते हैं।
+    -   `drawer/drawer.html` और `bottom/bottom-navigation.html` जैसे कंपोनेंट्स व्यू मैनेजर से सूचना प्राप्त करते हैं।
     -   सूचना मिलने पर, वे अपने `update...UI()` फ़ंक्शंस को ट्रिगर करते हैं, `localStorage` से नवीनतम उपयोगकर्ता भूमिका पढ़ते हैं, और `data-manager.js` का उपयोग करके आवश्यक डेटा प्राप्त करते हैं। यह सुनिश्चित करता है कि UI हमेशा वर्तमान उपयोगकर्ता के संदर्भ को दर्शाता है और `view-config.js` में परिभाषित `dataDependencies` के आधार पर डेटा को प्री-फ़ेच किया जाता है।
 
 6.  **डेटा सोर्स स्विचिंग (`config.json`, `data-manager.js`):**
@@ -206,7 +213,7 @@ mstore/
 -   **कॉन्फ़िगरेशन:** `/source/config.json` (यहाँ आप `flags.promotionEnabled` को `true` पर सेट करते हैं)
 -   **प्रमोशन डेटा:** `/localstore/jsons/promotions.json` (या Firestore में `promotions` कलेक्शन)
 -   **मुख्य लॉजिक:** `/source/main.js`
--   **UI कंपोनेंट्स:** `/source/components/header.html`, `/source/components/footer.html`, `/source/components/tab-nav.html`
+-   **UI कंपोनेंट्स:** `/source/components/top/top-navigation.html`, `/source/components/footer/footer.html`, `/source/components/bottom/bottom-navigation.html`
 
 ### वर्कफ़्लो:
 1.  **सक्रियण:** `config.json` में, `flags.promotionEnabled` को `true` पर सेट करें।

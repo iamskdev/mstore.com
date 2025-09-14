@@ -1,268 +1,13 @@
-<style>
-    .app-header {
-      height: var(--header-height);
-      background: var(--bg-primary);
-      display: flex;
-      align-items: center;
-      padding: 0 12px; 
-      box-shadow: 0 1px 0 0 var(--border-color); 
-      position: absolute; 
-    }
-    /* New classes for header toggle items */
-    .header-toggle-item {
-      display: flex; /* Default to flex */
-    }
-    .header-toggle-item.hidden {
-      display: none !important; /* This will override the default flex */
-    }
+import { fetchUserById, fetchMerchantById } from '../../utils/data-manager.js';
+import { getAppConfig } from '../../utils/config-manager.js';
 
-    /* This class is toggled by JS to show/hide search elements */
-    .app-header.search-active .header-branding,
-    .app-header.search-active .pwa-install-button,
-    .app-header.search-active #search-toggle,
-    .app-header.search-active #notification-icon {
-      display: none;
-    }
-
-    .header-branding {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .brand-logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%; /* ALWAYS a circle to prevent shape-shifting flash */
-      background-color: transparent;
-      border: 1px solid transparent; /* Placeholder border to prevent layout shift */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      flex-shrink: 0;
-      cursor: pointer; /* Make only the logo clickable */
-      transition: all 0.2s ease-in-out;
-    }
-
-    /* NEW: A placeholder style for when an avatar is being fetched. */
-    /* This prevents a "square-to-circle" flash. */
-    .brand-logo.is-loading-avatar {
-      background-color: var(--bg-tertiary);
-      animation: pulse-bg 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      border-color: var(--border-color); /* Make border visible during load */
-    }
-    @keyframes pulse-bg {
-      0%, 100% { background-color: var(--bg-tertiary); }
-      50% { background-color: var(--bg-hover); }
-    }
-
-    /* This class is added by JS only when a user/merchant avatar is loaded */
-    .brand-logo.is-avatar {
-      background-color: var(--bg-tertiary);
-      border-color: var(--border-color); /* Make border visible for avatars */
-    }
-
-    .brand-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain; /* Use 'contain' for app logo to prevent cropping */
-    }
-
-    .brand-logo.is-avatar img {
-      object-fit: cover; /* Use 'cover' for avatars to fill the circle */
-    }
-
-    .brand-name {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 20px; /* Increased gap for better spacing */
-      align-items: center; /* This will vertically align the icons */
-      margin-left: auto;
-    }
-
-    .header-icon, .pwa-install-button {
-      font-size: 1.2rem;
-      color: var(--text-secondary); /* आइकन के लिए डिफ़ॉल्ट रंग */
-      cursor: pointer;
-      position: relative;
-    }
-
-    /* Flip the search icon to face right */
-    #search-toggle i {
-      transform: scaleX(-1); /* Target the icon inside the wrapper */
-    }
-
-    #search-back {
-      display: none; /* Hidden by default */
-      margin-right: 8px;
-    }
-    .app-header.search-active #search-back {
-      display: block; /* Visible in search mode */
-    }
-
-    .header-search-input-container {
-      display: none; /* Hidden by default */
-      flex: 1;
-      position: relative;
-    }
-    .header-search-input {
-      width: 100%;
-      padding: 10px 36px 10px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 24px;
-      background: var(--bg-tertiary);
-      font-size: 0.95rem;
-      outline: none;
-      /* Explicitly set box-sizing to prevent layout breaks from other stylesheets */
-      box-sizing: border-box;
-    }
-
-        .app-header.search-active .header-search-input-container {
-      display: block; /* Visible in search mode */
-    }
-
-    /* New styles for notification view */
-    .notification-header-content {
-      display: none; /* Hidden by default */
-      align-items: center;
-      gap: 12px;
-    }
-
-    .app-header.notification-active .header-branding,
-    .app-header.notification-active .header-actions,
-    .app-header.notification-active .header-search-input-container {
-      display: none;
-    }
-
-    .app-header.notification-active .notification-header-content {
-      display: flex; /* Show notification header content */
-    }
-
-    .search-clear {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-tertiary);
-      display: none;
-      cursor: pointer;
-    }
-
-    #notification-icon .notification-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: var(--header-badge-bg);
-      color: var(--header-badge-text);
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      font-size: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-
-    /* Special style for the badge when used as a storefront/system indicator */
-    #notification-icon .notification-badge.storefront-indicator {
-      background: var(--header-banner-promo-bg); /* Use promo banner color for consistency */
-    }
-    /* New style for dev mode indicator */
-    #notification-icon .notification-badge.dev-indicator {
-      background: var(--header-banner-dev-bg); /* Use dev banner color for consistency */
-      color: var(--header-banner-dev-text);
-      font-weight: bold;
-    }
-
-    .hidden { display: none !important; }
-    .visible { display: flex !important; }
-
-    @keyframes bellShake {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(15deg); }
-      50% { transform: rotate(-15deg); }
-      75% { transform: rotate(5deg); }
-    }
-
-    .bell-shake { animation: bellShake 0.5s ease-in-out; }
-
-    #notification-icon.active-notification i {
-      color: var(--accent-primary); /* Highlight color for active notification icon */
-    }
-
-    /* Ripple Effect for Notification Icon */
-    #notification-icon .ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(var(--accent-primary-rgb), 0.1); /* Use global variable directly */
-      transform: scale(0);
-      animation: ripple 0.6s linear;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    @keyframes ripple {
-      to {
-        transform: scale(1.5);
-        opacity: 0;
-      }
-    }
-  </style>
-  <header class="app-header" id="main-header">
-      <i class="fas fa-arrow-left header-icon" id="search-back"></i>
-      <!-- NEW: Notification Header Content -->
-      <div class="notification-header-content hidden">
-        <i class="fas fa-arrow-left header-icon" id="notification-back-btn"></i>
-        <span class="brand-name" id="notification-title">Notifications</span>
-      </div>
-      <div class="header-branding">
-      <i class="fas fa-bars header-icon header-toggle-item menu-icon" id="header-menu-icon" style="font-size: 1.4rem; cursor: pointer; margin-right: 4px;" data-header-item="menu"></i>
-      <span class="brand-logo header-toggle-item logo-container" id="header-logo-container" data-header-item="logo">
-                <img src="./source/assets/logos/app-logo.png" alt="App Logo">
-        </span>
-        <span class="brand-name" id="header-name">mStore</span>
-      </div>
-      <div class="header-search-input-container">
-        <input type="text" class="header-search-input" id="header-search-input" placeholder="Search anything...">
-        <i class="fas fa-times search-clear" id="search-clear"></i>
-      </div>
-      <div class="header-actions">
-        <div class="header-icon" id="search-toggle">
-          <i class="fas fa-search"></i>
-        </div>
-        <div class="header-icon" id="notification-icon">
-          <i class="fas fa-bell"></i>
-          <span class="notification-badge hidden">3</span>
-        </div>
-      </div>
-      <!-- Search Suggestions Box: Moved INSIDE the header content for correct positioning. -->
-      <ul id="search-suggestions" class="search-suggestions"></ul>
-    </header>
-
-  <script type="module">
-    import { fetchUserById, fetchMerchantById } from './source/utils/data-manager.js';
-    import { loadComponent } from './source/main.js';
-    import { filterManager } from './source/utils/filter-helper.js';
-    import { getAppConfig } from './source/utils/config-manager.js';
-
+export function initializeTopNavigation() {
     // --- Elements ---
-    const headerContainer = document.querySelector('.header-container');
+    const topNav = document.getElementById('top-nav');
     const searchToggleBtn = document.getElementById('search-toggle');
     const searchBackBtn = document.getElementById('search-back');
     const searchInput = document.getElementById('header-search-input');
     const searchClearBtn = document.getElementById('search-clear');
-    const mainHeader = document.getElementById('main-header');
     
     const notificationIcon = document.getElementById('notification-icon');
     const bellIcon = notificationIcon?.querySelector('i');
@@ -286,13 +31,13 @@
     }
 
     function openSearchView() {
-      mainHeader.classList.add('search-active');
+      topNav.classList.add('search-active');
       searchInput.value = '';
       searchInput.focus();
     }
 
     function closeSearchView() {
-      mainHeader.classList.remove('search-active');
+      topNav.classList.remove('search-active');
       searchClearBtn.style.display = 'none';
       const suggestionsBox = document.getElementById('search-suggestions');
       if (suggestionsBox) {
@@ -474,7 +219,33 @@
     // NEW: Subscribe the notification icon UI update function
     window.viewManager.subscribe(updateNotificationIconUI);
     console.log("✅ Header: Subscribed to ViewManager for state updates.");
+}
 
-    
-  </script>
+// NEW: Function to load the HTML and then initialize the existing logic
+/**
+ * Fetches and loads the top navigation bar HTML into the #top-nav element,
+ * then initializes its dynamic behavior using the existing initializeTopNavigation function.
+ */
+export async function loadTopNavigation() {
+  const topNavContainer = document.getElementById('top-nav');
+  if (!topNavContainer) {
+    console.error('The #top-nav element was not found in the DOM.');
+    return;
+  }
 
+  try {
+    const response = await fetch('./source/components/top/top-navigation.html');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const html = await response.text();
+    topNavContainer.innerHTML = html;
+    console.log('Top navigation HTML loaded.');
+
+    // Call the existing initialization function after HTML is loaded
+    initializeTopNavigation();
+
+  } catch (error) {
+    console.error('Could not load or initialize the top navigation:', error);
+  }
+}

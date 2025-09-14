@@ -24,7 +24,6 @@ const APP_SHELL_URLS = [
   // Core Utility Modules
   './source/utils/data-manager.js',
   './source/utils/filter-helper.js',
-  './source/utils/footer-helper.js',
   './source/utils/formatters.js',
   './source/utils/pwa-manager.js',
   './source/utils/theme-switcher.js',
@@ -37,11 +36,15 @@ const APP_SHELL_URLS = [
   './source/firebase/firebase-credentials.js',
 
   // Components
-  './source/components/header.html',
+  './source/components/top/top-navigation.js',
+  './source/components/top/top-navigation.html',
+  './source/components/bottom/bottom-navigation.js',
+  './source/components/bottom/bottom-navigation.html',
+  './source/components/drawer/drawer.js',
+  './source/components/drawer/drawer.html',
+  './source/components/footer/footer.html',
+  './source/components/footer/footer.js',
   './source/components/filter-bar.html',
-  './source/components/footer.html',
-  './source/components/drawer.html',
-  './source/components/tab-nav.html',
   './source/components/role-switcher.html',
   './source/components/filter-modal.html',
   './source/components/cards/card-grid.html',
@@ -178,6 +181,7 @@ self.addEventListener('install', (event) => {
         console.log('Service Worker: Caching App Shell...');
         for (const url of APP_SHELL_URLS) {
           try {
+            console.log(`Service Worker: Attempting to cache ${url}`); // Added log
             const response = await fetch(url);
             if (response.ok) {
               await cache.put(url, response);

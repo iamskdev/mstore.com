@@ -1,110 +1,113 @@
 /*1. GLOBAL VARIABLES & RESETS*/
 :root {
-  --header-height: 56px;  
-  --bottom-bar-height: 65px; 
-  --filter-bar-height: 30px; 
+  --top-height: 56px;
+  --bottom-height: 65px; 
+  --filter-bar-height: 30px;
 
   /* Z-Index Management */
   --z-index-pull-to-refresh: 998;
-  --z-index-header: 1000;
-  --z-index-tab-nav: 1000;
-  --z-index-suggestions: 1002;
-  --z-index-page-loader: 9999;
-  --z-index-splash-screen: 9999;
+  --z-index-header: 999;
+  --z-index-tab-nav: 999;
+  --z-index-suggestions: 9999;
+  --z-index-drawer-overlay: 1100;
+  --z-index-drawer: 1101;
+  --z-index-page-loader: 999;
+  --z-index-splash-screen: 99999;
   --z-index-pwa-toast: 10000;
 }
 
 /* ===== Global Reset & Base ===== */
-html, body {
+:root {
+  --top-height: 60px;
+  --bottom-height: 50px;
+}
+
+html {
   box-sizing: border-box;
-  font-family: 'Noto Sans', sans-serif;
   height: 100%;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  overscroll-behavior-y: contain;
-  -webkit-tap-highlight-color: transparent;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 *, *::before, *::after {
   box-sizing: inherit;
 }
 
-/* ===== App Layout ===== */
-
-/* Main Scrollable Area */
-.app-body {
-  position: absolute;
-  top: var(--header-height);
-  bottom: var(--bottom-bar-height);
-  left: 0;
-  right: 0;
-  -webkit-overflow-scrolling: touch;
+body {
+  font-family: 'Noto Sans', sans-serif;
+  margin: 0;
+  padding: 0;
   background: var(--bg-primary);
+  color: var(--text-primary);
+  overscroll-behavior-y: contain;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100dvh;
 }
 
-/* App Header */
-.app-header {
+/* Top Navigation */
+nav.top-navigation {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: var(--header-height);
+  height: 56px; /* Recommended fixed height */
+  flex-shrink: 0;
+  background-color: auto;
   z-index: var(--z-index-header);
-  background: var(--bg-primary);
 }
 
-/* App Bottom Navigation (Tab Bar) */
-.app-tab-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: var(--bottom-bar-height);
-  z-index: var(--z-index-tab-nav);
-  background: var(--bg-primary);
+/* banners etc */
+header.header-view-area {
+  margin-top: 56px;
+/*background-color: white;
+  padding: var(--filter-bar-height);*/
 }
 
 /* Individual Page Views (multi-page support) */
 .page-view-area {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
+  flex: 1 0 auto;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
-  background: var(--bg-primary);
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
+  position: relative;
+  display: none; /* Hidden by default */
+  pointer-events: none; /* Disable interactions for inactive views */
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   transition:
     opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Active view (visible page) */
 .page-view-area.view-active {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  display: flex; /* Show when active */
+  background: var(--bg-primary);
+  pointer-events: auto; /* Enable interactions for the active view */
 }
+
+/* Footer */
+footer.footer-view-area {
+  margin-bottom: 65px;
+/*background-color: #e0e0e0;
+  padding: var(--footer-height);*/
+}
+
+/* Bottom Navigation */
+nav.bottom-navigation {
+  position: fixed;
+  bottom: 0;
+  width: 100%; /* Ensure full width */
+  height: 65px;
+  flex-shrink: 0;
+  background-color: auto;
+  z-index: var(--z-index-tab-nav);
+}
+
 
 /* 3. PAGE LOADER */
 .page-view-loader {
   position: fixed;
-  top: var(--header-height);
-  bottom: var(--bottom-bar-height);
+  top: var(--top-height);
+  bottom: var(--bottom-height);
   left: 0;
   width: 100%;
   background-color: transparent;
@@ -148,8 +151,8 @@ html, body {
   position: fixed;
   left: 0;
   right: 0;
-  top: -50px;
-  height: var(--header-height);
+  top: -60px;
+  height: var(--top-height);
   display: flex;
   align-items: flex-end;
   justify-content: center;
