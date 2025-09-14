@@ -11,15 +11,9 @@
   --z-index-suggestions: 9999;
   --z-index-drawer-overlay: 1100;
   --z-index-drawer: 1101;
-  --z-index-page-loader: 999;
+  --z-index-page-loader: 9999;
   --z-index-splash-screen: 99999;
   --z-index-pwa-toast: 10000;
-}
-
-/* ===== Global Reset & Base ===== */
-:root {
-  --top-height: 60px;
-  --bottom-height: 50px;
 }
 
 html {
@@ -43,7 +37,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 100dvh;
+  min-height: 100vh;
 }
 
 /* Top Navigation */
@@ -52,7 +46,7 @@ nav.top-navigation {
   top: 0;
   left: 0;
   right: 0;
-  height: 56px; /* Recommended fixed height */
+  height: var(--top-height);
   flex-shrink: 0;
   background-color: auto;
   z-index: var(--z-index-header);
@@ -60,7 +54,7 @@ nav.top-navigation {
 
 /* banners etc */
 header.header-view-area {
-  margin-top: 56px;
+  margin-top: var(--top-height);
 /*background-color: white;
   padding: var(--filter-bar-height);*/
 }
@@ -69,6 +63,7 @@ header.header-view-area {
 .page-view-area {
   flex: 1 0 auto;
   flex-direction: column;
+  margin-bottom: var(--bottom-height);
   position: relative;
   display: none; /* Hidden by default */
   pointer-events: none; /* Disable interactions for inactive views */
@@ -86,7 +81,7 @@ header.header-view-area {
 
 /* Footer */
 footer.footer-view-area {
-  margin-bottom: 65px;
+  margin-bottom: var(--bottom-height);
 /*background-color: #e0e0e0;
   padding: var(--footer-height);*/
 }
@@ -96,15 +91,15 @@ nav.bottom-navigation {
   position: fixed;
   bottom: 0;
   width: 100%; /* Ensure full width */
-  height: 65px;
+  height: var(--bottom-height);
   flex-shrink: 0;
   background-color: auto;
   z-index: var(--z-index-tab-nav);
 }
 
 
-/* 3. PAGE LOADER */
-.page-view-loader {
+/* 3. VIEW LOADER */
+.view-loading {
   position: fixed;
   top: var(--top-height);
   bottom: var(--bottom-height);
@@ -120,7 +115,7 @@ nav.bottom-navigation {
   transition: opacity 0.3s ease, visibility 0s linear 0s;
 }
 
-.page-view-loader.hidden {
+.view-loading.hidden {
   opacity: 0;
   transition: opacity 0.3s ease;
 }

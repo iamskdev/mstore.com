@@ -161,8 +161,11 @@ export function initializePwaInstall() {
 }
 
 export function setupPwaRefreshBlockers() {
+  console.log("setupPwaRefreshBlockers called.");
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+  console.log(`Is PWA in standalone mode? ${isStandalone}`);
   // Check if the app is running in standalone mode (installed PWA)
-  if (window.matchMedia('(display-mode: standalone)').matches) {
+  if (isStandalone) {
     console.log("PWA is in standalone mode. Disabling browser refresh.");
 
     // 1. Block keyboard refresh shortcuts (F5, Ctrl+R)

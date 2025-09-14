@@ -551,7 +551,7 @@ getScrollbarWidth();
  * Shows the page loader.
  */
 function showPageLoader() { // Renamed function
-  const pageLoader = document.querySelector('.page-loader'); // Renamed variable and class selector
+  const pageLoader = document.querySelector('.view-loading'); // Renamed variable and class selector
   if (pageLoader) {
     pageLoader.classList.remove('hidden');
   }
@@ -564,13 +564,11 @@ function showPageLoader() { // Renamed function
  * Hides the page loader with a fade-out animation.
  */
 function hidePageLoader() { // Renamed function
-  const pageLoader = document.querySelector('.page-loader'); // Renamed variable and class selector
+  const pageLoader = document.querySelector('.view-loading'); // Renamed variable and class selector
   if (pageLoader) {
-    setTimeout(() => {
-      pageLoader.classList.add('hidden');
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.paddingRight = originalBodyPaddingRight;
-    }, 2000); // Keep loader visible for 2 seconds for debugging
+    pageLoader.classList.add('hidden');
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.paddingRight = originalBodyPaddingRight;
   }
 }
 
@@ -797,6 +795,7 @@ export async function initializeApp() {
   initializeScrollAwareHeader();
   
   // Attempt to hide the browser's address bar on mobile devices.
+  console.log("Attempting to hide address bar.");
   attemptHideAddressBar();
 
   // 3. Set up ResizeObservers to automatically adjust layout variables.
@@ -1019,8 +1018,8 @@ function initializeScrollAwareHeader() {
   const header = document.querySelector('.app-header');
   const pageViewArea = document.getElementById('main-content');
 
-  if (!header || !pageViewArea) {
-    console.warn('Scroll-aware header: Header or page-view-area not found. Skipping initialization.');
+  if (!header) { // Only check for header now
+    console.warn('Scroll-aware header: Header not found. Skipping initialization.');
     return;
   }
 
@@ -1030,11 +1029,9 @@ function initializeScrollAwareHeader() {
 
   // Function to update header position
   const updateHeaderPosition = () => {
-    // Get the currently active view within pageViewArea
-    const activeView = pageViewArea.querySelector('.page-view-area.view-active');
-    if (!activeView) return; // No active view, nothing to scroll
+    
 
-    const scrollTop = pageViewArea.scrollTop;
+    const scrollTop = window.scrollY; // Use window scroll position
     const scrollDelta = scrollTop - lastScrollTop;
 
     // If scrolling down, hide the header
@@ -1050,8 +1047,8 @@ function initializeScrollAwareHeader() {
     lastScrollTop = scrollTop;
   };
 
-  // Listen for scroll events on the page-view-area
-  pageViewArea.addEventListener('scroll', updateHeaderPosition, { passive: true });
+  // Listen for scroll events on the window
+  window.addEventListener('scroll', updateHeaderPosition, { passive: true });
 
   // Also update header height if it changes (e.g., due to dynamic content)
   const headerResizeObserver = new ResizeObserver(entries => {
