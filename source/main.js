@@ -749,11 +749,6 @@ export async function initializeApp() {
         splashScreen.style.display = 'flex'; // Make it visible
     }
     await simulateProgress(60);
-    initWishlistHandler();
-
-    await loadTopNavigation(); // Load the top navigation
-    await loadDrawer(); // Load the side drawer
-    await loadBottomNavigation(); // Load the bottom navigation
     await simulateProgress(100);
 
     if (splashScreen) {
@@ -771,11 +766,11 @@ export async function initializeApp() {
   }
 
   // --- Common Initialization Steps (run after splash or immediately if no splash) ---
+  await loadTopNavigation();
+  await loadBottomNavigation();
   await viewManager.init(); // This ensures viewManager is always initialized
   initWishlistHandler();
   await loadDrawer();
-  await loadTopNavigation();
-  await loadBottomNavigation();
   // --- End Common Initialization Steps ---
 
   // Load role-switcher directly if enabled in config (outside splashEnabled check)

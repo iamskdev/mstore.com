@@ -9,9 +9,9 @@
   --z-index-header: 999;
   --z-index-tab-nav: 999;
   --z-index-suggestions: 9999;
-  --z-index-drawer-overlay: 1100;
-  --z-index-drawer: 1101;
-  --z-index-page-loader: 9999;
+  --z-index-drawer-overlay: 9998;
+  --z-index-drawer: 9999;
+  --z-index-page-loader: 9997;
   --z-index-splash-screen: 99999;
   --z-index-pwa-toast: 10000;
 }
@@ -381,8 +381,4 @@ ul#search-suggestions .suggestion-item .suggestion-icon {
 .splash-screen.hidden {
   opacity: 0;
   pointer-events: none;
-}
-
-.splash-screen.hidden .splash-content {
-  transform: translateY(-20px);
 }
