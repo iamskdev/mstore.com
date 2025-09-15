@@ -707,6 +707,12 @@ export async function initializeApp() {
   // Detect standalone mode for PWA and apply no-zoom styles
   if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
     document.documentElement.classList.add('standalone-no-zoom');
+
+    // Dynamically update viewport meta tag to disable zoom in PWA mode
+    const viewportMeta = document.getElementById('viewport-meta');
+    if (viewportMeta) {
+      viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    }
   }
 
   // Ensure getAppConfig().urls exists

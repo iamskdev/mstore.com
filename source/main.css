@@ -37,19 +37,13 @@ body {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 /* Top Navigation */
 nav.top-navigation {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   height: var(--top-height);
-  flex-shrink: 0;
-  background-color: auto;
+  background-color: var(--bg-primary);
   z-index: var(--z-index-header);
 }
 
@@ -89,12 +83,8 @@ footer.footer-view-area {
 
 /* Bottom Navigation */
 nav.bottom-navigation {
-  position: fixed;
-  bottom: 0;
-  width: 100%; /* Ensure full width */
   height: var(--bottom-height);
-  flex-shrink: 0;
-  background-color: auto;
+  background-color: var(--bg-primary);
   z-index: var(--z-index-tab-nav);
 }
 

@@ -2,7 +2,6 @@
 /* --- 1. Main Container & Theming Variables --- */
 .bottom-navigation {
   height: 65px; 
-  position: absolute;
   background: var(--bg-primary);
   backdrop-filter: blur(10px); 
   display: flex;
@@ -10,7 +9,10 @@
   align-items: center;
   border-top: 1px solid var(--border-color);
   padding: 0 8px;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Smoothly slide up/down with footer */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
 }
 
 /* --- 2. General Button Styles --- */
