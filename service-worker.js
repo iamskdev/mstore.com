@@ -13,7 +13,6 @@ const APP_SHELL_URLS = [
   './source/main.css',
   './source/common/styles/theme.css',
   './source/assets/logos/app-logo.png',
-  './source/assets/logos/app-logo.png',
 
   // Core Scripts & Config
   './source/config.json',

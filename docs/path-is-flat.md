@@ -1,5 +1,5 @@
 # 📁 Project Path Tree (Gemini-friendly)
-📅 Last Updated: 09/09/2025, 13:35
+📅 Last Updated: 15/09/2025, 09:35
 
 S:\My Projects\Apna Store\mStore\.firebaserc
 S:\My Projects\Apna Store\mStore\.github\workflows\release.yml
@@ -102,6 +102,7 @@ S:\My Projects\Apna Store\mStore\localstore\jsons\versions.json
 S:\My Projects\Apna Store\mStore\manifest.json
 S:\My Projects\Apna Store\mStore\package-lock.json
 S:\My Projects\Apna Store\mStore\package.json
+S:\My Projects\Apna Store\mStore\python\config_editor.py
 S:\My Projects\Apna Store\mStore\python\markdown_creator.py
 S:\My Projects\Apna Store\mStore\python\timestamp_generator.py
 S:\My Projects\Apna Store\mStore\python\timestamp_usage.json
@@ -212,31 +213,38 @@ S:\My Projects\Apna Store\mStore\source\common\pages\home.html
 S:\My Projects\Apna Store\mStore\source\common\pages\item-details.html
 S:\My Projects\Apna Store\mStore\source\common\pages\notification-view.html
 S:\My Projects\Apna Store\mStore\source\common\pages\offline.html
+S:\My Projects\Apna Store\mStore\source\common\pages\saved.html
 S:\My Projects\Apna Store\mStore\source\common\scripts\cart.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\guest-account.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\home.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\item-details.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\notification-view.js
+S:\My Projects\Apna Store\mStore\source\common\scripts\saved.js
 S:\My Projects\Apna Store\mStore\source\common\styles\cart.css
 S:\My Projects\Apna Store\mStore\source\common\styles\guest-account.css
 S:\My Projects\Apna Store\mStore\source\common\styles\home.css
 S:\My Projects\Apna Store\mStore\source\common\styles\item-details.css
 S:\My Projects\Apna Store\mStore\source\common\styles\notification-view.css
+S:\My Projects\Apna Store\mStore\source\common\styles\saved.css
 S:\My Projects\Apna Store\mStore\source\common\styles\theme.css
+S:\My Projects\Apna Store\mStore\source\components\bottom\bottom-navigation.html
+S:\My Projects\Apna Store\mStore\source\components\bottom\bottom-navigation.js
 S:\My Projects\Apna Store\mStore\source\components\cards\banner.html
 S:\My Projects\Apna Store\mStore\source\components\cards\card-grid.html
 S:\My Projects\Apna Store\mStore\source\components\cards\card-list.html
-S:\My Projects\Apna Store\mStore\source\components\drawer.html
+S:\My Projects\Apna Store\mStore\source\components\drawer\drawer.html
+S:\My Projects\Apna Store\mStore\source\components\drawer\drawer.js
 S:\My Projects\Apna Store\mStore\source\components\error-page.html
 S:\My Projects\Apna Store\mStore\source\components\feedback-modal\feedback-modal.css
 S:\My Projects\Apna Store\mStore\source\components\feedback-modal\feedback-modal.html
 S:\My Projects\Apna Store\mStore\source\components\feedback-modal\feedback-modal.js
 S:\My Projects\Apna Store\mStore\source\components\filter-bar.html
 S:\My Projects\Apna Store\mStore\source\components\filter-modal.html
-S:\My Projects\Apna Store\mStore\source\components\footer.html
-S:\My Projects\Apna Store\mStore\source\components\header.html
+S:\My Projects\Apna Store\mStore\source\components\footer\footer.html
+S:\My Projects\Apna Store\mStore\source\components\footer\footer.js
 S:\My Projects\Apna Store\mStore\source\components\role-switcher.html
-S:\My Projects\Apna Store\mStore\source\components\tab-nav.html
+S:\My Projects\Apna Store\mStore\source\components\top\top-navigation.html
+S:\My Projects\Apna Store\mStore\source\components\top\top-navigation.js
 S:\My Projects\Apna Store\mStore\source\config.json
 S:\My Projects\Apna Store\mStore\source\firebase\auth\auth.js
 S:\My Projects\Apna Store\mStore\source\firebase\firebase-config.js
@@ -277,11 +285,11 @@ S:\My Projects\Apna Store\mStore\source\utils\config-manager.js
 S:\My Projects\Apna Store\mStore\source\utils\cursor-zoom.js
 S:\My Projects\Apna Store\mStore\source\utils\data-manager.js
 S:\My Projects\Apna Store\mStore\source\utils\filter-helper.js
-S:\My Projects\Apna Store\mStore\source\utils\footer-helper.js
 S:\My Projects\Apna Store\mStore\source\utils\formatters.js
 S:\My Projects\Apna Store\mStore\source\utils\image-zoom.js
 S:\My Projects\Apna Store\mStore\source\utils\lang-helper.js
 S:\My Projects\Apna Store\mStore\source\utils\pwa-manager.js
+S:\My Projects\Apna Store\mStore\source\utils\saved-manager.js
 S:\My Projects\Apna Store\mStore\source\utils\search-handler.js
 S:\My Projects\Apna Store\mStore\source\utils\theme-switcher.js
 S:\My Projects\Apna Store\mStore\source\utils\toast.js

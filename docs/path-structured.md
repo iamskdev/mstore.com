@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 09/09/2025, 13:35
+📅 Last Updated: 15/09/2025, 09:35
 
 ├── .firebaserc
 ├── .gitignore
@@ -35,6 +35,8 @@
 │   ├── post-commit
 │   ├── pre-commit
 │   └── pre-push
+├── 📁 Projects\
+│   └── 📁 Apna\
 ├── 📁 demo\
 │   └── demo-card.html
 ├── 📁 docs\
@@ -118,6 +120,7 @@
 │       ├── users.json
 │       └── versions.json
 ├── 📁 python\
+│   ├── config_editor.py
 │   ├── markdown_creator.py
 │   ├── timestamp_generator.py
 │   ├── timestamp_usage.json
@@ -247,37 +250,48 @@
 │   │   │   ├── home.html
 │   │   │   ├── item-details.html
 │   │   │   ├── notification-view.html
-│   │   │   └── offline.html
+│   │   │   ├── offline.html
+│   │   │   └── saved.html
 │   │   ├── 📁 scripts\
 │   │   │   ├── cart.js
 │   │   │   ├── guest-account.js
 │   │   │   ├── home.js
 │   │   │   ├── item-details.js
-│   │   │   └── notification-view.js
+│   │   │   ├── notification-view.js
+│   │   │   └── saved.js
 │   │   └── 📁 styles\
 │   │       ├── cart.css
 │   │       ├── guest-account.css
 │   │       ├── home.css
 │   │       ├── item-details.css
 │   │       ├── notification-view.css
+│   │       ├── saved.css
 │   │       └── theme.css
 │   ├── 📁 components\
+│   │   ├── 📁 bottom\
+│   │   │   ├── bottom-navigation.html
+│   │   │   └── bottom-navigation.js
 │   │   ├── 📁 cards\
 │   │   │   ├── banner.html
 │   │   │   ├── card-grid.html
 │   │   │   └── card-list.html
+│   │   ├── 📁 drawer\
+│   │   │   ├── drawer.html
+│   │   │   └── drawer.js
 │   │   ├── 📁 feedback-modal\
 │   │   │   ├── feedback-modal.css
 │   │   │   ├── feedback-modal.html
 │   │   │   └── feedback-modal.js
-│   │   ├── drawer.html
+│   │   ├── 📁 footer\
+│   │   │   ├── footer.html
+│   │   │   └── footer.js
+│   │   ├── 📁 top\
+│   │   │   ├── top-navigation.html
+│   │   │   └── top-navigation.js
 │   │   ├── error-page.html
 │   │   ├── filter-bar.html
 │   │   ├── filter-modal.html
-│   │   ├── footer.html
-│   │   ├── header.html
-│   │   ├── role-switcher.html
-│   │   └── tab-nav.html
+│   │   └── role-switcher.html
 │   ├── 📁 firebase\
 │   │   ├── 📁 auth\
 │   │   │   └── auth.js
@@ -329,11 +343,11 @@
 │   │   ├── cursor-zoom.js
 │   │   ├── data-manager.js
 │   │   ├── filter-helper.js
-│   │   ├── footer-helper.js
 │   │   ├── formatters.js
 │   │   ├── image-zoom.js
 │   │   ├── lang-helper.js
 │   │   ├── pwa-manager.js
+│   │   ├── saved-manager.js
 │   │   ├── search-handler.js
 │   │   ├── theme-switcher.js
 │   │   ├── toast.js

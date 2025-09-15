@@ -69,6 +69,7 @@ class ViewManager {
    * @param {string} [existingHtml=''] - The existing HTML content of the view to prepend.
    */
   async _loadAndEmbedFooter(role, existingHtml = '') {
+    console.log(`ViewManager: _loadAndEmbedFooter called for role: ${role}`);
     try {
       const footerHtml = await getFooterHtml(); // Use the new function
       return `<div class="view-content-wrapper">${existingHtml}</div>` + footerHtml;
@@ -281,6 +282,7 @@ class ViewManager {
             const { initializeFooter } = await import('./components/footer/footer.js');
             this.footerHelper = { initialize: initializeFooter };
           }
+          console.log(`ViewManager: Calling initializeFooter with role: ${role}`);
           this.footerHelper.initialize(document.getElementById('main-content'), role);
         } catch (e) {
           console.error(`ViewManager: Failed to initialize embedded footer for ${config.id}`, e);
@@ -426,6 +428,7 @@ class ViewManager {
     console.groupCollapsed("Route Determination"); // Start a collapsed console group
     let initialRole = 'guest';
     let initialView = 'home';
+    console.log(`main.js init: savedRole=${savedRole}, lastActiveRole=${lastActiveRole}, lastActiveView=${lastActiveView}`);
 
     // Priority 1: A valid, direct URL path takes precedence (e.g., user clicks a link or refreshes a specific page).
     if (pathRole && pathView && this.viewConfig[pathRole]?.[pathView]) {
@@ -791,16 +794,6 @@ export async function initializeApp() {
     document.documentElement.style.setProperty('--top-height', `${headerContainer.offsetHeight}px`);
   }
 
-  // Initialize the scroll-aware header behavior
-  initializeScrollAwareHeader();
-  
-  // Attempt to hide the browser's address bar on mobile devices.
-  console.log("Attempting to hide address bar.");
-  attemptHideAddressBar();
-
-  // 3. Set up ResizeObservers to automatically adjust layout variables.
-  initializeLayoutObservers();
-
   // Log the current configuration for easy debugging.
   if (getAppConfig().app.environment) {
     console.log(`%c🚀 App Mode: ${getAppConfig().app.environment.toUpperCase()}`, 'color: #448aff; font-weight: bold; font-size: 12px;');
@@ -874,7 +867,6 @@ function initializePullToRefresh() {
   // Only initialize Pull-to-Refresh if ptrEnabled flag is true in config.json
   const appConfig = getAppConfig();
   if (!appConfig.flags.ptrEnabled) {
-    console.log("Pull-to-Refresh not initialized: ptrEnabled is false in config.");
     return;
   }
   const ptr = document.getElementById("pullToRefresh");
@@ -884,12 +876,12 @@ function initializePullToRefresh() {
   const mainContent = document.getElementById('main-content');
 
   if (!mainContent) {
-    console.error("PTR Error: .page-view-area container not found.");
     return;
   }
 
   let startY = 0;
   let isPulling = false;
+  let ptrActive = false; // New flag to prevent rapid re-triggering
   const pullThreshold = 100;
   let currentHeaderHeight = 0;
 
@@ -919,29 +911,39 @@ function initializePullToRefresh() {
 
   // Existing touchmove listener for custom PTR animation
   mainContent.addEventListener('touchmove', e => {
+    if (ptrActive) return;
+
     const activeView = mainContent.querySelector('.page-view-area.view-active');
     if (!activeView) return;
 
-    // Use a more robust check for activeView being at the top
-    const isAtTop = mainContent.scrollTop === 0; // Check scroll position of the main container
-
+    const isAtTop = window.scrollY === 0; // Changed to window.scrollY
     const currentY = e.touches[0].clientY;
     const diff = currentY - startY;
 
-    // Condition to START a pull: active view is at the top, user is pulling down, and not already in a pull.
-    if (isAtTop && diff > 20 && !isPulling) {
-      isPulling = true;
-      ptr.style.transition = 'none'; // Disable transition during pull for direct mapping.
-    }
+    // If we are pulling down and at the top
+    if (isAtTop && diff > 0) {
+      e.preventDefault(); // Prevent default scrolling immediately if at top and pulling down
 
-    if (isPulling) {
-      e.preventDefault(); // Prevent default browser scroll only when our custom PTR is active
-      const pullDistance = Math.max(0, diff);
-      // FIX: Calculate top relative to its hidden position (-offsetHeight)
-      ptr.style.top = `${-ptr.offsetHeight + Math.min(pullDistance, 250)}px`;
-      
-      const rotation = (pullDistance / pullThreshold) * 180;
-      arrow.style.transform = `rotate(${rotation}deg)`;
+      // If not already pulling, and diff exceeds threshold, start pulling
+      if (!isPulling && diff > 50) {
+        isPulling = true;
+        ptr.style.transition = 'none';
+      }
+
+      if (isPulling) {
+        const pullDistance = Math.max(0, diff);
+        ptr.style.top = `${-ptr.offsetHeight + Math.min(pullDistance, 250)}px`;
+        const rotation = (pullDistance / pullThreshold) * 180;
+        arrow.style.transform = `rotate(${rotation}deg)`;
+      }
+    } else {
+      // If not at top, or scrolling up, ensure pulling is reset and PTR is hidden
+      if (isPulling) {
+        isPulling = false;
+        ptr.style.transition = 'top 0.3s ease';
+        ptr.style.top = `-${ptr.offsetHeight}px`;
+        arrow.style.transform = 'rotate(0deg)';
+      }
     }
   }, { passive: false }); // Must be passive: false to allow preventDefault
 
@@ -955,6 +957,7 @@ function initializePullToRefresh() {
     ptr.style.transition = 'top 0.3s ease'; // Restore animation.
 
     if (diff > pullThreshold) {
+      ptrActive = true; // Set flag to true when refresh is triggered
       // Trigger Refresh: Position it below the header
       ptr.style.top = `${currentHeaderHeight}px`;
       arrow.style.display = "none";
@@ -989,6 +992,7 @@ function initializePullToRefresh() {
       spinner.style.display = "none";
       spinner.classList.remove("spinning");
       arrow.style.transform = 'rotate(0deg)';
+      ptrActive = false; // Reset flag after refresh is complete
     } else {
       // Cancel pull, snap back.
       // FIX: Hide it above the screen again
@@ -996,74 +1000,4 @@ function initializePullToRefresh() {
       arrow.style.transform = 'rotate(0deg)';
     }
   });
-}
-
-function attemptHideAddressBar() {
-  // Check if it's a mobile device (simple check, can be more robust)
-  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    // Scroll by 1 pixel to trigger address bar hiding
-    // Use setTimeout to ensure it runs after initial rendering
-     setTimeout(() => {
-      window.scrollTo(0, 1);
-    }, 0);
-  }
-}
-
-/**
- * Initializes a scroll-aware header behavior.
- * The header will move up/down based on the scroll direction of the page-view-area.
- */
-function initializeScrollAwareHeader() {
-  const header = document.querySelector('.app-header');
-  const pageViewArea = document.getElementById('main-content');
-
-  if (!header) { // Only check for header now
-    console.warn('Scroll-aware header: Header not found. Skipping initialization.');
-    return;
-  }
-
-  let lastScrollTop = 0;
-  let headerHeight = header.offsetHeight;
-  let currentTranslateY = 0;
-
-  // Function to update header position
-  const updateHeaderPosition = () => {
-    
-
-    const scrollTop = window.scrollY; // Use window scroll position
-    const scrollDelta = scrollTop - lastScrollTop;
-
-    // If scrolling down, hide the header
-    if (scrollDelta > 0) {
-      currentTranslateY = Math.max(-headerHeight, currentTranslateY - scrollDelta);
-    } 
-    // If scrolling up, show the header
-    else {
-      currentTranslateY = Math.min(0, currentTranslateY - scrollDelta);
-    }
-
-    header.style.transform = `translateY(${currentTranslateY}px)`;
-    lastScrollTop = scrollTop;
-  };
-
-  // Listen for scroll events on the window
-  window.addEventListener('scroll', updateHeaderPosition, { passive: true });
-
-  // Also update header height if it changes (e.g., due to dynamic content)
-  const headerResizeObserver = new ResizeObserver(entries => {
-    for (let entry of entries) {
-      if (entry.target === header) {
-        headerHeight = entry.contentRect.height;
-        // Ensure header is fully visible if its height changes while at top
-        if (pageViewArea.scrollTop === 0) {
-          header.style.transform = 'translateY(0px)';
-          currentTranslateY = 0;
-        }
-      }
-    }
-  });
-  headerResizeObserver.observe(header);
-
-  console.log('✅ Scroll-aware header initialized.');
 }
