@@ -383,3 +383,24 @@ ul#search-suggestions .suggestion-item .suggestion-icon {
   opacity: 0;
   pointer-events: none;
 }
+
+/* Prevent zooming in standalone PWA mode */
+html.standalone-no-zoom {
+  touch-action: manipulation; /* Prevents pinch-to-zoom */
+  -webkit-text-size-adjust: 100%; /* Prevents font boosting */
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Optionally, you might want to disable user selection if it interferes with zooming */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+html.standalone-no-zoom body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

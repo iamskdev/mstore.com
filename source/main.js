@@ -704,6 +704,11 @@ export async function initializeApp() {
   setAppConfig(loadedConfig);
   initializeFirebase(loadedConfig);
 
+  // Detect standalone mode for PWA and apply no-zoom styles
+  if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+    document.documentElement.classList.add('standalone-no-zoom');
+  }
+
   // Ensure getAppConfig().urls exists
   if (!getAppConfig().urls) {
     getAppConfig().urls = {}; // Initialize if it doesn't exist
