@@ -11,7 +11,7 @@
       background: var(--bg-primary);
       border-bottom: 1px solid var(--border-color);
       position: sticky;
-      top: 0;
+      top: var(--top-height);
       z-index: 1; /* Ensure it stays above scrolling content */
     }
     .cart-tab {
@@ -207,7 +207,7 @@
 
     .cart-footer-area {
       position: sticky;
-      bottom: 0;
+      bottom: var(--bottom-height);
       background: var(--bg-primary);
       padding: 14px;
       display: flex;

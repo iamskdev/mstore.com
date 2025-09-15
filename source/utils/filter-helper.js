@@ -132,29 +132,26 @@ class FilterManager {
         });
 
         // --- Scroll-to-hide/show logic for filter bar ---
-        let lastScrollTop = 0;
-        const pageViewArea = document.querySelector('.page-view-area'); // The main scrollable area
+        let lastScrollTop = window.scrollY;
+        
+        window.addEventListener('scroll', () => {
+            const currentScrollTop = window.scrollY;
+            // container is defined in the outer scope of _initializeComponentLogic
+            if (!container) return;
 
-        if (pageViewArea) {
-            pageViewArea.addEventListener('scroll', () => {
-                const currentScrollTop = pageViewArea.scrollTop;
-                const filterBarHeight = container.offsetHeight; // Get the height of the filter bar
+            // Determine scroll direction
+            const scrollThreshold = 40; // Smaller threshold for hiding
 
-                // Determine scroll direction
-                const scrollThreshold = 20; // Smaller threshold for hiding
-
-                if (currentScrollTop > lastScrollTop && currentScrollTop > scrollThreshold) {
-                    // Scrolling down and scrolled past the threshold
-                    container.classList.add('filter-bar-hidden');
-                } else if (currentScrollTop < lastScrollTop) {
-                    // Scrolling up
-                    container.classList.remove('filter-bar-hidden');
-                }
-                lastScrollTop = currentScrollTop;
-            });
-        } else {
-            console.warn('FilterManager: .page-view-area not found for scroll-to-hide functionality.');
-        }
+            if (currentScrollTop > lastScrollTop && currentScrollTop > scrollThreshold) {
+                // Scrolling down and scrolled past the threshold
+                container.classList.add('filter-bar-hidden');
+            } else if (currentScrollTop < lastScrollTop) {
+                // Scrolling up
+                container.classList.remove('filter-bar-hidden');
+            }
+            // Update lastScrollTop, ensuring it's not negative.
+            lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+        });
 
         // Fetch and populate dynamic category tabs
         try {

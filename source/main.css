@@ -68,7 +68,7 @@ header.header-view-area {
   position: relative;
   display: none; /* Hidden by default */
   pointer-events: none; /* Disable interactions for inactive views */
-  overflow-y: auto;
+  
   transition:
     opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -385,22 +385,17 @@ ul#search-suggestions .suggestion-item .suggestion-icon {
 }
 
 /* Prevent zooming in standalone PWA mode */
-html.standalone-no-zoom {
-  touch-action: manipulation; /* Prevents pinch-to-zoom */
-  -webkit-text-size-adjust: 100%; /* Prevents font boosting */
+html.standalone-no-zoom, 
+html.standalone-no-zoom body, 
+html.standalone-no-zoom * {
+  touch-action: manipulation;
+  text-size-adjust: 100%;
+  user-select: none;
+  -webkit-text-size-adjust: 100%; 
   -ms-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-  /* Optionally, you might want to disable user selection if it interferes with zooming */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;
-}
-
-html.standalone-no-zoom body {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+ 
 }

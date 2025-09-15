@@ -14,8 +14,8 @@
   justify-content: flex-start; /* Add for left alignment */
   gap: 20px; /* Add for equal gap between tabs */
   padding: 0 10px; /* Add horizontal padding to the bar itself if needed */
-  position: sticky;
-  top: 0;
+    position: sticky;
+  top: var(--top-height);
   z-index: 1;
 }
 
