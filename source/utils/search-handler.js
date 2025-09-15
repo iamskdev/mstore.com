@@ -7,7 +7,7 @@ import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.esm.js';
 
 // --- Configuration (from former config.js) ---
 const FUSE_CONFIG = {
-  keys: ['name', 'category', 'description'],
+  keys: ['info.name', 'info.description'],
   minMatchCharLength: 1,
   threshold: 0.4,
   includeMatches: true,
@@ -114,18 +114,20 @@ class SearchComponent {
 
   displaySuggestions(results) {
     this.clearSuggestions();
-    if (results.length === 0) return;
+    if (results.length === 0) {
+      return;
+    }
 
     results.forEach(result => {
       const { item, matches } = result;
       const li = document.createElement('li');
       li.className = 'suggestion-item';
-      const nameMatch = matches.find(m => m.key === 'name');
-      const highlightedText = nameMatch ? this.highlightMatches(item.name, nameMatch.indices) : item.name;
+      const nameMatch = matches.find(m => m.key === 'info.name');
+      const highlightedText = nameMatch ? this.highlightMatches(item.info.name, nameMatch.indices) : item.info.name;
 
       li.innerHTML = `<span><i class="fas fa-magnifying-glass suggestion-icon"></i><span>${highlightedText}</span></span><i class="fas fa-arrow-up"></i>`;
       li.addEventListener('click', () => {
-        this.searchInput.value = item.name;
+        this.searchInput.value = item.info.name;
         this.onResultClick(item); // Call the callback
       });
       this.suggestionsBox.appendChild(li);
@@ -169,7 +171,6 @@ export function initializeSearch(items) {
   }
 
   if (!allItems || allItems.length === 0) {
-    console.warn("Search initialization skipped: no items provided or found in sessionStorage.");
     return null;
   }
 
@@ -199,4 +200,54 @@ export function initializeSearch(items) {
   }
 
   return fuseInstance;
+}
+
+/**
+ * Sets up the search toggle functionality in the header.
+ * This function should be called once the header is loaded.
+ */
+export function setupSearchToggle() {
+  const searchToggle = document.getElementById('search-toggle');
+  const searchBack = document.getElementById('search-back');
+  const searchInputContainer = document.querySelector('.header-search-input-container');
+  const topNavigation = document.querySelector('.top-navigation');
+  const headerSearchInput = document.getElementById('header-search-input');
+  const searchClear = document.getElementById('search-clear');
+
+  if (!searchToggle || !searchBack || !searchInputContainer || !topNavigation || !headerSearchInput || !searchClear) {
+    return;
+  }
+
+  const activateSearch = () => {
+    topNavigation.classList.add('search-active');
+    headerSearchInput.focus();
+    // Hide other header items
+    document.querySelectorAll('[data-header-item]').forEach(item => item.classList.add('hidden'));
+  };
+
+  const deactivateSearch = () => {
+    topNavigation.classList.remove('search-active');
+    headerSearchInput.value = '';
+    searchClear.style.display = 'none';
+    // Show other header items
+    document.querySelectorAll('[data-header-item]').forEach(item => item.classList.remove('hidden'));
+    window.dispatchEvent(new CustomEvent('searchDeactivated')); // Notify other components
+  };
+
+  searchToggle.addEventListener('click', activateSearch);
+  searchBack.addEventListener('click', deactivateSearch);
+
+  headerSearchInput.addEventListener('input', () => {
+    searchClear.style.display = headerSearchInput.value.length > 0 ? 'block' : 'none';
+  });
+
+  searchClear.addEventListener('click', () => {
+    headerSearchInput.value = '';
+    searchClear.style.display = 'none';
+    headerSearchInput.focus();
+    window.dispatchEvent(new CustomEvent('clearSearchInput')); // Notify other components
+  });
+
+  // Listen for a custom event to close the search view (e.g., after a search result is clicked)
+  window.addEventListener('closeSearchViewRequest', deactivateSearch);
 }

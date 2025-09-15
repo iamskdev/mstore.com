@@ -184,6 +184,11 @@
       } else {
         console.warn('Service Worker not supported in this browser.');
       }
+    })
+    .catch(error => {
+      // This is a critical error. The app cannot start.
+      console.error("❌ CRITICAL: Failed to load essential app components. App cannot start.", error);
+      document.body.innerHTML = `<div style="padding: 40px 20px; text-align: center; font-family: sans-serif; color: #333;"><h1 style="color: #d9534f;">Application Error</h1><p>The application could not be started due to a critical error.</p><p>Please try refreshing the page. If the problem persists, check the browser console for details.</p></div>`;
     });
 </script>
 </body>

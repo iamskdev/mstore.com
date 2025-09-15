@@ -20,6 +20,8 @@ import { loadBottomNavigation } from './components/bottom/bottom-navigation.js';
 import { getFooterHtml } from './components/footer/footer.js';
 import { loadDrawer } from './components/drawer/drawer.js';
 import { initializeFilterManager } from './utils/filter-helper.js';
+import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
+
 class ViewManager {
   constructor() {
     // Initialize with a null state. The correct state will be determined
@@ -778,6 +780,7 @@ export async function initializeApp() {
 
   // --- Common Initialization Steps (run after splash or immediately if no splash) ---
   await loadTopNavigation();
+  setupSearchToggle(); // Initialize search toggle after top navigation is loaded
   await loadBottomNavigation();
   await viewManager.init(); // This ensures viewManager is always initialized
   initWishlistHandler();
@@ -818,8 +821,13 @@ export async function initializeApp() {
   }
 
   try {
+    console.log("initializeApp: Attempting to fetch all items...");
     const allItems = await fetchAllItems();
+    console.log("initializeApp: Fetched items count:", allItems ? allItems.length : 0);
     sessionStorage.setItem('allItems', JSON.stringify(allItems));
+    console.log("initializeApp: Items stored in sessionStorage. Initializing search...");
+          initializeSearch(allItems); // Initialize search with fetched items
+      console.log("initializeApp: Search initialized."); // Initialize search with fetched items
 
     // Fetch and dispatch active promotion regardless of appMode
     try {

@@ -28,6 +28,7 @@ const APP_SHELL_URLS = [
   './source/utils/theme-switcher.js',
   './source/utils/toast.js',
   './source/utils/banner-mannager.js',
+  './source/utils/search-handler.js',
 
   // Firebase Modules
   './source/firebase/auth/auth.js',
