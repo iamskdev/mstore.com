@@ -32,7 +32,7 @@ body {
   padding: 0;
   background: var(--bg-primary);
   color: var(--text-primary);
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: none;
   -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
   display: flex;
@@ -62,7 +62,6 @@ header.header-view-area {
   position: relative;
   display: none; /* Hidden by default */
   pointer-events: none; /* Disable interactions for inactive views */
-  
   transition:
     opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
