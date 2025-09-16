@@ -1,5 +1,5 @@
 import { fetchAllItems, fetchAllUnits, fetchAllCategories, fetchActivePromotion } from '../../utils/data-manager.js';
-import { createCardFromTemplate, initCardHelper } from '../../utils/card-helper.js';
+import { createCardFromTemplate, initCardHelper } from '../../components/cards/card-helper.js';
 import { initBannerManager } from '../../utils/banner-mannager.js'; // Add this line
 import { isItemSaved } from '../../utils/saved-manager.js';
 

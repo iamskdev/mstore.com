@@ -15,6 +15,7 @@ import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.
 import { initializeFirebase } from './firebase/firebase-config.js';
 import { setAppConfig, getAppConfig } from './utils/config-manager.js';
 import { initWishlistHandler } from './utils/saved-manager.js';
+import { initAddToCartHandler } from './utils/cart-manager.js'; // Added this line
 import { loadTopNavigation } from './components/top/top-navigation.js';
 import { loadBottomNavigation } from './components/bottom/bottom-navigation.js';
 import { getFooterHtml } from './components/footer/footer.js';
@@ -784,6 +785,7 @@ export async function initializeApp() {
   await loadBottomNavigation();
   await viewManager.init(); // This ensures viewManager is always initialized
   initWishlistHandler();
+  initAddToCartHandler(); // Added this line
   await loadDrawer();
   // --- End Common Initialization Steps ---
 

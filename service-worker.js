@@ -29,6 +29,7 @@ const APP_SHELL_URLS = [
   './source/utils/toast.js',
   './source/utils/banner-mannager.js',
   './source/utils/search-handler.js',
+  './source/utils/cart-manager.js',
 
   // Firebase Modules
   './source/firebase/auth/auth.js',
@@ -49,10 +50,11 @@ const APP_SHELL_URLS = [
   './source/components/filter-modal.html',
   './source/components/cards/card-grid.html',
   './source/components/cards/banner.html',
+  './source/components/cards/card-list.html',
 
   // Pages & Associated Assets from view-config.
   './source/utils/view-config.js',
-  './source/utils/card-helper.js',
+  './source/components/cards/card-helper.js',
   './source/common/pages/cart.html',
   './source/common/styles/cart.css',
   './source/common/scripts/cart.js',

@@ -1,4 +1,4 @@
-import { createCardFromTemplate } from '../../utils/card-helper.js';
+import { createCardFromTemplate } from '../../components/cards/card-helper.js';
 import { getSavedItems, isItemSaved, toggleSavedItem } from '../../utils/saved-manager.js';
 import { fetchItemById } from '../../utils/data-manager.js'; // Assuming data-manager exists
 

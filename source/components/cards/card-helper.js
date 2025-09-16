@@ -1,4 +1,5 @@
-let cardGridTemplate = ''; // Global variable to store the template
+let cardGridTemplate = ''; // Global variable to store the template for grid view
+let cardListTemplate = ''; // Global variable to store the template for list view (cart)
 let unitsData = {}; // Global variable to store units data
 
 const DEFAULT_PRODUCT_IMAGE = './localstore/images/default-product.jpg';
@@ -163,11 +164,8 @@ export function createCardFromTemplate(item, isSkeleton = false) {
     const cardElement = cardWrapper.querySelector('.card');
     if (cardElement) {
         cardElement.addEventListener('click', (e) => {
-            if (e.target.closest('.add-to-cart')) {
-                e.preventDefault();
-                // Handle add to cart
-            }
-            else {
+            // Only navigate if the click is not on the add-to-cart button
+            if (!e.target.closest('.add-to-cart')) {
                 sessionStorage.setItem('selectedItem', JSON.stringify(item));
                 window.dispatchEvent(new CustomEvent('navigateToItem', { detail: item }));
             }
@@ -179,12 +177,89 @@ export function createCardFromTemplate(item, isSkeleton = false) {
 
 export async function initCardHelper(unitsDataParam) {
     try {
-        const templateResponse = await fetch('./source/components/cards/card-grid.html');
-        if (!templateResponse.ok) throw new Error(`Failed to fetch card-grid.html: ${templateResponse.statusText}`);
-        cardGridTemplate = await templateResponse.text();
+        const gridTemplateResponse = await fetch('./source/components/cards/card-grid.html');
+        if (!gridTemplateResponse.ok) throw new Error(`Failed to fetch card-grid.html: ${gridTemplateResponse.statusText}`);
+        cardGridTemplate = await gridTemplateResponse.text();
+
+        const listTemplateResponse = await fetch('./source/components/cards/card-list.html');
+        if (!listTemplateResponse.ok) throw new Error(`Failed to fetch card-list.html: ${listTemplateResponse.statusText}`);
+        cardListTemplate = await listTemplateResponse.text();
+
         unitsData = unitsDataParam; // Set the units data
     } catch (error) {
         console.error('Error initializing CardHelper:', error);
         // Optionally, handle error more gracefully, e.g., display a message
     }
+}
+
+/**
+ * Creates a card element specifically for the cart view from the card-list.html template.
+ * @param {object} item - The item data (product or service).
+ * @returns {HTMLElement} The card element.
+ */
+export function createCartCardElement(item) {
+    console.log('createCartCardElement called for item:', item?.meta?.itemId);
+    const cardWrapper = document.createElement('div');
+    cardWrapper.className = 'card-wrapper'; // Use a wrapper for consistency if needed
+
+    const originalPrice = item.pricing?.mrp;
+    const currentPrice = item.pricing?.sellingPrice;
+    const discountPercentage = originalPrice && originalPrice > currentPrice ? ((originalPrice - currentPrice) / originalPrice * 100).toFixed(0) : '';
+
+    // Cart specific data mapping
+    const templateData = {
+        CARD_NAME: item.info.name,
+        SELLING_PRICE: (item.cart.subtotal || currentPrice).toFixed(2),
+        MAX_PRICE: (item.pricing.oldPrice * item.cart.qty).toFixed(2),
+        PRICE_DISCOUNT: discountPercentage ? `${discountPercentage}% off` : '',
+        CARD_IMG: item.media?.thumbnail || (item.meta.type === 'product' ? DEFAULT_PRODUCT_IMAGE : DEFAULT_SERVICE_IMAGE),
+        CARD_NOTE: `Quantity: ${item.cart.qty}`,
+        LEFT_BTN: 'Save',
+        RIGHT_BTN: 'Remove',
+        FIRST_BTN: '',
+        SECOND_BTN: '',
+        STOCK_STATUS_CLASS: item.inventory?.stockQty > 0 ? 'in' : 'out',
+        STATUS_ICON: item.inventory?.stockQty > 0 ? 'fas fa-check-circle' : 'fas fa-times-circle',
+        CARD_STATUS: item.inventory?.stockQty > 0 ? 'In Stock' : 'Out of Stock',
+        COST_PRICE: '',
+        RATING_STARS: '',
+        RATING_VALUE: '',
+    };
+
+    const tempContainer = document.createElement('div');
+    tempContainer.innerHTML = renderTemplate(cardListTemplate, templateData);
+
+    // Conditional removal of elements not needed in cart view
+    tempContainer.querySelector('.cost-price')?.remove();
+    tempContainer.querySelector('.stars')?.remove();
+    tempContainer.querySelector('.first-btn')?.remove();
+    tempContainer.querySelector('.second-btn')?.remove();
+
+    const cardElement = tempContainer.firstElementChild; // Get the actual card element
+    if (cardElement) {
+        // Add event listeners for the buttons (Save/Remove)
+        const leftBtn = cardElement.querySelector('.left-btn');
+        if (leftBtn) {
+            leftBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Cart Save button clicked for item:', item.meta.itemId);
+                // Implement cart specific save logic here
+            });
+        }
+
+        const rightBtn = cardElement.querySelector('.right-btn');
+        if (rightBtn) {
+            rightBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Cart Remove button clicked for item:', item.meta.itemId);
+                window.removeItem(item.meta.itemId); // Call the global removeItem from cart.js
+            });
+        }
+
+        // No general card click for navigation in cart view
+    }
+
+    return cardElement;
 }

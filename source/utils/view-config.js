@@ -42,7 +42,7 @@ const viewConfig = {
       cssPath: './source/common/styles/cart.css',
       jsPath: './source/common/scripts/cart.js',
       title: 'Cart',
-      dataDependencies: ['items']
+      dataDependencies: []
     },
     account: {
       id: 'guest-account-view',
@@ -88,7 +88,7 @@ const viewConfig = {
       cssPath: './source/common/styles/cart.css',
       jsPath: './source/common/scripts/cart.js',
       title: 'Cart',
-      dataDependencies: ['items']
+      dataDependencies: []
     },
     account: { id: 'user-account-view', path: null, title: 'Account', dataDependencies: ['users'] },
     notifications: {
