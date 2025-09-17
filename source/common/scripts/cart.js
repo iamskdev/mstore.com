@@ -1,8 +1,110 @@
-import { createCartCardElement, initCardHelper } from '../../components/cards/card-helper.js';
+import { createListCard, initCardHelper } from '../../components/cards/card-helper.js';
 import { getCartItems as getCartItemsManager, saveCartToLocalStorage } from '../../utils/cart-manager.js';
 
 let activeTab = "products"; // products or services
 let cart = {};
+
+// Configuration for cart list cards
+const cartViewConfig = {
+    fields: [
+        { key: 'info.name', selector: '.card-title', visible: true },
+        { 
+            key: 'media.thumbnail', 
+            selector: '.card-image', 
+            type: 'image',
+            default: './localstore/images/default-product.jpg' 
+        },
+        { 
+            key: 'pricing.sellingPrice', 
+            selector: '.selling-price', 
+            visible: true,
+            formatter: (price, item) => `₹${(price * item.cart.qty).toFixed(2)}` 
+        },
+        { 
+            key: 'pricing.mrp', 
+            selector: '.max-price', 
+            visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
+            formatter: (mrp, item) => `₹${(mrp * item.cart.qty).toFixed(2)}`
+        },
+        { selector: '.cost-price', visible: false }, // As requested: not visible
+        { key: 'analytics.rating', selector: '.stars', visible: true }, // Use analytics.rating for consistency with grid cards
+        { key: 'stock.status', selector: '.stock-status', visible: true }, // As requested: show stock
+        { key: 'info.description', selector: '.card-note', visible: true }, // As requested: show description
+        { 
+            key: 'pricing.mrp', // Use mrp to calculate discount
+            selector: '.card-discount', 
+            visible: (item) => item.pricing.mrp > item.pricing.sellingPrice, // Only show if there's a discount
+            formatter: (mrp, item) => {
+                const sellingPrice = item.pricing.sellingPrice;
+                if (mrp > sellingPrice) {
+                    const discount = ((mrp - sellingPrice) / mrp) * 100;
+                    return `${discount.toFixed(0)}% off`;
+                }
+                return '';
+            }
+        },
+    ],
+    components: [
+        // Moved to buttons array as per user request
+    ],
+    buttons: [
+        {
+            type: 'quantitySelector', // Moved from components
+            visible: (item) => item.meta.type === 'product',
+            action: 'UPDATE_CART_QUANTITY'
+        },
+        {
+            label: (item) => item.cart.selectedDate || 'Select Date', // Dynamic label for date
+            action: 'SELECT_SERVICE_DATE',
+            class: 'btn-secondary',
+            visible: (item) => item.meta.type === 'service'
+        },
+        { label: 'Request', action: 'REQUEST_ITEM', class: 'btn-primary', visible: true },
+        { label: 'Save for Later', action: 'SAVE_FOR_LATER', class: 'btn-secondary', visible: true },
+        { label: 'Remove', action: 'REMOVE_FROM_CART', class: 'btn-danger', visible: true }
+    ],
+    actionHandlers: {
+        'UPDATE_CART_QUANTITY': (item, newQuantity) => {
+            window.updateQty(item.meta.itemId, newQuantity);
+        },
+        'SELECT_SERVICE_DATE': (item) => {
+            const dateInput = document.createElement('input');
+            dateInput.type = 'date';
+            dateInput.style.position = 'fixed';
+            dateInput.style.top = '-100px';
+
+            const cleanup = () => {
+                if (document.body.contains(dateInput)) {
+                    document.body.removeChild(dateInput);
+                }
+            };
+
+            dateInput.addEventListener('change', () => {
+                if (dateInput.value) {
+                    window.updateDate(item.meta.itemId, dateInput.value);
+                }
+                cleanup();
+            });
+
+            // Use 'blur' as a fallback for when the picker is closed without selection
+            dateInput.addEventListener('blur', cleanup, { once: true });
+
+            document.body.appendChild(dateInput);
+            dateInput.click();
+        },
+        'REQUEST_ITEM': (item) => {
+            console.log(`Requesting item: ${item.info.name}`);
+            // Implement request logic
+        },
+        'SAVE_FOR_LATER': (item) => {
+            console.log(`Saving ${item.info.name} for later.`);
+            // Implement save for later logic
+        },
+        'REMOVE_FROM_CART': (item) => {
+            window.removeItem(item.meta.itemId);
+        }
+    }
+};
 
 // Removed CART_STORAGE_KEY as cart-manager handles it
 
@@ -22,10 +124,9 @@ async function rendercard() {
 
   console.log('rendercard: Current cart.items:', cart.items);
   data.forEach(item => {
-    item.cart.subtotal = item.pricing.sellingPrice * item.cart.qty;
-    total += item.cart.subtotal;
+    total += (item.pricing.sellingPrice * item.cart.qty); // Calculate total directly
 
-    const cardElement = createCartCardElement(item); // Use the new helper function
+    const cardElement = createListCard(item, cartViewConfig); // Use the new helper function
     console.log('rendercard: Created cardElement for item:', item.meta.itemId, cardElement);
     const panel = item.meta.type === "product" ? productsPanel : servicesPanel;
     if (cardElement) {
@@ -55,8 +156,9 @@ window.updateDate = function(itemId, dateValue) {
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "service");
   if (item) {
     item.cart.selectedDate = dateValue;
-    document.getElementById(`date-text-${itemId}`).textContent = dateValue || "Select Date";
+    saveCartToLocalStorage(cart.items); // Save changes to local storage
   }
+  rendercard(); // Re-render to show the updated date on the button
 };
 
 // ⭐ Remove Item

@@ -1,7 +1,7 @@
 
       <style>
       .card-body {
-        background: var(--bg-secondary);
+        background: var(--bg-primary);
         margin: 0px;
         padding: 0;
         border-radius: 0px;
@@ -31,7 +31,7 @@
         height: 100%;
         object-fit: cover;
         aspect-ratio: 1/1;
-        border-radius: 6px;
+        border-radius: 0;
       }
 
       .img-container.broken img {
@@ -78,6 +78,11 @@
       }
 
       /* Stars */
+      .star-rating-container {
+        display: flex;
+        align-items: center;
+        gap: 4px; /* Space between stars and number */
+      }
       .stars {
         display: inline-block;
         font-size: 14px;
@@ -87,6 +92,11 @@
         color: var(--text-tertiary); /* empty star */
         display: inline-block;
         position: relative;
+      }
+      .rating-number {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
       }
       .stars .filled {
         color: var(--accent-warning); /* full star */
@@ -188,37 +198,30 @@
 
     </style>
  
-    <template id="card-list-template">
-        <div>   
-      <div class="card-body">
-        <div class="card-top">
-          <div class="card-info">
-            <p class="card-title">{{CARD_NAME}}</p>
-            <p class="price-container">
-              <span class="selling-price">₹ {{SELLING_PRICE}}</span>
-              <span class="max-price">₹{{MAX_PRICE}}</span>
-              <span class="card-discount">{{PRICE_DISCOUNT}}</span>
-            </p>
-            <div class="cost-price">₹ {{COST_PRICE}}</div>
-            <div class="stars">{{RATING_STARS}} <small>({{RATING_VALUE}})</small></div>
-            <div class="stock-status {{STOCK_STATUS_CLASS}}">
-              <i class="{{STATUS_ICON}}"></i> {{CARD_STATUS}}
+    <template id="list-card-template">
+        <div class="card-body" data-item-id="">
+          <div class="card-top">
+            <div class="card-info">
+              <p class="card-title"></p>
+              <div class="price-container">
+                <span class="selling-price"></span>
+                <span class="max-price"></span>
+                <span class="card-discount"></span>
+              </div>
+              <div class="cost-price"></div>
+              <div class="stars"></div>
+              <div class="stock-status"></div>
+            </div>
+            <div class="img-container">
+              <img src="" alt="" class="card-image" />
             </div>
           </div>
-          <div class="img-container">
-            <img src="{{CARD_IMG}}" alt="{{CARD_NAME}}" onerror="this.parentElement.classList.add('broken')" />
+          <div class="card-note"></div>
+          
+          <div class="interactive-area" style="padding: 0 10px; margin-bottom: 10px;"></div>
+
+          <div class="card-footer">
+            <div class="card-actions"></div>
           </div>
         </div>
-        <div class="card-note">{{CARD_NOTE}}</div>
-        <div class="card-footer">
-          <div class="card-actions">
-            <!-- Placeholder for dynamic content -->
-            <button class="left-btn">{{LEFT_BTN}}</button>
-            <button class="first-btn">{{FIRST_BTN}}</button>
-            <button class="second-btn">{{SECOND_BTN}}</button>
-            <button class="right-btn">{{RIGHT_BTN}}</button>
-          </div>
-        </div>
-      </div>
-      </div>
     </template>

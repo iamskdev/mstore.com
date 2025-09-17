@@ -52,6 +52,229 @@ function generateStarsHtml(rating) {
 }
 
 /**
+ * Creates a list card element based on item data and a view configuration.
+ * @param {object} item - The item data (product or service).
+ * @param {object} viewConfig - Configuration object defining how the card should be rendered.
+ * @returns {HTMLElement} The card element.
+ */
+export function createListCard(item, viewConfig) {
+    console.log('createListCard called for item:', item?.meta?.itemId);
+
+    const template = document.getElementById('list-card-template');
+    if (!template) {
+        console.error('createListCard: Could not find template element with id "list-card-template".');
+        return null;
+    }
+
+    const cardElement = template.content.cloneNode(true).querySelector('.card-body');
+    if (!cardElement) {
+        console.error('createListCard: Could not find .card-body in the cloned template.');
+        return null;
+    }
+
+    // Set unique ID for the card element
+    cardElement.id = `card-${item.meta.itemId}`;
+    cardElement.dataset.itemId = item.meta.itemId; // Also keep data-itemId for convenience
+
+    // --- Process Fields ---
+    if (viewConfig.fields) {
+        viewConfig.fields.forEach(field => {
+            const targetElement = cardElement.querySelector(field.selector);
+            if (targetElement) {
+                const isVisible = typeof field.visible === 'function' ? field.visible(item) : (field.visible !== false);
+                
+                if (!isVisible) {
+                    targetElement.style.display = 'none';
+                    return;
+                }
+                targetElement.style.display = ''; // Ensure it's visible if config says so
+
+                let value = item;
+                if (field.key) {
+                    // Safely get nested property value
+                    value = field.key.split('.').reduce((obj, key) => (obj && obj[key] !== undefined) ? obj[key] : undefined, item);
+                }
+
+                let formattedValue = value;
+                if (field.formatter && value !== undefined) {
+                    formattedValue = field.formatter(value, item);
+                } else if (value === undefined || value === null) {
+                    formattedValue = ''; // Default to empty string if value is undefined/null
+                }
+
+                if (field.type === 'image') {
+                    targetElement.src = formattedValue || field.default || '';
+                    targetElement.alt = item.info.name || '';
+                    if (!targetElement.src) {
+                        targetElement.parentElement.classList.add('broken');
+                    }
+                } else if (field.selector === '.stars') {
+                    // Handle stars specifically
+                    const ratingValue = value || 0;
+                    targetElement.innerHTML = `
+                        <div class="star-rating-container">
+                            ${generateStarsHtml(ratingValue)}
+                            ${ratingValue > 0 ? `<span class="rating-number">(${ratingValue.toFixed(1)})</span>` : ''}
+                        </div>
+                    `;
+                } else if (field.selector === '.stock-status') {
+                    // Handle stock status specifically, replicating logic from createCardFromTemplate
+                    let stockStatusText, stockStatusClass, stockIconClass;
+
+                    if (item.meta.type === 'service') {
+                        if (item.meta.flags.isActive) {
+                            stockStatusText = 'Available';
+                            stockStatusClass = 'in';
+                            stockIconClass = 'fas fa-check-circle';
+                        } else {
+                            stockStatusText = 'Unavailable';
+                            stockStatusClass = 'out';
+                            stockIconClass = 'fas fa-times-circle';
+                        }
+                    } else { // product
+                        if (item.inventory?.stockQty > 0) {
+                            stockStatusText = 'In Stock';
+                            stockStatusClass = 'in';
+                            stockIconClass = 'fas fa-check-circle';
+                        } else {
+                            stockStatusText = 'Out of Stock';
+                            stockStatusClass = 'out';
+                            stockIconClass = 'fas fa-exclamation-circle'; // Changed to exclamation for out of stock
+                        }
+                    }
+                    targetElement.className = `stock-status ${stockStatusClass}`;
+                    targetElement.innerHTML = `<i class="${stockIconClass}"></i> <span>${stockStatusText}</span>`;
+                }
+                else {
+                    targetElement.innerHTML = (field.label || '') + formattedValue;
+                }
+            }
+        });
+    }
+
+    // --- Process Interactive Components ---
+    const interactiveArea = cardElement.querySelector('.interactive-area');
+    if (interactiveArea && viewConfig.components) {
+        viewConfig.components.forEach(component => {
+            const isVisible = typeof component.visible === 'function' ? component.visible(item) : (component.visible !== false);
+            if (!isVisible) return;
+
+            let componentHtml = '';
+            switch (component.type) {
+                case 'quantitySelector':
+                    // Example: Simple quantity selector
+                    componentHtml = `
+                        <div class="quantity-selector" data-action="${component.action}">
+                            <button class="quantity-minus" data-item-id="${item.meta.itemId}">-</button>
+                            <span class="quantity-display">${item.cart?.qty || 1}</span>
+                            <button class="quantity-plus" data-item-id="${item.meta.itemId}">+</button>
+                        </div>
+                    `;
+                    break;
+                case 'staticText':
+                                    case 'quantitySelector':
+                    // Example: Simple quantity selector
+                    componentHtml = `
+                        <div class="quantity-selector" data-action="${component.action}">
+                            <button class="quantity-minus" data-item-id="${item.meta.itemId}">-</button>
+                            <span class="quantity-display">${item.cart?.qty || 1}</span>
+                            <button class="quantity-plus" data-item-id="${item.meta.itemId}">+</button>
+                        </div>
+                    `;
+                    break;
+                case 'dateSelector': // NEW: Date selector for services
+                    componentHtml = `
+                        <div class="date-selector" data-action="${component.action}">
+                            <input type="date" class="service-date-input" data-item-id="${item.meta.itemId}" value="${item.cart?.selectedDate || ''}">
+                            <button class="select-date-btn" data-item-id="${item.meta.itemId}">Select Date</button>
+                        </div>
+                    `;
+                    break;
+                case 'staticText':
+                    componentHtml = `<p>${component.options?.text || ''}</p>`;
+                    break;
+                    break;
+                // Add more component types as needed
+            }
+            if (componentHtml) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = componentHtml;
+                interactiveArea.appendChild(tempDiv.firstElementChild);
+            }
+        });
+    }
+
+    // --- Process Buttons ---
+    const cardActions = cardElement.querySelector('.card-actions');
+    if (cardActions && viewConfig.buttons) {
+        viewConfig.buttons.forEach(buttonConfig => {
+            const isVisible = typeof buttonConfig.visible === 'function' ? buttonConfig.visible(item) : (buttonConfig.visible !== false);
+            if (!isVisible) return;
+
+            const button = document.createElement('button');
+            button.className = buttonConfig.class || '';
+            button.textContent = buttonConfig.label || '';
+            button.dataset.action = buttonConfig.action;
+            button.dataset.itemId = item.meta.itemId; // Attach item ID to button
+
+            if (buttonConfig.icon) {
+                const icon = document.createElement('i');
+                icon.className = buttonConfig.icon;
+                button.prepend(icon);
+                if (buttonConfig.label) {
+                    button.innerHTML = `<i class="${buttonConfig.icon}"></i> <span>${buttonConfig.label}</span>`;
+                }
+            }
+            
+            const isDisabled = typeof buttonConfig.disabled === 'function' ? buttonConfig.disabled(item) : (buttonConfig.disabled === true);
+            if (isDisabled) {
+                button.disabled = true;
+            }
+
+            cardActions.appendChild(button);
+        });
+    }
+
+    // --- Attach Event Listener for Actions (Event Delegation) ---
+    cardElement.addEventListener('click', (e) => {
+        const targetButton = e.target.closest('[data-action]');
+        if (targetButton) {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent default card click if button is clicked
+
+            const action = targetButton.dataset.action;
+            const clickedItemId = targetButton.dataset.itemId; // Get item ID from button
+
+            if (viewConfig.actionHandlers && viewConfig.actionHandlers[action]) {
+                // For quantity selector, pass new quantity if applicable
+                if (action === 'UPDATE_CART_QUANTITY') {
+                    const quantityDisplay = targetButton.closest('.quantity-selector')?.querySelector('.quantity-display');
+                    let currentQty = parseInt(quantityDisplay?.textContent || '1');
+                    if (targetButton.classList.contains('quantity-plus')) {
+                        currentQty++;
+                    } else if (targetButton.classList.contains('quantity-minus') && currentQty > 1) {
+                        currentQty--;
+                    }
+                    if (quantityDisplay) quantityDisplay.textContent = currentQty; // Update UI immediately
+                    viewConfig.actionHandlers[action](item, currentQty); // Pass item and new quantity
+                } else {
+                    viewConfig.actionHandlers[action](item); // Pass the full item object
+                }
+            }
+        } else {
+            // Default card click behavior (e.g., navigate to item details)
+            // Only if not clicking an interactive element
+            if (!e.target.closest('.interactive-area')) {
+                sessionStorage.setItem('selectedItem', JSON.stringify(item));
+                window.dispatchEvent(new CustomEvent('navigateToItem', { detail: item }));
+            }
+        }
+    });
+
+    return cardElement;
+}
+
+/**
  * Creates a card element from the card-grid.html template.
  * @param {object} item - The item data (product or service).
  * @param {boolean} isSkeleton - If true, returns a skeleton card.
@@ -185,15 +408,23 @@ export async function initCardHelper(unitsDataParam) {
         if (!listTemplateResponse.ok) throw new Error(`Failed to fetch card-list.html: ${listTemplateResponse.statusText}`);
         cardListTemplate = await listTemplateResponse.text();
 
-        if (!document.getElementById('card-list-component-styles') && cardListTemplate.includes('<style>')) {
-            const styleContent = cardListTemplate.substring(
-                cardListTemplate.indexOf('<style>') + 7,
-                cardListTemplate.lastIndexOf('</style>')
-            );
-            const styleElement = document.createElement('style');
-            styleElement.id = 'card-list-component-styles';
-            styleElement.textContent = styleContent;
+        // Create a temporary div to parse the fetched HTML string
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = cardListTemplate;
+
+        // Find and append the <style> element to the document head
+        const styleElement = tempDiv.querySelector('style');
+        if (styleElement && !document.getElementById('card-list-component-styles')) {
+            styleElement.id = 'card-list-component-styles'; // Assign an ID to prevent re-appending
             document.head.appendChild(styleElement);
+        }
+
+        // Find and append the <template> element to the document body
+        const templateElement = tempDiv.querySelector('template#list-card-template');
+        if (templateElement) {
+            document.body.appendChild(templateElement);
+        } else {
+            console.error('initCardHelper: Could not find template#list-card-template in fetched HTML.');
         }
 
         unitsData = unitsDataParam; // Set the units data
@@ -203,73 +434,3 @@ export async function initCardHelper(unitsDataParam) {
     }
 }
 
-/**
- * Creates a card element specifically for the cart view from the card-list.html template.
- * @param {object} item - The item data (product or service).
- * @returns {HTMLElement} The card element.
- */
-export function createCartCardElement(item) {
-    console.log('createCartCardElement called for item:', item?.meta?.itemId);
-    
-    const originalPrice = item.pricing?.mrp;
-    const currentPrice = item.pricing?.sellingPrice;
-    const discountPercentage = originalPrice && originalPrice > currentPrice ? ((originalPrice - currentPrice) / originalPrice * 100).toFixed(0) : '';
-
-    // Cart specific data mapping
-    const templateData = {
-        CARD_NAME: item.info.name,
-        SELLING_PRICE: (item.cart.subtotal || currentPrice).toFixed(2),
-        MAX_PRICE: (item.pricing.mrp * item.cart.qty).toFixed(2),
-        PRICE_DISCOUNT: discountPercentage ? `${discountPercentage}% off` : null,
-        CARD_IMG: item.media?.thumbnail || (item.meta.type === 'product' ? DEFAULT_PRODUCT_IMAGE : DEFAULT_SERVICE_IMAGE),
-        CARD_NOTE: `Quantity: ${item.cart.qty}`,
-        LEFT_BTN: 'Save',
-        RIGHT_BTN: 'Remove',
-        FIRST_BTN: null,
-        SECOND_BTN: null,
-        STOCK_STATUS_CLASS: item.inventory?.stockQty > 0 ? 'in' : 'out',
-        STATUS_ICON: item.inventory?.stockQty > 0 ? 'fas fa-check-circle' : 'fas fa-times-circle',
-        CARD_STATUS: item.inventory?.stockQty > 0 ? 'In Stock' : 'Out of Stock',
-        COST_PRICE: null,
-        RATING_STARS: null,
-        RATING_VALUE: null,
-    };
-
-    const tempContainer = document.createElement('div');
-    tempContainer.innerHTML = renderTemplate(cardListTemplate, templateData);
-
-    const template = tempContainer.querySelector('template');
-    if (!template) {
-        console.error('createCartCardElement: Could not find template element in cardListTemplate.');
-        return null;
-    }
-
-    const cardElement = template.content.cloneNode(true).querySelector('.card-body');
-
-    if (cardElement) {
-        // Conditional removal of elements not needed in cart view is now handled by the template
-
-        // Add event listeners for the buttons (Save/Remove)
-        const leftBtn = cardElement.querySelector('.left-btn');
-        if (leftBtn) {
-            leftBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Cart Save button clicked for item:', item.meta.itemId);
-                // Implement cart specific save logic here
-            });
-        }
-
-        const rightBtn = cardElement.querySelector('.right-btn');
-        if (rightBtn) {
-            rightBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Cart Remove button clicked for item:', item.meta.itemId);
-                window.removeItem(item.meta.itemId); // Call the global removeItem from cart.js
-            });
-        }
-    }
-
-    return cardElement;
-}
