@@ -51,6 +51,12 @@ function generateStarsHtml(rating) {
     return starsHtml;
 }
 
+// Helper: format date
+function formatDate(value) {
+    const [y, m, d] = value.split("-");
+    return `${d}/${m}/${y}`;
+}
+
 /**
  * Creates a list card element based on item data and a view configuration.
  * @param {object} item - The item data (product or service).
@@ -172,24 +178,9 @@ export function createListCard(item, viewConfig) {
                     `;
                     break;
                 case 'staticText':
-                                    case 'quantitySelector':
-                    // Example: Simple quantity selector
-                    componentHtml = `
-                        <div class="quantity-selector" data-action="${component.action}">
-                            <button class="quantity-minus" data-item-id="${item.meta.itemId}">-</button>
-                            <span class="quantity-display">${item.cart?.qty || 1}</span>
-                            <button class="quantity-plus" data-item-id="${item.meta.itemId}">+</button>
-                        </div>
-                    `;
+                    componentHtml = `<p>${component.options?.text || ''}</p>`;
                     break;
-                case 'dateSelector': // NEW: Date selector for services
-                    componentHtml = `
-                        <div class="date-selector" data-action="${component.action}">
-                            <input type="date" class="service-date-input" data-item-id="${item.meta.itemId}" value="${item.cart?.selectedDate || ''}">
-                            <button class="select-date-btn" data-item-id="${item.meta.itemId}">Select Date</button>
-                        </div>
-                    `;
-                    break;
+                
                 case 'staticText':
                     componentHtml = `<p>${component.options?.text || ''}</p>`;
                     break;
@@ -237,7 +228,42 @@ export function createListCard(item, viewConfig) {
                         viewConfig.actionHandlers[buttonConfig.action](item, newQuantity);
                     });
                 }
-            } else {
+            } else if (buttonConfig.action === 'SELECT_SERVICE_DATE') {
+                const dateButton = document.createElement("button"); // Changed to button
+                dateButton.className = buttonConfig.class || '';
+                dateButton.textContent = item.cart.selectedDate
+                    ? formatDate(item.cart.selectedDate)
+                    : (typeof buttonConfig.label === 'function' ? buttonConfig.label(item) : buttonConfig.label || 'Select Date');
+                dateButton.dataset.action = buttonConfig.action;
+                dateButton.dataset.itemId = item.meta.itemId;
+
+                const hiddenDate = document.createElement("input");
+                hiddenDate.type = "date";
+                hiddenDate.hidden = true;
+                hiddenDate.value = item.cart.selectedDate || '';
+                hiddenDate.dataset.itemId = item.meta.itemId;
+
+                cardActions.appendChild(dateButton); // Append button
+                cardActions.appendChild(hiddenDate);
+
+                // Event listeners
+                hiddenDate.addEventListener("change", () => {
+                    const newDate = hiddenDate.value;
+                    dateButton.textContent = newDate ? formatDate(newDate) : 'Select Date'; // Update button text
+                    // Call the action handler in cart.js
+                    if (viewConfig.actionHandlers && viewConfig.actionHandlers[buttonConfig.action]) {
+                        viewConfig.actionHandlers[buttonConfig.action](item, newDate); // Pass item and newDate
+                    }
+                });
+
+                dateButton.addEventListener("click", () => { // Listener on the button
+                    if (typeof hiddenDate.showPicker === "function") {
+                        hiddenDate.showPicker();
+                    } else {
+                        hiddenDate.click();
+                    }
+                });
+            } else { // General button handling
                 const button = document.createElement('button');
                 button.className = buttonConfig.class || '';
                 button.textContent = typeof buttonConfig.label === 'function' ? buttonConfig.label(item) : buttonConfig.label || '';
@@ -265,6 +291,13 @@ export function createListCard(item, viewConfig) {
 
     // --- Attach Event Listener for Actions (Event Delegation) ---
     cardElement.addEventListener('click', (e) => {
+        // Check if the clicked element is part of the quantity selector
+        const quantitySelectorClicked = e.target.closest('.quantity-selector');
+        if (quantitySelectorClicked) {
+            e.stopPropagation(); // Prevent the card's click listener from firing
+            return; // Do nothing else for quantity selector clicks
+        }
+
         const targetButton = e.target.closest('[data-action]');
         if (targetButton) {
             e.preventDefault();

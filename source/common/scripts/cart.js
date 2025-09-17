@@ -54,13 +54,7 @@ const cartViewConfig = {
             action: 'UPDATE_CART_QUANTITY'
         },
         {
-            label: (item) => {
-                if (item.cart.selectedDate) {
-                    const [year, month, day] = item.cart.selectedDate.split('-');
-                    return `${day}/${month}/${year}`;
-                }
-                return 'Select Date';
-            }, // Dynamic label for date
+            label: 'Select Date', // Initial label for date
             action: 'SELECT_SERVICE_DATE',
             class: 'btn-secondary',
             visible: (item) => item.meta.type === 'service'
@@ -73,41 +67,9 @@ const cartViewConfig = {
         'UPDATE_CART_QUANTITY': (item, newQuantity) => {
             window.updateQty(item.meta.itemId, newQuantity);
         },
-        'SELECT_SERVICE_DATE': (item, targetButton) => { // Pass targetButton as an argument
-            const dateInput = document.createElement('input');
-            dateInput.type = 'date';
-            dateInput.style.position = 'absolute';
-            dateInput.style.opacity = '0.01'; // Technically visible
-            dateInput.style.width = '1px';
-            dateInput.style.height = '1px';
-            dateInput.style.border = 'none';
-            dateInput.style.padding = '0';
-            dateInput.style.overflow = 'hidden';
-            dateInput.style.pointerEvents = 'none'; // Still prevent direct interaction
-
-            // Append to the button itself
-            targetButton.appendChild(dateInput);
-
-            const cleanup = () => {
-                if (targetButton.contains(dateInput)) {
-                    targetButton.removeChild(dateInput);
-                }
-            };
-
-            dateInput.addEventListener('change', () => {
-                if (dateInput.value) {
-                    window.updateDate(item.meta.itemId, dateInput.value);
-                }
-                cleanup();
-            });
-
-            dateInput.addEventListener('blur', cleanup, { once: true });
-
-            // Attempt to open the date picker programmatically
-            if (typeof dateInput.showPicker === 'function') {
-                dateInput.showPicker();
-            } else {
-                dateInput.click(); // Fallback
+        'SELECT_SERVICE_DATE': (item, newDate) => {
+            if (newDate) {
+                window.updateDate(item.meta.itemId, newDate);
             }
         },
         'REQUEST_ITEM': (item) => {
@@ -177,7 +139,7 @@ async function rendercard() {
   });
 
   updateCartTotalDisplay(); // Update the overall cart total
-  document.querySelector(".btn-order").innerText = "Place Order";
+  document.querySelector(".cart-btn").innerText = "Request All";
 }
 
 
