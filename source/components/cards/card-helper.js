@@ -211,27 +211,55 @@ export function createListCard(item, viewConfig) {
             const isVisible = typeof buttonConfig.visible === 'function' ? buttonConfig.visible(item) : (buttonConfig.visible !== false);
             if (!isVisible) return;
 
-            const button = document.createElement('button');
-            button.className = buttonConfig.class || '';
-            button.textContent = buttonConfig.label || '';
-            button.dataset.action = buttonConfig.action;
-            button.dataset.itemId = item.meta.itemId; // Attach item ID to button
-
-            if (buttonConfig.icon) {
-                const icon = document.createElement('i');
-                icon.className = buttonConfig.icon;
-                button.prepend(icon);
-                if (buttonConfig.label) {
-                    button.innerHTML = `<i class="${buttonConfig.icon}"></i> <span>${buttonConfig.label}</span>`;
+            if (buttonConfig.type === 'quantitySelector') {
+                const currentQty = item.cart?.qty || 1;
+                let optionsHtml = '';
+                for (let i = 1; i <= 10; i++) { // Assuming max quantity of 10 for now
+                    optionsHtml += `<option value="${i}" ${i === currentQty ? 'selected' : ''}>${i}</option>`;
                 }
-            }
-            
-            const isDisabled = typeof buttonConfig.disabled === 'function' ? buttonConfig.disabled(item) : (buttonConfig.disabled === true);
-            if (isDisabled) {
-                button.disabled = true;
-            }
+                const quantitySelectorHtml = `
+                    <div class="quantity-selector" data-action="${buttonConfig.action}">
+                        <label for="qty-select-${item.meta.itemId}">Qty:</label>
+                        <select id="qty-select-${item.meta.itemId}" class="quantity-select" data-item-id="${item.meta.itemId}">
+                            ${optionsHtml}
+                        </select>
+                    </div>
+                `;
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = quantitySelectorHtml;
+                cardActions.appendChild(tempDiv.firstElementChild);
 
-            cardActions.appendChild(button);
+                // Add event listener for the new select element
+                const selectElement = cardActions.querySelector(`#qty-select-${item.meta.itemId}`);
+                if (selectElement) {
+                    selectElement.addEventListener('change', (e) => {
+                        const newQuantity = parseInt(e.target.value);
+                        viewConfig.actionHandlers[buttonConfig.action](item, newQuantity);
+                    });
+                }
+            } else {
+                const button = document.createElement('button');
+                button.className = buttonConfig.class || '';
+                button.textContent = typeof buttonConfig.label === 'function' ? buttonConfig.label(item) : buttonConfig.label || '';
+                button.dataset.action = buttonConfig.action;
+                button.dataset.itemId = item.meta.itemId; // Attach item ID to button
+
+                if (buttonConfig.icon) {
+                    const icon = document.createElement('i');
+                    icon.className = buttonConfig.icon;
+                    button.prepend(icon);
+                    if (buttonConfig.label) {
+                        button.innerHTML = `<i class="${buttonConfig.icon}"></i> <span>${buttonConfig.label}</span>`;
+                    }
+                }
+                
+                const isDisabled = typeof buttonConfig.disabled === 'function' ? buttonConfig.disabled(item) : (buttonConfig.disabled === true);
+                if (isDisabled) {
+                    button.disabled = true;
+                }
+
+                cardActions.appendChild(button);
+            }
         });
     }
 
@@ -246,17 +274,8 @@ export function createListCard(item, viewConfig) {
             const clickedItemId = targetButton.dataset.itemId; // Get item ID from button
 
             if (viewConfig.actionHandlers && viewConfig.actionHandlers[action]) {
-                // For quantity selector, pass new quantity if applicable
-                if (action === 'UPDATE_CART_QUANTITY') {
-                    const quantityDisplay = targetButton.closest('.quantity-selector')?.querySelector('.quantity-display');
-                    let currentQty = parseInt(quantityDisplay?.textContent || '1');
-                    if (targetButton.classList.contains('quantity-plus')) {
-                        currentQty++;
-                    } else if (targetButton.classList.contains('quantity-minus') && currentQty > 1) {
-                        currentQty--;
-                    }
-                    if (quantityDisplay) quantityDisplay.textContent = currentQty; // Update UI immediately
-                    viewConfig.actionHandlers[action](item, currentQty); // Pass item and new quantity
+                if (action === 'SELECT_SERVICE_DATE') {
+                    viewConfig.actionHandlers[action](item, targetButton); // Pass item and targetButton
                 } else {
                     viewConfig.actionHandlers[action](item); // Pass the full item object
                 }

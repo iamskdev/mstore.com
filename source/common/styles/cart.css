@@ -1,4 +1,3 @@
-
     /* Header Tabs */
     .cart-tabs {
       display: flex;
@@ -37,26 +36,6 @@
       display: block;
     }
 
-    .date-selector-container {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      color: var(--accent-primary);
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .date-input {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-    }
-
     .cart-footer-area {
       position: sticky;
       bottom: var(--bottom-height);
@@ -85,20 +64,3 @@
     .btn-order:hover {
       background: var(--accent-warning);
     }
-
-.quantity-selector-container {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: var(--text-secondary);
-}
-
-.quantity-input {
-  border: 1px solid var(--border-color);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-}

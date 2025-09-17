@@ -54,7 +54,13 @@ const cartViewConfig = {
             action: 'UPDATE_CART_QUANTITY'
         },
         {
-            label: (item) => item.cart.selectedDate || 'Select Date', // Dynamic label for date
+            label: (item) => {
+                if (item.cart.selectedDate) {
+                    const [year, month, day] = item.cart.selectedDate.split('-');
+                    return `${day}/${month}/${year}`;
+                }
+                return 'Select Date';
+            }, // Dynamic label for date
             action: 'SELECT_SERVICE_DATE',
             class: 'btn-secondary',
             visible: (item) => item.meta.type === 'service'
@@ -67,15 +73,24 @@ const cartViewConfig = {
         'UPDATE_CART_QUANTITY': (item, newQuantity) => {
             window.updateQty(item.meta.itemId, newQuantity);
         },
-        'SELECT_SERVICE_DATE': (item) => {
+        'SELECT_SERVICE_DATE': (item, targetButton) => { // Pass targetButton as an argument
             const dateInput = document.createElement('input');
             dateInput.type = 'date';
-            dateInput.style.position = 'fixed';
-            dateInput.style.top = '-100px';
+            dateInput.style.position = 'absolute';
+            dateInput.style.opacity = '0.01'; // Technically visible
+            dateInput.style.width = '1px';
+            dateInput.style.height = '1px';
+            dateInput.style.border = 'none';
+            dateInput.style.padding = '0';
+            dateInput.style.overflow = 'hidden';
+            dateInput.style.pointerEvents = 'none'; // Still prevent direct interaction
+
+            // Append to the button itself
+            targetButton.appendChild(dateInput);
 
             const cleanup = () => {
-                if (document.body.contains(dateInput)) {
-                    document.body.removeChild(dateInput);
+                if (targetButton.contains(dateInput)) {
+                    targetButton.removeChild(dateInput);
                 }
             };
 
@@ -86,11 +101,14 @@ const cartViewConfig = {
                 cleanup();
             });
 
-            // Use 'blur' as a fallback for when the picker is closed without selection
             dateInput.addEventListener('blur', cleanup, { once: true });
 
-            document.body.appendChild(dateInput);
-            dateInput.click();
+            // Attempt to open the date picker programmatically
+            if (typeof dateInput.showPicker === 'function') {
+                dateInput.showPicker();
+            } else {
+                dateInput.click(); // Fallback
+            }
         },
         'REQUEST_ITEM': (item) => {
             console.log(`Requesting item: ${item.info.name}`);
@@ -114,29 +132,51 @@ const cartViewConfig = {
 async function rendercard() {
   const productsPanel = document.getElementById("products-tab-panel");
   const servicesPanel = document.getElementById("services-tab-panel");
-  productsPanel.innerHTML = "";
-  servicesPanel.innerHTML = "";
 
   cart.items = await getCartItemsManager(); // Fetch real data from cart-manager
 
-  let total = 0;
-    const data = cart.items.filter(item => item.meta.type === activeTab.slice(0, -1));
+  const currentPanel = activeTab === "products" ? productsPanel : servicesPanel;
+  const otherPanel = activeTab === "products" ? servicesPanel : productsPanel;
 
-  console.log('rendercard: Current cart.items:', cart.items);
-  data.forEach(item => {
-    total += (item.pricing.sellingPrice * item.cart.qty); // Calculate total directly
+  // Clear the other panel completely
+  otherPanel.innerHTML = "";
 
-    const cardElement = createListCard(item, cartViewConfig); // Use the new helper function
-    console.log('rendercard: Created cardElement for item:', item.meta.itemId, cardElement);
-    const panel = item.meta.type === "product" ? productsPanel : servicesPanel;
-    if (cardElement) {
-      panel.appendChild(cardElement); // Append the actual element
-    } else {
-      console.warn('rendercard: cardElement was null or undefined for item:', item.meta.itemId);
+  // Get current item IDs in the cart for the active tab
+  const activeTabItems = cart.items.filter(item => item.meta.type === activeTab.slice(0, -1));
+  const activeTabItemIds = new Set(activeTabItems.map(item => item.meta.itemId));
+
+  // Remove cards that are no longer in the cart or switched tabs
+  Array.from(currentPanel.children).forEach(cardElement => {
+    const itemId = cardElement.dataset.itemId;
+    if (!activeTabItemIds.has(itemId)) {
+      cardElement.remove();
     }
   });
 
-  document.getElementById("cardTotal").innerText = total.toFixed(2);
+  // Add or update cards for items in the cart
+  activeTabItems.forEach(item => {
+    let cardElement = document.getElementById(`card-${item.meta.itemId}`);
+    if (!cardElement) {
+      // Card does not exist, create and append it
+      cardElement = createListCard(item, cartViewConfig);
+      if (cardElement) {
+        currentPanel.appendChild(cardElement);
+      } else {
+        console.warn('rendercard: cardElement was null or undefined for item:', item.meta.itemId);
+      }
+    } else {
+      // Card exists, update its content if necessary (e.g., if item details changed)
+      // Re-render the card and replace the old one to ensure all fields are updated
+      const updatedCardElement = createListCard(item, cartViewConfig);
+      if (updatedCardElement) {
+        cardElement.replaceWith(updatedCardElement);
+      } else {
+        console.warn('rendercard: updatedCardElement was null or undefined for item:', item.meta.itemId);
+      }
+    }
+  });
+
+  updateCartTotalDisplay(); // Update the overall cart total
   document.querySelector(".btn-order").innerText = "Place Order";
 }
 
@@ -147,9 +187,35 @@ window.updateQty = function(itemId, qty) {
   if (item) {
     item.cart.qty = parseInt(qty);
     saveCartToLocalStorage(cart.items); // Save changes to local storage using cart-manager
+
+    // Update the quantity display on the existing card
+    const cardElement = document.getElementById(`card-${itemId}`);
+    if (cardElement) {
+      const quantitySelect = cardElement.querySelector('.quantity-select'); // Select the dropdown
+      if (quantitySelect) {
+        quantitySelect.value = item.cart.qty; // Update the dropdown's selected value
+      }
+      // Also update the total price for the item on the card
+      const sellingPriceElement = cardElement.querySelector('.selling-price');
+      const maxPriceElement = cardElement.querySelector('.max-price');
+      if (sellingPriceElement) {
+        sellingPriceElement.textContent = `₹${(item.pricing.sellingPrice * item.cart.qty).toFixed(2)}`;
+      }
+      if (maxPriceElement && item.pricing.mrp > item.pricing.sellingPrice) {
+        maxPriceElement.textContent = `₹${(item.pricing.mrp * item.cart.qty).toFixed(2)}`;
+      }
+    }
+    updateCartTotalDisplay(); // Update the overall cart total
   }
-  rendercard();
 };
+
+function updateCartTotalDisplay() {
+  let total = 0;
+  cart.items.forEach(item => {
+    total += (item.pricing.sellingPrice * item.cart.qty);
+  });
+  document.getElementById("cardTotal").innerText = total.toFixed(2);
+}
 
 // ⭐ Update Date
 window.updateDate = function(itemId, dateValue) {
