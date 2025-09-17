@@ -1,45 +1,14 @@
 
-    <template id="card-list-template">
-      <div class="card-body">
-        <div class="card-top">
-          <div class="card-info">
-            <p class="card-title">{{CARD_NAME}}</p>
-            <p class="price-container">
-              <span class="selling-price">₹ {{SELLING_PRICE}}</span>
-              <span class="max-price">₹{{MAX_PRICE}}</span>
-              <span class="card-discount">{{PRICE_DISCOUNT}}</span>
-            </p>
-            <div class="cost-price">₹ {{COST_PRICE}}</div>
-            <div class="stars">{{RATING_STARS}} <small>({{RATING_VALUE}})</small></div>
-            <div class="stock-status {{STOCK_STATUS_CLASS}}">
-              <i class="{{STATUS_ICON}}"></i> {{CARD_STATUS}}
-            </div>
-          </div>
-          <div class="img-container">
-            <img src="{{CARD_IMG}}" alt="{{CARD_NAME}}" onerror="this.parentElement.classList.add('broken')" />
-          </div>
-        </div>
-        <div class="card-note">{{CARD_NOTE}}</div>
-        <div class="card-footer">
-          <div class="card-actions">
-            <!-- Placeholder for dynamic content -->
-            <button class="left-btn">{{LEFT_BTN}}</button>
-            <button class="first-btn">{{FIRST_BTN}}</button>
-            <button class="second-btn">{{SECOND_BTN}}</button>
-            <button class="right-btn">{{RIGHT_BTN}}</button>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <style>
+      <style>
       .card-body {
         background: var(--bg-secondary);
+        margin: 0px;
+        padding: 0;
         border-radius: 0px;
         margin-bottom: 0px;
         border-bottom: 0.1rem solid var(--border-color);
         box-shadow: 0 2px 4px var(--shadow-color);
-        overflow: hidden;
+        overflow: visible;
       }
 
       /* product body */
@@ -218,4 +187,38 @@
       }
 
     </style>
-
+ 
+    <template id="card-list-template">
+        <div>   
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-info">
+            <p class="card-title">{{CARD_NAME}}</p>
+            <p class="price-container">
+              <span class="selling-price">₹ {{SELLING_PRICE}}</span>
+              <span class="max-price">₹{{MAX_PRICE}}</span>
+              <span class="card-discount">{{PRICE_DISCOUNT}}</span>
+            </p>
+            <div class="cost-price">₹ {{COST_PRICE}}</div>
+            <div class="stars">{{RATING_STARS}} <small>({{RATING_VALUE}})</small></div>
+            <div class="stock-status {{STOCK_STATUS_CLASS}}">
+              <i class="{{STATUS_ICON}}"></i> {{CARD_STATUS}}
+            </div>
+          </div>
+          <div class="img-container">
+            <img src="{{CARD_IMG}}" alt="{{CARD_NAME}}" onerror="this.parentElement.classList.add('broken')" />
+          </div>
+        </div>
+        <div class="card-note">{{CARD_NOTE}}</div>
+        <div class="card-footer">
+          <div class="card-actions">
+            <!-- Placeholder for dynamic content -->
+            <button class="left-btn">{{LEFT_BTN}}</button>
+            <button class="first-btn">{{FIRST_BTN}}</button>
+            <button class="second-btn">{{SECOND_BTN}}</button>
+            <button class="right-btn">{{RIGHT_BTN}}</button>
+          </div>
+        </div>
+      </div>
+      </div>
+    </template>

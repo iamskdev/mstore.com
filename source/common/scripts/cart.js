@@ -18,16 +18,16 @@ async function rendercard() {
   cart.items = await getCartItemsManager(); // Fetch real data from cart-manager
 
   let total = 0;
-  const data = cart.items.filter(item => item.type === activeTab.slice(0, -1));
+    const data = cart.items.filter(item => item.meta.type === activeTab.slice(0, -1));
 
   console.log('rendercard: Current cart.items:', cart.items);
   data.forEach(item => {
-    item.cart.subtotal = item.pricing.price * item.cart.qty;
+    item.cart.subtotal = item.pricing.sellingPrice * item.cart.qty;
     total += item.cart.subtotal;
 
     const cardElement = createCartCardElement(item); // Use the new helper function
     console.log('rendercard: Created cardElement for item:', item.meta.itemId, cardElement);
-    const panel = item.type === "product" ? productsPanel : servicesPanel;
+    const panel = item.meta.type === "product" ? productsPanel : servicesPanel;
     if (cardElement) {
       panel.appendChild(cardElement); // Append the actual element
     } else {
@@ -42,7 +42,7 @@ async function rendercard() {
 
 // ⭐ Update Qty
 window.updateQty = function(itemId, qty) {
-  const item = cart.items.find(i => i.itemId === itemId && i.type === "product");
+  const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "product");
   if (item) {
     item.cart.qty = parseInt(qty);
     saveCartToLocalStorage(cart.items); // Save changes to local storage using cart-manager
@@ -52,7 +52,7 @@ window.updateQty = function(itemId, qty) {
 
 // ⭐ Update Date
 window.updateDate = function(itemId, dateValue) {
-  const item = cart.items.find(i => i.itemId === itemId && i.type === "service");
+  const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "service");
   if (item) {
     item.cart.selectedDate = dateValue;
     document.getElementById(`date-text-${itemId}`).textContent = dateValue || "Select Date";
@@ -61,7 +61,7 @@ window.updateDate = function(itemId, dateValue) {
 
 // ⭐ Remove Item
 window.removeItem = function(itemId) {
-  cart.items = cart.items.filter(i => i.itemId !== itemId);
+  cart.items = cart.items.filter(i => i.meta.itemId !== itemId);
   saveCartToLocalStorage(cart.items); // Save changes to local storage using cart-manager
   rendercard();
 };
