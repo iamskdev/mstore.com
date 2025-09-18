@@ -1,39 +1,36 @@
-    /* Header Tabs */
-    .cart-tabs {
-      display: flex;
-      justify-content: center;
-      background: var(--bg-primary);
-      border-bottom: 1px solid var(--border-color);
-      position: sticky;
-      top: var(--top-height);
-      z-index: 1; /* Ensure it stays above scrolling content */
-    }
-    .cart-tab {
-      flex: 1;
-      text-align: center;
-      padding: 12px 0;
-      font-weight: bold;
-      cursor: pointer;
-      color: var(--text-primary); /* Ensure visibility for unselected tabs */
-    }
-    .cart-tab.active {
-      border-bottom: 3px solid var(--accent-primary);
-      color: var(--accent-primary);
-    }
-
-    .cart-container {
+     .cart-container {
       width: 100%;
       /* flex-grow and overflow are moved to #cart-view */
       background: var(--bg-primary);
+    }   
+    
+    .cart-footer-area {
+      position: sticky;
+      bottom: var(--bottom-height);
+      background: var(--bg-primary);
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
     }
 
-    .tab-panel {
-      display: none;
-      height: 100%; /* Ensure it takes full height when active */
+    .total-price {
+      color: var(--text-primary); /* Ensure visibility in dark mode */
     }
 
-    .tab-panel.active {
-      display: block;
+    .cart-btn {
+      background: var(--accent-warning);
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .cart-btn:hover {
+      background: var(--accent-warning);
     }
 
     .cart-footer-area {

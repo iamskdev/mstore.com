@@ -1,8 +1,27 @@
 import { createListCard, initCardHelper } from '../../components/cards/card-helper.js';
 import { getCartItems as getCartItemsManager, saveCartToLocalStorage } from '../../utils/cart-manager.js';
+import { initializeFilterManager } from '../../utils/filter-helper.js';
+import { fetchAllCategories } from '../../utils/data-manager.js';
 
-let activeTab = "products"; // products or services
+let currentFilter = "all"; // products or services
 let cart = {};
+let filterManagerInstance;
+
+// Local utility to format slug for display (moved from filter-helper.js for local use)
+function _formatSlugForDisplay(slug = '') {
+    if (!slug) return '';
+    return slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+// Local utility to get category info by ID (moved from filter-helper.js for local use)
+async function getCategoryInfoByCategoryId(categoryId) {
+    if (!categoryId) return null;
+    const allCategories = await fetchAllCategories(true);
+    return allCategories.find(cat => cat.meta.categoryId === categoryId) || null;
+}
 
 // Configuration for cart list cards
 const cartViewConfig = {
@@ -90,58 +109,70 @@ const cartViewConfig = {
 
 // Removed local getCartItems and saveCartItems as cart-manager provides them
 
-// ⭐ Render Cart (Refactored to use reusable card-list.html)
+// ⭐ Render Cart (Refactored to use reusable card-list.html and group by main category)
 async function rendercard() {
-  const productsPanel = document.getElementById("products-tab-panel");
-  const servicesPanel = document.getElementById("services-tab-panel");
+  const cartItemsContainer = document.getElementById("cart-items-container");
+  cartItemsContainer.innerHTML = ""; // Clear the container completely before re-rendering
 
   cart.items = await getCartItemsManager(); // Fetch real data from cart-manager
 
-  const currentPanel = activeTab === "products" ? productsPanel : servicesPanel;
-  const otherPanel = activeTab === "products" ? servicesPanel : productsPanel;
+  // Group items by main category
+  const groupedItems = new Map(); // Map<categoryId, Array<item>>
 
-  // Clear the other panel completely
-  otherPanel.innerHTML = "";
+  for (const item of cart.items) {
+    const categoryId = item.meta.links.categoryId;
+    const category = await getCategoryInfoByCategoryId(categoryId); // Only get main category info
 
-  // Get current item IDs in the cart for the active tab
-  const activeTabItems = cart.items.filter(item => item.meta.type === activeTab.slice(0, -1));
-  const activeTabItemIds = new Set(activeTabItems.map(item => item.meta.itemId));
+    const categoryKey = category ? category.meta.slug : 'uncategorized'; // Use slug as key
+    const categoryDisplayName = category ? _formatSlugForDisplay(category.meta.slug) : 'Uncategorized';
 
-  // Remove cards that are no longer in the cart or switched tabs
-  Array.from(currentPanel.children).forEach(cardElement => {
-    const itemId = cardElement.dataset.itemId;
-    if (!activeTabItemIds.has(itemId)) {
-      cardElement.remove();
+    if (!groupedItems.has(categoryKey)) {
+      groupedItems.set(categoryKey, {
+        displayName: categoryDisplayName,
+        items: []
+      });
     }
-  });
+    groupedItems.get(categoryKey).items.push(item);
+  }
 
-  // Add or update cards for items in the cart
-  activeTabItems.forEach(item => {
-    let cardElement = document.getElementById(`card-${item.meta.itemId}`);
-    if (!cardElement) {
-      // Card does not exist, create and append it
-      cardElement = createListCard(item, cartViewConfig);
-      if (cardElement) {
-        currentPanel.appendChild(cardElement);
-      } else {
-        console.warn('rendercard: cardElement was null or undefined for item:', item.meta.itemId);
-      }
-    } else {
-      // Card exists, update its content if necessary (e.g., if item details changed)
-      // Re-render the card and replace the old one to ensure all fields are updated
-      const updatedCardElement = createListCard(item, cartViewConfig);
-      if (updatedCardElement) {
-        cardElement.replaceWith(updatedCardElement);
-      } else {
-        console.warn('rendercard: updatedCardElement was null or undefined for item:', item.meta.itemId);
+  // Render grouped items
+  for (const [categoryKey, data] of groupedItems.entries()) {
+    // Only render if there are items in this category and it's not the 'uncategorized' fallback
+    if (data.items.length > 0 && categoryKey !== 'uncategorized') {
+      // Append items for this category
+      for (const item of data.items) {
+        console.log('Processing item:', item.meta.itemId, 'Type:', item.meta.type);
+        let cardElement = createListCard(item, cartViewConfig);
+        if (cardElement) {
+          console.log('Card created for item:', item.meta.itemId);
+          // Set display style based on current filter
+          const itemCategoryId = item.meta.links.categoryId;
+          const itemCategory = await getCategoryInfoByCategoryId(itemCategoryId);
+          const itemCategorySlug = itemCategory ? itemCategory.meta.slug : 'uncategorized';
+
+          let shouldDisplay = false;
+          if (currentFilter === 'all') {
+            shouldDisplay = true;
+          } else if (currentFilter === 'product') {
+            shouldDisplay = item.meta.type === 'product';
+          } else if (currentFilter === 'service') {
+            shouldDisplay = item.meta.type === 'service';
+          } else {
+            shouldDisplay = itemCategorySlug === currentFilter;
+          }
+          cardElement.style.display = shouldDisplay ? '' : 'none';
+          cartItemsContainer.appendChild(cardElement);
+          console.log('Card appended for item:', item.meta.itemId);
+        } else {
+          console.warn('rendercard: cardElement was null or undefined for item:', item.meta.itemId);
+        }
       }
     }
-  });
+  }
 
   updateCartTotalDisplay(); // Update the overall cart total
   document.querySelector(".cart-btn").innerText = "Request All";
 }
-
 
 // ⭐ Update Qty
 window.updateQty = function(itemId, qty) {
@@ -149,25 +180,7 @@ window.updateQty = function(itemId, qty) {
   if (item) {
     item.cart.qty = parseInt(qty);
     saveCartToLocalStorage(cart.items); // Save changes to local storage using cart-manager
-
-    // Update the quantity display on the existing card
-    const cardElement = document.getElementById(`card-${itemId}`);
-    if (cardElement) {
-      const quantitySelect = cardElement.querySelector('.quantity-select'); // Select the dropdown
-      if (quantitySelect) {
-        quantitySelect.value = item.cart.qty; // Update the dropdown's selected value
-      }
-      // Also update the total price for the item on the card
-      const sellingPriceElement = cardElement.querySelector('.selling-price');
-      const maxPriceElement = cardElement.querySelector('.max-price');
-      if (sellingPriceElement) {
-        sellingPriceElement.textContent = `₹${(item.pricing.sellingPrice * item.cart.qty).toFixed(2)}`;
-      }
-      if (maxPriceElement && item.pricing.mrp > item.pricing.sellingPrice) {
-        maxPriceElement.textContent = `₹${(item.pricing.mrp * item.cart.qty).toFixed(2)}`;
-      }
-    }
-    updateCartTotalDisplay(); // Update the overall cart total
+    rendercard(); // Re-render the entire cart
   }
 };
 
@@ -196,75 +209,44 @@ window.removeItem = function(itemId) {
   rendercard();
 };
 
-// ⭐ Switch Tab
-window.switchTab = function(tab) {
-  activeTab = tab;
-  document.getElementById("tabProducts").classList.remove("active");
-  document.getElementById("tabServices").classList.remove("active");
-  document.getElementById("products-tab-panel").classList.remove("active");
-  document.getElementById("services-tab-panel").classList.remove("active");
-
-  if (tab === "products") {
-    document.getElementById("tabProducts").classList.add("active");
-    document.getElementById("products-tab-panel").classList.add("active");
-  } else {
-    document.getElementById("tabServices").classList.add("active");
-    document.getElementById("services-tab-panel").classList.add("active");
-  }
-  rendercard();
-};
-
-// ⭐ Swipe Tabs
-const tabPanels = document.querySelector(".cart-container");
-let touchstartX = 0, touchstartY = 0;
-let touchendX = 0, touchendY = 0;
-
-const swipeThreshold = 30; // Minimum pixels for a swipe
-const verticalThreshold = 30; // Maximum vertical deviation for a horizontal swipe
-
-function handleGesture() {
-  const diffX = touchendX - touchstartX;
-  const diffY = touchendY - touchstartY;
-
-  // Check if it's primarily a horizontal swipe and exceeds threshold
-  if (Math.abs(diffX) > swipeThreshold && Math.abs(diffY) < verticalThreshold) {
-    if (diffX < 0 && activeTab === "products") {
-      switchTab("services");
-    } else if (diffX > 0 && activeTab === "services") {
-      switchTab("products");
-    }
-  }
-}
-
-tabPanels.addEventListener("touchstart", e => {
-  touchstartX = e.changedTouches[0].screenX;
-  touchstartY = e.changedTouches[0].screenY;
-}, { passive: true });
-
-tabPanels.addEventListener("touchmove", e => {
-  touchendX = e.changedTouches[0].screenX;
-  touchendY = e.changedTouches[0].screenY;
-});
-
-tabPanels.addEventListener("touchend", handleGesture);
-
 // Init
 rendercard();
 
 export async function init() {
   await initCardHelper(null); // Initialize card helper
-  rendercard();
+  await rendercard(); // Ensure cart items are loaded before initializing filter manager
 
-  // Add event listeners for tab switching
-  const tabProducts = document.getElementById("tabProducts");
-  const tabServices = document.getElementById("tabServices");
+  // Determine categories in cart to create custom tabs
+  const customTabs = [
+    { label: 'All', filter: 'all' },
+    { label: 'Products', filter: 'product' },
+    { label: 'Services', filter: 'service' }
+  ];
 
-  if (tabProducts) {
-    tabProducts.addEventListener("click", () => switchTab("products"));
+  // Optionally, add dynamic category tabs if needed, but prioritize product/service filters
+  const categoryIdsInCart = new Set(cart.items.map(item => item.meta.links.categoryId));
+  for (const categoryId of categoryIdsInCart) {
+    const category = await getCategoryInfoByCategoryId(categoryId);
+    if (category && !customTabs.some(tab => tab.filter === category.meta.slug)) { // Avoid duplicates
+      customTabs.push({ label: _formatSlugForDisplay(category.meta.slug), filter: category.meta.slug });
+    }
   }
-  if (tabServices) {
-    tabServices.addEventListener("click", () => switchTab("services"));
-  }
+
+  console.log('Generated customTabs:', customTabs);
+
+  // Initialize FilterManager for the cart view with custom tabs
+    filterManagerInstance = initializeFilterManager(async (placeholder, componentPath) => {
+    const response = await fetch(componentPath);
+    placeholder.innerHTML = await response.text();
+  }, customTabs); // Pass customTabs here
+
+  filterManagerInstance.manageVisibility(true); // Show the filter bar
+
+  // Listen for filter changes from the filter bar
+  window.addEventListener('filterChanged', (event) => {
+    currentFilter = event.detail.filter; // Update the current filter based on the event
+    rendercard(); // Re-render the cart with the new filter
+  });
 
   // Listen for cart changes to update UI dynamically
   window.addEventListener('cartItemsChanged', rendercard);
