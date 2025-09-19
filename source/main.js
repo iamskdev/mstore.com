@@ -20,7 +20,8 @@ import { loadTopNavigation } from './components/top/top-navigation.js';
 import { loadBottomNavigation } from './components/bottom/bottom-navigation.js';
 import { getFooterHtml } from './components/footer/footer.js';
 import { loadDrawer } from './components/drawer/drawer.js';
-import { initializeFilterManager } from './components/filter/filter-modal.js';
+import { initializeFilterBarManager } from './components/filter/filter-bar.js';
+import { initializeFilterModalManager } from './components/filter/filter-modal.js';
 import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
 
 class ViewManager {
@@ -32,7 +33,8 @@ class ViewManager {
     this.viewConfig = viewConfig; // Expose config if needed externally
     this.defaultViews = defaultViews;
     this.loadedViews = new Set();
-    this.filterManager = null; // To be lazy-loaded
+    this.filterBarManager = null; // To be lazy-loaded
+    this.filterModalManager = null; // To be lazy-loaded
     this.footerHelper = null; // To be lazy-loaded for managing the footer
     this.subscribers = [];
   }
@@ -269,12 +271,17 @@ class ViewManager {
 
       // Initialize filter bar logic AFTER the HTML is in the DOM
       if (config.showFilterBar) {
-        // Lazy-load FilterManager if not already loaded
-        if (!this.filterManager) {
-          this.filterManager = initializeFilterManager(loadComponent); // Pass loadComponent
+        // Lazy-load FilterBarManager if not already loaded
+        if (!this.filterBarManager) {
+          this.filterBarManager = initializeFilterBarManager(loadComponent); // Pass loadComponent
         }
-        // Call a new method on filterManager to initialize the embedded filter bar
-        this.filterManager.initializeEmbeddedFilterBar(viewElement);
+        // Call a new method on filterBarManager to initialize the embedded filter bar
+        this.filterBarManager.initializeEmbeddedFilterBar(viewElement);
+
+        // Lazy-load FilterModalManager if not already loaded
+        if (!this.filterModalManager) {
+          this.filterModalManager = initializeFilterModalManager(loadComponent); // Pass loadComponent
+        }
       }
 
       // If the view has an embedded footer, initialize its interactive logic.
