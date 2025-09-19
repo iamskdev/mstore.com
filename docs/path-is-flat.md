@@ -284,7 +284,7 @@ S:\My Projects\Apna Store\mStore\source\utils\card-helper.js
 S:\My Projects\Apna Store\mStore\source\utils\config-manager.js
 S:\My Projects\Apna Store\mStore\source\utils\cursor-zoom.js
 S:\My Projects\Apna Store\mStore\source\utils\data-manager.js
-S:\My Projects\Apna Store\mStore\source\utils\filter-helper.js
+S:\My Projects\Apna Store\mStore\source\utils\filter-modal.js
 S:\My Projects\Apna Store\mStore\source\utils\formatters.js
 S:\My Projects\Apna Store\mStore\source\utils\image-zoom.js
 S:\My Projects\Apna Store\mStore\source\utils\lang-helper.js

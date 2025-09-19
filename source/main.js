@@ -20,7 +20,7 @@ import { loadTopNavigation } from './components/top/top-navigation.js';
 import { loadBottomNavigation } from './components/bottom/bottom-navigation.js';
 import { getFooterHtml } from './components/footer/footer.js';
 import { loadDrawer } from './components/drawer/drawer.js';
-import { initializeFilterManager } from './utils/filter-helper.js';
+import { initializeFilterManager } from './components/filter/filter-modal.js';
 import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
 
 class ViewManager {
@@ -89,7 +89,7 @@ class ViewManager {
    */
   async _loadAndEmbedFilterBar(existingHtml = '') {
     try {
-      const filterBarResponse = await fetch('./source/components/filter-bar.html');
+      const filterBarResponse = await fetch('./source/components/filter/filter-bar.html');
       if (!filterBarResponse.ok) throw new Error('Filter Bar HTML not found');
 
       const filterBarHtml = await filterBarResponse.text();

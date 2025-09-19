@@ -4,11 +4,11 @@
  */
 
 
-import { fetchAllCategories, fetchAllBrands } from './data-manager.js';
-import { showToast } from './toast.js'; // Import the toast utility
+import { fetchAllCategories, fetchAllBrands } from '../../utils/data-manager.js';
+import { showToast } from '../../utils/toast.js'; // Import the toast utility
 
 const PLACEHOLDER_ID = 'filter-bar-placeholder';
-const COMPONENT_PATH = './source/components/filter-bar.html';
+const COMPONENT_PATH = './filter-bar.html';
 
 class FilterManager {
     constructor(loadComponentFn, customTabs = []) {
@@ -464,7 +464,7 @@ class FilterManager {
                 document.body.appendChild(this.modalContainer);
             }
             try {
-                await this.loadComponent(this.modalContainer, './source/components/filter-modal.html');
+                await this.loadComponent(this.modalContainer, './source/components/filter/filter-modal.html');
                 this.isModalLoaded = true;
                 this._initializeAdvancedPanelLogic(); // Initialize logic after component is loaded
             } catch (error) {

@@ -1,6 +1,6 @@
 import { createListCard, initCardHelper } from '../../components/cards/card-helper.js';
 import { getCartItems as getCartItemsManager, saveCartToLocalStorage } from '../../utils/cart-manager.js';
-import { initCustomTabs } from '../../utils/filter-helper.js';
+import { initCustomTabs } from '../../components/filter/filter-modal.js';
 import { fetchAllCategories } from '../../utils/data-manager.js';
 
 let currentFilter = "all"; // products or services
