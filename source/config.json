@@ -2,7 +2,7 @@
   "app": {
     "owner": "santosh",
     "name": "mStore",
-    "version": "0.7.22",
+    "version": "0.7.23",
     "environment": "development",
     "description": ""
   },
@@ -20,7 +20,7 @@
   "ui": {
     "theme": "dark",
     "headerStyle": "logo",
-    "splashEnabled": true
+    "splashEnabled": false
   },
   "flags": {
     "maintenanceMode": false,
@@ -32,7 +32,7 @@
   "audit": {
     "createdAt": "2025-09-08T09:56:14Z",
     "createdBy": "Santosh",
-    "modifyAt": "2025-09-19T06:14:06Z",
+    "modifyAt": "2025-09-19T07:41:21Z",
     "modifyBy": "System"
   }
 }

@@ -1,13 +1,13 @@
 import { createListCard, initCardHelper } from '../../components/cards/card-helper.js';
 import { getCartItems as getCartItemsManager, saveCartToLocalStorage } from '../../utils/cart-manager.js';
-import { initializeFilterManager } from '../../utils/filter-helper.js';
+import { initCustomTabs } from '../../utils/filter-helper.js';
 import { fetchAllCategories } from '../../utils/data-manager.js';
 
 let currentFilter = "all"; // products or services
+let currentSort = "relevance"; // Default sort order
 let cart = {};
-let filterManagerInstance;
 
-// Local utility to format slug for display (moved from filter-helper.js for local use)
+// Local utility to format slug for display
 function _formatSlugForDisplay(slug = '') {
     if (!slug) return '';
     return slug
@@ -16,11 +16,44 @@ function _formatSlugForDisplay(slug = '') {
         .join(' ');
 }
 
-// Local utility to get category info by ID (moved from filter-helper.js for local use)
+// Local utility to get category info by ID
 async function getCategoryInfoByCategoryId(categoryId) {
     if (!categoryId) return null;
     const allCategories = await fetchAllCategories(true);
     return allCategories.find(cat => cat.meta.categoryId === categoryId) || null;
+}
+
+// This function is exported to be used by the filter-helper
+export async function getCartCustomTabs() {
+    const cartItems = await getCartItemsManager();
+    if (cartItems.length === 0) {
+        return []; // Return empty array if cart is empty, so no tabs are shown
+    }
+
+    const customTabs = [{ label: 'All', filter: 'all' }];
+
+    const hasProductsInCart = cartItems.some(item => item.meta.type === 'product');
+    if (hasProductsInCart) {
+        customTabs.push({ label: 'Products', filter: 'product' });
+    }
+
+    const hasServicesInCart = cartItems.some(item => item.meta.type === 'service');
+    if (hasServicesInCart) {
+        customTabs.push({ label: 'Services', filter: 'service' });
+    }
+
+    const categoryIdsInCart = new Set(cartItems.map(item => item.meta.links.categoryId));
+    for (const categoryId of categoryIdsInCart) {
+        const category = await getCategoryInfoByCategoryId(categoryId);
+        if (category && !customTabs.some(tab => tab.filter === category.meta.slug)) {
+            const hasItemsInThisCategory = cartItems.some(item => item.meta.links.categoryId === categoryId);
+            if (hasItemsInThisCategory) {
+                customTabs.push({ label: _formatSlugForDisplay(category.meta.slug), filter: category.meta.slug });
+            }
+        }
+    }
+    
+    return customTabs;
 }
 
 // Configuration for cart list cards
@@ -45,14 +78,14 @@ const cartViewConfig = {
             visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
             formatter: (mrp, item) => `₹${(mrp * item.cart.qty).toFixed(2)}`
         },
-        { selector: '.cost-price', visible: false }, // As requested: not visible
-        { key: 'analytics.rating', selector: '.stars', visible: true }, // Use analytics.rating for consistency with grid cards
-        { key: 'stock.status', selector: '.stock-status', visible: true }, // As requested: show stock
-        { key: 'info.description', selector: '.card-note', visible: true }, // As requested: show description
+        { selector: '.cost-price', visible: false },
+        { key: 'analytics.rating', selector: '.stars', visible: true },
+        { key: 'stock.status', selector: '.stock-status', visible: true },
+        { key: 'info.description', selector: '.card-note', visible: true },
         { 
-            key: 'pricing.mrp', // Use mrp to calculate discount
+            key: 'pricing.mrp',
             selector: '.card-discount', 
-            visible: (item) => item.pricing.mrp > item.pricing.sellingPrice, // Only show if there's a discount
+            visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
             formatter: (mrp, item) => {
                 const sellingPrice = item.pricing.sellingPrice;
                 if (mrp > sellingPrice) {
@@ -63,17 +96,14 @@ const cartViewConfig = {
             }
         },
     ],
-    components: [
-        // Moved to buttons array as per user request
-    ],
     buttons: [
         {
-            type: 'quantitySelector', // Moved from components
+            type: 'quantitySelector',
             visible: (item) => item.meta.type === 'product',
             action: 'UPDATE_CART_QUANTITY'
         },
         {
-            label: 'Select Date', // Initial label for date
+            label: 'Select Date',
             action: 'SELECT_SERVICE_DATE',
             class: 'btn-secondary',
             visible: (item) => item.meta.type === 'service'
@@ -83,69 +113,55 @@ const cartViewConfig = {
         { label: 'Remove', action: 'REMOVE_FROM_CART', class: 'btn-danger', visible: true }
     ],
     actionHandlers: {
-        'UPDATE_CART_QUANTITY': (item, newQuantity) => {
-            window.updateQty(item.meta.itemId, newQuantity);
-        },
+        'UPDATE_CART_QUANTITY': (item, newQuantity) => window.updateQty(item.meta.itemId, newQuantity),
         'SELECT_SERVICE_DATE': (item, newDate) => {
             if (newDate) {
                 window.updateDate(item.meta.itemId, newDate);
             }
         },
-        'REQUEST_ITEM': (item) => {
-            console.log(`Requesting item: ${item.info.name}`);
-            // Implement request logic
-        },
-        'SAVE_FOR_LATER': (item) => {
-            console.log(`Saving ${item.info.name} for later.`);
-            // Implement save for later logic
-        },
-        'REMOVE_FROM_CART': (item) => {
-            window.removeItem(item.meta.itemId);
-        }
+        'REQUEST_ITEM': (item) => console.log(`Requesting item: ${item.info.name}`),
+        'SAVE_FOR_LATER': (item) => console.log(`Saving ${item.info.name} for later.`),
+        'REMOVE_FROM_CART': (item) => window.removeItem(item.meta.itemId),
     }
 };
 
-// Removed CART_STORAGE_KEY as cart-manager handles it
-
-// Removed local getCartItems and saveCartItems as cart-manager provides them
-
-// ⭐ Render Cart (Refactored to use reusable card-list.html and group by main category)
 async function rendercard() {
   const cartItemsContainer = document.getElementById("cart-items-container");
-  cartItemsContainer.innerHTML = ""; // Clear the container completely before re-rendering
+  cartItemsContainer.innerHTML = "";
 
-  cart.items = await getCartItemsManager(); // Fetch real data from cart-manager
+  cart.items = await getCartItemsManager();
 
-  // Group items by main category
-  const groupedItems = new Map(); // Map<categoryId, Array<item>>
+  cart.items.sort((a, b) => {
+    const priceA = a.pricing.sellingPrice * a.cart.qty;
+    const priceB = b.pricing.sellingPrice * b.cart.qty;
+    switch (currentSort) {
+      case 'price-asc': return priceA - priceB;
+      case 'price-desc': return priceB - priceA;
+      case 'newest': return (b.meta.timestamp || 0) - (a.meta.timestamp || 0);
+      case 'rating-desc': return (b.analytics.rating || 0) - (a.analytics.rating || 0);
+      default: return 0;
+    }
+  });
+
+  const groupedItems = new Map();
 
   for (const item of cart.items) {
     const categoryId = item.meta.links.categoryId;
-    const category = await getCategoryInfoByCategoryId(categoryId); // Only get main category info
-
-    const categoryKey = category ? category.meta.slug : 'uncategorized'; // Use slug as key
+    const category = await getCategoryInfoByCategoryId(categoryId);
+    const categoryKey = category ? category.meta.slug : 'uncategorized';
     const categoryDisplayName = category ? _formatSlugForDisplay(category.meta.slug) : 'Uncategorized';
 
     if (!groupedItems.has(categoryKey)) {
-      groupedItems.set(categoryKey, {
-        displayName: categoryDisplayName,
-        items: []
-      });
+      groupedItems.set(categoryKey, { displayName: categoryDisplayName, items: [] });
     }
     groupedItems.get(categoryKey).items.push(item);
   }
 
-  // Render grouped items
   for (const [categoryKey, data] of groupedItems.entries()) {
-    // Only render if there are items in this category and it's not the 'uncategorized' fallback
     if (data.items.length > 0 && categoryKey !== 'uncategorized') {
-      // Append items for this category
       for (const item of data.items) {
-        console.log('Processing item:', item.meta.itemId, 'Type:', item.meta.type);
         let cardElement = createListCard(item, cartViewConfig);
         if (cardElement) {
-          console.log('Card created for item:', item.meta.itemId);
-          // Set display style based on current filter
           const itemCategoryId = item.meta.links.categoryId;
           const itemCategory = await getCategoryInfoByCategoryId(itemCategoryId);
           const itemCategorySlug = itemCategory ? itemCategory.meta.slug : 'uncategorized';
@@ -162,25 +178,21 @@ async function rendercard() {
           }
           cardElement.style.display = shouldDisplay ? '' : 'none';
           cartItemsContainer.appendChild(cardElement);
-          console.log('Card appended for item:', item.meta.itemId);
-        } else {
-          console.warn('rendercard: cardElement was null or undefined for item:', item.meta.itemId);
         }
       }
     }
   }
 
-  updateCartTotalDisplay(); // Update the overall cart total
+  updateCartTotalDisplay();
   document.querySelector(".cart-btn").innerText = "Request All";
 }
 
-// ⭐ Update Qty
 window.updateQty = function(itemId, qty) {
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "product");
   if (item) {
     item.cart.qty = parseInt(qty);
-    saveCartToLocalStorage(cart.items); // Save changes to local storage using cart-manager
-    rendercard(); // Re-render the entire cart
+    saveCartToLocalStorage(cart.items);
+    rendercard();
   }
 };
 
@@ -192,60 +204,41 @@ function updateCartTotalDisplay() {
   document.getElementById("cardTotal").innerText = total.toFixed(2);
 }
 
-// ⭐ Update Date
 window.updateDate = function(itemId, dateValue) {
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "service");
   if (item) {
     item.cart.selectedDate = dateValue;
-    saveCartToLocalStorage(cart.items); // Save changes to local storage
+    saveCartToLocalStorage(cart.items);
   }
-  rendercard(); // Re-render to show the updated date on the button
-};
-
-// ⭐ Remove Item
-window.removeItem = function(itemId) {
-  cart.items = cart.items.filter(i => i.meta.itemId !== itemId);
-  saveCartToLocalStorage(cart.items); // Save changes to local storage using cart-manager
   rendercard();
 };
 
-// Init
+window.removeItem = function(itemId) {
+  cart.items = cart.items.filter(i => i.meta.itemId !== itemId);
+  saveCartToLocalStorage(cart.items);
+  rendercard();
+};
+
 rendercard();
 
 export async function init() {
-  await initCardHelper(null); // Initialize card helper
-  await rendercard(); // Ensure cart items are loaded before initializing filter manager
+  await initCardHelper(null);
+  await rendercard();
 
-  // Determine categories in cart to create custom tabs
-  const customTabs = [
-    { label: 'All', filter: 'all' },
-    { label: 'Products', filter: 'product' },
-    { label: 'Services', filter: 'service' }
-  ];
-
-  // Optionally, add dynamic category tabs if needed, but prioritize product/service filters
-  const categoryIdsInCart = new Set(cart.items.map(item => item.meta.links.categoryId));
-  for (const categoryId of categoryIdsInCart) {
-    const category = await getCategoryInfoByCategoryId(categoryId);
-    if (category && !customTabs.some(tab => tab.filter === category.meta.slug)) { // Avoid duplicates
-      customTabs.push({ label: _formatSlugForDisplay(category.meta.slug), filter: category.meta.slug });
-    }
-  }
-
-  console.log('Generated customTabs:', customTabs);
-
-  // Initialize FilterManager for the cart view with custom tabs
-    filterManagerInstance = initializeFilterManager(async (placeholder, componentPath) => {
-    const response = await fetch(componentPath);
-    placeholder.innerHTML = await response.text();
-  }, customTabs); // Pass customTabs here
-
-  filterManagerInstance.manageVisibility(true); // Show the filter bar
+  // Initialize custom tabs for the cart view
+  await initCustomTabs(getCartCustomTabs);
 
   // Listen for filter changes from the filter bar
   window.addEventListener('filterChanged', (event) => {
-    currentFilter = event.detail.filter; // Update the current filter based on the event
-    rendercard(); // Re-render the cart with the new filter
+    currentFilter = event.detail.filter;
+    rendercard();
+  });
+
+  // Listen for advanced filter changes from the filter modal
+  window.addEventListener('advancedFilterApplied', (event) => {
+    const { sort } = event.detail;
+    currentSort = sort;
+    rendercard();
   });
 
   // Listen for cart changes to update UI dynamically

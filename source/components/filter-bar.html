@@ -6,17 +6,11 @@
   <button class="filter-bar-tab filter-icon-btn" aria-label="Show all filters">
     <i class="fas fa-sliders-h"></i>
   </button>
-  <!-- Static Tabs -->
-  <button class="filter-bar-tab active" data-filter="all">All</button>
-  <button class="filter-bar-tab" data-filter="product">Products</button>
-  <button class="filter-bar-tab" data-filter="service">Services</button>
   <!-- Skeleton Loaders for dynamic tabs -->
   <div class="filter-bar-tab tab-skeleton" style="width:4rem;"></div>
   <div class="filter-bar-tab tab-skeleton" style="width:4.5rem;"></div>
   <div class="filter-bar-tab tab-skeleton" style="width:5rem;"></div>
 </div>
-
-
 
 <style>
   
@@ -43,7 +37,7 @@
     /* Naya class filter bar ko hide karne ke liye */
   .filter-bar-container.filter-bar-hidden {
     transform: translateY(-100%); 
-    transis
+    transition: transform 0.3s ease-in-out;
   } 
   .filter-bar-container::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */

@@ -11,7 +11,7 @@ const PLACEHOLDER_ID = 'filter-bar-placeholder';
 const COMPONENT_PATH = './source/components/filter-bar.html';
 
 class FilterManager {
-    constructor(loadComponentFn) {
+    constructor(loadComponentFn, customTabs = []) {
         this._placeholder = null; // Private property to hold the element
         this.isLoaded = false;
         this.isInitialized = false;
@@ -20,6 +20,7 @@ class FilterManager {
         this.isAdvancedPanelInitialized = false;
         this.allCategoriesData = [];
         this.loadComponent = loadComponentFn; // Store loadComponent function
+        this.customTabs = customTabs; // Store custom tabs
     }
 
     // Public getter for the placeholder element
@@ -153,32 +154,50 @@ class FilterManager {
             lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
         });
 
-        // Fetch and populate dynamic category tabs
+        // Populate dynamic category tabs
         try {
-            const allCategories = await fetchAllCategories(true);
-            const activeCategories = allCategories.filter(cat => cat.meta?.flags?.isActive);
+            let tabsToRender = [];
 
-            const addedSlugs = new Set(['all', 'product', 'service']);
+            console.log('FilterManager: customTabs received:', this.customTabs);
+
+            if (this.customTabs && this.customTabs.length > 0) {
+                // Use custom tabs if provided
+                tabsToRender = this.customTabs;
+            } else {
+                // Fallback to fetching all categories if no custom tabs are provided
+                const allCategories = await fetchAllCategories(true);
+                const activeCategories = allCategories.filter(cat => cat.meta?.flags?.isActive);
+
+                const addedSlugs = new Set(['all', 'product', 'service']);
+                tabsToRender = [
+                    { label: 'All', filter: 'all' },
+                    { label: 'Products', filter: 'product' },
+                    { label: 'Services', filter: 'service' }
+                ];
+
+                // Add Main Categories as tabs
+                activeCategories.forEach(cat => {
+                    if (cat.meta?.slug && !addedSlugs.has(cat.meta.slug)) {
+                        tabsToRender.push({ label: this._formatSlugForDisplay(cat.meta.slug), filter: cat.meta.slug });
+                        addedSlugs.add(cat.meta.slug);
+                    }
+                });
+
+                // Add Sub-Categories as tabs
+                const allSubcategories = activeCategories.flatMap(cat => cat.subcategories || []);
+                const uniqueSubcats = Array.from(new Map(allSubcategories.map(item => [item.slug, item])).values());
+                uniqueSubcats.forEach(subcat => {
+                    if (subcat.slug && !addedSlugs.has(subcat.slug)) {
+                        tabsToRender.push({ label: this._formatSlugForDisplay(subcat.slug), filter: subcat.slug });
+                        addedSlugs.add(subcat.slug);
+                    }
+                });
+            }
+            
             let finalHtml = '';
-
-            // Add Main Categories as tabs
-            activeCategories.forEach(cat => {
-                if (cat.meta?.slug && !addedSlugs.has(cat.meta.slug)) {
-                    const displayName = this._formatSlugForDisplay(cat.meta.slug);
-                    finalHtml += `<button class="filter-bar-tab" data-filter="${cat.meta.slug}">${displayName}</button>`;
-                    addedSlugs.add(cat.meta.slug);
-                }
-            });
-
-            // Add Sub-Categories as tabs
-            const allSubcategories = activeCategories.flatMap(cat => cat.subcategories || []);
-            const uniqueSubcats = Array.from(new Map(allSubcategories.map(item => [item.slug, item])).values());
-            uniqueSubcats.forEach(subcat => {
-                if (subcat.slug && !addedSlugs.has(subcat.slug)) {
-                    const displayName = this._formatSlugForDisplay(subcat.slug);
-                    finalHtml += `<button class="filter-bar-tab" data-filter="${subcat.slug}">${displayName}</button>`;
-                    addedSlugs.add(subcat.slug);
-                }
+            tabsToRender.forEach(tab => {
+                const isActive = tab.filter === 'all' ? ' active' : ''; // Add ' active' class if filter is 'all'
+                finalHtml += `<button class="filter-bar-tab${isActive}" data-filter="${tab.filter}">${tab.label}</button>`;
             });
  
             if (finalHtml) {
@@ -531,6 +550,31 @@ class FilterManager {
 }
 
 // Export a single instance to act as a singleton, maintaining state across the app.
-export function initializeFilterManager(loadComponentFn) {
-    return new FilterManager(loadComponentFn);
+export function initializeFilterManager(loadComponentFn, customTabs = []) {
+    return new FilterManager(loadComponentFn, customTabs);
+}
+
+export async function initCustomTabs(getTabsFn) {
+    // This function is designed to be called from a view's JS to overwrite generic tabs.
+    const placeholder = document.getElementById(PLACEHOLDER_ID);
+    if (!placeholder) return;
+    const container = placeholder.querySelector('#filter-bar');
+    if (!container) return;
+
+    const tabsToRender = await getTabsFn();
+
+    // Clear existing tabs generated by _initializeComponentLogic
+    const existingTabs = container.querySelectorAll('.filter-bar-tab:not(.filter-icon-btn)');
+    existingTabs.forEach(tab => tab.remove());
+
+    // Render the new custom tabs
+    let finalHtml = '';
+    tabsToRender.forEach(tab => {
+        const isActive = tab.filter === 'all' ? ' active' : '';
+        finalHtml += `<button class="filter-bar-tab${isActive}" data-filter="${tab.filter}">${tab.label}</button>`;
+    });
+
+    if (finalHtml) {
+        container.insertAdjacentHTML('beforeend', finalHtml);
+    }
 }
