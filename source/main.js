@@ -20,6 +20,7 @@ import { loadTopNavigation } from './components/top/top-navigation.js';
 import { loadBottomNavigation } from './components/bottom/bottom-navigation.js';
 import { getFooterHtml } from './components/footer/footer.js';
 import { loadDrawer } from './components/drawer/drawer.js';
+import { initializeFilterManager } from './utils/filter-helper.js';
 import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
 
 class ViewManager {
