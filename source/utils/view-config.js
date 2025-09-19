@@ -22,6 +22,7 @@ const viewConfig = {
       path: './source/common/pages/home.html',
       cssPath: './source/common/styles/home.css',
       jsPath: './source/common/scripts/home.js',
+      showFilterBar: true,
       embedFooter: true,
       title: 'Home',
       dataDependencies: ['items', 'promotions', 'categories', 'brands']
@@ -41,6 +42,7 @@ const viewConfig = {
       cssPath: './source/common/styles/cart.css',
       jsPath: './source/common/scripts/cart.js',
       title: 'Cart',
+      showFilterBar: true,
       dataDependencies: []
     },
     account: {
@@ -67,6 +69,7 @@ const viewConfig = {
       path: './source/common/pages/home.html',
       cssPath: './source/common/styles/home.css',
       jsPath: './source/common/scripts/home.js',
+      showFilterBar: true,
       embedFooter: true, // Embed it directly into the view content
       title: 'Home',
       dataDependencies: ['items', 'promotions', 'categories', 'brands']
@@ -86,6 +89,7 @@ const viewConfig = {
       cssPath: './source/common/styles/cart.css',
       jsPath: './source/common/scripts/cart.js',
       title: 'Cart',
+      showFilterBar: true,
       dataDependencies: []
     },
     account: { id: 'user-account-view', path: null, title: 'Account', dataDependencies: ['users'] },
@@ -104,6 +108,7 @@ const viewConfig = {
       path: './source/common/pages/home.html',
       cssPath: './source/common/styles/home.css',
       jsPath: './source/common/scripts/home.js',
+      showFilterBar: true,
       embedFooter: true,
       title: 'Home',
       dataDependencies: ['items', 'promotions', 'categories', 'brands', 'orders', 'price-logs', 'alerts']
