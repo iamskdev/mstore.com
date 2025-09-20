@@ -1,6 +1,11 @@
 import { createListCard, initCardHelper } from '../../components/cards/card-helper.js';
 import { getCartItems as getCartItemsManager, saveCartToLocalStorage } from '../../utils/cart-manager.js';
 import { fetchAllCategories } from '../../utils/data-manager.js';
+import { initializeFilterModalManager } from '../../components/filter/filter-modal.js'; // Import initializeFilterModalManager
+import { initializeFilterBarManager, } from '../../components/filter/filter-bar.js'; // Import the global FilterBarManager
+
+let cartFilterBarManager; // Declare a variable to hold the instance of the global FilterBarManager
+
 
 let currentFilter = "all"; // products or services
 let currentSort = "relevance"; // Default sort order
@@ -22,7 +27,7 @@ async function getCategoryInfoByCategoryId(categoryId) {
 }
 
 // This function is exported to be used by the filter-helper
-export async function getHomeFilterTabs() {
+export async function getGlobalFilterTabs() {
     const cartItems = await getCartItemsManager();
 
     if (cartItems.length === 0) {
@@ -131,14 +136,13 @@ const cartViewConfig = {
 async function rendercard() {
   const cartItemsContainer = document.getElementById("cart-items-container");
   const emptyCartView = document.getElementById("empty-cart-view");
-  const filterBar = document.getElementById('filter-bar');
   const cartFooter = document.querySelector('.cart-footer-area');
 
   cart.items = await getCartItemsManager();
   const displayedItems = [];
 
   if (cart.items.length === 0) {
-    if (filterBar) filterBar.style.display = 'none';
+    cartFilterBarManager.manageVisibility(false); // Hide filter bar
     if (cartFooter) cartFooter.style.display = 'none';
     cartItemsContainer.classList.add('hidden');
     emptyCartView.classList.remove('hidden');
@@ -146,7 +150,7 @@ async function rendercard() {
     return;
   }
 
-  if (filterBar) filterBar.style.display = 'flex';
+  cartFilterBarManager.manageVisibility(true); // Show filter bar
   if (cartFooter) cartFooter.style.display = 'flex';
   cartItemsContainer.classList.remove('hidden');
   emptyCartView.classList.add('hidden');
@@ -286,6 +290,14 @@ export async function init() {
     });
   }
 
+  // Initialize the global FilterBarManager for the cart view
+  const cartFilterBarPlaceholder = document.getElementById('cart-filter-bar');
+  cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs());
+  cartFilterBarManager.manageVisibility(false); // Initially hide the filter bar
+
+  // Initialize the filter modal manager
+  const filterModalManager = initializeFilterModalManager();
+
   // Add event listeners only if they haven't been added yet
   if (!window._cartEventListenersAdded) {
     window.addEventListener('filterChanged', (event) => {
@@ -299,7 +311,13 @@ export async function init() {
       rendercard();
     });
 
-    window.addEventListener('cartItemsChanged', rendercard);
+    window.addEventListener('cartItemsChanged', async () => {
+      // Re-initialize filter bar with updated tabs when cart items change
+      cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs());
+      // Ensure the filter bar's visibility is managed after re-initialization
+      cartFilterBarManager.manageVisibility(cart.items.length > 0);
+      rendercard();
+    });
 
     window._cartEventListenersAdded = true;
   }

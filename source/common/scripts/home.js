@@ -3,10 +3,14 @@ import { createCardFromTemplate, initCardHelper } from '../../components/cards/c
 import { initBannerManager } from '../../utils/banner-mannager.js';
 import { isItemSaved} from '../../utils/saved-manager.js';
 import { initAddToCartHandler } from '../../utils/cart-manager.js';
+import { initializeFilterBarManager } from '../../components/filter/filter-bar.js'; // Import the global FilterBarManager
+import { initializeFilterModalManager } from '../../components/filter/filter-modal.js'; // Import initializeFilterModalManager
 
 let allItems = [];
 let currentFilter = 'all';
 let allCategoriesMap = {};
+
+let homeFilterBarManager; // Declare a variable to hold the instance of the global FilterBarManager
 
 async function populateAllItemsGrid(itemsToDisplay = allItems) {
     const grid = document.getElementById('all-items-grid');
@@ -130,40 +134,50 @@ function applyFilters(items, filterValue, advancedFilters = {}) {
     return filtered;
 }
 
-export async function getHomeFilterTabs() {
-    if (Object.keys(allCategoriesMap).length === 0) {
-        const categoriesResponse = await fetchAllCategories(true);
-        categoriesResponse.forEach(cat => {
-            allCategoriesMap[cat.meta.categoryId] = cat;
+export async function getGlobalFilterTabs() {
+    try {
+        if (Object.keys(allCategoriesMap).length === 0) {
+            const categoriesResponse = await fetchAllCategories(true);
+            categoriesResponse.forEach(cat => {
+                allCategoriesMap[cat.meta.categoryId] = cat;
+            });
+        }
+
+        const allCategories = Object.values(allCategoriesMap);
+        const activeCategories = allCategories.filter(cat => cat.meta?.flags?.isActive);
+        const addedSlugs = new Set(['all', 'product', 'service']);
+        const tabsToRender = [
+            { label: 'All', filter: 'all' },
+            { label: 'Products', filter: 'product' },
+            { label: 'Services', filter: 'service' }
+        ];
+
+        activeCategories.forEach(cat => {
+            if (cat.meta?.slug && !addedSlugs.has(cat.meta.slug)) {
+                tabsToRender.push({ label: formatSlugForDisplay(cat.meta.slug), filter: cat.meta.slug });
+                addedSlugs.add(cat.meta.slug);
+            }
         });
+
+        const allSubcategories = activeCategories.flatMap(cat => cat.subcategories || []);
+        const uniqueSubcats = Array.from(new Map(allSubcategories.map(item => [item.slug, item])).values());
+        uniqueSubcats.forEach(subcat => {
+            if (subcat.slug && !addedSlugs.has(subcat.slug)) {
+                tabsToRender.push({ label: formatSlugForDisplay(subcat.slug), filter: subcat.slug });
+                addedSlugs.add(subcat.slug);
+            }
+        });
+
+        return tabsToRender;
+    } catch (error) {
+        console.error('Error fetching global filter tabs:', error);
+        // Return a default set of tabs to prevent the filter bar from breaking
+        return [
+            { label: 'All', filter: 'all' },
+            { label: 'Products', filter: 'product' },
+            { label: 'Services', filter: 'service' }
+        ];
     }
-
-    const allCategories = Object.values(allCategoriesMap);
-    const activeCategories = allCategories.filter(cat => cat.meta?.flags?.isActive);
-    const addedSlugs = new Set(['all', 'product', 'service']);
-    const tabsToRender = [
-        { label: 'All', filter: 'all' },
-        { label: 'Products', filter: 'product' },
-        { label: 'Services', filter: 'service' }
-    ];
-
-    activeCategories.forEach(cat => {
-        if (cat.meta?.slug && !addedSlugs.has(cat.meta.slug)) {
-            tabsToRender.push({ label: formatSlugForDisplay(cat.meta.slug), filter: cat.meta.slug });
-            addedSlugs.add(cat.meta.slug);
-        }
-    });
-
-    const allSubcategories = activeCategories.flatMap(cat => cat.subcategories || []);
-    const uniqueSubcats = Array.from(new Map(allSubcategories.map(item => [item.slug, item])).values());
-    uniqueSubcats.forEach(subcat => {
-        if (subcat.slug && !addedSlugs.has(subcat.slug)) {
-            tabsToRender.push({ label: formatSlugForDisplay(subcat.slug), filter: subcat.slug });
-            addedSlugs.add(subcat.slug);
-        }
-    });
-
-    return tabsToRender;
 }
 
 export async function init() {
@@ -194,6 +208,28 @@ export async function init() {
         container.innerHTML = '<p class="error-message">Failed to load initial data. Please refresh.</p>';
         return;
     }
+
+    // Initialize the global FilterBarManager for the home view
+    const homeFilterBarPlaceholder = document.getElementById('home-filter-bar');
+    if (homeFilterBarPlaceholder) {
+        try {
+            homeFilterBarManager = initializeFilterBarManager(homeFilterBarPlaceholder, await getGlobalFilterTabs());
+            homeFilterBarManager.manageVisibility(true); // Make the filter bar visible
+        } catch (error) {
+            console.error('Error initializing home filter bar:', error);
+            // Fallback: Initialize with default tabs if there's an error
+            homeFilterBarManager = initializeFilterBarManager(homeFilterBarPlaceholder, [
+                { label: 'All', filter: 'all' },
+                { label: 'Products', filter: 'product' },
+                { label: 'Services', filter: 'service' }
+            ]);
+            homeFilterBarManager.manageVisibility(true); // Make the fallback filter bar visible
+        }
+    }
+
+    // Initialize the filter modal manager
+    const filterModalManager = initializeFilterModalManager();
+
 
     window.addEventListener('filterChanged', (event) => {
         currentFilter = event.detail.filter;

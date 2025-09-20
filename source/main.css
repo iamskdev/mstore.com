@@ -60,6 +60,8 @@ header.header-view-area {
   flex-direction: column;
   margin-bottom: var(--bottom-height);
   position: relative;
+  left: 0;
+  right: 0;
   display: none; /* Hidden by default */
   pointer-events: none; /* Disable interactions for inactive views */
   transition:

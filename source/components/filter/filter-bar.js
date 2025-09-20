@@ -5,15 +5,13 @@
 
 // Removed fetchAllCategories as it's no longer used here
 
-const PLACEHOLDER_ID = 'filter-bar-placeholder';
 const COMPONENT_PATH = './source/components/filter/filter-bar.html';
 
 class FilterBarManager {
-    constructor(loadComponentFn, customTabs = []) {
-        this._placeholder = null;
+    constructor(placeholderElement, customTabs = []) {
+        this._placeholder = placeholderElement;
         this.isLoaded = false;
         this.isInitialized = false;
-        this.loadComponent = loadComponentFn;
         this.customTabs = customTabs;
 
         // Listen for events from the modal to update the UI
@@ -21,10 +19,54 @@ class FilterBarManager {
         window.addEventListener('updateFilterIcon', (e) => this.updateFilterIconState(e.detail.isActive));
     }
 
-    get placeholder() {
-        if (!this._placeholder) {
-            this._placeholder = document.getElementById(PLACEHOLDER_ID);
+    async _loadBarHtml() {
+        try {
+            console.log(`Attempting to fetch bar partial from: ${new URL(COMPONENT_PATH, window.location.origin).href}`);
+            const res = await fetch(`${COMPONENT_PATH}?v=${new Date().getTime()}`); // Cache bust
+            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+            const html = await res.text();
+
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = html;
+
+            // Separate scripts from the rest of the content
+            const scripts = Array.from(tempContainer.querySelectorAll('script'));
+            scripts.forEach(s => s.remove());
+
+            // Inject the HTML content without the scripts
+            this._placeholder.innerHTML = tempContainer.innerHTML;
+
+            // Execute scripts sequentially and wait for them to complete
+            for (const script of scripts) {
+                await new Promise((resolve, reject) => {
+                    const newScript = document.createElement('script');
+                    // Copy all attributes (like type="module")
+                    script.getAttributeNames().forEach(attr => newScript.setAttribute(attr, script.getAttribute(attr)));
+                    newScript.textContent = script.textContent;
+
+                    // For external scripts, we wait for the 'load' event.
+                    if (script.src) {
+                        newScript.onload = resolve;
+                        newScript.onerror = reject;
+                    }
+
+                    this._placeholder.appendChild(newScript);
+
+                    // For inline scripts (both classic and module), they execute immediately upon
+                    // being added to the DOM. There is no 'load' event. So, we can resolve right away.
+                    if (!script.src) {
+                        resolve();
+                    }
+                });
+            }
+        } catch (err) {
+            console.error(`❌ Failed to load bar component from: ${COMPONENT_PATH}`, err);
+            this._placeholder.innerHTML = `<div style="color:red; padding:10px;">Failed to load ${COMPONENT_PATH}.</div>`;
+            throw err;
         }
+    }
+
+    get placeholder() {
         return this._placeholder;
     }
 
@@ -33,7 +75,7 @@ class FilterBarManager {
 
         if (shouldShow && !this.isLoaded) {
             try {
-                await this.loadComponent(this.placeholder, COMPONENT_PATH);
+                await this._loadBarHtml();
                 this.isLoaded = true;
                 this._initializeComponentLogic();
                 this.isInitialized = true;
@@ -44,13 +86,19 @@ class FilterBarManager {
         }
 
         if (this.placeholder) {
-            this.placeholder.style.display = shouldShow ? 'block' : 'none';
             const pageViewArea = document.querySelector('.page-view-area');
             if (pageViewArea) {
                 pageViewArea.classList.toggle('filter-bar-active', shouldShow);
             }
-            if (!shouldShow) {
-                document.documentElement.style.setProperty('--filter-bar-height', '0px');
+
+            // NEW: Explicitly manage filter-bar-hidden class on the actual filter bar element
+            const filterBarElement = this.placeholder.querySelector('#filter-bar');
+            if (filterBarElement) {
+                if (shouldShow) {
+                    filterBarElement.classList.remove('filter-bar-hidden');
+                } else {
+                    filterBarElement.classList.add('filter-bar-hidden');
+                }
             }
         }
     }
@@ -99,18 +147,7 @@ class FilterBarManager {
             window.dispatchEvent(new CustomEvent('filterChanged', { detail: { filter: filterValue } }));
         });
 
-        let lastScrollTop = window.scrollY;
-        window.addEventListener('scroll', () => {
-            const currentScrollTop = window.scrollY;
-            if (!container) return;
-            const scrollThreshold = 40;
-            if (currentScrollTop > lastScrollTop && currentScrollTop > scrollThreshold) {
-                container.classList.add('filter-bar-hidden');
-            } else if (currentScrollTop < lastScrollTop) {
-                container.classList.remove('filter-bar-hidden');
-            }
-            lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
-        });
+        
 
         try {
             let tabsToRender = this.customTabs || [];
@@ -126,7 +163,8 @@ class FilterBarManager {
             }
         } catch (error) {
             console.error("FilterBarManager: Failed to load dynamic filter categories:", error);
-        } finally {
+        }
+        finally {
             skeletons.forEach(el => el.remove());
         }
     }
@@ -157,10 +195,12 @@ class FilterBarManager {
         iconBtn.classList.toggle('has-active-filters', isActive);
     }
 
-    async initializeEmbeddedFilterBar(viewElement) {
+    async initializeEmbeddedFilterBar(viewElement, initialVisibility = true) {
         const originalPlaceholder = this._placeholder;
         this._placeholder = viewElement;
         try {
+            // Set initial visibility based on the view config
+            this.manageVisibility(initialVisibility);
             await this._initializeComponentLogic();
         } catch (error) {
             console.error('FilterBarManager: Failed to initialize embedded filter bar logic.', error);
@@ -170,7 +210,7 @@ class FilterBarManager {
     }
 }
 
-export function initializeFilterBarManager(loadComponentFn, customTabs = []) {
-    return new FilterBarManager(loadComponentFn, customTabs);
+export function initializeFilterBarManager(placeholderElement, customTabs = []) {
+    return new FilterBarManager(placeholderElement, customTabs);
 }
 

@@ -9,8 +9,7 @@ import { showToast } from '../../utils/toast.js';
 const MODAL_COMPONENT_PATH = './source/components/filter/filter-modal.html';
 
 class FilterModalManager {
-    constructor(loadComponentFn) {
-        this.loadComponent = loadComponentFn;
+    constructor() {
         this.modalContainer = null;
         this.isModalLoaded = false;
         this.isAdvancedPanelInitialized = false;
@@ -18,6 +17,53 @@ class FilterModalManager {
 
         // Listen for the event to show the modal
         window.addEventListener('toggleAdvancedFilter', (e) => this._toggleAdvancedPanel(e.detail.show));
+    }
+
+    async _loadModalHtml() {
+        try {
+            console.log(`Attempting to fetch modal partial from: ${new URL(MODAL_COMPONENT_PATH, window.location.origin).href}`);
+            const res = await fetch(`${MODAL_COMPONENT_PATH}?v=${new Date().getTime()}`); // Cache bust
+            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+            const html = await res.text();
+
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = html;
+
+            // Separate scripts from the rest of the content
+            const scripts = Array.from(tempContainer.querySelectorAll('script'));
+            scripts.forEach(s => s.remove());
+
+            // Inject the HTML content without the scripts
+            this.modalContainer.innerHTML = tempContainer.innerHTML;
+
+            // Execute scripts sequentially and wait for them to complete
+            for (const script of scripts) {
+                await new Promise((resolve, reject) => {
+                    const newScript = document.createElement('script');
+                    // Copy all attributes (like type="module")
+                    script.getAttributeNames().forEach(attr => newScript.setAttribute(attr, script.getAttribute(attr)));
+                    newScript.textContent = script.textContent;
+
+                    // For external scripts, we wait for the 'load' event.
+                    if (script.src) {
+                        newScript.onload = resolve;
+                        newScript.onerror = reject;
+                    }
+
+                    this.modalContainer.appendChild(newScript);
+
+                    // For inline scripts (both classic and module), they execute immediately upon
+                    // being added to the DOM. There is no 'load' event. So, we can resolve right away.
+                    if (!script.src) {
+                        resolve();
+                    }
+                });
+            }
+        } catch (err) {
+            console.error(`❌ Failed to load modal component from: ${MODAL_COMPONENT_PATH}`, err);
+            this.modalContainer.innerHTML = `<div style="color:red; padding:10px;">Failed to load ${MODAL_COMPONENT_PATH}.</div>`;
+            throw err;
+        }
     }
 
     _formatSlugForDisplay(slug = '') {
@@ -195,7 +241,7 @@ class FilterModalManager {
                 document.body.appendChild(this.modalContainer);
             }
             try {
-                await this.loadComponent(this.modalContainer, MODAL_COMPONENT_PATH);
+                await this._loadModalHtml();
                 this.isModalLoaded = true;
                 this._initializeAdvancedPanelLogic();
             } catch (error) {
@@ -264,6 +310,6 @@ class FilterModalManager {
     }
 }
 
-export function initializeFilterModalManager(loadComponentFn) {
-    return new FilterModalManager(loadComponentFn);
+export function initializeFilterModalManager() {
+    return new FilterModalManager();
 }

@@ -20,7 +20,6 @@ import { loadTopNavigation } from './components/top/top-navigation.js';
 import { loadBottomNavigation } from './components/bottom/bottom-navigation.js';
 import { getFooterHtml } from './components/footer/footer.js';
 import { loadDrawer } from './components/drawer/drawer.js';
-import { initializeFilterBarManager } from './components/filter/filter-bar.js';
 import { initializeFilterModalManager } from './components/filter/filter-modal.js';
 import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
 
@@ -33,7 +32,6 @@ class ViewManager {
     this.viewConfig = viewConfig; // Expose config if needed externally
     this.defaultViews = defaultViews;
     this.loadedViews = new Set();
-    this.filterBarManager = null; // To be lazy-loaded
     this.filterModalManager = null; // To be lazy-loaded
     this.footerHelper = null; // To be lazy-loaded for managing the footer
     this.subscribers = [];
@@ -252,11 +250,7 @@ class ViewManager {
       // If the view config requests an embedded filter bar, fetch and prepend it.
       let finalHtml = viewHtml; // Start with the base view HTML
 
-      // If the view config requests an embedded filter bar, fetch and prepend it.
-      if (config.showFilterBar) {
-        finalHtml = await this._loadAndEmbedFilterBar(finalHtml);
-        viewElement.classList.add('view-with-embedded-filter-bar'); // Add class here
-      }
+      
 
       // If the view config requests an embedded footer, fetch and append it.
       if (config.embedFooter) {
@@ -269,45 +263,7 @@ class ViewManager {
 
       console.log(`ViewManager: Successfully loaded content for ${config.id} from ${config.path}`);
 
-      // Initialize filter bar logic AFTER the HTML is in the DOM
-      if (config.showFilterBar) {
-        let customTabs = [];
-        // Dynamically import the view's JS module to get filter tabs if available
-        if (config.jsPath) {
-          try {
-            const absoluteJsPath = new URL(config.jsPath, window.location.href).href;
-            const modulePath = getAppConfig().app.environment === 'development' ? `${absoluteJsPath}?v=${new Date().getTime()}` : absoluteJsPath;
-            console.log(`ViewManager: Attempting to import module for filter tabs from: ${modulePath}`);
-            const viewModule = await import(modulePath);
-            console.log('ViewManager: Imported view module:', viewModule);
-            if (viewModule.getHomeFilterTabs && typeof viewModule.getHomeFilterTabs === 'function') {
-              customTabs = await viewModule.getHomeFilterTabs();
-              console.log('ViewManager: Fetched customTabs:', customTabs);
-            } else {
-              console.warn(`ViewManager: getHomeFilterTabs function not found or not a function in ${config.jsPath}.`);
-            }
-          } catch (error) {
-            console.error(`ViewManager: Failed to load module or getHomeFilterTabs from ${config.jsPath}:`, error);
-          }
-        }
-
-        // Lazy-load FilterBarManager if not already loaded
-        if (!this.filterBarManager) {
-          this.filterBarManager = initializeFilterBarManager(loadComponent, customTabs); // Pass loadComponent and customTabs
-          console.log('ViewManager: Initialized FilterBarManager with customTabs:', customTabs);
-        } else {
-          // If already loaded, update its customTabs and re-initialize
-          this.filterBarManager.customTabs = customTabs;
-          console.log('ViewManager: Updated existing FilterBarManager with customTabs:', customTabs);
-        }
-        // Call a new method on filterBarManager to initialize the embedded filter bar
-        this.filterBarManager.initializeEmbeddedFilterBar(viewElement);
-
-        // Lazy-load FilterModalManager if not already loaded
-        if (!this.filterModalManager) {
-          this.filterModalManager = initializeFilterModalManager(loadComponent); // Pass loadComponent
-        }
-      }
+      // FilterModalManager will be initialized by individual views if they need a filter bar.
 
       // If the view has an embedded footer, initialize its interactive logic.
       if (config.embedFooter) {
@@ -658,58 +614,7 @@ window.addEventListener('requestViewChange', (e) => {
 
 
 
-/**
- * A reusable function to load an HTML partial into a given element
- * and correctly execute any scripts within it.
- * @param {HTMLElement} element - The placeholder element to inject content into.
- * @param {string} path - The path to the HTML partial file.
- */
-export async function loadComponent(element, path) {
-  try {
-    console.log(`Attempting to fetch partial from: ${new URL(path, window.location.origin).href}`);
-    const res = await fetch(`${path}?v=${new Date().getTime()}`); // Cache bust
-    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-    const html = await res.text();
 
-    const tempContainer = document.createElement('div');
-    tempContainer.innerHTML = html;
-
-    // Separate scripts from the rest of the content
-    const scripts = Array.from(tempContainer.querySelectorAll('script'));
-    scripts.forEach(s => s.remove());
-
-    // Inject the HTML content without the scripts
-    element.innerHTML = tempContainer.innerHTML;
-
-    // Execute scripts sequentially and wait for them to complete
-    for (const script of scripts) {
-      await new Promise((resolve, reject) => {
-        const newScript = document.createElement('script');
-        // Copy all attributes (like type="module")
-        script.getAttributeNames().forEach(attr => newScript.setAttribute(attr, script.getAttribute(attr)));
-        newScript.textContent = script.textContent;
-
-        // For external scripts, we wait for the 'load' event.
-        if (script.src) {
-          newScript.onload = resolve;
-          newScript.onerror = reject;
-        }
-
-        element.appendChild(newScript);
-
-        // For inline scripts (both classic and module), they execute immediately upon
-        // being added to the DOM. There is no 'load' event. So, we can resolve right away.
-        if (!script.src) {
-          resolve();
-        }
-      });
-    }
-  } catch (err) {
-    console.error(`❌ Failed to load component from: ${path}`, err);
-    element.innerHTML = `<div style="color:red; padding:10px;">Failed to load ${path}.</div>`;
-    throw err;
-  }
-}
 
 
 
@@ -826,7 +731,29 @@ export async function initializeApp() {
   if (roleSwitcherEnabled) {
     const roleSwitcherElement = document.getElementById('role-switcher-placeholder');
     if (roleSwitcherElement) {
-        await loadComponent(roleSwitcherElement, './source/components/role-switcher.html');
+        try {
+            const res = await fetch('./source/components/role-switcher.html');
+            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+            const html = await res.text();
+
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = html;
+
+            const scripts = Array.from(tempContainer.querySelectorAll('script'));
+            scripts.forEach(s => s.remove());
+
+            roleSwitcherElement.innerHTML = tempContainer.innerHTML;
+
+            for (const script of scripts) {
+              const newScript = document.createElement('script');
+              script.getAttributeNames().forEach(attr => newScript.setAttribute(attr, script.getAttribute(attr)));
+              newScript.textContent = script.textContent;
+              roleSwitcherElement.appendChild(newScript);
+            }
+        } catch (err) {
+            console.error('Failed to load role-switcher:', err);
+            roleSwitcherElement.innerHTML = '<div style="color:red; padding:10px;">Failed to load role switcher.</div>';
+        }
     }
   }
 

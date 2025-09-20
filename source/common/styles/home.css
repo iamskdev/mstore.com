@@ -18,6 +18,13 @@
   margin-bottom: 0.5rem;
 }
 
+.home-filter-container {
+  position: sticky;
+  top: var(--top-height);
+  z-index: 1;
+  background: var(--bg-primary);
+}
+
 .banner-dot {
   height: 8px;
   width: 8px;

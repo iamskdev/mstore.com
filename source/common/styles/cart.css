@@ -3,7 +3,12 @@
       /* flex-grow and overflow are moved to #cart-view */
       background: var(--bg-primary);
     }   
-    
+    .cart-filter-container {
+      position: sticky;
+      top: var(--top-height);
+      z-index: 1;
+      background: var(--bg-primary);
+    }
     .cart-footer-area {
       position: sticky;
       bottom: var(--bottom-height);
