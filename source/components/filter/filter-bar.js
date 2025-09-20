@@ -174,24 +174,3 @@ export function initializeFilterBarManager(loadComponentFn, customTabs = []) {
     return new FilterBarManager(loadComponentFn, customTabs);
 }
 
-export async function initCustomTabs(getTabsFn) {
-    const placeholder = document.getElementById(PLACEHOLDER_ID);
-    if (!placeholder) return;
-    const container = placeholder.querySelector('#filter-bar');
-    if (!container) return;
-
-    const tabsToRender = await getTabsFn();
-
-    const existingTabs = container.querySelectorAll('.filter-bar-tab:not(.filter-icon-btn)');
-    existingTabs.forEach(tab => tab.remove());
-
-    let finalHtml = '';
-    tabsToRender.forEach(tab => {
-        const isActive = tab.filter === 'all' ? ' active' : '';
-        finalHtml += `<button class="filter-bar-tab${isActive}" data-filter="${tab.filter}">${tab.label}</button>`;
-    });
-
-    if (finalHtml) {
-        container.insertAdjacentHTML('beforeend', finalHtml);
-    }
-}

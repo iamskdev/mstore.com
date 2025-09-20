@@ -2,7 +2,7 @@
   "app": {
     "owner": "santosh",
     "name": "mStore",
-    "version": "0.7.26",
+    "version": "0.7.27",
     "environment": "development",
     "description": ""
   },
@@ -32,7 +32,7 @@
   "audit": {
     "createdAt": "2025-09-08T09:56:14Z",
     "createdBy": "Santosh",
-    "modifyAt": "2025-09-20T08:04:24Z",
+    "modifyAt": "2025-09-20T10:10:02Z",
     "modifyBy": "System"
   }
 }

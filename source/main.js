@@ -208,7 +208,7 @@ class ViewManager {
       await this._fetchDataDependencies(config.dataDependencies);
     }
     try {
-      viewElement.innerHTML = `<div class="view-placeholder"><div class="loading-spinner"><div class="spinner"></div></div></div>`;
+      
 
       // 1. Load associated CSS file if it exists and isn't already loaded.
       // Use specific cssPath from config, or fall back to convention for other views.

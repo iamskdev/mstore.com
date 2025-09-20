@@ -207,7 +207,7 @@ export async function init() {
 
     await populateAllItemsGrid(); // Ensure allItems is populated before initializing handlers
     initAddToCartHandler(allItems); // Pass allItems to the handler
-    initWishlistHandler();
+    
 
     container.addEventListener('click', (e) => {
         const target = e.target.closest('[data-view-target]');
