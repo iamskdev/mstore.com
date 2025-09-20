@@ -5,7 +5,6 @@ import { fetchAllCategories } from '../../utils/data-manager.js';
 let currentFilter = "all"; // products or services
 let currentSort = "relevance"; // Default sort order
 let cart = {};
-
 // Local utility to format slug for display
 function _formatSlugForDisplay(slug = '') {
     if (!slug) return '';
@@ -126,9 +125,17 @@ const cartViewConfig = {
 
 async function rendercard() {
   const cartItemsContainer = document.getElementById("cart-items-container");
-  cartItemsContainer.innerHTML = "";
+  console.log('rendercard: cartItemsContainer:', cartItemsContainer);
+  console.log('rendercard: Before clearing, children count:', cartItemsContainer.children.length);
+
+  // Clear existing cards explicitly
+  while (cartItemsContainer.firstChild) {
+    cartItemsContainer.removeChild(cartItemsContainer.firstChild);
+  }
+  console.log('rendercard: After clearing, children count:', cartItemsContainer.children.length);
 
   cart.items = await getCartItemsManager();
+  console.log('rendercard: Fetched cart.items for rendering:', cart.items.map(i => i.meta.itemId));
 
   cart.items.sort((a, b) => {
     const priceA = a.pricing.sellingPrice * a.cart.qty;
@@ -142,42 +149,28 @@ async function rendercard() {
     }
   });
 
-  const groupedItems = new Map();
-
   for (const item of cart.items) {
-    const categoryId = item.meta.links.categoryId;
-    const category = await getCategoryInfoByCategoryId(categoryId);
-    const categoryKey = category ? category.meta.slug : 'uncategorized';
-    const categoryDisplayName = category ? _formatSlugForDisplay(category.meta.slug) : 'Uncategorized';
+    const itemCategoryId = item.meta.links.categoryId;
+    const itemCategory = await getCategoryInfoByCategoryId(itemCategoryId);
+    const itemCategorySlug = itemCategory ? itemCategory.meta.slug : 'uncategorized';
 
-    if (!groupedItems.has(categoryKey)) {
-      groupedItems.set(categoryKey, { displayName: categoryDisplayName, items: [] });
+    let shouldDisplay = false;
+    if (currentFilter === 'all') {
+      shouldDisplay = true;
+    } else if (currentFilter === 'product') {
+      shouldDisplay = item.meta.type === 'product';
+    } else if (currentFilter === 'service') {
+      shouldDisplay = item.meta.type === 'service';
+    } else {
+      shouldDisplay = itemCategorySlug === currentFilter;
     }
-    groupedItems.get(categoryKey).items.push(item);
-  }
 
-  for (const [categoryKey, data] of groupedItems.entries()) {
-    if (data.items.length > 0 && categoryKey !== 'uncategorized') {
-      for (const item of data.items) {
-        let cardElement = createListCard(item, cartViewConfig);
-        if (cardElement) {
-          const itemCategoryId = item.meta.links.categoryId;
-          const itemCategory = await getCategoryInfoByCategoryId(itemCategoryId);
-          const itemCategorySlug = itemCategory ? itemCategory.meta.slug : 'uncategorized';
-
-          let shouldDisplay = false;
-          if (currentFilter === 'all') {
-            shouldDisplay = true;
-          } else if (currentFilter === 'product') {
-            shouldDisplay = item.meta.type === 'product';
-          } else if (currentFilter === 'service') {
-            shouldDisplay = item.meta.type === 'service';
-          } else {
-            shouldDisplay = itemCategorySlug === currentFilter;
-          }
-          cardElement.style.display = shouldDisplay ? '' : 'none';
-          cartItemsContainer.appendChild(cardElement);
-        }
+    if (shouldDisplay) {
+      let cardElement = createListCard(item, cartViewConfig);
+      if (cardElement) {
+        console.log('rendercard: Appending card for itemId:', item.meta.itemId, 'cardElement ID:', cardElement.id);
+        cartItemsContainer.appendChild(cardElement);
+        console.log('rendercard: After appending, children count:', cartItemsContainer.children.length);
       }
     }
   }
@@ -186,12 +179,59 @@ async function rendercard() {
   document.querySelector(".cart-btn").innerText = "Request All";
 }
 
+// New function to update a single card's display without full re-render
+function updateCardDisplay(item) {
+    const cardElement = document.getElementById(`card-${item.meta.itemId}`);
+    if (cardElement) {
+        // Update quantity selector value
+        const qtySelect = cardElement.querySelector(`#qty-select-${item.meta.itemId}`);
+        if (qtySelect) {
+            qtySelect.value = item.cart.qty;
+        }
+
+        // Update selling price
+        const sellingPriceElement = cardElement.querySelector('.selling-price');
+        if (sellingPriceElement) {
+            const sellingPriceField = cartViewConfig.fields.find(f => f.key === 'pricing.sellingPrice');
+            if (sellingPriceField && sellingPriceField.formatter) {
+                sellingPriceElement.innerText = sellingPriceField.formatter(item.pricing.sellingPrice, item);
+            }
+        }
+
+        // Update MRP (max price)
+        const maxPriceElement = cardElement.querySelector('.max-price');
+        const mrpField = cartViewConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.max-price');
+        if (maxPriceElement) {
+            if (mrpField && mrpField.visible(item)) {
+                maxPriceElement.innerText = mrpField.formatter(item.pricing.mrp, item);
+                maxPriceElement.style.display = ''; // Ensure it's visible
+            } else {
+                maxPriceElement.style.display = 'none'; // Hide if not visible
+            }
+        }
+
+        // Update discount
+        const discountElement = cardElement.querySelector('.card-discount');
+        const discountField = cartViewConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.card-discount');
+        if (discountElement) {
+            if (discountField && discountField.visible(item)) {
+                discountElement.innerText = discountField.formatter(item.pricing.mrp, item);
+                discountElement.style.display = ''; // Ensure it's visible
+            } else {
+                discountElement.style.display = 'none'; // Hide if not visible
+            }
+        }
+    }
+}
+
 window.updateQty = function(itemId, qty) {
+  console.log(`Updating quantity for itemId: ${itemId} to ${qty}`);
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "product");
   if (item) {
     item.cart.qty = parseInt(qty);
-    saveCartToLocalStorage(cart.items);
-    rendercard();
+    saveCartToLocalStorage(cart.items, false); // Pass false to prevent dispatching cartItemsChanged event
+    updateCardDisplay(item); // Update the specific card's display
+    updateCartTotalDisplay(); // Update the overall cart total
   }
 };
 
@@ -207,38 +247,47 @@ window.updateDate = function(itemId, dateValue) {
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "service");
   if (item) {
     item.cart.selectedDate = dateValue;
-    saveCartToLocalStorage(cart.items);
+    saveCartToLocalStorage(cart.items, false); // Pass false to prevent dispatching cartItemsChanged event
   }
-  rendercard();
+  // rendercard(); // Removed direct call
 };
 
 window.removeItem = function(itemId) {
+  const initialLength = cart.items.length;
   cart.items = cart.items.filter(i => i.meta.itemId !== itemId);
-  saveCartToLocalStorage(cart.items);
-  rendercard();
+  if (cart.items.length < initialLength) { // Only update if an item was actually removed
+    saveCartToLocalStorage(cart.items, false); // Prevent full refresh
+    const cardElement = document.getElementById(`card-${itemId}`);
+    if (cardElement) {
+      cardElement.remove(); // Remove the card from the DOM
+    }
+    updateCartTotalDisplay(); // Update the overall cart total
+  }
+  // rendercard(); // Removed direct call
 };
 
-rendercard();
 
 export async function init() {
   await initCardHelper(null);
-  await rendercard();
 
-  
+  // Add event listeners only if they haven't been added yet
+  if (!window._cartEventListenersAdded) {
+    window.addEventListener('filterChanged', (event) => {
+      currentFilter = event.detail.filter;
+      rendercard();
+    });
 
-  // Listen for filter changes from the filter bar
-  window.addEventListener('filterChanged', (event) => {
-    currentFilter = event.detail.filter;
-    rendercard();
-  });
+    window.addEventListener('advancedFilterApplied', (event) => {
+      const { sort } = event.detail;
+      currentSort = sort;
+      rendercard();
+    });
 
-  // Listen for advanced filter changes from the filter modal
-  window.addEventListener('advancedFilterApplied', (event) => {
-    const { sort } = event.detail;
-    currentSort = sort;
-    rendercard();
-  });
+    window.addEventListener('cartItemsChanged', rendercard);
 
-  // Listen for cart changes to update UI dynamically
-  window.addEventListener('cartItemsChanged', rendercard);
+    window._cartEventListenersAdded = true;
+  }
+
+  // Always trigger initial render when init is called
+  rendercard();
 }

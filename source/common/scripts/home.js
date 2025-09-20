@@ -1,7 +1,8 @@
 import { fetchAllItems, fetchAllUnits, fetchAllCategories, fetchActivePromotion } from '../../utils/data-manager.js';
 import { createCardFromTemplate, initCardHelper } from '../../components/cards/card-helper.js';
 import { initBannerManager } from '../../utils/banner-mannager.js';
-import { isItemSaved } from '../../utils/saved-manager.js';
+import { isItemSaved} from '../../utils/saved-manager.js';
+import { initAddToCartHandler } from '../../utils/cart-manager.js';
 
 let allItems = [];
 let currentFilter = 'all';
@@ -204,7 +205,9 @@ export async function init() {
         populateAllItemsGrid();
     });
 
-    populateAllItemsGrid();
+    await populateAllItemsGrid(); // Ensure allItems is populated before initializing handlers
+    initAddToCartHandler(allItems); // Pass allItems to the handler
+    initWishlistHandler();
 
     container.addEventListener('click', (e) => {
         const target = e.target.closest('[data-view-target]');
