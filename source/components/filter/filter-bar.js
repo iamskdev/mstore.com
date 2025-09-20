@@ -3,7 +3,7 @@
  * This module encapsulates the logic for loading, displaying, and interacting with the filter bar.
  */
 
-import { fetchAllCategories } from '../../utils/data-manager.js';
+// Removed fetchAllCategories as it's no longer used here
 
 const PLACEHOLDER_ID = 'filter-bar-placeholder';
 const COMPONENT_PATH = './source/components/filter/filter-bar.html';
@@ -113,33 +113,7 @@ class FilterBarManager {
         });
 
         try {
-            let tabsToRender = [];
-            if (this.customTabs && this.customTabs.length > 0) {
-                tabsToRender = this.customTabs;
-            } else {
-                const allCategories = await fetchAllCategories(true);
-                const activeCategories = allCategories.filter(cat => cat.meta?.flags?.isActive);
-                const addedSlugs = new Set(['all', 'product', 'service']);
-                tabsToRender = [
-                    { label: 'All', filter: 'all' },
-                    { label: 'Products', filter: 'product' },
-                    { label: 'Services', filter: 'service' }
-                ];
-                activeCategories.forEach(cat => {
-                    if (cat.meta?.slug && !addedSlugs.has(cat.meta.slug)) {
-                        tabsToRender.push({ label: this._formatSlugForDisplay(cat.meta.slug), filter: cat.meta.slug });
-                        addedSlugs.add(cat.meta.slug);
-                    }
-                });
-                const allSubcategories = activeCategories.flatMap(cat => cat.subcategories || []);
-                const uniqueSubcats = Array.from(new Map(allSubcategories.map(item => [item.slug, item])).values());
-                uniqueSubcats.forEach(subcat => {
-                    if (subcat.slug && !addedSlugs.has(subcat.slug)) {
-                        tabsToRender.push({ label: this._formatSlugForDisplay(subcat.slug), filter: subcat.slug });
-                        addedSlugs.add(subcat.slug);
-                    }
-                });
-            }
+            let tabsToRender = this.customTabs || [];
             
             let finalHtml = '';
             tabsToRender.forEach(tab => {

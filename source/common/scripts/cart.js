@@ -1,6 +1,5 @@
 import { createListCard, initCardHelper } from '../../components/cards/card-helper.js';
 import { getCartItems as getCartItemsManager, saveCartToLocalStorage } from '../../utils/cart-manager.js';
-import { initCustomTabs } from '../../components/filter/filter-modal.js';
 import { fetchAllCategories } from '../../utils/data-manager.js';
 
 let currentFilter = "all"; // products or services
@@ -225,8 +224,7 @@ export async function init() {
   await initCardHelper(null);
   await rendercard();
 
-  // Initialize custom tabs for the cart view
-  await initCustomTabs(getCartCustomTabs);
+  
 
   // Listen for filter changes from the filter bar
   window.addEventListener('filterChanged', (event) => {

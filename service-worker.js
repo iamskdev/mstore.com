@@ -22,6 +22,7 @@ const APP_SHELL_URLS = [
 
   // Core Utility Modules
   './source/utils/data-manager.js',
+  './source/components/filter/filter-bar.js',
   './source/components/filter/filter-modal.js',
   './source/utils/formatters.js',
   './source/utils/pwa-manager.js',
@@ -46,8 +47,8 @@ const APP_SHELL_URLS = [
   './source/components/footer/footer.html',
   './source/components/footer/footer.js',
   './source/components/filter/filter-bar.html',
-  './source/components/role-switcher.html',
   './source/components/filter/filter-modal.html',
+  './source/components/role-switcher.html',
   './source/components/cards/card-grid.html',
   './source/components/cards/banner.html',
   './source/components/cards/card-list.html',

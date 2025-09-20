@@ -271,9 +271,34 @@ class ViewManager {
 
       // Initialize filter bar logic AFTER the HTML is in the DOM
       if (config.showFilterBar) {
+        let customTabs = [];
+        // Dynamically import the view's JS module to get filter tabs if available
+        if (config.jsPath) {
+          try {
+            const absoluteJsPath = new URL(config.jsPath, window.location.href).href;
+            const modulePath = getAppConfig().app.environment === 'development' ? `${absoluteJsPath}?v=${new Date().getTime()}` : absoluteJsPath;
+            console.log(`ViewManager: Attempting to import module for filter tabs from: ${modulePath}`);
+            const viewModule = await import(modulePath);
+            console.log('ViewManager: Imported view module:', viewModule);
+            if (viewModule.getHomeFilterTabs && typeof viewModule.getHomeFilterTabs === 'function') {
+              customTabs = await viewModule.getHomeFilterTabs();
+              console.log('ViewManager: Fetched customTabs:', customTabs);
+            } else {
+              console.warn(`ViewManager: getHomeFilterTabs function not found or not a function in ${config.jsPath}.`);
+            }
+          } catch (error) {
+            console.error(`ViewManager: Failed to load module or getHomeFilterTabs from ${config.jsPath}:`, error);
+          }
+        }
+
         // Lazy-load FilterBarManager if not already loaded
         if (!this.filterBarManager) {
-          this.filterBarManager = initializeFilterBarManager(loadComponent); // Pass loadComponent
+          this.filterBarManager = initializeFilterBarManager(loadComponent, customTabs); // Pass loadComponent and customTabs
+          console.log('ViewManager: Initialized FilterBarManager with customTabs:', customTabs);
+        } else {
+          // If already loaded, update its customTabs and re-initialize
+          this.filterBarManager.customTabs = customTabs;
+          console.log('ViewManager: Updated existing FilterBarManager with customTabs:', customTabs);
         }
         // Call a new method on filterBarManager to initialize the embedded filter bar
         this.filterBarManager.initializeEmbeddedFilterBar(viewElement);

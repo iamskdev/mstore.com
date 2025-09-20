@@ -1,81 +1,73 @@
 import { fetchAllItems, fetchAllUnits, fetchAllCategories, fetchActivePromotion } from '../../utils/data-manager.js';
 import { createCardFromTemplate, initCardHelper } from '../../components/cards/card-helper.js';
-import { initBannerManager } from '../../utils/banner-mannager.js'; // Add this line
+import { initBannerManager } from '../../utils/banner-mannager.js';
 import { isItemSaved } from '../../utils/saved-manager.js';
 
-let allItems = []; // Global variable to store all fetched items
-let currentFilter = 'all'; // Global variable to store the current filter
-let allCategoriesMap = {}; // New global variable for categories map
-
+let allItems = [];
+let currentFilter = 'all';
+let allCategoriesMap = {};
 
 async function populateAllItemsGrid(itemsToDisplay = allItems) {
     const grid = document.getElementById('all-items-grid');
-    if (!grid) return; // Modified check
+    if (!grid) return;
 
     grid.innerHTML = '';
     for (let i = 0; i < 8; i++) {
         grid.appendChild(createCardFromTemplate(null, true));
     }
-    // Removed countEl.textContent = '';
 
     try {
-        // If allItems is empty, fetch them. This ensures data is fetched only once.
         if (allItems.length === 0) {
             const fetchedItems = await fetchAllItems();
             allItems = fetchedItems.filter(item => item.meta.flags.isActive);
-            itemsToDisplay = allItems; // If fetching for the first time, display all active items
+            itemsToDisplay = allItems;
         }
 
-        const filteredItems = applyFilters(itemsToDisplay, currentFilter, currentAdvancedFilters); // Apply current filter
+        const filteredItems = applyFilters(itemsToDisplay, currentFilter, currentAdvancedFilters);
 
         grid.innerHTML = '';
         if (filteredItems.length === 0) {
             grid.innerHTML = `<div class="no-items-placeholder">No products or services found.</div>`;
-            // Removed countEl.textContent = '0 items';
             return;
         }
 
         const fragment = document.createDocumentFragment();
-        for (const item of filteredItems) { // Use filteredItems here
+        for (const item of filteredItems) {
             const card = createCardFromTemplate({
                 ...item,
-                isSaved: isItemSaved(item.meta.itemId) // Pass the saved status
+                isSaved: isItemSaved(item.meta.itemId)
             });
             if (card) fragment.appendChild(card);
         }
         grid.appendChild(fragment);
-        // Removed countEl.textContent = `${filteredItems.length} items`;
 
     } catch (error) {
         grid.innerHTML = `<div class="no-items-placeholder">Could not load all products and services.</div>`;
-        // Removed countEl.textContent = 'Error loading items';
     }
 }
 
-let currentAdvancedFilters = {}; // New global variable for advanced filters
+let currentAdvancedFilters = {};
 
-/**
- * Applies filters to the given array of items.
- * @param {Array} items - The array of items to filter.
- * @param {string} filterValue - The filter value (e.g., category slug, 'all', 'product', 'service').
- * @param {object} advancedFilters - Optional: Object containing advanced filter criteria.
- * @returns {Array} The filtered array of items.
- */
+function formatSlugForDisplay(slug = '') {
+    if (!slug) return '';
+    return slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
 function applyFilters(items, filterValue, advancedFilters = {}) {
     let filtered = items;
 
-    // Apply basic filter (from horizontal bar)
     if (filterValue === 'product') {
         filtered = filtered.filter(item => item.meta.type === 'product');
     } else if (filterValue === 'service') {
         filtered = filtered.filter(item => item.meta.type === 'service');
     } else if (filterValue !== 'all') {
-        // Get the category ID from the slug
         const categoryIdToFilter = Object.values(allCategoriesMap).find(cat => cat.meta.slug === filterValue)?.meta.categoryId;
         if (categoryIdToFilter) {
             filtered = filtered.filter(item => item.meta.links.categoryId === categoryIdToFilter);
         } else {
-            // If filterValue is a subcategory slug, find its parent category ID
             const subcategoryParentId = Object.values(allCategoriesMap).find(cat =>
                 cat.subcategories?.some(subcat => subcat.slug === filterValue)
             )?.meta.categoryId;
@@ -85,7 +77,6 @@ function applyFilters(items, filterValue, advancedFilters = {}) {
         }
     }
 
-    // Apply advanced filters
     if (advancedFilters.mainCategory) {
         const mainCategoryId = Object.values(allCategoriesMap).find(cat => cat.meta.slug === advancedFilters.mainCategory)?.meta.categoryId;
         if (mainCategoryId) {
@@ -94,7 +85,6 @@ function applyFilters(items, filterValue, advancedFilters = {}) {
     }
     if (advancedFilters.subcategory) {
         const subcategorySlug = advancedFilters.subcategory;
-        // Find the parent category ID for the selected subcategory
         const parentCategoryId = Object.values(allCategoriesMap).find(cat =>
             cat.subcategories?.some(subcat => subcat.slug === subcategorySlug)
         )?.meta.categoryId;
@@ -102,10 +92,6 @@ function applyFilters(items, filterValue, advancedFilters = {}) {
         if (parentCategoryId) {
             filtered = filtered.filter(item => item.meta.links.categoryId === parentCategoryId);
         }
-        // Note: Filtering by subcategory slug directly on item.subcategories is not possible
-        // because items only have categoryId, not subcategory slugs.
-        // The current approach filters by the parent category of the subcategory.
-        // If more granular subcategory filtering is needed, items.json would need to store subcategory IDs.
     }
     if (advancedFilters.brand) {
         filtered = filtered.filter(item =>
@@ -125,9 +111,7 @@ function applyFilters(items, filterValue, advancedFilters = {}) {
         );
     }
 
-    // Apply sorting (if 'sort' is present and not 'relevance')
     if (advancedFilters.sort && advancedFilters.sort !== 'relevance') {
-        // Create a shallow copy before sorting to ensure re-render if needed
         filtered = [...filtered].sort((a, b) => {
             if (advancedFilters.sort === 'price-asc') {
                 return a.pricing.sellingPrice - b.pricing.sellingPrice;
@@ -145,15 +129,50 @@ function applyFilters(items, filterValue, advancedFilters = {}) {
     return filtered;
 }
 
+export async function getHomeFilterTabs() {
+    if (Object.keys(allCategoriesMap).length === 0) {
+        const categoriesResponse = await fetchAllCategories(true);
+        categoriesResponse.forEach(cat => {
+            allCategoriesMap[cat.meta.categoryId] = cat;
+        });
+    }
+
+    const allCategories = Object.values(allCategoriesMap);
+    const activeCategories = allCategories.filter(cat => cat.meta?.flags?.isActive);
+    const addedSlugs = new Set(['all', 'product', 'service']);
+    const tabsToRender = [
+        { label: 'All', filter: 'all' },
+        { label: 'Products', filter: 'product' },
+        { label: 'Services', filter: 'service' }
+    ];
+
+    activeCategories.forEach(cat => {
+        if (cat.meta?.slug && !addedSlugs.has(cat.meta.slug)) {
+            tabsToRender.push({ label: formatSlugForDisplay(cat.meta.slug), filter: cat.meta.slug });
+            addedSlugs.add(cat.meta.slug);
+        }
+    });
+
+    const allSubcategories = activeCategories.flatMap(cat => cat.subcategories || []);
+    const uniqueSubcats = Array.from(new Map(allSubcategories.map(item => [item.slug, item])).values());
+    uniqueSubcats.forEach(subcat => {
+        if (subcat.slug && !addedSlugs.has(subcat.slug)) {
+            tabsToRender.push({ label: formatSlugForDisplay(subcat.slug), filter: subcat.slug });
+            addedSlugs.add(subcat.slug);
+        }
+    });
+
+    return tabsToRender;
+}
+
 export async function init() {
     const container = document.querySelector('.home-view');
     if (!container || container.dataset.initialized === 'true') return;
 
-
     try {
         const [unitsResponse, categoriesResponse] = await Promise.all([
             fetchAllUnits(),
-            fetchAllCategories(true) // Fetch all categories
+            fetchAllCategories(true)
         ]);
 
         const unitsData = {};
@@ -161,32 +180,28 @@ export async function init() {
             unitsData[unit.meta.unitId] = unit;
         });
 
-        await initCardHelper(unitsData); // Initialize card helper with units data
-        await initBannerManager(); // Initialize banner manager
+        await initCardHelper(unitsData);
+        await initBannerManager();
 
-        // Populate allCategoriesMap
-        categoriesResponse.forEach(cat => {
-            allCategoriesMap[cat.meta.categoryId] = cat;
-        });
-
-        
+        if (Object.keys(allCategoriesMap).length === 0) {
+            categoriesResponse.forEach(cat => {
+                allCategoriesMap[cat.meta.categoryId] = cat;
+            });
+        }
 
     } catch (error) {
         container.innerHTML = '<p class="error-message">Failed to load initial data. Please refresh.</p>';
         return;
     }
 
-    // Listen for filter changes from the filter bar
     window.addEventListener('filterChanged', (event) => {
         currentFilter = event.detail.filter;
-        
-        populateAllItemsGrid(); // Re-populate grid with new filter
+        populateAllItemsGrid();
     });
 
-    // Listen for advanced filter changes
     window.addEventListener('advancedFilterApplied', (event) => {
-        currentAdvancedFilters = event.detail; // Store the advanced filters
-        populateAllItemsGrid(); // Re-populate grid with new advanced filters
+        currentAdvancedFilters = event.detail;
+        populateAllItemsGrid();
     });
 
     populateAllItemsGrid();
