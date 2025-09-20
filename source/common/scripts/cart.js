@@ -22,31 +22,36 @@ async function getCategoryInfoByCategoryId(categoryId) {
 }
 
 // This function is exported to be used by the filter-helper
-export async function getCartCustomTabs() {
+export async function getHomeFilterTabs() {
     const cartItems = await getCartItemsManager();
-    if (cartItems.length === 0) {
-        return []; // Return empty array if cart is empty, so no tabs are shown
-    }
 
+    if (cartItems.length === 0) {
+        return []; // Return no tabs if cart is empty
+    }
+    
     const customTabs = [{ label: 'All', filter: 'all' }];
 
-    const hasProductsInCart = cartItems.some(item => item.meta.type === 'product');
-    if (hasProductsInCart) {
+    const hasProducts = cartItems.some(item => item.meta.type === 'product');
+    const hasServices = cartItems.some(item => item.meta.type === 'service');
+
+    if (hasProducts) {
         customTabs.push({ label: 'Products', filter: 'product' });
     }
 
-    const hasServicesInCart = cartItems.some(item => item.meta.type === 'service');
-    if (hasServicesInCart) {
+    if (hasServices) {
         customTabs.push({ label: 'Services', filter: 'service' });
     }
 
-    const categoryIdsInCart = new Set(cartItems.map(item => item.meta.links.categoryId));
-    for (const categoryId of categoryIdsInCart) {
-        const category = await getCategoryInfoByCategoryId(categoryId);
-        if (category && !customTabs.some(tab => tab.filter === category.meta.slug)) {
-            const hasItemsInThisCategory = cartItems.some(item => item.meta.links.categoryId === categoryId);
-            if (hasItemsInThisCategory) {
-                customTabs.push({ label: _formatSlugForDisplay(category.meta.slug), filter: category.meta.slug });
+    // Only add category-specific tabs if there are items in the cart
+    if (cartItems.length > 0) {
+        const categoryIdsInCart = new Set(cartItems.map(item => item.meta.links.categoryId));
+        for (const categoryId of categoryIdsInCart) {
+            const category = await getCategoryInfoByCategoryId(categoryId);
+            if (category && !customTabs.some(tab => tab.filter === category.meta.slug)) {
+                const hasItemsInThisCategory = cartItems.some(item => item.meta.links.categoryId === categoryId);
+                if (hasItemsInThisCategory) {
+                    customTabs.push({ label: _formatSlugForDisplay(category.meta.slug), filter: category.meta.slug });
+                }
             }
         }
     }
@@ -125,17 +130,31 @@ const cartViewConfig = {
 
 async function rendercard() {
   const cartItemsContainer = document.getElementById("cart-items-container");
-  console.log('rendercard: cartItemsContainer:', cartItemsContainer);
-  console.log('rendercard: Before clearing, children count:', cartItemsContainer.children.length);
+  const emptyCartView = document.getElementById("empty-cart-view");
+  const filterBar = document.getElementById('filter-bar');
+  const cartFooter = document.querySelector('.cart-footer-area');
+
+  cart.items = await getCartItemsManager();
+  const displayedItems = [];
+
+  if (cart.items.length === 0) {
+    if (filterBar) filterBar.style.display = 'none';
+    if (cartFooter) cartFooter.style.display = 'none';
+    cartItemsContainer.classList.add('hidden');
+    emptyCartView.classList.remove('hidden');
+    updateCartTotalDisplay([]); // Ensure total is updated to 0
+    return;
+  }
+
+  if (filterBar) filterBar.style.display = 'flex';
+  if (cartFooter) cartFooter.style.display = 'flex';
+  cartItemsContainer.classList.remove('hidden');
+  emptyCartView.classList.add('hidden');
 
   // Clear existing cards explicitly
   while (cartItemsContainer.firstChild) {
     cartItemsContainer.removeChild(cartItemsContainer.firstChild);
   }
-  console.log('rendercard: After clearing, children count:', cartItemsContainer.children.length);
-
-  cart.items = await getCartItemsManager();
-  console.log('rendercard: Fetched cart.items for rendering:', cart.items.map(i => i.meta.itemId));
 
   cart.items.sort((a, b) => {
     const priceA = a.pricing.sellingPrice * a.cart.qty;
@@ -168,14 +187,13 @@ async function rendercard() {
     if (shouldDisplay) {
       let cardElement = createListCard(item, cartViewConfig);
       if (cardElement) {
-        console.log('rendercard: Appending card for itemId:', item.meta.itemId, 'cardElement ID:', cardElement.id);
         cartItemsContainer.appendChild(cardElement);
-        console.log('rendercard: After appending, children count:', cartItemsContainer.children.length);
+        displayedItems.push(item);
       }
     }
   }
 
-  updateCartTotalDisplay();
+  updateCartTotalDisplay(displayedItems);
   document.querySelector(".cart-btn").innerText = "Request All";
 }
 
@@ -229,15 +247,13 @@ window.updateQty = function(itemId, qty) {
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "product");
   if (item) {
     item.cart.qty = parseInt(qty);
-    saveCartToLocalStorage(cart.items, false); // Pass false to prevent dispatching cartItemsChanged event
-    updateCardDisplay(item); // Update the specific card's display
-    updateCartTotalDisplay(); // Update the overall cart total
+    saveCartToLocalStorage(cart.items, true); // Pass true to dispatch cartItemsChanged event
   }
 };
 
-function updateCartTotalDisplay() {
+function updateCartTotalDisplay(itemsToTotal) {
   let total = 0;
-  cart.items.forEach(item => {
+  itemsToTotal.forEach(item => {
     total += (item.pricing.sellingPrice * item.cart.qty);
   });
   document.getElementById("cardTotal").innerText = total.toFixed(2);
@@ -247,28 +263,28 @@ window.updateDate = function(itemId, dateValue) {
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "service");
   if (item) {
     item.cart.selectedDate = dateValue;
-    saveCartToLocalStorage(cart.items, false); // Pass false to prevent dispatching cartItemsChanged event
+    saveCartToLocalStorage(cart.items, true); // Pass true to dispatch cartItemsChanged event
   }
-  // rendercard(); // Removed direct call
 };
 
 window.removeItem = function(itemId) {
   const initialLength = cart.items.length;
   cart.items = cart.items.filter(i => i.meta.itemId !== itemId);
   if (cart.items.length < initialLength) { // Only update if an item was actually removed
-    saveCartToLocalStorage(cart.items, false); // Prevent full refresh
-    const cardElement = document.getElementById(`card-${itemId}`);
-    if (cardElement) {
-      cardElement.remove(); // Remove the card from the DOM
-    }
-    updateCartTotalDisplay(); // Update the overall cart total
+    saveCartToLocalStorage(cart.items, true); // Pass true to dispatch cartItemsChanged event
   }
-  // rendercard(); // Removed direct call
 };
 
 
 export async function init() {
   await initCardHelper(null);
+
+  const startShoppingBtn = document.getElementById('start-shopping-btn');
+  if(startShoppingBtn) {
+    startShoppingBtn.addEventListener('click', () => {
+        window.viewManager.switchView('guest', 'home');
+    });
+  }
 
   // Add event listeners only if they haven't been added yet
   if (!window._cartEventListenersAdded) {
