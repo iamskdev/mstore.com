@@ -113,7 +113,7 @@ const cartViewConfig = {
         {
             label: 'Select Date',
             action: 'SELECT_SERVICE_DATE',
-            class: 'btn-secondary',
+            class: 'btn-secondary select-date-btn',
             visible: (item) => item.meta.type === 'service'
         },
         { label: 'Request', action: 'REQUEST_ITEM', class: 'btn-primary', visible: true },
@@ -122,10 +122,26 @@ const cartViewConfig = {
     ],
     actionHandlers: {
         'UPDATE_CART_QUANTITY': (item, newQuantity) => window.updateQty(item.meta.itemId, newQuantity),
-        'SELECT_SERVICE_DATE': (item, newDate) => {
-            if (newDate) {
-                window.updateDate(item.meta.itemId, newDate);
-            }
+        'SELECT_SERVICE_DATE': (item, targetButton) => {
+            const dateInput = document.createElement('input');
+            dateInput.type = 'date';
+            dateInput.style.position = 'absolute';
+            dateInput.style.left = '-9999px'; // Hide it off-screen
+            dateInput.style.top = '-9999px';
+            dateInput.value = item.cart.selectedDate || ''; // Set initial value if exists
+
+            document.body.appendChild(dateInput);
+
+            dateInput.onchange = (event) => {
+                const selectedDate = event.target.value;
+                if (selectedDate) {
+                    window.updateDate(item.meta.itemId, selectedDate);
+                    requestRender(); // Re-render to update the button label and total
+                }
+                document.body.removeChild(dateInput); // Clean up the hidden input
+            };
+
+            dateInput.click(); // Programmatically click to open date picker
         },
         'REQUEST_ITEM': (item) => console.log(`Requesting item: ${item.info.name}`),
         'SAVE_FOR_LATER': (item) => console.log(`Saving ${item.info.name} for later.`),

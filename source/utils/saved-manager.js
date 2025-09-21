@@ -1,39 +1,40 @@
-import { showToast } from './toast.js'; // Assuming a toast utility exists
-
-/**
- * @file Saved Items Manager
- * Manages saving and retrieving item IDs from local storage.
- * Designed to be easily adaptable for Firebase integration later.
- */
+import { showToast } from './toast.js';
 
 const LOCAL_STORAGE_KEY = 'savedItems';
 
 /**
- * Retrieves saved item IDs from local storage.
- * @returns {string[]} An array of saved item IDs.
+ * Retrieves saved items from local storage.
+ * @returns {Array<Object>} An array of objects, each with itemId and an optional note.
  */
 export function getSavedItems() {
   try {
     const savedItems = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return savedItems ? JSON.parse(savedItems) : [];
+    const parsed = savedItems ? JSON.parse(savedItems) : [];
+    return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
-    console.error('Error reading saved items from local storage:', error);
+    console.error('Error reading saved items:', error);
     return [];
   }
 }
 
 /**
- * Saves the list of item IDs to local storage.
- * @param {string[]} itemIds - An array of item IDs to save.
+ * Saves the list of items to local storage.
+ * @param {Array<Object>} items - An array of item objects to save.
  */
-function saveItemsToLocalStorage(itemIds) {
+function saveItemsToLocalStorage(items, changeDetail = { type: 'full_refresh' }) {
   try {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(itemIds));
-    // Dispatch a custom event to notify other parts of the application
-    const event = new Event('savedItemsChanged');
-    window.dispatchEvent(event);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items));
+    
+    if (changeDetail) {
+      const event = new CustomEvent('savedItemsChanged', { detail: changeDetail });
+      window.dispatchEvent(event);
+    } else {
+      // Fallback for old calls that just passed `true` or nothing
+      const event = new Event('savedItemsChanged');
+      window.dispatchEvent(event);
+    }
   } catch (error) {
-    console.error('Error saving items to local storage:', error);
+    console.error('Error saving items:', error);
   }
 }
 
@@ -44,20 +45,7 @@ function saveItemsToLocalStorage(itemIds) {
  */
 export function isItemSaved(itemId) {
   const savedItems = getSavedItems();
-  return savedItems.includes(itemId);
-}
-
-/**
- * Adds an item to the saved list.
- * @param {string} itemId - The ID of the item to save.
- */
-export function saveItem(itemId) {
-  let savedItems = getSavedItems();
-  if (!savedItems.includes(itemId)) {
-    savedItems.push(itemId);
-    saveItemsToLocalStorage(savedItems);
-    
-  }
+  return savedItems.some(item => item.itemId === itemId);
 }
 
 /**
@@ -66,59 +54,94 @@ export function saveItem(itemId) {
  */
 export function unsaveItem(itemId) {
   let savedItems = getSavedItems();
-  const index = savedItems.indexOf(itemId);
-  if (index > -1) {
-    savedItems.splice(index, 1);
-    saveItemsToLocalStorage(savedItems);
-    
+  const initialLength = savedItems.length;
+  savedItems = savedItems.filter(item => item.itemId !== itemId);
+
+  if (savedItems.length < initialLength) {
+    saveItemsToLocalStorage(savedItems, { type: 'remove', itemId });
   }
 }
 
 /**
  * Toggles the saved status of an item.
- * If the item is saved, it will be unsaved. If not, it will be saved.
  * @param {string} itemId - The ID of the item to toggle.
  */
 export function toggleSavedItem(itemId) {
+  let savedItems = getSavedItems();
   if (isItemSaved(itemId)) {
     unsaveItem(itemId);
   } else {
-    saveItem(itemId);
+    savedItems.push({ itemId: itemId, note: '' });
+    saveItemsToLocalStorage(savedItems, { type: 'add', itemId });
   }
 }
+
+/**
+ * Updates the note for a specific saved item.
+ * @param {string} itemId - The ID of the item to update.
+ * @param {string} note - The new note text.
+ */
+export function updateSavedItemNote(itemId, note) {
+    let savedItems = getSavedItems();
+    const itemIndex = savedItems.findIndex(item => item.itemId === itemId);
+
+    if (itemIndex > -1) {
+        savedItems[itemIndex].note = note;
+        saveItemsToLocalStorage(savedItems);
+        showToast('success', 'Note updated!');
+    } else {
+        console.warn(`Item with ID ${itemId} not found in saved items.`);
+    }
+}
+
+/**
+ * Updates the selected date for a specific saved item.
+ * @param {string} itemId - The ID of the item to update.
+ * @param {string} date - The new selected date (e.g., 'YYYY-MM-DD').
+ */
+export function updateSavedItemDate(itemId, date) {
+    let savedItems = getSavedItems();
+    const itemIndex = savedItems.findIndex(item => item.itemId === itemId);
+
+    if (itemIndex > -1) {
+        savedItems[itemIndex].selectedDate = date;
+        saveItemsToLocalStorage(savedItems);
+        showToast('success', 'Date updated!');
+    } else {
+        console.warn(`Item with ID ${itemId} not found in saved items.`);
+    }
+}
+
 
 export function initWishlistHandler() {
   document.body.addEventListener('click', async (event) => {
     const wishlistBtn = event.target.closest('.wishlist-btn');
     if (wishlistBtn) {
-      event.preventDefault(); // Prevent navigation if the card is a link
-      event.stopPropagation(); // Stop propagation to prevent other listeners from interfering
+      event.preventDefault();
+      event.stopPropagation();
 
       const card = wishlistBtn.closest('.card');
-      const itemId = card?.dataset.itemId; // Use optional chaining for safety
+      const itemId = card?.dataset.itemId;
 
       if (itemId) {
-        
+        const wasSaved = isItemSaved(itemId);
         toggleSavedItem(itemId);
 
-        // Update the heart icon visually
-        const isSaved = wishlistBtn.classList.toggle('active'); // Toggle 'active' class
         const icon = wishlistBtn.querySelector('i');
         if (icon) {
-          if (isSaved) {
-            icon.classList.remove('far', 'fa-heart');
-            icon.classList.add('fa-solid', 'fa-heart');
-            showToast('success', 'Item saved to wishlist!');
-          } else {
-            icon.classList.remove('fa-solid', 'fa-heart');
-            icon.classList.add('far', 'fa-heart');
-            showToast('info', 'Item removed from wishlist!');
-          }
+            if (!wasSaved) {
+                wishlistBtn.classList.add('active');
+                icon.className = 'fa-solid fa-heart';
+                showToast('success', 'Item saved to wishlist!');
+            } else {
+                wishlistBtn.classList.remove('active');
+                icon.className = 'far fa-heart';
+                showToast('info', 'Item removed from wishlist!');
+            }
         }
       } else {
-        console.warn('Global Wishlist Handler: Item ID not found for wishlist button.');
+        console.warn('Global Wishlist Handler: Item ID not found.');
       }
     }
   });
-  
 }

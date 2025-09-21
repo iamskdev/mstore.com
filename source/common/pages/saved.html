@@ -1,13 +1,32 @@
-<div class="saved-page">
-  <div class="page-header">
-    <h1 class="page-title">Saved Items</h1>
-  </div>
-  <div class="saved-items-grid grid-container">
-    <!-- Saved items will be loaded here by JavaScript -->
-  </div>
-  <div class="empty-state hidden">
-    <i class="fas fa-heart-broken"></i>
-    <p>No items saved yet.</p>
-    <button class="btn-primary" onclick="viewManager.switchView('guest', 'home')">Start Saving</button>
-  </div>
+<!-- Filter Bar Placeholder -->
+<div id="saved-filter-bar" class="filter-bar-placeholder"></div>
+
+<!-- Filter Modal Placeholder for Cart View -->
+<div id="saved-filter-modal"></div>
+
+<!-- Saved Items View -->
+<div class="view-container saved-view-container">
+
+    <!-- Main Content Area -->
+    <div class="saved-content">
+        <!-- Container for the list of saved items -->
+        <div id="saved-items-container" class="list-container">
+            <!-- Saved item cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Empty State View -->
+        <div id="empty-saved-view" class="empty-state hidden">
+            <div class="empty-state-content">
+                <i class="fas fa-heart-crack"></i>
+                <h3>Nothing Saved Yet</h3>
+                <p>Your saved items will appear here. Start exploring and save what you love!</p>
+                <button id="start-shopping-btn-saved" class="btn btn-primary">Start Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal Placeholder -->
+    <div id="saved-filter-modal" class="filter-modal-placeholder">
+        <!-- The filter modal will be injected here by its manager -->
+    </div>
 </div>
