@@ -8,15 +8,20 @@
 const COMPONENT_PATH = './source/components/filter/filter-bar.html';
 
 class FilterBarManager {
-    constructor(placeholderElement, customTabs = []) {
+    constructor(placeholderElement, customTabs = [], viewId) {
         this._placeholder = placeholderElement;
         this.isLoaded = false;
         this.isInitialized = false;
         this.customTabs = customTabs;
+        this.viewId = viewId; // e.g., 'home' or 'cart'
 
         // Listen for events from the modal to update the UI
-        window.addEventListener('syncFilterBar', (e) => this.syncHorizontalBar(e.detail.slug));
-        window.addEventListener('updateFilterIcon', (e) => this.updateFilterIconState(e.detail.isActive));
+        window.addEventListener('syncFilterBar', (e) => {
+            if (e.detail.viewId === this.viewId) {
+                this.syncHorizontalBar(e.detail.slug);
+            }
+        });
+        window.addEventListener('updateFilterIcon', (e) => this.handleFilterIconUpdate(e.detail)); // This one is already view-specific
     }
 
     async _loadBarHtml() {
@@ -144,7 +149,7 @@ class FilterBarManager {
             clickedTab.classList.add('active');
 
             const filterValue = clickedTab.dataset.filter;
-            window.dispatchEvent(new CustomEvent('filterChanged', { detail: { filter: filterValue } }));
+            window.dispatchEvent(new CustomEvent('filterChanged', { detail: { filter: filterValue, viewId: this.viewId } }));
         });
 
         
@@ -182,10 +187,16 @@ class FilterBarManager {
         const tabToActivate = targetTab || container.querySelector('.filter-bar-tab[data-filter="all"]');
         tabToActivate?.classList.add('active');
 
-        window.dispatchEvent(new CustomEvent('filterChanged', { detail: { filter: targetFilter } }));
+        window.dispatchEvent(new CustomEvent('filterChanged', { detail: { filter: targetFilter, viewId: this.viewId } }));
     }
 
-    updateFilterIconState(isActive) {
+    handleFilterIconUpdate(detail) {
+        // Only update the icon if the event is for this specific view's filter bar.
+        if (detail.viewId !== this.viewId) {
+            return;
+        }
+
+        const isActive = detail.isActive;
         const filterBarContainer = this.placeholder.querySelector('#filter-bar');
         if (!filterBarContainer) return;
 
@@ -210,7 +221,6 @@ class FilterBarManager {
     }
 }
 
-export function initializeFilterBarManager(placeholderElement, customTabs = []) {
-    return new FilterBarManager(placeholderElement, customTabs);
+export function initializeFilterBarManager(placeholderElement, customTabs = [], viewId) {
+    return new FilterBarManager(placeholderElement, customTabs, viewId);
 }
-

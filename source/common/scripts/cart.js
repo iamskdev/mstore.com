@@ -133,6 +133,23 @@ const cartViewConfig = {
     }
 };
 
+let renderTimeout;
+/**
+ * Debounces the rendercard function to prevent multiple rapid re-renders.
+ * This avoids race conditions and duplicate card rendering when multiple events
+ * fire in quick succession (e.g., filter change and cart update).
+ */
+function requestRender() {
+    // Clear any pending render request.
+    if (renderTimeout) {
+        clearTimeout(renderTimeout);
+    }
+    // Set a new render request to run after a short delay.
+    renderTimeout = setTimeout(() => {
+        rendercard();
+    }, 10); // A small 10ms delay is enough to batch rapid calls.
+}
+
 async function rendercard() {
   const cartItemsContainer = document.getElementById("cart-items-container");
   const emptyCartView = document.getElementById("empty-cart-view");
@@ -160,17 +177,22 @@ async function rendercard() {
     cartItemsContainer.removeChild(cartItemsContainer.firstChild);
   }
 
-  cart.items.sort((a, b) => {
-    const priceA = a.pricing.sellingPrice * a.cart.qty;
-    const priceB = b.pricing.sellingPrice * b.cart.qty;
-    switch (currentSort) {
-      case 'price-asc': return priceA - priceB;
-      case 'price-desc': return priceB - priceA;
-      case 'newest': return (b.meta.timestamp || 0) - (a.meta.timestamp || 0);
-      case 'rating-desc': return (b.analytics.rating || 0) - (a.analytics.rating || 0);
-      default: return 0;
-    }
-  });
+  // Default sort: most recently added items first.
+  cart.items.sort((a, b) => new Date(b.cart.addedAt || 0) - new Date(a.cart.addedAt || 0));
+
+  // Apply user-selected sort from the filter modal if it's not the default 'relevance'.
+  if (currentSort && currentSort !== 'relevance') {
+      cart.items.sort((a, b) => {
+          const priceA = a.pricing.sellingPrice * a.cart.qty;
+          const priceB = b.pricing.sellingPrice * b.cart.qty;
+          switch (currentSort) {
+              case 'price-asc': return priceA - priceB;
+              case 'price-desc': return priceB - priceA;
+              case 'rating-desc': return (b.analytics?.rating || 0) - (a.analytics?.rating || 0);
+              default: return 0; // 'newest' is already handled by the default sort.
+          }
+      });
+  }
 
   for (const item of cart.items) {
     const itemCategoryId = item.meta.links.categoryId;
@@ -246,15 +268,35 @@ function updateCardDisplay(item) {
     }
 }
 
+/**
+ * Filters the cart items based on the current active filter tab.
+ * @returns {Promise<Array>} A promise that resolves to an array of filtered items.
+ */
+async function getFilteredCartItems() {
+    const allCartItems = await getCartItemsManager();
+    if (currentFilter === 'all') {
+        return allCartItems;
+    }
+    if (currentFilter === 'product' || currentFilter === 'service') {
+        return allCartItems.filter(item => item.meta.type === currentFilter);
+    }
+    // Handle category slugs
+    const allCategories = await fetchAllCategories(true);
+    const categoryIdToFilter = allCategories.find(cat => cat.meta.slug === currentFilter)?.meta.categoryId;
+    if (categoryIdToFilter) {
+        return allCartItems.filter(item => item.meta.links.categoryId === categoryIdToFilter);
+    }
+    return allCartItems; // Fallback to all items if filter is unknown
+}
+
 window.updateQty = function(itemId, qty) {
   console.log(`Updating quantity for itemId: ${itemId} to ${qty}`);
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "product");
   if (item) {
     item.cart.qty = parseInt(qty);
-    saveCartToLocalStorage(cart.items, true); // Pass true to dispatch cartItemsChanged event
+    saveCartToLocalStorage(cart.items, { type: 'update', item });
   }
 };
-
 function updateCartTotalDisplay(itemsToTotal) {
   let total = 0;
   itemsToTotal.forEach(item => {
@@ -267,20 +309,31 @@ window.updateDate = function(itemId, dateValue) {
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "service");
   if (item) {
     item.cart.selectedDate = dateValue;
-    saveCartToLocalStorage(cart.items, true); // Pass true to dispatch cartItemsChanged event
+    saveCartToLocalStorage(cart.items, { type: 'update', item });
   }
-};
+  }
 
 window.removeItem = function(itemId) {
   const initialLength = cart.items.length;
   cart.items = cart.items.filter(i => i.meta.itemId !== itemId);
-  if (cart.items.length < initialLength) { // Only update if an item was actually removed
-    saveCartToLocalStorage(cart.items, true); // Pass true to dispatch cartItemsChanged event
+  if (cart.items.length < initialLength) {
+    saveCartToLocalStorage(cart.items, { type: 'remove', itemId });
   }
 };
 
+let isCartInitialized = false; // Flag to prevent multiple initializations
+let isInitializing = false; // Flag to prevent race conditions during init
 
 export async function init() {
+  // If initialization is already in progress, or has completed,
+  // a simple re-render is enough. Don't re-setup everything.
+  if (isInitializing || isCartInitialized) {
+    requestRender(); // If already init or in progress, just request a re-render.
+    return;
+  }
+
+  isInitializing = true;
+
   await initCardHelper(null);
 
   const startShoppingBtn = document.getElementById('start-shopping-btn');
@@ -292,36 +345,101 @@ export async function init() {
 
   // Initialize the global FilterBarManager for the cart view
   const cartFilterBarPlaceholder = document.getElementById('cart-filter-bar');
-  cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs());
+  cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs(), 'cart');
   cartFilterBarManager.manageVisibility(false); // Initially hide the filter bar
 
-  // Initialize the filter modal manager
-  const filterModalManager = initializeFilterModalManager();
+  // Initialize the filter modal manager for the cart view
+  const cartFilterModalPlaceholder = document.getElementById('cart-filter-modal');
+  const initModalManager = initializeFilterModalManager();
+  const filterModalManager = initModalManager(cartFilterModalPlaceholder);
+
+  isCartInitialized = true; // Mark setup as complete before adding listeners
 
   // Add event listeners only if they haven't been added yet
   if (!window._cartEventListenersAdded) {
     window.addEventListener('filterChanged', (event) => {
+      if (event.detail.viewId !== 'cart') return; // Ignore events from other views
       currentFilter = event.detail.filter;
-      rendercard();
+      requestRender();
     });
 
     window.addEventListener('advancedFilterApplied', (event) => {
+      if (event.detail.viewId !== 'cart') return; // Ignore events from other views
       const { sort } = event.detail;
       currentSort = sort;
-      rendercard();
+      requestRender();
     });
 
-    window.addEventListener('cartItemsChanged', async () => {
-      // Re-initialize filter bar with updated tabs when cart items change
-      cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs());
-      // Ensure the filter bar's visibility is managed after re-initialization
+    window.addEventListener('cartItemsChanged', async (event) => {
+      // If initialization is in progress, skip this event handler.
+      // The init() function will handle the final render.
+      if (isInitializing) {
+        return;
+      }
+
+      // If initialization is in progress, skip this event handler.
+      // The init() function will handle the final render.
+      if (isInitializing) {
+        return;
+      }
+
+      const detail = event.detail || { type: 'full_refresh' };
+      cart.items = await getCartItemsManager(); // Refresh local cart state
+
+      // If cart is not empty, re-initialize the filter bar to get correct tabs.
+      // If it IS empty, just ensure it's hidden.
+      if (cart.items.length > 0) {
+        cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs(), 'cart');
+      }
       cartFilterBarManager.manageVisibility(cart.items.length > 0);
-      rendercard();
+
+      switch (detail.type) {
+        // --- FIX: Force a full refresh on 'add' to prevent race conditions ---
+        case 'add':
+          // Re-initialize filter bar with updated tabs
+          cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs(), 'cart');
+          cartFilterBarManager.manageVisibility(cart.items.length > 0);
+          requestRender(); // Perform a full re-render
+          break;
+        case 'update':
+          if (detail.item) {
+            updateCardDisplay(detail.item);
+            const filteredItems = await getFilteredCartItems();
+            updateCartTotalDisplay(filteredItems);
+          }
+          break;
+     
+        case 'remove':
+          // The cart.items array is already updated. Check if it's now empty.
+          if (cart.items.length === 0) {
+            // If the cart is now empty, a full re-render is needed to show the empty cart view.
+            // The `manageVisibility` call at the top of the listener has already correctly hidden the filter bar.
+            requestRender();
+          } else {
+            // If not empty, just remove the specific card for better performance.
+            const cardToRemove = document.getElementById(`card-${detail.itemId}`);
+            if (cardToRemove) {
+              cardToRemove.remove();
+            }
+            const filteredItemsAfterRemove = await getFilteredCartItems();
+            updateCartTotalDisplay(filteredItemsAfterRemove);
+          }
+          break;
+        default: // 'add', 'clear', 'full_refresh' or any other case
+          // Re-initialize filter bar with updated tabs
+          cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs(), 'cart');
+          // Ensure the filter bar's visibility is managed
+          cartFilterBarManager.manageVisibility(cart.items.length > 0);
+          // Perform a full re-render
+          requestRender();
+          break;
+      }
     });
 
     window._cartEventListenersAdded = true;
   }
 
   // Always trigger initial render when init is called
-  rendercard();
+  requestRender();
+  isInitializing = false; // Mark initialization as complete
 }

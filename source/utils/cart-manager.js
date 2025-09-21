@@ -27,11 +27,17 @@ export function getCartItems() {
  * Saves the list of cart items to local storage.
  * @param {Array<Object>} cartItems - An array of cart items to save.
  */
-export function saveCartToLocalStorage(cartItems, dispatchChangeEvent = true) {
+export function saveCartToLocalStorage(cartItems, changeDetail = { type: 'full_refresh' }) {
   try {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cartItems));
-    // Dispatch a custom event to notify other parts of the application
-    if (dispatchChangeEvent) {
+    
+    // Dispatch a custom event to notify other parts of the application.
+    // If changeDetail is provided, use it. Otherwise, default to a full refresh.
+    if (changeDetail) {
+      const event = new CustomEvent('cartItemsChanged', { detail: changeDetail });
+      window.dispatchEvent(event);
+    } else {
+      // Fallback for old calls that just passed `true`
       const event = new Event('cartItemsChanged');
       window.dispatchEvent(event);
     }
@@ -70,15 +76,16 @@ export function addItemToCart(item, quantity = 1) {
 
   if (existingItemIndex > -1) {
     // Item already in cart, update quantity
-    cartItems[existingItemIndex].cart.qty += quantity;
-    showToast('success', 'Item quantity updated in cart!');
+    // FIX: Do not add again. Instead, inform the user.
+    showToast('info', 'Item is already in the cart.');
+    return; // Stop execution to prevent dispatching an unnecessary event
   } else {
     // Item not in cart, add new item
-    const newItem = { ...item, cart: { qty: quantity } };
+    const newItem = { ...item, cart: { qty: quantity, addedAt: new Date().toISOString() } };
     cartItems.push(newItem);
     showToast('success', 'Item added to cart!');
   }
-  saveCartToLocalStorage(cartItems);
+  saveCartToLocalStorage(cartItems, { type: 'add', item });
 }
 
 /**
@@ -91,7 +98,7 @@ export function removeItemFromCart(itemId) {
   cartItems = cartItems.filter(item => item.meta.itemId !== itemId);
 
   if (cartItems.length < initialLength) {
-    saveCartToLocalStorage(cartItems);
+    saveCartToLocalStorage(cartItems, { type: 'remove', itemId });
     showToast('info', 'Item removed from cart!');
   } else {
     // Item not found in cart, no change.
@@ -117,7 +124,7 @@ export function updateItemQuantity(itemId, newQuantity) {
       cartItems.splice(existingItemIndex, 1);
       showToast('info', 'Item removed from cart!');
     }
-    saveCartToLocalStorage(cartItems);
+    saveCartToLocalStorage(cartItems, { type: 'update', item: cartItems[existingItemIndex] });
   } else {
     console.warn(`Item with ID ${itemId} not found in cart.`);
   }
@@ -127,7 +134,7 @@ export function updateItemQuantity(itemId, newQuantity) {
  * Clears all items from the cart.
  */
 export function clearCart() {
-  saveCartToLocalStorage([]);
+  saveCartToLocalStorage([], { type: 'clear' });
   showToast('info', 'Cart cleared!');
 }
 

@@ -213,13 +213,13 @@ export async function init() {
     const homeFilterBarPlaceholder = document.getElementById('home-filter-bar');
     if (homeFilterBarPlaceholder) {
         try {
-            homeFilterBarManager = initializeFilterBarManager(homeFilterBarPlaceholder, await getGlobalFilterTabs());
+            homeFilterBarManager = initializeFilterBarManager(homeFilterBarPlaceholder, await getGlobalFilterTabs(), 'home');
             homeFilterBarManager.manageVisibility(true); // Make the filter bar visible
         } catch (error) {
             console.error('Error initializing home filter bar:', error);
             // Fallback: Initialize with default tabs if there's an error
             homeFilterBarManager = initializeFilterBarManager(homeFilterBarPlaceholder, [
-                { label: 'All', filter: 'all' },
+                { label: 'All', filter: 'all' },,
                 { label: 'Products', filter: 'product' },
                 { label: 'Services', filter: 'service' }
             ]);
@@ -228,15 +228,18 @@ export async function init() {
     }
 
     // Initialize the filter modal manager
-    const filterModalManager = initializeFilterModalManager();
-
+    const homeFilterModalPlaceholder = document.getElementById('home-filter-modal');
+    const initModalManager = initializeFilterModalManager();
+    const filterModalManager = initModalManager(homeFilterModalPlaceholder);
 
     window.addEventListener('filterChanged', (event) => {
+        if (event.detail.viewId !== 'home') return; // Ignore events from other views
         currentFilter = event.detail.filter;
         populateAllItemsGrid();
     });
 
     window.addEventListener('advancedFilterApplied', (event) => {
+        if (event.detail.viewId !== 'home') return; // Ignore events from other views
         currentAdvancedFilters = event.detail;
         populateAllItemsGrid();
     });

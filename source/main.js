@@ -20,7 +20,7 @@ import { loadTopNavigation } from './components/top/top-navigation.js';
 import { loadBottomNavigation } from './components/bottom/bottom-navigation.js';
 import { getFooterHtml } from './components/footer/footer.js';
 import { loadDrawer } from './components/drawer/drawer.js';
-import { initializeFilterModalManager } from './components/filter/filter-modal.js';
+
 import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
 
 class ViewManager {
@@ -32,7 +32,7 @@ class ViewManager {
     this.viewConfig = viewConfig; // Expose config if needed externally
     this.defaultViews = defaultViews;
     this.loadedViews = new Set();
-    this.filterModalManager = null; // To be lazy-loaded
+    
     this.footerHelper = null; // To be lazy-loaded for managing the footer
     this.subscribers = [];
   }
@@ -108,6 +108,9 @@ class ViewManager {
    */
   async switchView(role, viewId) {
     console.log(`ViewManager: Attempting to switch to role: ${role}, viewId: ${viewId}`); // Added log
+    // --- FIX: Close any open modals before switching views ---
+    window.dispatchEvent(new CustomEvent('toggleAdvancedFilter', { detail: { show: false } }));
+
     // Validate the requested role and viewId. Fallback to a safe default if invalid.
     if (!this.viewConfig[role] || !this.viewConfig[role][viewId]) {
       console.warn(`ViewManager: Invalid role "${role}" or view "${viewId}". Falling back to default.`);

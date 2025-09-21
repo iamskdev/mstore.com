@@ -9,14 +9,21 @@ import { showToast } from '../../utils/toast.js';
 const MODAL_COMPONENT_PATH = './source/components/filter/filter-modal.html';
 
 class FilterModalManager {
-    constructor() {
-        this.modalContainer = null;
+    constructor(placeholderElement) {
+        this.modalContainer = placeholderElement;
         this.isModalLoaded = false;
         this.isAdvancedPanelInitialized = false;
         this.allCategoriesData = [];
+        this.currentView = 'home'; // Default view
+        this.viewId = placeholderElement?.id || 'unknown-view'; // e.g., 'home-filter-modal'
 
+        if (!this.modalContainer) {
+            console.error("FilterModalManager: A valid placeholder element must be provided.");
+            return;
+        }
         // Listen for the event to show the modal
         window.addEventListener('toggleAdvancedFilter', (e) => this._toggleAdvancedPanel(e.detail.show));
+        window.addEventListener('requestViewChange', (e) => this.currentView = e.detail.view); // Update current view
     }
 
     async _loadModalHtml() {
@@ -99,11 +106,13 @@ class FilterModalManager {
  
         applyBtn?.addEventListener('click', () => {
             const filterDetails = this._getAdvancedFilterValues();
+            const viewName = this.viewId.replace('-filter-modal', '');
+            const detailWithView = { ...filterDetails, viewId: viewName };
             
-            window.dispatchEvent(new CustomEvent('advancedFilterApplied', { detail: filterDetails }));
+            window.dispatchEvent(new CustomEvent('advancedFilterApplied', { detail: detailWithView, bubbles: true, composed: true }));
             
             const syncSlug = filterDetails.subcategory || filterDetails.mainCategory || 'all';
-            window.dispatchEvent(new CustomEvent('syncFilterBar', { detail: { slug: syncSlug } }));
+            window.dispatchEvent(new CustomEvent('syncFilterBar', { detail: { slug: syncSlug, viewId: viewName } }));
 
             this._updateFilterIconState();
             showToast('success', 'Filters Applied!');
@@ -112,7 +121,8 @@ class FilterModalManager {
  
         resetBtn?.addEventListener('click', () => {
             this._resetAdvancedFilters();
-            window.dispatchEvent(new CustomEvent('syncFilterBar', { detail: { slug: 'all' } }));
+            const viewName = this.viewId.replace('-filter-modal', '');
+            window.dispatchEvent(new CustomEvent('syncFilterBar', { detail: { slug: 'all', viewId: viewName } }));
             this._updateFilterIconState();
             showToast('info', 'Filters have been reset.');
         });
@@ -138,7 +148,12 @@ class FilterModalManager {
     }
 
     _updateFilterIconState() {
-        window.dispatchEvent(new CustomEvent('updateFilterIcon', { detail: { isActive: this._areFiltersActive() } }));
+        const detail = {
+            isActive: this._areFiltersActive(),
+            // Extract the view name (e.g., 'home') from the placeholder ID (e.g., 'home-filter-modal')
+            viewId: this.viewId.replace('-filter-modal', '')
+        };
+        window.dispatchEvent(new CustomEvent('updateFilterIcon', { detail }));
     }
 
     _getAdvancedFilterValues() {
@@ -236,10 +251,6 @@ class FilterModalManager {
 
     async _toggleAdvancedPanel(show) {
         if (show && !this.isModalLoaded) {
-            if (!this.modalContainer) {
-                this.modalContainer = document.createElement('div');
-                document.body.appendChild(this.modalContainer);
-            }
             try {
                 await this._loadModalHtml();
                 this.isModalLoaded = true;
@@ -311,5 +322,9 @@ class FilterModalManager {
 }
 
 export function initializeFilterModalManager() {
-    return new FilterModalManager();
+    // This function is now a factory that returns a new instance of the manager.
+    // The placeholder element is now passed during initialization in the view's script (e.g., home.js, cart.js).
+    return function(placeholderElement) {
+        return new FilterModalManager(placeholderElement);
+    };
 }

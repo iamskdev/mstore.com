@@ -43,7 +43,7 @@
       bottom: var(--bottom-height);
       background: var(--bg-primary);
       padding: 14px;
-      display: flex;
+      display: none;
       justify-content: space-between;
       align-items: center;
       flex-shrink: 0;
