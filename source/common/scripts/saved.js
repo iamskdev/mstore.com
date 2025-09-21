@@ -85,7 +85,7 @@ const savedViewConfig = {
             selector: '.card-note',
             visible: true,
             formatter: (note) => {
-                const displayText = note || 'No note added.';
+                const displayText = note || 'Click to add a note';
                 return `<span class="note-label clickable">Note:</span> <span class="note-content">${displayText}</span>`;
             }
         },
@@ -139,7 +139,7 @@ const savedViewConfig = {
             dateInput.click(); // Programmatically click to open date picker
         },
         'ADD_TO_CART': (item) => {
-            addItemToCart(item);
+            addItemToCart(item, 1, item.note); // Pass the item and its note
             renderSavedItems(); // Re-render to update the button state
         },
         'SHARE_ITEM': (item) => {
@@ -199,7 +199,18 @@ async function renderSavedItems() {
     // Apply filtering
     let filteredItems = itemsToRender;
     if (currentFilter !== 'all') {
-        filteredItems = itemsToRender.filter(item => item.meta.type === currentFilter);
+        if (currentFilter === 'product' || currentFilter === 'service') {
+            filteredItems = itemsToRender.filter(item => item.meta.type === currentFilter);
+        } else { // Assume it's a category slug
+            const allCategories = await fetchAllCategories(true);
+            const categoryToFilter = allCategories.find(cat => cat.meta.slug === currentFilter);
+            if (categoryToFilter) {
+                filteredItems = itemsToRender.filter(item => item.meta.links.categoryId === categoryToFilter.meta.categoryId);
+            } else {
+                console.warn(`Unknown filter category slug: ${currentFilter}`);
+                filteredItems = []; // No items if category not found
+            }
+        }
     }
     console.log('Filtered items:', filteredItems);
 
@@ -240,12 +251,25 @@ async function renderSavedItems() {
     }
 }
 
+let renderTimeout;
+/**
+ * Debounces the renderSavedItems function to prevent multiple rapid re-renders.
+ */
+function requestRenderSavedItems() {
+    if (renderTimeout) {
+        clearTimeout(renderTimeout);
+    }
+    renderTimeout = setTimeout(() => {
+        renderSavedItems();
+    }, 10); // Small delay to batch rapid calls
+}
+
 let isSavedInitialized = false;
 export async function init() {
     console.log('Saved view init called.');
     if (isSavedInitialized) {
         console.log('Saved view already initialized. Re-rendering.');
-        renderSavedItems();
+        requestRenderSavedItems();
         return;
     }
 
@@ -268,7 +292,7 @@ export async function init() {
     const savedFilterModalManager = initModalManager(filterModalPlaceholder);
     console.log('After initializeFilterModalManager call. savedFilterModalManager:', savedFilterModalManager);
 
-    renderSavedItems();
+    requestRenderSavedItems();
 
     window.addEventListener('savedItemsChanged', async (event) => {
         console.log('savedItemsChanged event received. Performing targeted update.', event.detail);
@@ -321,7 +345,7 @@ export async function init() {
                 }
             }
         } else if (type === 'update') { // For note or date updates
-            const cardToUpdate = savedItemsContainer.querySelector(`.card[data-item-id="${itemId}"]`);
+            const cardToUpdate = savedItemsContainer.querySelector(`.card-body[data-item-id="${itemId}"]`);
             if (cardToUpdate) {
                 const item = await fetchItemById(itemId);
                 if (item) {
@@ -360,7 +384,7 @@ export async function init() {
     window.addEventListener('viewChanged', (event) => {
         if (event.detail.view === 'saved') {
             console.log('viewChanged to saved. Re-rendering.');
-            renderSavedItems();
+            requestRenderSavedItems();
         }
     });
 
@@ -368,14 +392,14 @@ export async function init() {
         if (event.detail.viewId !== 'saved') return;
         console.log('filterChanged event received:', event.detail.filter);
         currentFilter = event.detail.filter;
-        renderSavedItems();
+        requestRenderSavedItems();
     });
 
     window.addEventListener('advancedFilterApplied', (event) => {
         if (event.detail.viewId !== 'saved') return;
         console.log('advancedFilterApplied event received:', event.detail.sort);
         currentSort = event.detail.sort;
-        renderSavedItems();
+        requestRenderSavedItems();
     });
 
     isSavedInitialized = true;

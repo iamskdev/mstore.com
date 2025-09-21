@@ -485,4 +485,3 @@ export async function initCardHelper(unitsDataParam) {
         // Optionally, handle error more gracefully, e.g., display a message
     }
 }
-

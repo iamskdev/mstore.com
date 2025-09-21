@@ -1,8 +1,13 @@
 import { createListCard, initCardHelper } from '../../components/cards/card-helper.js';
-import { getCartItems as getCartItemsManager, saveCartToLocalStorage } from '../../utils/cart-manager.js';
+import { getCartItems as getCartItemsManager, saveCartToLocalStorage, updateCartItemNote } from '../../utils/cart-manager.js';
 import { fetchAllCategories } from '../../utils/data-manager.js';
 import { initializeFilterModalManager } from '../../components/filter/filter-modal.js'; // Import initializeFilterModalManager
 import { initializeFilterBarManager, } from '../../components/filter/filter-bar.js'; // Import the global FilterBarManager
+import { toggleSavedItem, isItemSaved } from '../../utils/saved-manager.js'; // New import for saved items
+import { showToast } from '../../utils/toast.js'; // New import for toast messages
+
+// Import DOMParser for parsing HTML strings
+const parser = new DOMParser();
 
 let cartFilterBarManager; // Declare a variable to hold the instance of the global FilterBarManager
 
@@ -89,7 +94,15 @@ const cartViewConfig = {
         { selector: '.cost-price', visible: false },
         { key: 'analytics.rating', selector: '.stars', visible: true },
         { key: 'stock.status', selector: '.stock-status', visible: true },
-        { key: 'info.description', selector: '.card-note', visible: true },
+        {
+            key: 'cart.note',
+            selector: '.card-note',
+            visible: true,
+            formatter: (note) => {
+                const displayText = note || 'Click to add a note';
+                return `<span class="note-label clickable">Note:</span> <span class="note-content">${displayText}</span>`;
+            }
+        },
         { 
             key: 'pricing.mrp',
             selector: '.card-discount', 
@@ -144,7 +157,25 @@ const cartViewConfig = {
             dateInput.click(); // Programmatically click to open date picker
         },
         'REQUEST_ITEM': (item) => console.log(`Requesting item: ${item.info.name}`),
-        'SAVE_FOR_LATER': (item) => console.log(`Saving ${item.info.name} for later.`),
+        'SAVE_FOR_LATER': (item) => {
+            // Remove from cart
+            window.removeItem(item.meta.itemId);
+            console.log(`SAVE_FOR_LATER: Item ${item.info.name} (ID: ${item.meta.itemId}) removed from cart.`);
+
+            // Check if the item is already saved
+            const itemAlreadySaved = isItemSaved(item.meta.itemId);
+            console.log(`SAVE_FOR_LATER: Is item ${item.info.name} already saved? ${itemAlreadySaved}`);
+
+            if (itemAlreadySaved) {
+                showToast('info', `${item.info.name} is already in your saved list.`);
+                console.log(`SAVE_FOR_LATER: Toast shown: Item already saved.`);
+            } else {
+                // Add to saved items, preserving the note
+                toggleSavedItem(item.meta.itemId, item.cart.note);
+                showToast('info', `${item.info.name} saved for later!`);
+                console.log(`SAVE_FOR_LATER: Toast shown: Item saved for later.`);
+            }
+        },
         'REMOVE_FROM_CART': (item) => window.removeItem(item.meta.itemId),
     }
 };
@@ -231,6 +262,17 @@ async function rendercard() {
       if (cardElement) {
         cartItemsContainer.appendChild(cardElement);
         displayedItems.push(item);
+
+        const noteElement = cardElement.querySelector('.note-label');
+        if (noteElement) {
+            noteElement.addEventListener('click', () => {
+                const newNote = prompt('Edit your note for this item:', item.cart.note || '');
+                if (newNote !== null) {
+                    window.updateCartItemNote(item.meta.itemId, newNote);
+                    // The 'cartItemsChanged' event will trigger a re-render to show the updated note
+                }
+            });
+        }
       }
     }
   }
@@ -279,6 +321,21 @@ function updateCardDisplay(item) {
                 discountElement.style.display = ''; // Ensure it's visible
             } else {
                 discountElement.style.display = 'none'; // Hide if not visible
+            }
+        }
+
+        // Update note
+        const noteContentElement = cardElement.querySelector('.card-note .note-content');
+        if (noteContentElement) {
+            const noteField = cartViewConfig.fields.find(f => f.key === 'cart.note');
+            if (noteField && noteField.formatter) {
+                // Extract the display text from the formatter's output
+                const formattedHtml = noteField.formatter(item.cart.note);
+                const doc = parser.parseFromString(formattedHtml, 'text/html');
+                const extractedText = doc.querySelector('.note-content').textContent;
+                noteContentElement.textContent = extractedText;
+            } else {
+                noteContentElement.textContent = item.cart.note || 'Click to add a note';
             }
         }
     }
@@ -336,6 +393,8 @@ window.removeItem = function(itemId) {
     saveCartToLocalStorage(cart.items, { type: 'remove', itemId });
   }
 };
+
+window.updateCartItemNote = updateCartItemNote;
 
 let isCartInitialized = false; // Flag to prevent multiple initializations
 let isInitializing = false; // Flag to prevent race conditions during init
@@ -418,8 +477,10 @@ export async function init() {
           requestRender(); // Perform a full re-render
           break;
         case 'update':
-          if (detail.item) {
-            updateCardDisplay(detail.item);
+          // Fetch the updated item from the cart.items array
+          const updatedItem = cart.items.find(item => item.meta.itemId === detail.itemId);
+          if (updatedItem) {
+            updateCardDisplay(updatedItem);
             const filteredItems = await getFilteredCartItems();
             updateCartTotalDisplay(filteredItems);
           }
@@ -431,7 +492,8 @@ export async function init() {
             // If the cart is now empty, a full re-render is needed to show the empty cart view.
             // The `manageVisibility` call at the top of the listener has already correctly hidden the filter bar.
             requestRender();
-          } else {
+          }
+          else if (detail.itemId) {
             // If not empty, just remove the specific card for better performance.
             const cardToRemove = document.getElementById(`card-${detail.itemId}`);
             if (cardToRemove) {

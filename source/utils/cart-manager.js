@@ -1,4 +1,5 @@
 import { showToast } from './toast.js'; // Assuming a toast utility exists
+import * as savedManager from './saved-manager.js'; // Import the entire module to handle circular dependency
 
 /**
  * @file Cart Manager
@@ -62,7 +63,7 @@ export function isItemInCart(itemId) {
  * @param {string} itemId - The ID of the item to add.
  * @param {number} [quantity=1] - The quantity to add. Defaults to 1.
  */
-export function addItemToCart(item, quantity = 1) {
+export function addItemToCart(item, quantity = 1, initialNote = '') {
   if (!item || !item.meta || !item.meta.itemId) {
     console.error('addItemToCart: Invalid item object provided. Cannot add to cart.', item);
     showToast('error', 'Failed to add item to cart: Invalid item data.');
@@ -75,17 +76,31 @@ export function addItemToCart(item, quantity = 1) {
   });
 
   if (existingItemIndex > -1) {
-    // Item already in cart, update quantity
-    // FIX: Do not add again. Instead, inform the user.
-    showToast('info', 'Item is already in the cart.');
-    return; // Stop execution to prevent dispatching an unnecessary event
+    // Item already in cart, update quantity and potentially note
+    cartItems[existingItemIndex].cart.qty += quantity; // Increment quantity
+    cartItems[existingItemIndex].cart.addedAt = new Date().toISOString(); // Update timestamp
+
+    // If a new initialNote is provided, update it. Otherwise, keep the existing one.
+    if (initialNote) {
+      cartItems[existingItemIndex].cart.note = initialNote;
+    }
+    
+    showToast('success', 'Item quantity updated in cart!');
+    saveCartToLocalStorage(cartItems, { type: 'update', item: cartItems[existingItemIndex] }); // Save changes
   } else {
     // Item not in cart, add new item
-    const newItem = { ...item, cart: { qty: quantity, addedAt: new Date().toISOString() } };
+    const savedItems = savedManager.getSavedItems();
+    const savedItem = savedItems.find(saved => saved.itemId === item.meta.itemId);
+    let noteToUse = initialNote;
+    if (savedItem && savedItem.note) {
+      noteToUse = savedItem.note;
+    }
+
+    const newItem = { ...item, cart: { qty: quantity, addedAt: new Date().toISOString(), note: noteToUse } };
     cartItems.push(newItem);
     showToast('success', 'Item added to cart!');
+    saveCartToLocalStorage(cartItems, { type: 'add', item });
   }
-  saveCartToLocalStorage(cartItems, { type: 'add', item });
 }
 
 /**
@@ -128,6 +143,24 @@ export function updateItemQuantity(itemId, newQuantity) {
   } else {
     console.warn(`Item with ID ${itemId} not found in cart.`);
   }
+}
+
+/**
+ * Updates the note for a specific cart item.
+ * @param {string} itemId - The ID of the item to update.
+ * @param {string} note - The new note text.
+ */
+export function updateCartItemNote(itemId, note) {
+    let cartItems = getCartItems();
+    const itemIndex = cartItems.findIndex(item => item.meta.itemId === itemId);
+
+    if (itemIndex > -1) {
+        cartItems[itemIndex].cart.note = note;
+        saveCartToLocalStorage(cartItems, { type: 'update', itemId });
+        showToast('success', 'Note updated!');
+    } else {
+        console.warn(`Item with ID ${itemId} not found in cart items.`);
+    }
 }
 
 /**

@@ -22,11 +22,10 @@ async function populateAllItemsGrid(itemsToDisplay = allItems) {
     }
 
     try {
-        if (allItems.length === 0) {
-            const fetchedItems = await fetchAllItems();
-            allItems = fetchedItems.filter(item => item.meta.flags.isActive);
-            itemsToDisplay = allItems;
-        }
+        const fetchedItems = await fetchAllItems();
+        console.log('Fetched items:', fetchedItems); // Add this line to debug
+        allItems = fetchedItems.filter(item => item.meta.flags.isActive);
+        itemsToDisplay = allItems;
 
         const filteredItems = applyFilters(itemsToDisplay, currentFilter, currentAdvancedFilters);
 
@@ -45,6 +44,8 @@ async function populateAllItemsGrid(itemsToDisplay = allItems) {
             if (card) fragment.appendChild(card);
         }
         grid.appendChild(fragment);
+        // Force a reflow to ensure the browser renders the newly added elements
+        
 
     } catch (error) {
         grid.innerHTML = `<div class="no-items-placeholder">Could not load all products and services.</div>`;
@@ -182,7 +183,13 @@ export async function getGlobalFilterTabs() {
 
 export async function init() {
     const container = document.querySelector('.home-view');
-    if (!container || container.dataset.initialized === 'true') return;
+    if (!container) return;
+
+
+    // If already initialized, skip the expensive setup steps
+    if (container.dataset.initialized === 'true') {
+        return;
+    }
 
     try {
         const [unitsResponse, categoriesResponse] = await Promise.all([
@@ -195,6 +202,7 @@ export async function init() {
             unitsData[unit.meta.unitId] = unit;
         });
 
+        await populateAllItemsGrid();
         await initCardHelper(unitsData);
         await initBannerManager();
 
@@ -244,7 +252,6 @@ export async function init() {
         populateAllItemsGrid();
     });
 
-    await populateAllItemsGrid(); // Ensure allItems is populated before initializing handlers
     initAddToCartHandler(allItems); // Pass allItems to the handler
     
 

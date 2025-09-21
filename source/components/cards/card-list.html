@@ -169,6 +169,17 @@
         text-overflow: ellipsis;
       }
 
+      /* Clickable Note Label Styling */
+      .card-note .note-label.clickable {
+          color: var(--primary-color, #007bff);
+          cursor: pointer;
+          font-weight: bold;
+      }
+
+      .card-note .note-label.clickable:hover {
+          text-decoration: underline;
+      }
+
       /* Action bar under item */
       .card-footer {
         font-size: 13px;
@@ -188,9 +199,10 @@
       .card-footer select {
         border: none;
         background: none;
-        color: var(--accent-primary);
+        color: var(--accent-primary, #007bff);
         cursor: pointer;
         font-size: 13px;
+        font-weight: bold; /* Added font-weight bold */
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

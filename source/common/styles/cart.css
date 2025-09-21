@@ -123,6 +123,6 @@
     background-color: var(--accent-primary-hover);
 }
 
-#start-shopping-btn:active {
+    #start-shopping-btn:active {
     transform: scale(0.98);
 }

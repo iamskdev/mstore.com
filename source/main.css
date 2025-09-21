@@ -62,6 +62,7 @@ header.header-view-area {
   position: relative;
   left: 0;
   right: 0;
+  min-height: calc(100vh - var(--top-height) - var(--bottom-height));
   display: none; /* Hidden by default */
   pointer-events: none; /* Disable interactions for inactive views */
   transition:
