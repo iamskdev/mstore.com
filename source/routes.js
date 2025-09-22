@@ -47,9 +47,9 @@ const routeConfig = {
     },
     account: {
       id: 'guest-account-view',
-      path: './source/common/pages/account.html',
-      cssPath: './source/common/styles/account.css',
-      jsPath: './source/common/scripts/account.js',
+      path: './source/common/pages/authentication.html',
+      cssPath: './source/common/styles/authentication.css',
+      jsPath: './source/common/scripts/authentication.js',
       title: 'Account',
       dataDependencies: ['users', 'accounts', 'merchants']
     },
