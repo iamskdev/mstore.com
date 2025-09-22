@@ -26,7 +26,7 @@ let savedFilterBarManager;
 let currentFilter = "all";
 let currentSort = "relevance";
 
-// Function to generate filter tabs based on saved items
+// Function to generate filter tabs based on wishlist items
 async function getSavedFilterTabs() {
     const savedItems = getSavedItems();
     if (savedItems.length === 0) return [];
@@ -170,8 +170,8 @@ const savedViewConfig = {
 };
 
 async function renderSavedItems() {
-    const savedItemsContainer = document.getElementById('saved-items-container');
-    const emptyState = document.getElementById('empty-saved-view');
+    const savedItemsContainer = document.getElementById('wishlist-items-container');
+    const emptyState = document.getElementById('empty-wishlist-view');
 
     if (!savedItemsContainer || !emptyState) {
         return;
@@ -271,18 +271,18 @@ export async function init() {
 
     await initCardHelper();
 
-    const startShoppingBtn = document.getElementById('start-shopping-btn-saved');
+    const startShoppingBtn = document.getElementById('start-shopping-btn');
     if(startShoppingBtn) {
         startShoppingBtn.addEventListener('click', () => {
             window.viewManager.switchView('guest', 'home');
         });
     }
 
-    const filterBarPlaceholder = document.getElementById('saved-filter-bar');
+    const filterBarPlaceholder = document.getElementById('wishlist-filter-bar');
     savedFilterBarManager = initializeFilterBarManager(filterBarPlaceholder, await getSavedFilterTabs(), 'saved');
     savedFilterBarManager.manageVisibility(getSavedItems().length > 0);
 
-    const filterModalPlaceholder = document.getElementById('saved-filter-modal');
+    const filterModalPlaceholder = document.getElementById('wishlist-filter-modal');
     const initModalManager = initializeFilterModalManager();
     const savedFilterModalManager = initModalManager(filterModalPlaceholder);
 
@@ -290,11 +290,11 @@ export async function init() {
 
     window.addEventListener('savedItemsChanged', async (event) => {
         const { type, itemId } = event.detail;
-        const savedItemsContainer = document.getElementById('saved-items-container');
-        const emptyState = document.getElementById('empty-saved-view');
+        const savedItemsContainer = document.getElementById('wishlist-items-container');
+        const emptyState = document.getElementById('empty-wishlist-view');
 
         // Update filter bar regardless of change type, as available filters might change
-        const filterBarPlaceholder = document.getElementById('saved-filter-bar');
+        const filterBarPlaceholder = document.getElementById('wishlist-filter-bar');
         savedFilterBarManager = initializeFilterBarManager(filterBarPlaceholder, await getSavedFilterTabs(), 'saved');
         savedFilterBarManager.manageVisibility(getSavedItems().length > 0);
 
@@ -391,7 +391,7 @@ export async function init() {
         let targetItemId = itemId || item?.meta?.itemId; // Get itemId from either
 
         if (targetItemId) {
-            const savedItemsContainer = document.getElementById('saved-items-container');
+            const savedItemsContainer = document.getElementById('wishlist-items-container');
             // Find the card element by its data-item-id
             const cardToUpdate = savedItemsContainer?.querySelector(`.card-body[data-item-id="${targetItemId}"]`);
 

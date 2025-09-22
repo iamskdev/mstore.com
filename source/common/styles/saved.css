@@ -1,11 +1,11 @@
 /* Saved View Specific Styles */
 
-.saved-view-container {
+.wishlist-container {
     width: 100%;   
 }
 
 /* Empty State Styling */
-#empty-saved-view {
+#empty-wishlist-view {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,23 +14,23 @@
     color: #777;
 }
 
-#empty-saved-view .empty-state-content i {
+#empty-wishlist-view .empty-state-content i {
     font-size: 4rem;
     color: #ccc;
     margin-bottom: 1rem;
 }
 
-#empty-saved-view .empty-state-content h3 {
+#empty-wishlist-view .empty-state-content h3 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
 }
 
-#empty-saved-view .empty-state-content p {
+#empty-wishlist-view .empty-state-content p {
     max-width: 300px;
     margin-bottom: 1.5rem;
 }
 
-#start-shopping-btn-saved {
+#start-shopping-btn {
     background-color: var(--accent-primary);
     color: var(--accent-text);
     padding: 12px 24px;

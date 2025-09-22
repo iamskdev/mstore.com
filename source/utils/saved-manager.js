@@ -82,8 +82,9 @@ export function toggleSavedItem(itemId, initialNote = '') {
 
     savedItems.push({ itemId: itemId, note: noteToUse });
     saveItemsToLocalStorage(savedItems, { type: 'add', itemId });
+  } else { // Item is already saved, remove it
+    unsaveItem(itemId); // Use the existing unsaveItem function
   }
-  // If itemIndex > -1 (item is already saved), do nothing as per new requirement
 }
 
 /**
