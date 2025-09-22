@@ -144,7 +144,7 @@ const savedViewConfig = {
             const itemAlreadyInCart = isItemInCart(itemId);
 
             if (itemAlreadyInCart) {
-                showToast('info', 'Item already in cart list');
+                showToast('info', 'Item already in wishlist');
                 return;
             }
 

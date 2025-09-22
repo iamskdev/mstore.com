@@ -508,7 +508,7 @@ export const AuthService = (() => {
         if (getAppConfig().app.environment === 'development') {
             console.warn("DEV MODE: Bypassing real OTP sending. Simulating success.");
             showToast('info', 'DEV: OTP Sent (Simulated)');
-            // The UI in guest-account.js will handle showing the OTP field and auto-filling it.
+            // The UI in account.js will handle showing the OTP field and auto-filling it.
             return true;
         }
 

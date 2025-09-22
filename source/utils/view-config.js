@@ -30,9 +30,9 @@ const viewConfig = {
     chat: { id: 'guest-chat-view', path: null, title: 'Chat', dataDependencies: [] },
     saved: {
       id: 'guest-saved-view',
-      path: './source/common/pages/saved.html',
-      cssPath: './source/common/styles/saved.css',
-      jsPath: './source/common/scripts/saved.js',
+      path: './source/common/pages/wishlist.html',
+      cssPath: './source/common/styles/wishlist.css',
+      jsPath: './source/common/scripts/wishlist.js',
       title: 'Saved',
       dataDependencies: ['items']
     },
@@ -47,17 +47,17 @@ const viewConfig = {
     },
     account: {
       id: 'guest-account-view',
-      path: './source/common/pages/guest-account.html',
-      cssPath: './source/common/styles/guest-account.css',
-      jsPath: './source/common/scripts/guest-account.js',
+      path: './source/common/pages/account.html',
+      cssPath: './source/common/styles/account.css',
+      jsPath: './source/common/scripts/account.js',
       title: 'Account',
       dataDependencies: ['users', 'accounts', 'merchants']
     },
     notifications: {
       id: 'notifications-view',
-      path: './source/common/pages/notification-view.html',
-      cssPath: './source/common/styles/notification-view.css',
-      jsPath: './source/common/scripts/notification-view.js',
+      path: './source/common/pages/notification.html',
+      cssPath: './source/common/styles/notification.css',
+      jsPath: './source/common/scripts/notification.js',
       title: 'Notifications',
       allowedTypes: ['promotions', 'general'],
       dataDependencies: ['alerts', 'promotions']
@@ -77,9 +77,9 @@ const viewConfig = {
     chat: { id: 'user-chat-view', path: null, title: 'Chat', dataDependencies: [] },
     saved: {
       id: 'user-saved-view',
-      path: './source/common/pages/saved.html',
-      cssPath: './source/common/styles/saved.css',
-      jsPath: './source/common/scripts/saved.js',
+      path: './source/common/pages/wishlist.html',
+      cssPath: './source/common/styles/wishlist.css',
+      jsPath: './source/common/scripts/wishlist.js',
       title: 'Saved',
       dataDependencies: ['items']
     },
@@ -95,9 +95,9 @@ const viewConfig = {
     account: { id: 'user-account-view', path: null, title: 'Account', dataDependencies: ['users'] },
     notifications: {
       id: 'notifications-view',
-      path: './source/common/pages/notification-view.html',
-      cssPath: './source/common/styles/notification-view.css',
-      jsPath: './source/common/scripts/notification-view.js',
+      path: './source/common/pages/notification.html',
+      cssPath: './source/common/styles/notification.css',
+      jsPath: './source/common/scripts/notification.js',
       title: 'Notifications',
       dataDependencies: ['alerts', 'promotions', 'orders']
     }
@@ -119,9 +119,9 @@ const viewConfig = {
     account: { id: 'merchant-account-view', path: null, title: 'Account', dataDependencies: ['merchants'] },
     notifications: {
       id: 'notifications-view',
-      path: './source/common/pages/notification-view.html',
-      cssPath: './source/common/styles/notification-view.css',
-      jsPath: './source/common/scripts/notification-view.js',
+      path: './source/common/pages/notification.html',
+      cssPath: './source/common/styles/notification.css',
+      jsPath: './source/common/scripts/notification.js',
       title: 'Notifications',
       dataDependencies: ['alerts', 'orders']
     }
@@ -145,9 +145,9 @@ const viewConfig = {
     account: { id: 'admin-account-view', path: null, title: 'Account', dataDependencies: ['users', 'accounts'] },
     notifications: {
       id: 'notifications-view',
-      path: './source/common/pages/notification-view.html',
-      cssPath: './source/common/styles/notification-view.css',
-      jsPath: './source/common/scripts/notification-view.js',
+      path: './source/common/pages/notification.html',
+      cssPath: './source/common/styles/notification.css',
+      jsPath: './source/common/scripts/notification.js',
       title: 'Notifications',
       dataDependencies: ['alerts', 'promotions', 'orders', 'logs'] // Keeping original dependencies
     }
