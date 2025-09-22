@@ -49,6 +49,8 @@ const APP_SHELL_URLS = [
   './source/partials/filter/filter-bar.html',
   './source/partials/filter/filter-modal.html',
   './source/partials/role-switcher.html',
+  './source/partials/modals/feedback.html',
+  './source/partials/modals/feedback.js',
   './source/templates/cards/card-grid.html',
   './source/templates/banner.html',
   './source/templates/cards/card-list.html',
