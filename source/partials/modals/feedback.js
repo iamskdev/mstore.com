@@ -11,7 +11,7 @@
 export async function loadFeedbackModal() {
   try {
     // Adjust the path if your web server serves files from a different root
-    const response = await fetch('/source/partials/modals/feedback.html');
+    const response = await fetch('./source/partials/modals/feedback.html');
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
