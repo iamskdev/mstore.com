@@ -1,6 +1,6 @@
 // notification-view.js
 
-import { getAppConfig } from '../../utils/config-manager.js';
+import { getAppConfig } from '../../settings/main-config.js';
 
 const tabMapping = {
   promotional: "offers",

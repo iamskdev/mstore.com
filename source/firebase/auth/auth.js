@@ -1,8 +1,8 @@
 import { fetchAllUsers, generateSequentialId } from '../../utils/data-manager.js';
 import { createLog } from '../firestore/logs-collection.js';
 import { showToast } from '../../utils/toast.js';
-import { viewManager } from '../../main.js';
-import { getAppConfig } from '../../utils/config-manager.js';
+import { routeManager } from '../../main.js';
+import { getAppConfig } from '../../settings/main-config.js';
 import { auth, firestore, firebase } from '../firebase-config.js'; // ✅ Import services directly
 
 export const AuthService = (() => {
@@ -78,7 +78,7 @@ export const AuthService = (() => {
         if (!meta) return 'guest'; // Should not happen for a logged-in user
 
         // 1. The `primaryRole` field is the most authoritative source.
-        if (meta.primaryRole && viewManager.viewConfig[meta.primaryRole]) {
+        if (meta.primaryRole && routeManager.routeConfig[meta.primaryRole]) {
             return meta.primaryRole;
         }
 
@@ -234,7 +234,7 @@ export const AuthService = (() => {
                 if (user) {
                     const role = user.meta?.roles?.[0] || 'user';
                     const userId = user.meta.userId;
-                    viewManager.handleRoleChange(role, userId);
+                    routeManager.handleRoleChange(role, userId);
                     showToast('login');
                     return true;
                 } else {
@@ -300,8 +300,8 @@ export const AuthService = (() => {
                     description: `User logged in successfully via ${isEmail ? 'email' : 'phone'}.`,
                     details: { method: isEmail ? 'email' : 'phone', credential: credentialValue }
                 });
-                // Centralized state update via ViewManager
-                viewManager.handleRoleChange(role, userId);
+                // Centralized state update via routeManager
+                routeManager.handleRoleChange(role, userId);
                 showToast('login');
                 return true;
             }
@@ -381,7 +381,7 @@ export const AuthService = (() => {
             // Simulate redirect or state change
             localStorage.setItem('currentUserType', 'user');
             localStorage.setItem('currentUserId', `USR${Date.now()}`);
-            viewManager.handleRoleChange('user');
+            routeManager.handleRoleChange('user');
             return true;
         }
 
@@ -429,7 +429,7 @@ export const AuthService = (() => {
             });
 
             // --- Step 4: Post-creation Actions (Login & Verification) ---
-            viewManager.handleRoleChange('user', userId);
+            routeManager.handleRoleChange('user', userId);
 
             if (getAppConfig().flags.phoneVerification) {
                 await user.sendEmailVerification();
@@ -613,7 +613,7 @@ export const AuthService = (() => {
 
             // FIX: Prioritize 'primaryRole' for correct role assignment.
             const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'user';
-            viewManager.handleRoleChange(role, userId);
+            routeManager.handleRoleChange(role, userId);
             showToast('login');
 
         } catch (error) {
@@ -666,7 +666,7 @@ export const AuthService = (() => {
 
             // FIX: Prioritize 'primaryRole' for correct role assignment.
             const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'user';
-            viewManager.handleRoleChange(role, userId);
+            routeManager.handleRoleChange(role, userId);
             showToast('login');
 
         } catch (error) {
@@ -744,15 +744,15 @@ export const AuthService = (() => {
                 await auth.signOut();
                 console.log("AuthService: Firebase user signed out successfully.");
             }
-            // After successful sign-out (or for local mode), tell ViewManager to switch to guest state.
+            // After successful sign-out (or for local mode), tell routeManager to switch to guest state.
             // No delay needed, as initializeAuthListener handles persistence on refresh.
-            viewManager.handleRoleChange('guest');
+            routeManager.handleRoleChange('guest');
             showToast('logout');
         } catch (error) {
             console.error("Logout Error:", error);
             showToast('error', 'Logout failed. Please try again.');
             // Even on failure, we should still try to reset the UI to the guest state.
-            viewManager.handleRoleChange('guest');
+            routeManager.handleRoleChange('guest');
         }
     }
 

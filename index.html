@@ -19,7 +19,7 @@
     (async function() {
       let appConfig = {};
       try {
-        const response = await fetch('./source/config.json');
+        const response = await fetch('./source/settings/config.json');
         if (response.ok) {
           appConfig = await response.json();
         }
@@ -114,7 +114,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script type="module">
   // ✅ Import critical modules at the top.
-  import { getAppConfig } from './source/utils/config-manager.js';
+  import { getAppConfig } from './source/settings/main-config.js';
   import { initializePwaInstall, setDeferredPrompt, getDeferredPrompt } from './source/utils/pwa-manager.js';
   // Import the main app initializer, but don't run it yet.
   import { initializeApp } from './source/main.js';

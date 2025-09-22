@@ -213,9 +213,9 @@
   }
 </style>
 <script type="module">
-  import { viewManager } from './source/main.js';
+  import { routeManager } from './source/main.js';
   import { showToast } from './source/utils/toast.js';
-  import { getAppConfig } from './source/utils/config-manager.js';
+  import { getAppConfig } from './source/settings/main-config.js';
 
   (async function() {
     // --- Initialization and Role Button Logic ---
@@ -224,7 +224,7 @@
 
     /**
      * Updates the active state of the role switcher buttons based on the current application state.
-     * @param {object} state - The current state from the ViewManager.
+     * @param {object} state - The current state from the routeManager.
      * @param {string} state.role - The current user role.
      */
     function updateActiveButton({ role }) {
@@ -280,18 +280,18 @@
             localStorage.removeItem('currentUserId');
           }
 
-          // Directly tell the viewManager to handle the role change.
+          // Directly tell the routeManager to handle the role change.
           if (userType) {
-            viewManager.handleRoleChange(userType);
+            routeManager.handleRoleChange(userType);
             showToast('info', `Switched to ${userType.charAt(0).toUpperCase() + userType.slice(1)} mode`, 2000);
             console.log(`DEV MODE: Requested role switch to '${userType}' with user ID '${userId || 'none'}'.`);
           }
         });
       });
 
-      // Subscribe to the viewManager. It will provide the initial state immediately
+      // Subscribe to the routeManager. It will provide the initial state immediately
       // and all subsequent state changes, keeping the switcher perfectly in sync.
-      viewManager.subscribe(updateActiveButton);
+      routeManager.subscribe(updateActiveButton);
     } else {
       console.log(`RoleSwitcher disabled via config.json. Dev switcher is hidden.`);
       devContainer.remove();
@@ -378,7 +378,7 @@
         `;
         userItem.addEventListener('click', () => {
           localStorage.setItem('currentUserId', user.meta.userId);
-          viewManager.handleRoleChange(user.meta.primaryRole || 'user');
+          routeManager.handleRoleChange(user.meta.primaryRole || 'user');
           impersonateModal.classList.remove('visible');
           // Show a toast to confirm the impersonation
           showToast('info', `Now impersonating: ${user.info.fullName}`, 2500);

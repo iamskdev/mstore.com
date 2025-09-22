@@ -72,7 +72,7 @@ function formatDate(value) {
     return `${d}/${m}/${y}`;
 }
 
-const savedViewConfig = {
+const savedrouteConfig = {
     fields: [
         { key: 'info.name', selector: '.card-title', visible: true },
         { key: 'media.thumbnail', selector: '.card-image', type: 'image', default: './localstore/images/default-product.jpg' },
@@ -231,7 +231,7 @@ async function renderSavedItems() {
     savedItemsContainer.innerHTML = '';
 
     for (const item of filteredItems) {
-        const cardElement = createListCard(item, savedViewConfig);
+        const cardElement = createListCard(item, savedrouteConfig);
         if (cardElement) {
             savedItemsContainer.appendChild(cardElement);
             const noteElement = cardElement.querySelector('.note-label');
@@ -274,7 +274,7 @@ export async function init() {
     const startShoppingBtn = document.getElementById('start-shopping-btn');
     if(startShoppingBtn) {
         startShoppingBtn.addEventListener('click', () => {
-            window.viewManager.switchView('guest', 'home');
+            window.routeManager.switchView('guest', 'home');
         });
     }
 
@@ -314,7 +314,7 @@ export async function init() {
             if (item) {
                 const savedItem = getSavedItems().find(s => s.itemId === itemId);
                 const itemToRender = { ...item, note: savedItem?.note || '', cart: { selectedDate: savedItem?.selectedDate } };
-                const newCard = createListCard(itemToRender, savedViewConfig);
+                const newCard = createListCard(itemToRender, savedrouteConfig);
                 if (newCard) {
                     savedItemsContainer.appendChild(newCard);
                     // Re-attach event listeners for the new card's note
@@ -338,7 +338,7 @@ export async function init() {
                 if (item) {
                     const savedItem = getSavedItems().find(s => s.itemId === itemId);
                     const itemToRender = { ...item, note: savedItem?.note || '', cart: { selectedDate: savedItem?.selectedDate } };
-                    const updatedCard = createListCard(itemToRender, savedViewConfig);
+                    const updatedCard = createListCard(itemToRender, savedrouteConfig);
                     if (updatedCard) {
                         cardToUpdate.replaceWith(updatedCard);
                         // Re-attach event listeners for the updated card's note
@@ -404,7 +404,7 @@ export async function init() {
                     const itemToRender = { ...fullItem, note: savedItem?.note || '', cart: { selectedDate: savedItem?.selectedDate } };
                     
                     // Create a new card element with the updated data
-                    const updatedCard = createListCard(itemToRender, savedViewConfig);
+                    const updatedCard = createListCard(itemToRender, savedrouteConfig);
                     
                     if (updatedCard) {
                         // Replace the old card with the new one

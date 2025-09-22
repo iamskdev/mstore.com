@@ -70,7 +70,7 @@ export async function getGlobalFilterTabs() {
 }
 
 // Configuration for cart list cards
-const cartViewConfig = {
+const cartrouteConfig = {
     fields: [
         { key: 'info.name', selector: '.card-title', visible: true },
         { 
@@ -254,7 +254,7 @@ async function rendercard() {
     }
 
     if (shouldDisplay) {
-      let cardElement = createListCard(item, cartViewConfig);
+      let cardElement = createListCard(item, cartrouteConfig);
       if (cardElement) {
         cartItemsContainer.appendChild(cardElement);
         displayedItems.push(item);
@@ -290,7 +290,7 @@ function updateCardDisplay(item) {
         // Update selling price
         const sellingPriceElement = cardElement.querySelector('.selling-price');
         if (sellingPriceElement) {
-            const sellingPriceField = cartViewConfig.fields.find(f => f.key === 'pricing.sellingPrice');
+            const sellingPriceField = cartrouteConfig.fields.find(f => f.key === 'pricing.sellingPrice');
             if (sellingPriceField && sellingPriceField.formatter) {
                 sellingPriceElement.innerText = sellingPriceField.formatter(item.pricing.sellingPrice, item);
             }
@@ -298,7 +298,7 @@ function updateCardDisplay(item) {
 
         // Update MRP (max price)
         const maxPriceElement = cardElement.querySelector('.max-price');
-        const mrpField = cartViewConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.max-price');
+        const mrpField = cartrouteConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.max-price');
         if (maxPriceElement) {
             if (mrpField && mrpField.visible(item)) {
                 maxPriceElement.innerText = mrpField.formatter(item.pricing.mrp, item);
@@ -310,7 +310,7 @@ function updateCardDisplay(item) {
 
         // Update discount
         const discountElement = cardElement.querySelector('.card-discount');
-        const discountField = cartViewConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.card-discount');
+        const discountField = cartrouteConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.card-discount');
         if (discountElement) {
             if (discountField && discountField.visible(item)) {
                 discountElement.innerText = discountField.formatter(item.pricing.mrp, item);
@@ -323,7 +323,7 @@ function updateCardDisplay(item) {
         // Update note
         const noteContentElement = cardElement.querySelector('.card-note .note-content');
         if (noteContentElement) {
-            const noteField = cartViewConfig.fields.find(f => f.key === 'cart.note');
+            const noteField = cartrouteConfig.fields.find(f => f.key === 'cart.note');
             if (noteField && noteField.formatter) {
                 // Extract the display text from the formatter's output
                 const formattedHtml = noteField.formatter(item.cart.note);
@@ -409,7 +409,7 @@ export async function init() {
   const startShoppingBtn = document.getElementById('start-shopping-btn');
   if(startShoppingBtn) {
     startShoppingBtn.addEventListener('click', () => {
-        window.viewManager.switchView('guest', 'home');
+        window.routeManager.switchView('guest', 'home');
     });
   }
 

@@ -1,5 +1,5 @@
 import { fetchUserById, fetchMerchantById } from '../../utils/data-manager.js';
-import { getAppConfig } from '../../utils/config-manager.js';
+import { getAppConfig } from '../../settings/main-config.js';
 
 export function initializeTopNavigation() {
     // --- Elements ---
@@ -201,12 +201,12 @@ export function initializeTopNavigation() {
         setTimeout(() => ripple.remove(), 600); // Remove after animation
 
         // NEW LOGIC: Check current view before dispatching
-        if (window.viewManager.currentView === 'notifications') {
+        if (window.routeManager.currentView === 'notifications') {
           // If already in notifications view, go back
           window.history.back();
         } else {
           // Otherwise, open notifications view
-          const currentRole = window.viewManager.currentRole;
+          const currentRole = window.routeManager.currentRole;
           window.dispatchEvent(new CustomEvent('requestViewChange', {
             detail: { role: currentRole, view: 'notifications' }
           }));
@@ -215,10 +215,10 @@ export function initializeTopNavigation() {
     }
 
     // --- Initialization ---
-    window.viewManager.subscribe(updateHeaderUI);
+    window.routeManager.subscribe(updateHeaderUI);
     // NEW: Subscribe the notification icon UI update function
-    window.viewManager.subscribe(updateNotificationIconUI);
-    console.log("✅ Header: Subscribed to ViewManager for state updates.");
+    window.routeManager.subscribe(updateNotificationIconUI);
+    console.log("✅ Header: Subscribed to routeManager for state updates.");
 }
 
 // NEW: Function to load the HTML and then initialize the existing logic

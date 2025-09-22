@@ -23,5 +23,5 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 
 # If versioner.js performed a bump, then add the modified files to the commit
-git add source/config.json
+git add source/settings/config.json
 git commit --amend --no-edit --allow-empty

@@ -88,12 +88,12 @@ export function initializeBottomNavigationLogic() {
     // b. Tell the view manager to switch views
     const role = btn.dataset.role;
     const viewId = btn.dataset.path;
-    viewManager.switchView(role, viewId);
+    routeManager.switchView(role, viewId);
   });
 
-  // 2. Listen for view changes FROM the viewManager to keep the UI in sync
-  viewManager.subscribe(updateNavUI);
-  console.log("✅ TabNav: Subscribed to ViewManager for state updates.");
+  // 2. Listen for view changes FROM the routeManager to keep the UI in sync
+  routeManager.subscribe(updateNavUI);
+  console.log("✅ TabNav: Subscribed to routeManager for state updates.");
 }
 
 /**

@@ -15,8 +15,8 @@ const APP_SHELL_URLS = [
   './source/assets/logos/app-logo.png',
 
   // Core Scripts & Config
-  './source/config.json',
-  './source/utils/config-manager.js',
+  './source/settings/config.json',
+  './source/settings/main-config.js',
   './source/main.js',
   './source/firebase/firebase-config.js',
 
@@ -54,7 +54,7 @@ const APP_SHELL_URLS = [
   './source/templates/cards/card-list.html',
 
   // Pages & Associated Assets from view-config.
-  './source/utils/view-config.js',
+  './source/routes.js',
   './source/templates/cards/card-helper.js',
   './source/common/pages/cart.html',
   './source/common/styles/cart.css',
@@ -87,7 +87,7 @@ async function getCacheName() {
         return dynamicCacheName;
     }
     try {
-        const response = await fetch('./source/config.json');
+        const response = await fetch('./source/settings/config.json');
         const config = await response.json();
         dynamicCacheName = `${config.app.name}_Cache_v${config.app.version}`;
         return dynamicCacheName;

@@ -60,10 +60,10 @@ function formatDate(value) {
 /**
  * Creates a list card element based on item data and a view configuration.
  * @param {object} item - The item data (product or service).
- * @param {object} viewConfig - Configuration object defining how the card should be rendered.
+ * @param {object} routeConfig - Configuration object defining how the card should be rendered.
  * @returns {HTMLElement} The card element.
  */
-export function createListCard(item, viewConfig) {
+export function createListCard(item, routeConfig) {
     console.log('createListCard called for item:', item?.meta?.itemId);
 
     const template = document.getElementById('list-card-template');
@@ -83,8 +83,8 @@ export function createListCard(item, viewConfig) {
     cardElement.dataset.itemId = item.meta.itemId; // Also keep data-itemId for convenience
 
     // --- Process Fields ---
-    if (viewConfig.fields) {
-        viewConfig.fields.forEach(field => {
+    if (routeConfig.fields) {
+        routeConfig.fields.forEach(field => {
             const targetElement = cardElement.querySelector(field.selector);
             if (targetElement) {
                 const isVisible = typeof field.visible === 'function' ? field.visible(item) : (field.visible !== false);
@@ -160,8 +160,8 @@ export function createListCard(item, viewConfig) {
 
     // --- Process Interactive Components ---
     const interactiveArea = cardElement.querySelector('.interactive-area');
-    if (interactiveArea && viewConfig.components) {
-        viewConfig.components.forEach(component => {
+    if (interactiveArea && routeConfig.components) {
+        routeConfig.components.forEach(component => {
             const isVisible = typeof component.visible === 'function' ? component.visible(item) : (component.visible !== false);
             if (!isVisible) return;
 
@@ -197,8 +197,8 @@ export function createListCard(item, viewConfig) {
 
     // --- Process Buttons ---
     const cardActions = cardElement.querySelector('.card-actions');
-    if (cardActions && viewConfig.buttons) {
-        viewConfig.buttons.forEach(buttonConfig => {
+    if (cardActions && routeConfig.buttons) {
+        routeConfig.buttons.forEach(buttonConfig => {
             const isVisible = typeof buttonConfig.visible === 'function' ? buttonConfig.visible(item) : (buttonConfig.visible !== false);
             if (!isVisible) return;
 
@@ -225,7 +225,7 @@ export function createListCard(item, viewConfig) {
                 if (selectElement) {
                     selectElement.addEventListener('change', (e) => {
                         const newQuantity = parseInt(e.target.value);
-                        viewConfig.actionHandlers[buttonConfig.action](item, newQuantity);
+                        routeConfig.actionHandlers[buttonConfig.action](item, newQuantity);
                     });
                 }
             } else if (buttonConfig.action === 'SELECT_SERVICE_DATE') {
@@ -251,8 +251,8 @@ export function createListCard(item, viewConfig) {
                     const newDate = hiddenDate.value;
                     dateButton.textContent = newDate ? formatDate(newDate) : 'Select Date'; // Update button text
                     // Call the action handler in cart.js
-                    if (viewConfig.actionHandlers && viewConfig.actionHandlers[buttonConfig.action]) {
-                        viewConfig.actionHandlers[buttonConfig.action](item, newDate); // Pass item and newDate
+                    if (routeConfig.actionHandlers && routeConfig.actionHandlers[buttonConfig.action]) {
+                        routeConfig.actionHandlers[buttonConfig.action](item, newDate); // Pass item and newDate
                     }
                 });
 
@@ -306,11 +306,11 @@ export function createListCard(item, viewConfig) {
             const action = targetButton.dataset.action;
             const clickedItemId = targetButton.dataset.itemId; // Get item ID from button
 
-            if (viewConfig.actionHandlers && viewConfig.actionHandlers[action]) {
+            if (routeConfig.actionHandlers && routeConfig.actionHandlers[action]) {
                 if (action === 'SELECT_SERVICE_DATE') {
-                    viewConfig.actionHandlers[action](item, targetButton); // Pass item and targetButton
+                    routeConfig.actionHandlers[action](item, targetButton); // Pass item and targetButton
                 } else {
-                    viewConfig.actionHandlers[action](item); // Pass the full item object
+                    routeConfig.actionHandlers[action](item); // Pass the full item object
                 }
             }
         } else {

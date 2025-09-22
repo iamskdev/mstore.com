@@ -15,7 +15,7 @@
 1.  **कमिट विश्लेषण (Commit Analysis):** स्क्रिप्ट कमिट मेसेज का विश्लेषण करके यह निर्धारित करती है कि वर्शन को बढ़ाना है या नहीं (जैसे, `feat`, `fix`, `improve`, या `!` के साथ ब्रेकिंग चेंज)।
 2.  **JSON अपडेट (`versions.json`):** यदि वर्शन बम्प आवश्यक है, तो यह `versions.json` में एक नया ऑब्जेक्ट जोड़ता है।
 3.  **चेंजलॉग (`CHANGELOG.md`):** यह `CHANGELOG.md` में एक नया एंट्री भी जोड़ता है।
-4.  **कॉन्फ़िग अपडेट (`config.json`):** यह `source/config.json` में `app.version` को नए वर्शन नंबर के साथ अपडेट करता है।
+4.  **कॉन्फ़िग अपडेट (`config.json`):** यह `source/settings/config.json` में `app.version` को नए वर्शन नंबर के साथ अपडेट करता है।
 5.  **ऑटो-अमेंड (Auto-Amend):** अंत में, `post-commit` हुक इन तीनों फाइलों (`versions.json`, `CHANGELOG.md`, `config.json`) को स्टेज करता है और उन्हें अंतिम कमिट में शामिल करने के लिए `git commit --amend` चलाता है।
 
 ---
@@ -52,7 +52,7 @@
   "revertedCommit": null,
   "changes": {
     "added": [
-      "`fallback` field in source/config.json.",
+      "`fallback` field in source/settings/config.json.",
       "Fallback URL handling logic in main.js."
     ],
     "fixed": [],
@@ -129,5 +129,5 @@
 ### महत्वपूर्ण नोट्स (Important Notes)
 
 -   **डेटा स्रोत (Data Source):** `versions.json` सत्य का स्रोत (source of truth) है और इसे Git रिपॉजिटरी में ट्रैक किया जाता है।
--   **डिस्प्ले (Display):** `source/config.json` में मौजूद `app.version` का उपयोग ऐप के UI में (जैसे ड्रॉअर के फुटर में) वर्तमान वर्शन को प्रदर्शित करने के लिए किया जाता है।
+-   **डिस्प्ले (Display):** `source/settings/config.json` में मौजूद `app.version` का उपयोग ऐप के UI में (जैसे ड्रॉअर के फुटर में) वर्तमान वर्शन को प्रदर्शित करने के लिए किया जाता है।
 -   **मैन्युअल बदलाव (Manual Changes):** `versioner.js` द्वारा प्रबंधित किसी भी फाइल (`versions.json`, `CHANGELOG.md`, `config.json`) में मैन्युअल रूप से बदलाव करने से बचें, क्योंकि स्वचालन आपके परिवर्तनों को ओवरराइट कर सकता है।

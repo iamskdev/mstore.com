@@ -250,44 +250,63 @@ class FilterModalManager {
     }
 
     async _toggleAdvancedPanel(show) {
+        // Step 1: Load HTML if it's needed and not already loaded.
         if (show && !this.isModalLoaded) {
             try {
                 await this._loadModalHtml();
                 this.isModalLoaded = true;
-                this._initializeAdvancedPanelLogic();
             } catch (error) {
                 console.error('FilterModalManager: Failed to load filter modal component.', error);
-                return;
+                return; // Can't proceed if HTML fails to load.
             }
         }
 
+        // Step 2: Find the core elements.
         const panel = this.modalContainer.querySelector('#advanced-filter-panel');
         const overlay = this.modalContainer.querySelector('#adv-filter-overlay');
+
+        // Step 3: Handle cases where elements are not found.
         if (!panel || !overlay) {
-            console.error("FilterModalManager: Modal elements not found after loading.");
+            // If we are trying to HIDE the modal, and the elements are already gone,
+            // this is not an error. The view was likely cleaned up. Just exit.
+            if (!show) {
+                return;
+            }
+            // If we are trying to SHOW the modal, but the elements aren't in the loaded HTML,
+            // that's a critical error.
+            console.error("FilterModalManager: Modal elements not found even after attempting to load HTML.");
             return;
         }
 
+        // Step 4: Initialize logic if showing for the first time.
+        if (show && !this.isAdvancedPanelInitialized) {
+            this._initializeAdvancedPanelLogic();
+        }
+
+        // Step 5: Execute the show/hide logic.
         if (show) {
             panel.style.display = 'block';
             overlay.style.display = 'block';
-            // Use a timeout to allow the display property to apply before adding the class for transition
             setTimeout(() => {
                 overlay.classList.add('visible');
                 panel.classList.add('visible');
             }, 10);
             document.body.style.overflow = 'hidden';
-            this._updateFilterIconState();
         } else {
             overlay.classList.remove('visible');
             panel.classList.remove('visible');
             document.body.style.overflow = '';
-            this._updateFilterIconState();
+            // Use a transitionend listener for a clean hide after animation.
             panel.addEventListener('transitionend', () => {
-                panel.style.display = 'none';
-                overlay.style.display = 'none';
+                if (!panel.classList.contains('visible')) {
+                    panel.style.display = 'none';
+                    overlay.style.display = 'none';
+                }
             }, { once: true });
         }
+
+        // Step 6: Update the filter icon state.
+        this._updateFilterIconState();
     }
 
     _initializePriceSlider() {

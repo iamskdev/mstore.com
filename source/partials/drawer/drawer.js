@@ -3,9 +3,9 @@ import { fetchUserById } from '../../utils/data-manager.js';
 import { formatPhoneNumberWithSpace } from '../../utils/formatters.js';
 import { showToast } from '../../utils/toast.js';
 import { AuthService } from '../../firebase/auth/auth.js';
-import { viewManager } from '../../main.js';
+import { routeManager } from '../../main.js';
 import { getDeferredPrompt, initializePwaInstall } from '../../utils/pwa-manager.js';
-import { getAppConfig } from '../../utils/config-manager.js';
+import { getAppConfig } from '../../settings/main-config.js';
 
 export function initializeDrawer() {
   /**
@@ -40,7 +40,7 @@ export function initializeDrawer() {
   /**
    * Updates the entire drawer UI based on the current user's role.
    * It fetches user data and displays the correct view (Guest, User, Merchant, etc.).
-   * @param {object} state - The current state from the ViewManager.
+   * @param {object} state - The current state from the routeManager.
    * @param {string} state.role - The current user role.
    */
   async function updateDrawerUI({ role, view }) {
@@ -158,7 +158,7 @@ export function initializeDrawer() {
   // This function dispatches an event to request the auth modal.
   function requestAuth(formType) {
     sessionStorage.setItem('initialAuthTab', formType); // Use sessionStorage to reliably set the initial tab
-    viewManager.switchView('guest', 'account');
+    routeManager.switchView('guest', 'account');
     closeDrawer();
   }
 
@@ -168,7 +168,7 @@ export function initializeDrawer() {
   // Logout logic (sabhi roles ke liye)
   function logout() {
     AuthService.handleLogout(); // Call the centralized logout handler
-    // The AuthService.handleLogout will now manage viewManager.handleRoleChange and showToast
+    // The AuthService.handleLogout will now manage routeManager.handleRoleChange and showToast
     
     // Close the drawer
     closeDrawer();
@@ -257,7 +257,7 @@ export function initializeDrawer() {
         const viewId = navItem.dataset.path;
         
         // Tell the view manager to switch views
-        viewManager.switchView(role, viewId);
+        routeManager.switchView(role, viewId);
         closeDrawer(); // Close the drawer after navigation
       }
     });
@@ -296,14 +296,14 @@ export function initializeDrawer() {
   // Initialize the PWA install logic which sets up the click handlers for the buttons.
   initializePwaInstall();
 
-  // Subscribe to the viewManager for state changes. This is the single source of truth.
+  // Subscribe to the routeManager for state changes. This is the single source of truth.
   // It will provide the initial state immediately and all subsequent state changes.
-  viewManager.subscribe(updateDrawerUI);
+  routeManager.subscribe(updateDrawerUI);
   
   // --- Initialize Version Info ---
   updateVersionInfo();
 
-  console.log("✅ Drawer: Subscribed to ViewManager for state updates.");
+  console.log("✅ Drawer: Subscribed to routeManager for state updates.");
 }
 
 export async function loadDrawer() {

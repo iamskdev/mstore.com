@@ -4,7 +4,7 @@
 // is triggered. This ensures that the UI for this view can be rendered even if
 // the Firebase services fail to load initially, preventing a blank screen for the user.
 
-import { getAppConfig } from '../../utils/config-manager.js';
+import { getAppConfig } from '../../settings/main-config.js';
 import { showToast } from '../../utils/toast.js';
 
 /**

@@ -15,7 +15,7 @@ const defaultViews = {
  * This module is separated to be importable by both the main application and the Service Worker.
  */
 
-const viewConfig = {
+const routeConfig = {
   guest: {
     home: {
       id: 'home-view',
@@ -154,4 +154,4 @@ const viewConfig = {
   },
   };
 
-export { viewConfig, defaultViews };
+export { routeConfig, defaultViews };

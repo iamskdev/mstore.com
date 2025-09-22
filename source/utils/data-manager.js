@@ -3,7 +3,7 @@
  * Implements a caching mechanism to prevent redundant network requests for static data.
  */
 
-import { getAppConfig } from './config-manager.js';
+import { getAppConfig } from '../settings/main-config.js';
 import { firestore } from '../firebase/firebase-config.js'; // ✅ Import firestore service
 
 /**

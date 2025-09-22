@@ -10,10 +10,10 @@
  */
 
 import { AuthService } from './firebase/auth/auth.js';
-import { viewConfig, defaultViews } from './utils/view-config.js';
+import { routeConfig, defaultViews } from './routes.js';
 import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.js';
 import { initializeFirebase } from './firebase/firebase-config.js';
-import { setAppConfig, getAppConfig } from './utils/config-manager.js';
+import { setAppConfig, getAppConfig } from './settings/main-config.js';
 import { initWishlistHandler } from './utils/saved-manager.js';
 import { initAddToCartHandler } from './utils/cart-manager.js'; // Added this line
 import { loadTopNavigation } from './partials/navigations/top-nav.js';
@@ -23,13 +23,13 @@ import { loadDrawer } from './partials/drawer/drawer.js';
 
 import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
 
-class ViewManager {
+class RouteManager {
   constructor() {
     // Initialize with a null state. The correct state will be determined
     // asynchronously by the init() method, preventing a "flash" of guest content.
     this.currentRole = 'guest';
     this.currentView = 'home';
-    this.viewConfig = viewConfig; // Expose config if needed externally
+    this.routeConfig = routeConfig; // Expose config if needed externally
     this.defaultViews = defaultViews;
     this.loadedViews = new Set();
     
@@ -51,7 +51,7 @@ class ViewManager {
     // immediately notify the new subscriber. This prevents race conditions where
     // a component subscribes *after* the initial view has been set.
     if (this.currentRole && this.currentView) {
-      const config = this.viewConfig[this.currentRole]?.[this.currentView] || {};
+      const config = this.routeConfig[this.currentRole]?.[this.currentView] || {};
       const state = { role: this.currentRole, view: this.currentView, config: config };
       callback(state);
     }
@@ -59,8 +59,8 @@ class ViewManager {
 
   /** @private Notifies all subscribers about a state change. */
   _notifySubscribers() {
-    console.log("ViewManager: Notifying subscribers about state change.");
-    const config = this.viewConfig[this.currentRole]?.[this.currentView] || {};
+    console.log("routeManager: Notifying subscribers about state change.");
+    const config = this.routeConfig[this.currentRole]?.[this.currentView] || {};
     const state = { role: this.currentRole, view: this.currentView, config: config };
     this.subscribers.forEach(callback => callback(state));
   }
@@ -72,12 +72,12 @@ class ViewManager {
    * @param {string} [existingHtml=''] - The existing HTML content of the view to prepend.
    */
   async _loadAndEmbedFooter(role, existingHtml = '') {
-    console.log(`ViewManager: _loadAndEmbedFooter called for role: ${role}`);
+    console.log(`routeManager: _loadAndEmbedFooter called for role: ${role}`);
     try {
       const footerHtml = await getFooterHtml(); // Use the new function
       return `<div class="view-content-wrapper">${existingHtml}</div>` + footerHtml;
     } catch (e) {
-      console.warn(`ViewManager: Could not embed footer`, e);
+      console.warn(`routeManager: Could not embed footer`, e);
       return existingHtml;
     }
   }
@@ -96,7 +96,7 @@ class ViewManager {
       // Prepend the filter bar HTML and wrap existing content
       return filterBarHtml + `<div class="view-content-wrapper">${existingHtml}</div>`; // Return the HTML
     } catch (e) {
-      console.warn(`ViewManager: Could not embed filter bar`, e); // Removed viewElement.id
+      console.warn(`routeManager: Could not embed filter bar`, e); // Removed viewElement.id
       return existingHtml; // Return original HTML on error
     }
   }
@@ -107,18 +107,18 @@ class ViewManager {
    * @param {string} viewId The ID of the view to switch to.
    */
   async switchView(role, viewId) {
-    console.log(`ViewManager: Attempting to switch to role: ${role}, viewId: ${viewId}`); // Added log
+    console.log(`routeManager: Attempting to switch to role: ${role}, viewId: ${viewId}`); // Added log
     // --- FIX: Close any open modals before switching views ---
     window.dispatchEvent(new CustomEvent('toggleAdvancedFilter', { detail: { show: false } }));
 
     // Validate the requested role and viewId. Fallback to a safe default if invalid.
-    if (!this.viewConfig[role] || !this.viewConfig[role][viewId]) {
-      console.warn(`ViewManager: Invalid role "${role}" or view "${viewId}". Falling back to default.`);
+    if (!this.routeConfig[role] || !this.routeConfig[role][viewId]) {
+      console.warn(`routeManager: Invalid role "${role}" or view "${viewId}". Falling back to default.`);
       role = 'guest'; // Safe fallback role
       viewId = this.defaultViews[role];
     }
 
-    const config = this.viewConfig[role][viewId];
+    const config = this.routeConfig[role][viewId];
     // Resolve view configuration, checking commonViews for paths if not present in role-specific config
     let resolvedConfig = { ...config }; // Start with role-specific config
 
@@ -214,7 +214,7 @@ class ViewManager {
       // 1. Load associated CSS file if it exists and isn't already loaded.
       // Use specific cssPath from config, or fall back to convention for other views.
       const cssPath = config.cssPath || config.path.replace('.html', '.css');
-      console.log(`ViewManager: Attempting to load CSS from: ${cssPath}`);
+      console.log(`routeManager: Attempting to load CSS from: ${cssPath}`);
       if (!document.querySelector(`link[href="${cssPath}"]`)) {
         // Check if the CSS file actually exists before adding the link tag
         const cssCheck = await fetch(cssPath, { method: 'HEAD' });
@@ -224,12 +224,12 @@ class ViewManager {
           cssLink.href = cssPath;
           cssLink.id = `${config.id}-style`; // Give it an ID for potential removal later
           document.head.appendChild(cssLink);
-          console.log(`ViewManager: Successfully appended CSS: ${cssPath}`);
+          console.log(`routeManager: Successfully appended CSS: ${cssPath}`);
         } else {
-          console.warn(`ViewManager: CSS file not found or accessible: ${cssPath}. Status: ${cssCheck.status}`);
+          console.warn(`routeManager: CSS file not found or accessible: ${cssPath}. Status: ${cssCheck.status}`);
         }
       } else {
-        console.log(`ViewManager: CSS already loaded: ${cssPath}`);
+        console.log(`routeManager: CSS already loaded: ${cssPath}`);
       }
 
       // 2. Fetch and inject HTML content
@@ -264,7 +264,7 @@ class ViewManager {
       // Set the final HTML content of the view element
       viewElement.innerHTML = finalHtml;
 
-      console.log(`ViewManager: Successfully loaded content for ${config.id} from ${config.path}`);
+      console.log(`routeManager: Successfully loaded content for ${config.id} from ${config.path}`);
 
       // FilterModalManager will be initialized by individual views if they need a filter bar.
 
@@ -276,10 +276,10 @@ class ViewManager {
             const { initializeFooter } = await import('./partials/footer/footer.js');
             this.footerHelper = { initialize: initializeFooter };
           }
-          console.log(`ViewManager: Calling initializeFooter with role: ${role}`);
+          console.log(`routeManager: Calling initializeFooter with role: ${role}`);
           this.footerHelper.initialize(document.getElementById('main-content'), role);
         } catch (e) {
-          console.error(`ViewManager: Failed to initialize embedded footer for ${config.id}`, e);
+          console.error(`routeManager: Failed to initialize embedded footer for ${config.id}`, e);
         }
       } else if (!config.showFilterBar) { // Only wrap if neither filter bar nor footer is embedded
         // Also wrap non-footer views for consistency, though it has less impact.
@@ -289,7 +289,7 @@ class ViewManager {
       // 3. Load and execute associated JS module if it exists.
       // Use specific jsPath from config, or fall back to convention.
       const jsPath = config.jsPath || config.path.replace('.html', '.js');
-      console.log(`ViewManager: Attempting to load JS from: ${jsPath}`);
+      console.log(`routeManager: Attempting to load JS from: ${jsPath}`);
 
       try {
         // The path from config is relative to the document root (index.html).
@@ -302,11 +302,11 @@ class ViewManager {
         const modulePath = getAppConfig().app.environment === 'development' ? `${absoluteJsPath}?v=${new Date().getTime()}` : absoluteJsPath;
         const module = await import(modulePath);
         if (module.init && typeof module.init === 'function') {
-          console.log(`ViewManager: Calling init() for ${config.id}`);
+          console.log(`routeManager: Calling init() for ${config.id}`);
           module.init();
-          console.log(`ViewManager: Successfully initialized JS for ${config.id}`);
+          console.log(`routeManager: Successfully initialized JS for ${config.id}`);
         } else {
-          console.warn(`ViewManager: init() function not found or not a function in ${config.id} at ${jsPath}.`);
+          console.warn(`routeManager: init() function not found or not a function in ${config.id} at ${jsPath}.`);
         }
       } catch (e) {
         // It's okay if a JS file doesn't exist for a simple view.
@@ -314,7 +314,7 @@ class ViewManager {
         if (!e.message.includes('Failed to fetch') && !e.message.includes('404')) {
           console.error(`Error executing script for ${config.id} at ${jsPath}:`, e);
         } else {
-          console.warn(`ViewManager: JS file not found for ${config.id} at ${jsPath}. This might be expected for simple views.`);
+          console.warn(`routeManager: JS file not found for ${config.id} at ${jsPath}. This might be expected for simple views.`);
         }
       }
 
@@ -332,12 +332,12 @@ class ViewManager {
    * @param {Array<string>} dependencies - An array of data dependency names (e.g., ['items', 'users']).
    */
   async _fetchDataDependencies(dependencies) {
-    console.log(`ViewManager: Entering _fetchDataDependencies for: ${dependencies.join(', ')}`);
+    console.log(`routeManager: Entering _fetchDataDependencies for: ${dependencies.join(', ')}`);
     if (!dependencies || dependencies.length === 0) {
       return;
     }
 
-    console.log(`ViewManager: Fetching data dependencies: ${dependencies.join(', ')}`);
+    console.log(`routeManager: Fetching data dependencies: ${dependencies.join(', ')}`);
     const fetchPromises = [];
 
     if (dependencies.includes('all')) {
@@ -353,22 +353,22 @@ class ViewManager {
         if (dataFetchers[dep]) {
           fetchPromises.push(dataFetchers[dep]());
         } else {
-          console.warn(`ViewManager: Unknown data dependency: ${dep}. Skipping fetch.`);
+          console.warn(`routeManager: Unknown data dependency: ${dep}. Skipping fetch.`);
         }
       }
     }
 
     try {
       const results = await Promise.all(fetchPromises);
-      console.log('ViewManager: All data dependencies fetched successfully.', results); // Log the fetched data
+      console.log('routeManager: All data dependencies fetched successfully.', results); // Log the fetched data
     } catch (error) {
-      console.error('ViewManager: Error fetching data dependencies:', error);
+      console.error('routeManager: Error fetching data dependencies:', error);
       showToast('error', 'Failed to load some data. Please refresh.', 5000);
     }
   }
 
     handleRoleChange(newRole, userId = null) {
-    console.trace(`ViewManager: handleRoleChange called. New Role: ${newRole}, User ID: ${userId}`); // Added trace
+    console.trace(`routeManager: handleRoleChange called. New Role: ${newRole}, User ID: ${userId}`); // Added trace
 
     // Centralize state change. This is the single source of truth for the user's session role.
      if (newRole === 'guest') {
@@ -425,7 +425,7 @@ class ViewManager {
     console.log(`main.js init: savedRole=${savedRole}, lastActiveRole=${lastActiveRole}, lastActiveView=${lastActiveView}`);
 
     // Priority 1: A valid, direct URL path takes precedence (e.g., user clicks a link or refreshes a specific page).
-    if (pathRole && pathView && this.viewConfig[pathRole]?.[pathView]) {
+    if (pathRole && pathView && this.routeConfig[pathRole]?.[pathView]) {
       // If the path role matches the saved logged-in role, or if there's no saved role, trust the URL.
       if (pathRole === savedRole || !savedRole) {
         console.log("Priority 1: Using URL path");
@@ -444,7 +444,7 @@ class ViewManager {
     // The condition now correctly handles the guest case where `savedRole` is null.
 
     // It restores if (A) the last role matches the logged-in role, OR (B) the last role was 'guest' and there's no logged-in user.
-    else if (lastActiveRole && lastActiveView && this.viewConfig[lastActiveRole]?.[lastActiveView] &&
+    else if (lastActiveRole && lastActiveView && this.routeConfig[lastActiveRole]?.[lastActiveView] &&
       (lastActiveRole === savedRole || (lastActiveRole === 'guest' && !savedRole))) {
 
       initialRole = lastActiveRole; // Trust the last active role from storage.
@@ -452,7 +452,7 @@ class ViewManager {
     }
 
     // Priority 3: If still no state, but the user is logged in, go to their default view.
-    else if (savedRole && this.viewConfig[savedRole]) {
+    else if (savedRole && this.routeConfig[savedRole]) {
       // This handles cases where lastActiveView might be missing or invalid.
       initialRole = savedRole;
       initialView = this.defaultViews[savedRole] || 'home';
@@ -474,7 +474,7 @@ class ViewManager {
     // need to fetch HTML/CSS/JS content over the network. The `init()` function
     // is not truly "initialized" until this first, critical view is loaded and
     // displayed. Awaiting it ensures that when `main.js` continues after
-    // `await viewManager.init()`, the UI is in a ready state, preventing a blank screen.
+    // `await routeManager.init()`, the UI is in a ready state, preventing a blank screen.
     await this.switchView(initialRole, initialView);
 
     window.addEventListener('popstate', (e) => {
@@ -491,8 +491,8 @@ class ViewManager {
   }
 }
 
-export const viewManager = new ViewManager();
-window.viewManager = viewManager;
+export const routeManager = new RouteManager();
+window.routeManager = routeManager;
 
 import {
   fetchAllItems,
@@ -608,8 +608,8 @@ function simulateProgress(targetPercentage) {
 // Listen for navigation requests from dynamically loaded views
 window.addEventListener('requestViewChange', (e) => {
   const { role, view } = e.detail;
-  if (viewManager.viewConfig[role]?.[view]) {
-    viewManager.switchView(role, view);
+  if (routeManager.routeConfig[role]?.[view]) {
+    routeManager.switchView(role, view);
   } else {
     console.warn(`View change request for a non-existent view was ignored: ${role}/${view}`);
   }
@@ -628,7 +628,7 @@ export async function initializeApp() {
   // Load application configuration
   let loadedConfig = {};
   try {
-    const response = await fetch('./source/config.json');
+    const response = await fetch('./source/settings/config.json');
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -706,7 +706,7 @@ export async function initializeApp() {
     await simulateProgress(100);
 
     if (splashScreen) {
-        // Wait for the splash screen to fully hide before proceeding with viewManager.init()
+        // Wait for the splash screen to fully hide before proceeding with routeManager.init()
         await new Promise(resolve => {
             setTimeout(() => {
                 splashScreen.classList.add('hidden'); // Start fade out
@@ -723,7 +723,7 @@ export async function initializeApp() {
   await loadTopNavigation();
   setupSearchToggle(); // Initialize search toggle after top navigation is loaded
   await loadBottomNavigation();
-  await viewManager.init(); // This ensures viewManager is always initialized
+  await routeManager.init(); // This ensures routeManager is always initialized
   initWishlistHandler();
   initAddToCartHandler(); // Added this line
   await loadDrawer();
@@ -945,9 +945,9 @@ function initializePullToRefresh() {
       window.dispatchEvent(new CustomEvent('appRefreshRequested'));
 
       // Trigger a refresh of the current view
-      const currentRole = viewManager.currentRole;
-      const currentView = viewManager.currentView;
-      const config = viewManager.viewConfig[currentRole]?.[currentView];
+      const currentRole = routeManager.currentRole;
+      const currentView = routeManager.currentView;
+      const config = routeManager.routeConfig[currentRole]?.[currentView];
       const newViewElement = document.getElementById(config.id);
 
       if (currentRole && currentView && config && newViewElement) {
@@ -955,7 +955,7 @@ function initializePullToRefresh() {
 
         // Wait for content to load AND for a minimum spinner display time
         await Promise.all([
-          viewManager.loadViewContent(newViewElement, config, currentRole),
+          routeManager.loadViewContent(newViewElement, config, currentRole),
           new Promise(resolve => setTimeout(resolve, 500)) // Minimum 0.5 second display for spinner
         ]);
 
