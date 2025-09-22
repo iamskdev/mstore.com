@@ -263,7 +263,7 @@ function updateConfigFile(entry) {
         console.error('❌ Invalid entry provided to update config.json.');
         return;
     }
-    const configJsonPath = path.resolve(__dirname, '..', 'source', 'config.json');
+    const configJsonPath = path.resolve(__dirname, '../source/settings/config.json');
     try {
         const configJson = JSON.parse(fs.readFileSync(configJsonPath, 'utf-8'));
         if (!configJson.app) {
