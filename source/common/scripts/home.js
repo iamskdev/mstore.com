@@ -1,6 +1,6 @@
 import { fetchAllItems, fetchAllUnits, fetchAllCategories, fetchActivePromotion } from '../../utils/data-manager.js';
 import { createCardFromTemplate, initCardHelper } from '../../templates/cards/card-helper.js';
-import { initBannerManager } from '../../utils/banner-mannager.js';
+import { initBannerManager } from '../../templates/banner.js';
 import { isItemSaved} from '../../utils/saved-manager.js';
 import { initAddToCartHandler } from '../../utils/cart-manager.js';
 import { initializeFilterBarManager } from '../../partials/filter/filter-bar.js'; // Import the global FilterBarManager

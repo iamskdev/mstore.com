@@ -28,7 +28,7 @@ const APP_SHELL_URLS = [
   './source/utils/pwa-manager.js',
   './source/utils/theme-switcher.js',
   './source/utils/toast.js',
-  './source/utils/banner-mannager.js',
+  './source/templates/banner.js',
   './source/utils/search-handler.js',
   './source/utils/cart-manager.js',
 

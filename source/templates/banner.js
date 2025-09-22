@@ -1,4 +1,4 @@
-import { fetchAllPromotions } from './data-manager.js';
+import { fetchAllPromotions } from '../utils/data-manager.js';
 
 let bannerTemplate = '';
 let allActiveBanners = [];
