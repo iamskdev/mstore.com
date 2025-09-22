@@ -4,6 +4,7 @@ import { addItemToCart, isItemInCart } from '../../utils/cart-manager.js';
 import { fetchItemById, fetchAllItems, fetchAllCategories } from '../../utils/data-manager.js';
 import { initializeFilterModalManager } from '../../components/filter/filter-modal.js';
 import { initializeFilterBarManager } from '../../components/filter/filter-bar.js';
+import { showToast } from '../../utils/toast.js';
 
 // Local utility to format slug for display
 function _formatSlugForDisplay(slug = '') {
@@ -111,7 +112,7 @@ const savedViewConfig = {
             action: 'ADD_TO_CART',
             class: 'btn-primary',
             visible: true,
-            disabled: (item) => isItemInCart(item.meta.itemId)
+            
         },
         { label: 'Share Me', action: 'SHARE_ITEM', class: 'btn-secondary', visible: true },
         { label: 'Remove', action: 'REMOVE_ITEM', class: 'btn-danger', visible: true }
@@ -139,8 +140,16 @@ const savedViewConfig = {
             dateInput.click(); // Programmatically click to open date picker
         },
         'ADD_TO_CART': (item) => {
+            const itemId = item.meta.itemId;
+            const itemAlreadyInCart = isItemInCart(itemId);
+
+            if (itemAlreadyInCart) {
+                showToast('info', 'Item already in cart list');
+                return;
+            }
+
             addItemToCart(item, 1, item.note); // Pass the item and its note
-            renderSavedItems(); // Re-render to update the button state
+            // No need to call renderSavedItems() here, cartItemsChanged listener will handle UI update
         },
         'SHARE_ITEM': (item) => {
             if (navigator.share) {
@@ -161,28 +170,23 @@ const savedViewConfig = {
 };
 
 async function renderSavedItems() {
-    console.log('renderSavedItems called.');
     const savedItemsContainer = document.getElementById('saved-items-container');
     const emptyState = document.getElementById('empty-saved-view');
 
     if (!savedItemsContainer || !emptyState) {
-        console.error('renderSavedItems: Missing savedItemsContainer or emptyState elements.');
         return;
     }
 
     const savedItemsData = getSavedItems();
-    console.log('Saved Items Data:', savedItemsData);
     savedItemsContainer.innerHTML = '';
 
     if (savedItemsData.length === 0) {
-        console.log('No saved items. Showing empty state.');
         emptyState.classList.remove('hidden');
         savedItemsContainer.classList.add('hidden');
         if (savedFilterBarManager) savedFilterBarManager.manageVisibility(false);
         return;
     }
 
-    console.log('Saved items found. Hiding empty state.');
     emptyState.classList.add('hidden');
     savedItemsContainer.classList.remove('hidden');
     if (savedFilterBarManager) savedFilterBarManager.manageVisibility(true);
@@ -194,7 +198,6 @@ async function renderSavedItems() {
             itemsToRender.push({ ...item, note: savedItem.note, cart: { selectedDate: savedItem.selectedDate } });
         }
     }
-    console.log('Items to render after fetching details:', itemsToRender);
 
     // Apply filtering
     let filteredItems = itemsToRender;
@@ -207,12 +210,10 @@ async function renderSavedItems() {
             if (categoryToFilter) {
                 filteredItems = itemsToRender.filter(item => item.meta.links.categoryId === categoryToFilter.meta.categoryId);
             } else {
-                console.warn(`Unknown filter category slug: ${currentFilter}`);
                 filteredItems = []; // No items if category not found
             }
         }
     }
-    console.log('Filtered items:', filteredItems);
 
     // Apply sorting
     if (currentSort && currentSort !== 'relevance') {
@@ -230,10 +231,8 @@ async function renderSavedItems() {
     savedItemsContainer.innerHTML = '';
 
     for (const item of filteredItems) {
-        console.log('Creating card for item:', item.meta.itemId);
         const cardElement = createListCard(item, savedViewConfig);
         if (cardElement) {
-            console.log('Card element created:', cardElement);
             savedItemsContainer.appendChild(cardElement);
             const noteElement = cardElement.querySelector('.note-label');
             if (noteElement) {
@@ -246,7 +245,6 @@ async function renderSavedItems() {
                 });
             }
         } else {
-            console.warn('createListCard returned null for item:', item.meta.itemId);
         }
     }
 }
@@ -266,9 +264,7 @@ function requestRenderSavedItems() {
 
 let isSavedInitialized = false;
 export async function init() {
-    console.log('Saved view init called.');
     if (isSavedInitialized) {
-        console.log('Saved view already initialized. Re-rendering.');
         requestRenderSavedItems();
         return;
     }
@@ -287,17 +283,13 @@ export async function init() {
     savedFilterBarManager.manageVisibility(getSavedItems().length > 0);
 
     const filterModalPlaceholder = document.getElementById('saved-filter-modal');
-    console.log('Before initializeFilterModalManager call.');
     const initModalManager = initializeFilterModalManager();
     const savedFilterModalManager = initModalManager(filterModalPlaceholder);
-    console.log('After initializeFilterModalManager call. savedFilterModalManager:', savedFilterModalManager);
 
     requestRenderSavedItems();
 
     window.addEventListener('savedItemsChanged', async (event) => {
-        console.log('savedItemsChanged event received. Performing targeted update.', event.detail);
         const { type, itemId } = event.detail;
-        console.log('Event type:', type, 'Item ID:', itemId); // Added log
         const savedItemsContainer = document.getElementById('saved-items-container');
         const emptyState = document.getElementById('empty-saved-view');
 
@@ -307,14 +299,10 @@ export async function init() {
         savedFilterBarManager.manageVisibility(getSavedItems().length > 0);
 
         if (type === 'remove') {
-            console.log('Attempting to remove card for itemId:', itemId); // Added log
             const cardToRemove = savedItemsContainer.querySelector(`.card-body[data-item-id="${itemId}"]`);
             if (cardToRemove) {
-                console.log('Card found, attempting to remove:', cardToRemove); // Added log
                 cardToRemove.remove();
-                console.log(`Removed card for item ${itemId}.`);
             } else {
-                console.log('Card not found for itemId:', itemId); // Added log
             }
             // Check if container is empty after removal
             if (getSavedItems().length === 0) {
@@ -339,7 +327,6 @@ export async function init() {
                             }
                         });
                     }
-                    console.log(`Added card for item ${itemId}.`);
                     emptyState.classList.add('hidden');
                     savedItemsContainer.classList.remove('hidden');
                 }
@@ -364,7 +351,6 @@ export async function init() {
                                 }
                             });
                         }
-                        console.log(`Updated card for item ${itemId}.`);
                     }
                 }
             }
@@ -383,23 +369,61 @@ export async function init() {
 
     window.addEventListener('viewChanged', (event) => {
         if (event.detail.view === 'saved') {
-            console.log('viewChanged to saved. Re-rendering.');
             requestRenderSavedItems();
         }
     });
 
     window.addEventListener('filterChanged', (event) => {
         if (event.detail.viewId !== 'saved') return;
-        console.log('filterChanged event received:', event.detail.filter);
         currentFilter = event.detail.filter;
         requestRenderSavedItems();
     });
 
     window.addEventListener('advancedFilterApplied', (event) => {
         if (event.detail.viewId !== 'saved') return;
-        console.log('advancedFilterApplied event received:', event.detail.sort);
         currentSort = event.detail.sort;
         requestRenderSavedItems();
+    });
+
+    window.addEventListener('cartItemsChanged', async (event) => {
+        const { type, item, itemId } = event.detail; // item for 'add'/'update', itemId for 'remove'
+
+        let targetItemId = itemId || item?.meta?.itemId; // Get itemId from either
+
+        if (targetItemId) {
+            const savedItemsContainer = document.getElementById('saved-items-container');
+            // Find the card element by its data-item-id
+            const cardToUpdate = savedItemsContainer?.querySelector(`.card-body[data-item-id="${targetItemId}"]`);
+
+            if (cardToUpdate) {
+                // Fetch the latest item data to ensure accurate re-rendering
+                const fullItem = await fetchItemById(targetItemId);
+                if (fullItem) {
+                    const savedItem = getSavedItems().find(s => s.itemId === targetItemId);
+                    // Combine item data with saved-specific properties like note and selectedDate
+                    const itemToRender = { ...fullItem, note: savedItem?.note || '', cart: { selectedDate: savedItem?.selectedDate } };
+                    
+                    // Create a new card element with the updated data
+                    const updatedCard = createListCard(itemToRender, savedViewConfig);
+                    
+                    if (updatedCard) {
+                        // Replace the old card with the new one
+                        cardToUpdate.replaceWith(updatedCard);
+                        
+                        // Re-attach event listeners for the updated card's note
+                        const noteElement = updatedCard.querySelector('.note-label');
+                        if (noteElement) {
+                            noteElement.addEventListener('click', () => {
+                                const newNote = prompt('Edit your note for this item:', itemToRender.note || '');
+                                if (newNote !== null) {
+                                    updateSavedItemNote(itemToRender.meta.itemId, newNote);
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        }
     });
 
     isSavedInitialized = true;

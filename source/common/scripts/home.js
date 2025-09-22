@@ -202,8 +202,8 @@ export async function init() {
             unitsData[unit.meta.unitId] = unit;
         });
 
+        await initCardHelper(unitsData); // <--- Moved this line up
         await populateAllItemsGrid();
-        await initCardHelper(unitsData);
         await initBannerManager();
 
         if (Object.keys(allCategoriesMap).length === 0) {

@@ -68,15 +68,12 @@
     }
 
 #empty-cart-view {
-    text-align: center;
-    height: calc(100vh - var(--top-height) - var(--bottom-height));
     display: flex;
-    background: var(--bg-primary);
-    margin: 1rem;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    height: 100%;
+    text-align: center;
+    padding: 10rem 1rem;
+    color: #777;
 
 }
 
@@ -85,7 +82,6 @@
 }
 
 .empty-cart-content {
-    padding: 120px 0;
     align-items: center;
     justify-content: center;
 }

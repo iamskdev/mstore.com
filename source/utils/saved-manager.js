@@ -71,10 +71,7 @@ export function toggleSavedItem(itemId, initialNote = '') {
   let savedItems = getSavedItems(); // Get the current state once
   const itemIndex = savedItems.findIndex(item => item.itemId === itemId);
 
-  if (itemIndex > -1) { // Item is already saved
-    savedItems.splice(itemIndex, 1); // Remove it
-    saveItemsToLocalStorage(savedItems, { type: 'remove', itemId });
-  } else { // Item is not saved, add it
+  if (itemIndex === -1) { // Item is not saved, add it
     // Check if the item is in cart and carry over its note
     const cartItems = cartManager.getCartItems();
     const cartItem = cartItems.find(cart => cart.meta.itemId === itemId);
@@ -86,6 +83,7 @@ export function toggleSavedItem(itemId, initialNote = '') {
     savedItems.push({ itemId: itemId, note: noteToUse });
     saveItemsToLocalStorage(savedItems, { type: 'add', itemId });
   }
+  // If itemIndex > -1 (item is already saved), do nothing as per new requirement
 }
 
 /**
@@ -171,12 +169,7 @@ export function initWishlistHandler() {
         const wasSaved = isItemSaved(itemId);
         toggleSavedItem(itemId);
 
-        // Show toast message based on the action
-        if (!wasSaved) {
-            showToast('success', 'Item saved to wishlist!');
-        } else {
-            showToast('info', 'Item removed from wishlist!');
-        }
+        // The actual button UI update will be handled by the savedItemsChanged listener
         // The actual button UI update will be handled by the savedItemsChanged listener
       } else {
         console.warn('Global Wishlist Handler: Item ID not found.');

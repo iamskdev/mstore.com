@@ -160,20 +160,16 @@ const cartViewConfig = {
         'SAVE_FOR_LATER': (item) => {
             // Remove from cart
             window.removeItem(item.meta.itemId);
-            console.log(`SAVE_FOR_LATER: Item ${item.info.name} (ID: ${item.meta.itemId}) removed from cart.`);
 
             // Check if the item is already saved
             const itemAlreadySaved = isItemSaved(item.meta.itemId);
-            console.log(`SAVE_FOR_LATER: Is item ${item.info.name} already saved? ${itemAlreadySaved}`);
 
             if (itemAlreadySaved) {
-                showToast('info', `${item.info.name} is already in your saved list.`);
-                console.log(`SAVE_FOR_LATER: Toast shown: Item already saved.`);
+                showToast('info', 'Item already in wishlist!'); // Item is already saved, show toast
             } else {
                 // Add to saved items, preserving the note
-                toggleSavedItem(item.meta.itemId, item.cart.note);
-                showToast('info', `${item.info.name} saved for later!`);
-                console.log(`SAVE_FOR_LATER: Toast shown: Item saved for later.`);
+                toggleSavedItem(item.meta.itemId, item.cart.note); // Add to saved list
+                showToast('info', 'Item saved for later!'); // Show saved toast
             }
         },
         'REMOVE_FROM_CART': (item) => window.removeItem(item.meta.itemId),
@@ -363,7 +359,6 @@ async function getFilteredCartItems() {
 }
 
 window.updateQty = function(itemId, qty) {
-  console.log(`Updating quantity for itemId: ${itemId} to ${qty}`);
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "product");
   if (item) {
     item.cart.qty = parseInt(qty);
@@ -461,21 +456,11 @@ export async function init() {
       const detail = event.detail || { type: 'full_refresh' };
       cart.items = await getCartItemsManager(); // Refresh local cart state
 
-      // If cart is not empty, re-initialize the filter bar to get correct tabs.
-      // If it IS empty, just ensure it's hidden.
-      if (cart.items.length > 0) {
-        cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs(), 'cart');
-      }
+      // Re-initialize filter bar with updated tabs and manage its visibility
+      cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs(), 'cart');
       cartFilterBarManager.manageVisibility(cart.items.length > 0);
 
       switch (detail.type) {
-        // --- FIX: Force a full refresh on 'add' to prevent race conditions ---
-        case 'add':
-          // Re-initialize filter bar with updated tabs
-          cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs(), 'cart');
-          cartFilterBarManager.manageVisibility(cart.items.length > 0);
-          requestRender(); // Perform a full re-render
-          break;
         case 'update':
           // Fetch the updated item from the cart.items array
           const updatedItem = cart.items.find(item => item.meta.itemId === detail.itemId);
@@ -490,7 +475,6 @@ export async function init() {
           // The cart.items array is already updated. Check if it's now empty.
           if (cart.items.length === 0) {
             // If the cart is now empty, a full re-render is needed to show the empty cart view.
-            // The `manageVisibility` call at the top of the listener has already correctly hidden the filter bar.
             requestRender();
           }
           else if (detail.itemId) {
@@ -504,10 +488,6 @@ export async function init() {
           }
           break;
         default: // 'add', 'clear', 'full_refresh' or any other case
-          // Re-initialize filter bar with updated tabs
-          cartFilterBarManager = initializeFilterBarManager(cartFilterBarPlaceholder, await getGlobalFilterTabs(), 'cart');
-          // Ensure the filter bar's visibility is managed
-          cartFilterBarManager.manageVisibility(cart.items.length > 0);
           // Perform a full re-render
           requestRender();
           break;

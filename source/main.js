@@ -152,12 +152,12 @@ class ViewManager {
       return;
     }
 
-    if (resolvedConfig.path && !this.loadedViews.has(resolvedConfig.id)) {
+    if (resolvedConfig.path) { // If the view has a path, always load its content
       await this.loadViewContent(newViewElement, resolvedConfig, role);
-    } else if (!resolvedConfig.path && !this.loadedViews.has(resolvedConfig.id)) { // NEW: Handle views with path: null
+      this.loadedViews.add(resolvedConfig.id); // Mark as loaded after content is loaded
+    } else if (!resolvedConfig.path && !this.loadedViews.has(resolvedConfig.id)) { // Handle views with path: null
       newViewElement.innerHTML = `<div class="view-placeholder" style="padding: 20px; text-align: center; color: var(--text-secondary); max-width: 80%; margin: auto;"><h3>${resolvedConfig.title} View</h3><p>This view is under development. Content will be available soon!</p></div>`;
       this.loadedViews.add(resolvedConfig.id); // Mark as loaded to prevent re-injection
-    } else if (resolvedConfig.path && this.loadedViews.has(resolvedConfig.id)) {
     }
 
     // Handle embedding the footer for views that don't have a content path but need a footer.
