@@ -5,7 +5,7 @@
 
 // Removed fetchAllCategories as it's no longer used here
 
-const COMPONENT_PATH = './source/components/filter/filter-bar.html';
+const COMPONENT_PATH = './source/partials/filter/filter-bar.html';
 
 class FilterBarManager {
     constructor(placeholderElement, customTabs = [], viewId) {

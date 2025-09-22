@@ -108,7 +108,7 @@ export async function loadBottomNavigation() {
   }
 
   try {
-    const response = await fetch('./source/components/bottom/bottom-navigation.html');
+    const response = await fetch('./source/partials/navigations/bottom-nav.html');
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

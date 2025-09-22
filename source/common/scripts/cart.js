@@ -1,8 +1,8 @@
-import { createListCard, initCardHelper } from '../../components/cards/card-helper.js';
+import { createListCard, initCardHelper } from '../../templates/cards/card-helper.js';
 import { getCartItems as getCartItemsManager, saveCartToLocalStorage, updateCartItemNote } from '../../utils/cart-manager.js';
 import { fetchAllCategories } from '../../utils/data-manager.js';
-import { initializeFilterModalManager } from '../../components/filter/filter-modal.js'; // Import initializeFilterModalManager
-import { initializeFilterBarManager, } from '../../components/filter/filter-bar.js'; // Import the global FilterBarManager
+import { initializeFilterModalManager } from '../../partials/filter/filter-modal.js'; // Import initializeFilterModalManager
+import { initializeFilterBarManager, } from '../../partials/filter/filter-bar.js'; // Import the global FilterBarManager
 import { toggleSavedItem, isItemSaved } from '../../utils/saved-manager.js'; // New import for saved items
 import { showToast } from '../../utils/toast.js'; // New import for toast messages
 

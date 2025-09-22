@@ -199,7 +199,7 @@ function handleTouchEnd() {
  */
 export async function initBannerManager() {
     try {
-        const templateResponse = await fetch('./source/components/cards/banner.html');
+        const templateResponse = await fetch('./source/templates/banner.html');
         if (!templateResponse.ok) throw new Error(`Failed to fetch banner.html: ${templateResponse.statusText}`);
         bannerTemplate = await templateResponse.text();
 

@@ -1,10 +1,10 @@
 import { fetchAllItems, fetchAllUnits, fetchAllCategories, fetchActivePromotion } from '../../utils/data-manager.js';
-import { createCardFromTemplate, initCardHelper } from '../../components/cards/card-helper.js';
+import { createCardFromTemplate, initCardHelper } from '../../templates/cards/card-helper.js';
 import { initBannerManager } from '../../utils/banner-mannager.js';
 import { isItemSaved} from '../../utils/saved-manager.js';
 import { initAddToCartHandler } from '../../utils/cart-manager.js';
-import { initializeFilterBarManager } from '../../components/filter/filter-bar.js'; // Import the global FilterBarManager
-import { initializeFilterModalManager } from '../../components/filter/filter-modal.js'; // Import initializeFilterModalManager
+import { initializeFilterBarManager } from '../../partials/filter/filter-bar.js'; // Import the global FilterBarManager
+import { initializeFilterModalManager } from '../../partials/filter/filter-modal.js'; // Import initializeFilterModalManager
 
 let allItems = [];
 let currentFilter = 'all';

@@ -134,7 +134,7 @@ mstore/
     -   व्यू मैनेजर `localStorage` में स्थिति को अपडेट करता है और फिर सभी सब्सक्राइब किए गए कंपोनेंट्स को सूचित करता है।
 
 5.  **डायनामिक UI अपडेट:**
-    -   `drawer/drawer.html` और `bottom/bottom-navigation.html` जैसे कंपोनेंट्स व्यू मैनेजर से सूचना प्राप्त करते हैं।
+    -   `drawer/drawer.html` और `bottom/bottom-nav.html` जैसे कंपोनेंट्स व्यू मैनेजर से सूचना प्राप्त करते हैं।
     -   सूचना मिलने पर, वे अपने `update...UI()` फ़ंक्शंस को ट्रिगर करते हैं, `localStorage` से नवीनतम उपयोगकर्ता भूमिका पढ़ते हैं, और `data-manager.js` का उपयोग करके आवश्यक डेटा प्राप्त करते हैं। यह सुनिश्चित करता है कि UI हमेशा वर्तमान उपयोगकर्ता के संदर्भ को दर्शाता है और `view-config.js` में परिभाषित `dataDependencies` के आधार पर डेटा को प्री-फ़ेच किया जाता है।
 
 6.  **डेटा सोर्स स्विचिंग (`config.json`, `data-manager.js`):**
@@ -213,7 +213,7 @@ mstore/
 -   **कॉन्फ़िगरेशन:** `/source/config.json` (यहाँ आप `flags.promotionEnabled` को `true` पर सेट करते हैं)
 -   **प्रमोशन डेटा:** `/localstore/jsons/promotions.json` (या Firestore में `promotions` कलेक्शन)
 -   **मुख्य लॉजिक:** `/source/main.js`
--   **UI कंपोनेंट्स:** `/source/components/top/top-navigation.html`, `/source/components/footer/footer.html`, `/source/components/bottom/bottom-navigation.html`
+-   **UI कंपोनेंट्स:** `/source/partials/navigations/top-nav.html`, `/source/partials/footer/footer.html`, `/source/partials/navigations/bottom-nav.html`
 
 ### वर्कफ़्लो:
 1.  **सक्रियण:** `config.json` में, `flags.promotionEnabled` को `true` पर सेट करें।

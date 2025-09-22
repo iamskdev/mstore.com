@@ -1,9 +1,9 @@
-import { createListCard, initCardHelper } from '../../components/cards/card-helper.js';
+import { createListCard, initCardHelper } from '../../templates/cards/card-helper.js';
 import { getSavedItems, unsaveItem, updateSavedItemNote, updateSavedItemDate } from '../../utils/saved-manager.js';
 import { addItemToCart, isItemInCart } from '../../utils/cart-manager.js';
 import { fetchItemById, fetchAllItems, fetchAllCategories } from '../../utils/data-manager.js';
-import { initializeFilterModalManager } from '../../components/filter/filter-modal.js';
-import { initializeFilterBarManager } from '../../components/filter/filter-bar.js';
+import { initializeFilterModalManager } from '../../partials/filter/filter-modal.js';
+import { initializeFilterBarManager } from '../../partials/filter/filter-bar.js';
 import { showToast } from '../../utils/toast.js';
 
 // Local utility to format slug for display

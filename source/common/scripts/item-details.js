@@ -4,7 +4,7 @@
  * like adding to cart, saving, sharing, and viewing related items.
  */
 
-import { createItemCard } from '../../components/card/card.js';
+import { createItemCard } from '../../partials/card/card.js';
 import { initializeDesktopHoverZoom } from '../../utils/cursor-zoom.js';
 import { initializeSearch } from '../../utils/search-handler.js';
 
@@ -530,12 +530,12 @@ export function initializeItemDetailsPage() {
       if (!isModalInitialized) {
         try {
           // 1. Fetch and inject the modal's HTML
-          const response = await fetch('./source/components/feedback-modal/feedback-modal.html');
+          const response = await fetch('./source/partials/feedback-modal/feedback-modal.html');
           if (!response.ok) throw new Error(`Failed to load modal HTML: ${response.status}`);
           modalContainer.innerHTML = await response.text();
 
           // 2. Import the modal's JavaScript module
-          const modalModule = await import('../../components/feedback-modal/feedback-modal.js');
+          const modalModule = await import('../../partials/feedback-modal/feedback-modal.js');
           
           // 3. Initialize the modal's internal logic after DOM update
           setTimeout(() => {

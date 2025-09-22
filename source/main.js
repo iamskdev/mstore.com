@@ -16,10 +16,10 @@ import { initializeFirebase } from './firebase/firebase-config.js';
 import { setAppConfig, getAppConfig } from './utils/config-manager.js';
 import { initWishlistHandler } from './utils/saved-manager.js';
 import { initAddToCartHandler } from './utils/cart-manager.js'; // Added this line
-import { loadTopNavigation } from './components/top/top-navigation.js';
-import { loadBottomNavigation } from './components/bottom/bottom-navigation.js';
-import { getFooterHtml } from './components/footer/footer.js';
-import { loadDrawer } from './components/drawer/drawer.js';
+import { loadTopNavigation } from './partials/navigations/top-nav.js';
+import { loadBottomNavigation } from './partials/navigations/bottom-nav.js';
+import { getFooterHtml } from './partials/footer/footer.js';
+import { loadDrawer } from './partials/drawer/drawer.js';
 
 import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
 
@@ -89,7 +89,7 @@ class ViewManager {
    */
   async _loadAndEmbedFilterBar(existingHtml = '') {
     try {
-      const filterBarResponse = await fetch('./source/components/filter/filter-bar.html');
+      const filterBarResponse = await fetch('./source/partials/filter/filter-bar.html');
       if (!filterBarResponse.ok) throw new Error('Filter Bar HTML not found');
 
       const filterBarHtml = await filterBarResponse.text();
@@ -273,7 +273,7 @@ class ViewManager {
         try {
           // The initialization is now handled here, after innerHTML is set
           if (!this.footerHelper) {
-            const { initializeFooter } = await import('./components/footer/footer.js');
+            const { initializeFooter } = await import('./partials/footer/footer.js');
             this.footerHelper = { initialize: initializeFooter };
           }
           console.log(`ViewManager: Calling initializeFooter with role: ${role}`);
@@ -735,7 +735,7 @@ export async function initializeApp() {
     const roleSwitcherElement = document.getElementById('role-switcher-placeholder');
     if (roleSwitcherElement) {
         try {
-            const res = await fetch('./source/components/role-switcher.html');
+            const res = await fetch('./source/partials/role-switcher.html');
             if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
             const html = await res.text();
 

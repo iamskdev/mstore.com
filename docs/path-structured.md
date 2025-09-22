@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 15/09/2025, 09:35
+📅 Last Updated: 22/09/2025, 15:36
 
 ├── .firebaserc
 ├── .gitignore
@@ -35,10 +35,9 @@
 │   ├── post-commit
 │   ├── pre-commit
 │   └── pre-push
-├── 📁 Projects\
-│   └── 📁 Apna\
-├── 📁 demo\
-│   └── demo-card.html
+├── 📁 achieve\
+│   ├── card-old.html
+│   └── error-page.html
 ├── 📁 docs\
 │   ├── CHANGELOG.md
 │   ├── brands_list.md
@@ -46,6 +45,7 @@
 │   ├── commit_message.txt
 │   ├── firebase-emulator.md
 │   ├── implementing-new-views.md
+│   ├── instruction.md
 │   ├── media-queries.md
 │   ├── path-is-flat.md
 │   ├── path-structured.md
@@ -245,53 +245,28 @@
 │   │   │   ├── hi.json
 │   │   │   └── langs.json
 │   │   ├── 📁 pages\
+│   │   │   ├── account.html
 │   │   │   ├── cart.html
-│   │   │   ├── guest-account.html
 │   │   │   ├── home.html
 │   │   │   ├── item-details.html
-│   │   │   ├── notification-view.html
+│   │   │   ├── notification.html
 │   │   │   ├── offline.html
-│   │   │   └── saved.html
+│   │   │   └── wishlist.html
 │   │   ├── 📁 scripts\
+│   │   │   ├── account.js
 │   │   │   ├── cart.js
-│   │   │   ├── guest-account.js
 │   │   │   ├── home.js
 │   │   │   ├── item-details.js
-│   │   │   ├── notification-view.js
-│   │   │   └── saved.js
+│   │   │   ├── notification.js
+│   │   │   └── wishlist.js
 │   │   └── 📁 styles\
+│   │       ├── account.css
 │   │       ├── cart.css
-│   │       ├── guest-account.css
 │   │       ├── home.css
 │   │       ├── item-details.css
-│   │       ├── notification-view.css
-│   │       ├── saved.css
-│   │       └── theme.css
-│   ├── 📁 components\
-│   │   ├── 📁 bottom\
-│   │   │   ├── bottom-navigation.html
-│   │   │   └── bottom-navigation.js
-│   │   ├── 📁 cards\
-│   │   │   ├── banner.html
-│   │   │   ├── card-grid.html
-│   │   │   └── card-list.html
-│   │   ├── 📁 drawer\
-│   │   │   ├── drawer.html
-│   │   │   └── drawer.js
-│   │   ├── 📁 feedback-modal\
-│   │   │   ├── feedback-modal.css
-│   │   │   ├── feedback-modal.html
-│   │   │   └── feedback-modal.js
-│   │   ├── 📁 footer\
-│   │   │   ├── footer.html
-│   │   │   └── footer.js
-│   │   ├── 📁 top\
-│   │   │   ├── top-navigation.html
-│   │   │   └── top-navigation.js
-│   │   ├── error-page.html
-│   │   ├── filter-bar.html
-│   │   ├── filter-modal.html
-│   │   └── role-switcher.html
+│   │       ├── notification.css
+│   │       ├── theme.css
+│   │       └── wishlist.css
 │   ├── 📁 firebase\
 │   │   ├── 📁 auth\
 │   │   │   └── auth.js
@@ -330,19 +305,46 @@
 │   │   │       ├── log-reader.js
 │   │   │       ├── mock-inject.js
 │   │   │       └── mode-switcher.js
+│   │   ├── 📁 client\
 │   │   └── 📁 merchant\
 │   │       ├── 📁 pages\
-│   │       │   └── merchant-home.html
 │   │       ├── account.html
 │   │       ├── analytics.html
 │   │       └── merchant-home.html
+│   ├── 📁 partials\
+│   │   ├── 📁 drawer\
+│   │   │   ├── drawer.html
+│   │   │   └── drawer.js
+│   │   ├── 📁 filter\
+│   │   │   ├── filter-bar.html
+│   │   │   ├── filter-bar.js
+│   │   │   ├── filter-modal.html
+│   │   │   └── filter-modal.js
+│   │   ├── 📁 footer\
+│   │   │   ├── footer.html
+│   │   │   └── footer.js
+│   │   ├── 📁 modals\
+│   │   │   ├── feedback-modal.css
+│   │   │   ├── feedback-modal.html
+│   │   │   └── feedback-modal.js
+│   │   ├── 📁 navigations\
+│   │   │   ├── bottom-nav.html
+│   │   │   ├── bottom-nav.js
+│   │   │   ├── top-nav.html
+│   │   │   └── top-nav.js
+│   │   └── role-switcher.html
+│   ├── 📁 templates\
+│   │   ├── 📁 cards\
+│   │   │   ├── card-grid.html
+│   │   │   ├── card-helper.js
+│   │   │   └── card-list.html
+│   │   └── banner.html
 │   ├── 📁 utils\
 │   │   ├── banner-mannager.js
-│   │   ├── card-helper.js
+│   │   ├── cart-manager.js
 │   │   ├── config-manager.js
 │   │   ├── cursor-zoom.js
 │   │   ├── data-manager.js
-│   │   ├── filter-modal.js
 │   │   ├── formatters.js
 │   │   ├── image-zoom.js
 │   │   ├── lang-helper.js

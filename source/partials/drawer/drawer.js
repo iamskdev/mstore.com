@@ -314,7 +314,7 @@ export async function loadDrawer() {
   }
 
   try {
-    const response = await fetch('./source/components/drawer/drawer.html');
+    const response = await fetch('./source/partials/drawer/drawer.html');
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

@@ -6,7 +6,7 @@ import { showToast } from '../../utils/toast.js';
  */
 export async function getFooterHtml() {
     try {
-        const footerResponse = await fetch('./source/components/footer/footer.html');
+        const footerResponse = await fetch('./source/partials/footer/footer.html');
         if (!footerResponse.ok) throw new Error('Footer HTML not found');
         return await footerResponse.text();
     } catch (e) {

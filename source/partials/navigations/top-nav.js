@@ -234,7 +234,7 @@ export async function loadTopNavigation() {
   }
 
   try {
-    const response = await fetch('./source/components/top/top-navigation.html');
+    const response = await fetch('./source/partials/navigations/top-nav.html');
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

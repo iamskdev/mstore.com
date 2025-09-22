@@ -452,11 +452,11 @@ export function createCardFromTemplate(item, isSkeleton = false) {
 
 export async function initCardHelper(unitsDataParam) {
     try {
-        const gridTemplateResponse = await fetch('./source/components/cards/card-grid.html');
+        const gridTemplateResponse = await fetch('./source/templates/cards/card-grid.html');
         if (!gridTemplateResponse.ok) throw new Error(`Failed to fetch card-grid.html: ${gridTemplateResponse.statusText}`);
         cardGridTemplate = await gridTemplateResponse.text();
 
-        const listTemplateResponse = await fetch('./source/components/cards/card-list.html');
+        const listTemplateResponse = await fetch('./source/templates/cards/card-list.html');
         if (!listTemplateResponse.ok) throw new Error(`Failed to fetch card-list.html: ${listTemplateResponse.statusText}`);
         cardListTemplate = await listTemplateResponse.text();
 

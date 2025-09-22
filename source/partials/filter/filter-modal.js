@@ -6,7 +6,7 @@
 import { fetchAllCategories, fetchAllBrands } from '../../utils/data-manager.js';
 import { showToast } from '../../utils/toast.js';
 
-const MODAL_COMPONENT_PATH = './source/components/filter/filter-modal.html';
+const MODAL_COMPONENT_PATH = './source/partials/filter/filter-modal.html';
 
 class FilterModalManager {
     constructor(placeholderElement) {
