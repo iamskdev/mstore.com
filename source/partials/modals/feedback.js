@@ -3,13 +3,57 @@
  * This script should be self-contained and only handle events within the modal.
  */
 
+/**
+ * Fetches the feedback modal HTML and inserts it into the DOM.
+ * This function should be called first to ensure the modal HTML is present in the document.
+ * @returns {Promise<HTMLElement>} A promise that resolves with the feedback modal element.
+ */
+export async function loadFeedbackModal() {
+  try {
+    // Adjust the path if your web server serves files from a different root
+    const response = await fetch('/source/partials/modals/feedback.html');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const htmlContent = await response.text();
+
+    // Create a temporary div to parse the HTML content
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+
+    // Extract the modal element
+    const modalElement = tempDiv.querySelector('#feedback-modal');
+    if (!modalElement) {
+      throw new Error('Feedback modal element not found in feedback.html');
+    }
+
+    // Extract and append styles if they are embedded in the HTML
+    // It's generally better to have styles in a separate CSS file,
+    // but if embedded, this will add them.
+    const styleElement = tempDiv.querySelector('style');
+    if (styleElement) {
+      document.head.appendChild(styleElement);
+    }
+
+    // Append the modal to the body or a specific container
+    document.body.appendChild(modalElement);
+
+    return modalElement;
+
+  } catch (error) {
+    console.error('Error loading feedback modal:', error);
+    throw error;
+  }
+}
+
+
 export function initFeedbackModal() {
   const modal = document.getElementById('feedback-modal');
-  
+
   // The controller (item-details.js) is responsible for showing the modal.
   // This script only handles what happens *inside* it.
   if (!modal) {
-    console.error("Feedback modal element not found in the DOM.");
+    console.error("Feedback modal element not found in the DOM. Ensure loadFeedbackModal() was called.");
     return;
   }
 
@@ -71,7 +115,7 @@ export function initFeedbackModal() {
               selectWrapper.classList.remove('open');
           }
       });
-      
+
       const initialSelected = options.querySelector('.custom-option.selected');
       if(initialSelected) {
           trigger.dataset.value = initialSelected.dataset.value;
@@ -96,7 +140,7 @@ export function initFeedbackModal() {
         });
       }
     }
-  
+
   setupCustomSelect('country-code-select');
   setupCustomSelect('type-select');
 
@@ -113,7 +157,7 @@ export function initFeedbackModal() {
     const typeTrigger = document.querySelector('#type-select .custom-select-trigger');
     const feedbackType = typeTrigger ? typeTrigger.dataset.value : 'other';
     const feedbackMessage = document.getElementById('feedback-message-textarea').value.trim();
-    
+
     const countryCodeTrigger = document.querySelector('#country-code-select .custom-select-trigger');
     const countryCode = countryCodeTrigger ? countryCodeTrigger.dataset.value : '+91';
     const phoneInput = document.getElementById('feedback-contact-number').value.trim();
@@ -138,3 +182,21 @@ export function initFeedbackModal() {
     alert("Feedback submitted successfully");
   });
 }
+
+// How to use these functions:
+// 1. Call loadFeedbackModal() to fetch and insert the HTML into the DOM.
+// 2. Once the promise from loadFeedbackModal() resolves, call initFeedbackModal()
+//    to attach all the event listeners and set up the modal's functionality.
+//
+// Example in your main application logic (e.g., in item-details.js or main.js):
+// import { loadFeedbackModal, initFeedbackModal } from './partials/modals/feedback.js';
+//
+// async function setupApp() {
+//   await loadFeedbackModal(); // Load the HTML first
+//   initFeedbackModal();       // Then initialize its logic
+//   // Now you can show/hide the modal as needed, e.g., when a button is clicked
+//   // document.getElementById('some-button-to-open-modal').style.display = 'flex';
+// }
+//
+// // Call the initialization function when the DOM is ready
+// document.addEventListener('DOMContentLoaded', setupApp);

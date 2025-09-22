@@ -6,6 +6,7 @@ import { AuthService } from '../../firebase/auth/auth.js';
 import { routeManager } from '../../main.js';
 import { getDeferredPrompt, initializePwaInstall } from '../../utils/pwa-manager.js';
 import { getAppConfig } from '../../settings/main-config.js';
+import { loadFeedbackModal, initFeedbackModal } from '../modals/feedback.js'; // <-- Added this import
 
 export function initializeDrawer() {
   /**
@@ -61,7 +62,7 @@ export function initializeDrawer() {
 
     if (userType === 'guest' || !userId) {
       guestView.classList.remove('hidden');
-      
+
       // Get the current hour in Indian Standard Time (IST) for accurate greetings
       const now = new Date();
       const options = { timeZone: 'Asia/Kolkata', hour: 'numeric', hour12: false };
@@ -82,7 +83,7 @@ export function initializeDrawer() {
       } catch (error) {
         // userData remains null, and the UI will gracefully use fallback values below.
       }
-      
+
       // A helper function to populate the user info sections
       const populateUserInfo = (prefix) => {
         const avatarEl = document.getElementById(`drawer-${prefix}-avatar`);
@@ -169,7 +170,7 @@ export function initializeDrawer() {
   function logout() {
     AuthService.handleLogout(); // Call the centralized logout handler
     // The AuthService.handleLogout will now manage routeManager.handleRoleChange and showToast
-    
+
     // Close the drawer
     closeDrawer();
   }
@@ -217,7 +218,7 @@ export function initializeDrawer() {
   // This modern PWA feature provides a native sharing experience.
   function setupShareButton() {
     const shareButtons = document.querySelectorAll('.app-share-btn');
-    
+
     shareButtons.forEach(button => {
       // Check if the Web Share API is supported by the browser
       if (navigator.share) {
@@ -255,7 +256,7 @@ export function initializeDrawer() {
         e.preventDefault(); // Prevent default action for <a> tags
         const role = navItem.dataset.role;
         const viewId = navItem.dataset.path;
-        
+
         // Tell the view manager to switch views
         routeManager.switchView(role, viewId);
         closeDrawer(); // Close the drawer after navigation
@@ -296,10 +297,25 @@ export function initializeDrawer() {
   // Initialize the PWA install logic which sets up the click handlers for the buttons.
   initializePwaInstall();
 
+  // --- Feedback Modal Trigger --- <-- Added this section
+  // Attach event listeners to all feedback buttons to show the modal
+  document.querySelectorAll('.feedback-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const feedbackModal = document.getElementById('feedback-modal');
+      if (feedbackModal) {
+        feedbackModal.style.display = 'flex'; // Show the modal
+      }
+      closeDrawer(); // Close the drawer when feedback modal is opened
+    });
+  });
+
+
   // Subscribe to the routeManager for state changes. This is the single source of truth.
   // It will provide the initial state immediately and all subsequent state changes.
   routeManager.subscribe(updateDrawerUI);
-  
+
   // --- Initialize Version Info ---
   updateVersionInfo();
 
@@ -327,10 +343,16 @@ export async function loadDrawer() {
     // Replace the placeholder with the new nodes from the fetched HTML
     // This prevents creating a nested element with a duplicate ID.
     drawerPlaceholder.replaceWith(...tempContainer.childNodes);
-    
+
     console.log('Drawer HTML loaded and replaced placeholder.');
 
-    initializeDrawer();
+    // --- Load and Initialize Feedback Modal --- <-- Added this section
+    await loadFeedbackModal(); // Load the HTML for the feedback modal
+    initFeedbackModal();       // Initialize the logic for the feedback modal
+    console.log('Feedback modal loaded and initialized.');
+
+
+    initializeDrawer(); // Initialize the drawer's own logic
 
   } catch (error) {
     console.error('Could not load or initialize the drawer:', error);

@@ -1,0 +1,84 @@
+[
+  {
+    "meta": {
+      "feedbackId": "FDB000000000001",
+      "version": 1,
+      "links": {
+        "userId": "USR000000000001"
+      },
+      "flags": {
+        "isReviewed": false,
+        "isResolved": false,
+        "isArchived": false,
+        "isGuestFeedback": false
+      }
+    },
+    "audit": {
+      "createdOn": "2025-09-22T10:30:00Z",
+      "createdBy": "USR000000000001",
+      "lastUpdated": "2025-09-22T10:30:00Z",
+      "updatedBy": "USR000000000001"
+    },
+    "details": {
+      "feedbackText": "App bahut accha hai, lekin search feature ko improve kiya ja sakta hai.",
+      "rating": 4,
+      "category": "feature_request",
+      "sentiment": "positive",
+      "attachments": []
+    },
+    "status": {
+      "currentStatus": "pending",
+      "history": [
+        {
+          "status": "pending",
+          "timestamp": "2025-09-22T10:30:00Z",
+          "changedBy": "USR000000000001",
+          "note": "Feedback submitted by user."
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "feedbackId": "FDB000000000002",
+      "version": 1,
+      "links": {
+        "userId": null
+      },
+      "flags": {
+        "isReviewed": false,
+        "isResolved": false,
+        "isArchived": false,
+        "isGuestFeedback": true
+      }
+    },
+    "audit": {
+      "createdOn": "2025-09-22T12:00:00Z",
+      "createdBy": null,
+      "lastUpdated": "2025-09-22T12:00:00Z",
+      "updatedBy": null
+    },
+    "details": {
+      "feedbackText": "Guest feedback: App crash ho raha hai jab main payment karta hoon.",
+      "rating": 2,
+      "category": "bug_report",
+      "sentiment": "negative",
+      "guestInfo": {
+        "email": "guest@example.com",
+        "device": "Android"
+      },
+      "attachments": []
+    },
+    "status": {
+      "currentStatus": "pending",
+      "history": [
+        {
+          "status": "pending",
+          "timestamp": "2025-09-22T12:00:00Z",
+          "changedBy": null,
+          "note": "Feedback submitted by guest user."
+        }
+      ]
+    }
+  }
+]
