@@ -92,7 +92,14 @@ const routeConfig = {
       
       dataDependencies: []
     },
-    account: { id: 'user-account-view', path: null, title: 'Account', dataDependencies: ['users'] },
+    account: {
+      id: 'user-account-view',
+      path: './source/common/pages/account.html',
+      cssPath: './source/common/styles/account.css',
+      jsPath: './source/common/scripts/account.js',
+      title: 'Account',
+      dataDependencies: ['users', 'accounts']
+    },
     notifications: {
       id: 'notifications-view',
       path: './source/common/pages/notification.html',
@@ -116,7 +123,14 @@ const routeConfig = {
     chat: { id: 'merchant-chat-view', path: null, title: 'Chat', dataDependencies: [] },
     add: { id: 'merchant-add-view', path: null, title: 'Add', dataDependencies: ['categories', 'brands', 'units'] },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items'] },
-    account: { id: 'merchant-account-view', path: null, title: 'Account', dataDependencies: ['merchants'] },
+    account: {
+      id: 'merchant-account-view',
+      path: './source/common/pages/account.html',
+      cssPath: './source/common/styles/account.css',
+      jsPath: './source/common/scripts/account.js',
+      title: 'Account',
+      dataDependencies: ['merchants', 'users', 'accounts']
+    },
     notifications: {
       id: 'notifications-view',
       path: './source/common/pages/notification.html',
@@ -142,7 +156,14 @@ const routeConfig = {
     logs: { id: 'admin-logs-view', path: null, title: 'Logs', dataDependencies: ['logs'] },
     promo: { id: 'admin-promo-view', path: null, title: 'Promo', dataDependencies: ['promotions', 'campaigns'] },
     campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns', dataDependencies: [] },
-    account: { id: 'admin-account-view', path: null, title: 'Account', dataDependencies: ['users', 'accounts'] },
+    account: {
+      id: 'admin-account-view',
+      path: './source/common/pages/account.html',
+      cssPath: './source/common/styles/account.css',
+      jsPath: './source/common/scripts/account.js',
+      title: 'Account',
+      dataDependencies: ['users', 'accounts']
+    },
     notifications: {
       id: 'notifications-view',
       path: './source/common/pages/notification.html',
