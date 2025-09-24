@@ -1,0 +1,58 @@
+.chat-container {
+  width: 100%;
+}
+
+.chat-support-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--accent-primary);
+  color: var(--accent-text);
+  border: none;
+  border-radius: 50%; /* Make it circular */
+  width: 50px; /* Fixed width */
+  height: 50px; /* Fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the icon */
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-size: 20px; /* Adjust icon size */
+}
+
+.chat-support-btn:hover {
+  background-color: var(--accent-secondary);
+}
+
+.login-instruction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* Take full height of the chat-view */
+  text-align: center;
+  padding: 20px;
+  margin-top: 120px;
+  color: var(--text-primary);
+}
+
+.login-instruction p {
+  font-size: 1.1em;
+  margin-bottom: 15px;
+}
+
+.go-for-auth {
+  background-color: var(--accent-primary);
+  color: var(--accent-text);
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.go-for-auth:hover {
+  background-color: var(--accent-secondary);
+}

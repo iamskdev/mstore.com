@@ -27,7 +27,14 @@ const routeConfig = {
       title: 'Home',
       dataDependencies: ['items', 'promotions', 'categories', 'brands']
     },
-    chat: { id: 'guest-chat-view', path: null, title: 'Chat', dataDependencies: [] },
+    chat: {
+      id: 'guest-chat-view',
+      path: './source/common/pages/chat.html',
+      cssPath: './source/common/styles/chat.css',
+      jsPath: './source/common/scripts/chat.js',
+      title: 'Chat',
+      dataDependencies: []
+    },
     saved: {
       id: 'guest-saved-view',
       path: './source/common/pages/wishlist.html',
@@ -74,7 +81,14 @@ const routeConfig = {
       title: 'Home',
       dataDependencies: ['items', 'promotions', 'categories', 'brands']
     },
-    chat: { id: 'user-chat-view', path: null, title: 'Chat', dataDependencies: [] },
+    chat: {
+      id: 'user-chat-view',
+      path: './source/common/pages/chat.html',
+      cssPath: './source/common/styles/chat.css',
+      jsPath: './source/common/scripts/chat.js',
+      title: 'Chat',
+      dataDependencies: []
+    },
     saved: {
       id: 'user-saved-view',
       path: './source/common/pages/wishlist.html',
@@ -120,7 +134,14 @@ const routeConfig = {
       title: 'Home',
       dataDependencies: ['items', 'promotions', 'categories', 'brands', 'orders', 'price-logs', 'alerts']
     },
-    chat: { id: 'merchant-chat-view', path: null, title: 'Chat', dataDependencies: [] },
+    chat: {
+      id: 'merchant-chat-view',
+      path: './source/common/pages/chat.html',
+      cssPath: './source/common/styles/chat.css',
+      jsPath: './source/common/scripts/chat.js',
+      title: 'Chat',
+      dataDependencies: ['merchants', 'users']
+    },
     add: { id: 'merchant-add-view', path: null, title: 'Add', dataDependencies: ['categories', 'brands', 'units'] },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items'] },
     account: {

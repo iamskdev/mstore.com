@@ -123,16 +123,16 @@
       "links": {
         "userId": "USR000000000004",
         "staffIds": []
-      }
-    },
-    "info": {
-      "name": "Anita Sringar Store",
-      "logo": "./localstore/images/logos/anita-store-logo.jpg",
-      "qrCode": "/admin/assets/images/merchant/qr/MQR00000002.png",
-      "tagline": "Traditional beauty, modern elegance.",
-      "descriptions": {
-        "short": "A curated store for cosmetics, bangles, bindis, and bridal essentials.",
-        "long": "Anita Sringar & Beauty Store brings you a wide range of beauty and sringar items including bangles, cosmetics, sindoor, bindis, mehendi, and bridal accessories. Trusted by local customers for quality and charm."
+      },
+      "info": {
+        "name": "Anita Sringar Store",
+        "logo": "./localstore/images/logos/anita-store-logo.jpg",
+        "qrCode": "/admin/assets/images/merchant/qr/MQR00000002.png",
+        "tagline": "Traditional beauty, modern elegance.",
+        "descriptions": {
+          "short": "A curated store for cosmetics, bangles, bindis, and bridal essentials.",
+          "long": "Anita Sringar & Beauty Store brings you a wide range of beauty and sringar items including bangles, cosmetics, sindoor, bindis, mehendi, and bridal accessories. Trusted by local customers for quality and charm."
+        }
       }
     },
     "openingHours": {
@@ -197,7 +197,7 @@
       "plan": "free",
       "type": null,
       "startDate": null,
-      "endDate": "null",
+      "endDate": null,
       "status": null,
       "autoRenew": false,
       "amount": null
