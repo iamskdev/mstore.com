@@ -93,6 +93,18 @@ export async function renderChatList(containerId, templateHtml) {
         }
       }
 
+      // Add click listener to navigate to the conversation view
+      chatItem.addEventListener('click', () => {
+        const conversationId = chatItem.dataset.id;
+        if (conversationId) {
+          // Use the global routeManager to switch views
+          // We need to construct the view name with the ID, e.g., 'conversation/some-id'
+          // The role can be retrieved from the routeManager's current state.
+          const currentRole = window.routeManager.currentRole || 'guest';
+          window.routeManager.switchView(currentRole, `conversation/${conversationId}`);
+        }
+      });
+
       container.appendChild(chatItem);
     });
 

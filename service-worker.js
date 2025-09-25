@@ -78,6 +78,16 @@ const APP_SHELL_URLS = [
   './source/modules/admin/pages/admin-home.css',
   './source/modules/admin/pages/admin-home.js',
 
+  // Chat feature
+  './source/common/pages/chat.html',
+  './source/common/styles/chat.css',
+  './source/common/scripts/chat.js',
+  './source/templates/chat/chat-list.html',
+  './source/templates/chat/chat-list.js',
+  './source/common/pages/conversation.html',
+  './source/common/styles/conversation.css',
+  './source/common/scripts/conversation.js',
+
   // Third-party Libraries
   'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.esm.js',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',

@@ -194,6 +194,17 @@ const routeConfig = {
       dataDependencies: ['alerts', 'promotions', 'orders', 'logs'] // Keeping original dependencies
     }
   },
+  commonViews: {
+    'conversation/:id': {
+      id: 'conversation-view',
+      path: './source/common/pages/conversation.html',
+      cssPath: './source/common/styles/conversation.css',
+      jsPath: './source/common/scripts/conversation.js',
+      title: 'Conversation',
+      fullscreen: true, // Custom flag for the router
+      dataDependencies: ['users'] // Example dependency
+    }
+  }
   };
 
 export { routeConfig, defaultViews };

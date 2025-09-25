@@ -379,3 +379,46 @@ html.standalone-no-zoom * {
   -ms-user-select: none;
  
 }
+
+/* 8. LAYOUT SWITCHING */
+#fullscreen-layout {
+    display: none;
+}
+
+body.fullscreen-active #default-layout {
+    display: none;
+}
+
+body.fullscreen-active #fullscreen-layout {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: var(--bg-primary);
+}
+
+/* 9. GENERIC FULLSCREEN PAGE STRUCTURE */
+.fullscreen-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.fullscreen-page-header {
+    flex-shrink: 0;
+    /* Add your header styles here, e.g., height, background, padding */
+}
+
+.fullscreen-page-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* Add your content area styles here, e.g., padding */
+}
+
+.fullscreen-page-footer {
+    flex-shrink: 0;
+    /* Add your footer styles here, e.g., height, background, padding */
+}

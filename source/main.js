@@ -111,14 +111,45 @@ class RouteManager {
     // --- FIX: Close any open modals before switching views ---
     window.dispatchEvent(new CustomEvent('toggleAdvancedFilter', { detail: { show: false } }));
 
-    // Validate the requested role and viewId. Fallback to a safe default if invalid.
-    if (!this.routeConfig[role] || !this.routeConfig[role][viewId]) {
-      console.warn(`routeManager: Invalid role "${role}" or view "${viewId}". Falling back to default.`);
-      role = 'guest'; // Safe fallback role
-      viewId = this.defaultViews[role];
+    let config;
+    let routeParams = {};
+
+    // First, check for a direct match in the role-specific config
+    if (this.routeConfig[role] && this.routeConfig[role][viewId]) {
+      config = this.routeConfig[role][viewId];
+    } else {
+      // If not found, check for a parameterized route in commonViews
+      const commonViewMatch = Object.keys(this.routeConfig.commonViews).find(key => {
+        const keyParts = key.split('/');
+        const viewIdParts = viewId.split('/');
+        if (keyParts.length !== viewIdParts.length) {
+          return false;
+        }
+
+        let isMatch = true;
+        for (let i = 0; i < keyParts.length; i++) {
+          if (keyParts[i].startsWith(':')) {
+            const paramName = keyParts[i].substring(1);
+            routeParams[paramName] = viewIdParts[i];
+          } else if (keyParts[i] !== viewIdParts[i]) {
+            isMatch = false;
+            break;
+          }
+        }
+        return isMatch;
+      });
+
+      if (commonViewMatch) {
+        config = this.routeConfig.commonViews[commonViewMatch];
+        this.routeParams = routeParams; // Store params for the view to access
+      } else {
+        console.warn(`routeManager: Invalid role "${role}" or view "${viewId}". Falling back to default.`);
+        role = 'guest'; // Safe fallback role
+        viewId = this.defaultViews[role];
+        config = this.routeConfig[role][viewId];
+      }
     }
 
-    const config = this.routeConfig[role][viewId];
     // Resolve view configuration, checking commonViews for paths if not present in role-specific config
     let resolvedConfig = { ...config }; // Start with role-specific config
 
@@ -132,13 +163,27 @@ class RouteManager {
 
     let newViewElement = document.getElementById(resolvedConfig.id);
 
+    // Determine the target container based on the fullscreen flag
+    const targetContainerId = resolvedConfig.fullscreen ? 'fullscreen-layout' : 'main-content';
+    const targetContainer = document.getElementById(targetContainerId);
+
     // If the view element doesn't exist, create it dynamically
     if (!newViewElement) {
       newViewElement = document.createElement('div');
       newViewElement.id = config.id;
       newViewElement.classList.add('page-view-area'); // Add the class for styling and identification
-      document.getElementById('main-content').appendChild(newViewElement);
-      console.log(`Dynamically created view element: #${config.id}`);
+      if (resolvedConfig.fullscreen) {
+        newViewElement.classList.add('fullscreen-page'); // Add fullscreen-page class for styling
+      }
+      targetContainer.appendChild(newViewElement);
+      console.log(`Dynamically created view element: #${config.id} in ${targetContainerId}`);
+    }
+
+    // Manage the fullscreen-active class on the body
+    if (resolvedConfig.fullscreen) {
+      document.body.classList.add('fullscreen-active');
+    } else {
+      document.body.classList.remove('fullscreen-active');
     }
   
 
