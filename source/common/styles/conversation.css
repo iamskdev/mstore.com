@@ -1,211 +1,232 @@
-    body { 
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-      background:#f0f2f5; 
-      color: #333;
-    }
+.chat-screen {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  height: 100vh;
+  width: 100%;
+}
 
-    .chat-screen {
-      display:flex; 
-      flex-direction:column; 
-      background:#f5f7fb;
-      height:100vh;
-      width:100%;
-    }
-    
-    .chat-header {
-      padding:12px; 
-      background:#6e8efb; 
-      color:white;
-      display:flex; 
-      align-items:center; 
-      justify-content:space-between;
-    }
-    
-    .chat-header .left { 
-      display:flex; 
-      align-items:center; 
-      gap: 10px; /* Added gap for spacing */
-    }
+.chat-header {
+  padding: 12px 2px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
 
-    .back-button {
-      font-size: 20px;
-      cursor: pointer;
-      padding: 5px;
-      color: white; /* Ensure visibility against header background */
-    }
-    
-    .chat-header .avatar { 
-      width:35px; 
-      height:35px; 
-      border-radius:50%; 
-      background:#fff; 
-      color:#6e8efb;
-      display:flex; 
-      align-items:center; 
-      justify-content:center; 
-      margin-right:10px; 
-      font-weight: bold;
-    }
-    
-    .chat-header h3 { 
-      margin:0; 
-      font-size:16px; 
-    }
-    
-    .chat-header p { 
-      margin:0; 
-      font-size:12px; 
-      opacity:0.8; 
-    }
-    
-    .header-actions {
-      display: flex;
-      gap: 15px;
-    }
-    
-    .header-actions i {
-      cursor: pointer;
-    }
-    
-    /* Product bar */
-    .product-bar {
-      background:#fff3e0; 
-      border-bottom:1px solid #ddd;
-      padding:10px; 
-      display:flex; 
-      align-items:center;
-    }
-    
-    .product-img {
-      width:50px; 
-      height:50px; 
-      background:#ffcc80; 
-      border-radius:8px; 
-      margin-right:10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #777;
-      font-size: 20px;
-    }
-    
-    .product-details { 
-      flex:1; 
-    }
-    
-    .product-details h4 { 
-      margin:0; 
-      font-size:14px; 
-    }
-    
-    .product-details p { 
-      margin:0; 
-      font-size:12px; 
-      color:#777; 
-    }
-    
-    .product-price { 
-      font-size:14px; 
-      font-weight:bold; 
-      color:#6e8efb; 
-    }
-    
-    .old-price { 
-      text-decoration:line-through; 
-      color:#999; 
-      font-size:12px; 
-      margin-left:5px; 
-    }
-    
-    /* Messages */
-    .messages { 
-      flex:1; 
-      padding:15px; 
-      overflow-y:auto; 
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .message { 
-      margin-bottom:12px; 
-      max-width:75%; 
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .bubble {
-      padding:10px 14px; 
-      border-radius:18px; 
-      line-height:1.4; 
-      display:inline-block;
-      position: relative;
-    }
-    
-    .received { 
-      align-items: flex-start;
-    }
-    
-    .received .bubble { 
-      background:#e3e6ec; 
-      color:#333; 
-      border-top-left-radius:4px; 
-    }
-    
-    .sent { 
-      margin-left:auto; 
-      align-items: flex-end;
-    }
-    
-    .sent .bubble { 
-      background:#6e8efb; 
-      color:white; 
-      border-top-right-radius:4px; 
-    }
-    
-    .message-time {
-      font-size: 10px;
-      color: #999;
-      margin-top: 4px;
-    }
-    
-    /* Input */
-    .chat-input {
-      padding:10px; 
-      background:white; 
-      display:flex; 
-      border-top:1px solid #ddd;
-      align-items: center;
-    }
-    
-    .chat-input input {
-      flex:1; 
-      border:none; 
-      outline:none; 
-      padding:10px;
-      background:#f0f2f5; 
-      border-radius:20px; 
-      margin-right:10px;
-    }
-    
-    .action-btn {
-      background: transparent;
-      border: none;
-      color: #6e8efb;
-      font-size: 18px;
-      cursor: pointer;
-      margin: 0 5px;
-    }
-    
-    .send-btn {
-      background:#6e8efb; 
-      border:none; 
-      color:white; 
-      border-radius:50%;
-      width:40px; 
-      height:40px; 
-      cursor:pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.chat-header .left {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  /* Added gap for spacing */
+}
+
+.back-button {
+  font-size: 20px;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--text-secondary);
+  /* Ensure visibility against header background */
+}
+
+.chat-header .avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: var(--accent-primary-rgb);
+  color: var(--accent-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.chat-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.chat-header p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.header-actions {
+  display: flex;
+  gap: 15px;
+  margin-right: 10px;
+}
+
+.header-actions i {
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 8px;
+}
+
+/* Product bar */
+.product-bar {
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.product-img {
+  width: 50px;
+  height: 50px;
+  background: var(--accent-warning);
+  border-radius: 8px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 20px;
+}
+
+.product-details {
+  flex: 1;
+}
+
+.product-details h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.product-details p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.product-price {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--accent-primary);
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+/* Messages */
+.messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  margin-bottom: 12px;
+  max-width: 75%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bubble {
+  padding: 10px 14px;
+  border-radius: 20px;
+  line-height: 1.4;
+  display: inline-block;
+  position: relative;
+}
+
+.received {
+  align-items: flex-start;
+}
+
+.received .bubble {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-top-left-radius: 5px;
+}
+
+.sent {
+  margin-left: auto;
+  align-items: flex-end;
+}
+
+.sent .bubble {
+  background: var(--accent-primary);
+  color: var(--accent-text);
+  border-top-right-radius: 5px;
+}
+
+.message-time {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* Input */
+.chat-footer {
+  padding: 8px 10px;
+  background: var(--bg-secondary);
+  display: flex;
+  border-top: 1px solid var(--border-color);
+  align-items: center; /* Added for vertical alignment */
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--bg-tertiary);
+  border-radius: 25px;
+  padding: 2px 2px;
+  flex-grow: 1; /* Added to take available space */
+}
+
+.chat-footer input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  padding: 8px 0px;
+  background: transparent;
+  border-radius: 0;
+  color: var(--text-primary);
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 22px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.send-btn {
+  background: var(--accent-primary);
+  border: none;
+  color: var(--accent-text);
+  border-radius: 50%;
+  width: 40px; 
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px; /* Added margin for spacing */
+  flex-shrink: 0; /* Prevent the button from shrinking */
+}
+
+.send-btn i {
+  font-size: 15px;
+}
