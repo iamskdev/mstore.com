@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 22/09/2025, 15:36
+📅 Last Updated: 27/09/2025, 19:22
 
 ├── .firebaserc
 ├── .gitignore
@@ -35,7 +35,7 @@
 │   ├── post-commit
 │   ├── pre-commit
 │   └── pre-push
-├── 📁 achieve\
+├── 📁 archive\
 │   ├── card-old.html
 │   └── error-page.html
 ├── 📁 docs\
@@ -109,13 +109,16 @@
 │       ├── brands.json
 │       ├── campaigns.json
 │       ├── categories.json
+│       ├── conversations.json
 │       ├── counters.json
+│       ├── feedbacks.json
 │       ├── items.json
 │       ├── logs.json
 │       ├── merchants.json
 │       ├── orders.json
 │       ├── price-logs.json
 │       ├── promotions.json
+│       ├── temp-chats.json
 │       ├── units.json
 │       ├── users.json
 │       └── versions.json
@@ -246,7 +249,10 @@
 │   │   │   └── langs.json
 │   │   ├── 📁 pages\
 │   │   │   ├── account.html
+│   │   │   ├── authentication.html
 │   │   │   ├── cart.html
+│   │   │   ├── chat.html
+│   │   │   ├── conversation.html
 │   │   │   ├── home.html
 │   │   │   ├── item-details.html
 │   │   │   ├── notification.html
@@ -254,14 +260,20 @@
 │   │   │   └── wishlist.html
 │   │   ├── 📁 scripts\
 │   │   │   ├── account.js
+│   │   │   ├── authentication.js
 │   │   │   ├── cart.js
+│   │   │   ├── chat.js
+│   │   │   ├── conversation.js
 │   │   │   ├── home.js
 │   │   │   ├── item-details.js
 │   │   │   ├── notification.js
 │   │   │   └── wishlist.js
 │   │   └── 📁 styles\
 │   │       ├── account.css
+│   │       ├── authentication.css
 │   │       ├── cart.css
+│   │       ├── chat.css
+│   │       ├── conversation.css
 │   │       ├── home.css
 │   │       ├── item-details.css
 │   │       ├── notification.css
@@ -324,25 +336,31 @@
 │   │   │   ├── footer.html
 │   │   │   └── footer.js
 │   │   ├── 📁 modals\
-│   │   │   ├── feedback-modal.css
-│   │   │   ├── feedback-modal.html
-│   │   │   └── feedback-modal.js
+│   │   │   ├── feedback.html
+│   │   │   └── feedback.js
 │   │   ├── 📁 navigations\
 │   │   │   ├── bottom-nav.html
 │   │   │   ├── bottom-nav.js
 │   │   │   ├── top-nav.html
 │   │   │   └── top-nav.js
 │   │   └── role-switcher.html
+│   ├── 📁 settings\
+│   │   ├── config.json
+│   │   └── main-config.js
+│   ├── 📁 styles\
+│   │   └── main.css
 │   ├── 📁 templates\
 │   │   ├── 📁 cards\
 │   │   │   ├── card-grid.html
 │   │   │   ├── card-helper.js
 │   │   │   └── card-list.html
-│   │   └── banner.html
+│   │   ├── 📁 chat\
+│   │   │   ├── chat-list.html
+│   │   │   └── chat-list.js
+│   │   ├── banner.html
+│   │   └── banner.js
 │   ├── 📁 utils\
-│   │   ├── banner-mannager.js
 │   │   ├── cart-manager.js
-│   │   ├── config-manager.js
 │   │   ├── cursor-zoom.js
 │   │   ├── data-manager.js
 │   │   ├── formatters.js
@@ -352,11 +370,10 @@
 │   │   ├── saved-manager.js
 │   │   ├── search-handler.js
 │   │   ├── theme-switcher.js
-│   │   ├── toast.js
-│   │   └── view-config.js
-│   ├── config.json
+│   │   └── toast.js
 │   ├── main.css
-│   └── main.js
+│   ├── main.js
+│   └── routes.js
 ├── 📁 tools\
 │   ├── 📁 scripts\
 │   │   ├── add-hsn-code.js

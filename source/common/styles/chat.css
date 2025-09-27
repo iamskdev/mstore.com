@@ -18,7 +18,7 @@
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  font-size: 20px; /* Adjust icon size */
+  font-size: 30px; /* Adjust icon size */
 }
 
 .chat-support-btn:hover {

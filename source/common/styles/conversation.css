@@ -1,4 +1,4 @@
-.chat-screen {
+.conversation-screen {
   display: flex;
   flex-direction: column;
   background: var(--bg-primary);
@@ -6,7 +6,7 @@
   width: 100%;
 }
 
-.chat-header {
+.conversation-header {
   padding: 12px 2px;
   background: var(--bg-secondary);
   color: var(--text-primary);
@@ -17,7 +17,7 @@
   box-shadow: 0 2px 4px var(--shadow-color);
 }
 
-.chat-header .left {
+.conversation-header .left {
   display: flex;
   align-items: center;
   gap: 2px;
@@ -32,7 +32,7 @@
   /* Ensure visibility against header background */
 }
 
-.chat-header .avatar {
+.conversation-header .avatar {
   width: 35px;
   height: 35px;
   border-radius: 50%;
@@ -45,12 +45,12 @@
   font-weight: bold;
 }
 
-.chat-header h3 {
+.conversation-header h3 {
   margin: 0;
   font-size: 16px;
 }
 
-.chat-header p {
+.conversation-header p {
   margin: 0;
   font-size: 12px;
   color: var(--text-secondary);
@@ -66,56 +66,6 @@
   cursor: pointer;
   color: var(--text-secondary);
   padding: 8px;
-}
-
-/* Product bar */
-.product-bar {
-  background: var(--bg-tertiary);
-  border-bottom: 1px solid var(--border-color);
-  padding: 10px;
-  display: flex;
-  align-items: center;
-}
-
-.product-img {
-  width: 50px;
-  height: 50px;
-  background: var(--accent-warning);
-  border-radius: 8px;
-  margin-right: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  font-size: 20px;
-}
-
-.product-details {
-  flex: 1;
-}
-
-.product-details h4 {
-  margin: 0;
-  font-size: 14px;
-}
-
-.product-details p {
-  margin: 0;
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-
-.product-price {
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--accent-primary);
-}
-
-.old-price {
-  text-decoration: line-through;
-  color: var(--text-tertiary);
-  font-size: 12px;
-  margin-left: 5px;
 }
 
 /* Messages */
@@ -170,7 +120,7 @@
 }
 
 /* Input */
-.chat-footer {
+.conversation-footer {
   padding: 8px 10px;
   background: var(--bg-secondary);
   display: flex;
@@ -188,7 +138,7 @@
   flex-grow: 1; /* Added to take available space */
 }
 
-.chat-footer input {
+.conversation-footer input {
   flex-grow: 1;
   border: none;
   outline: none;

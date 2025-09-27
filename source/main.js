@@ -173,7 +173,7 @@ class RouteManager {
       newViewElement.id = config.id;
       newViewElement.classList.add('page-view-area'); // Add the class for styling and identification
       if (resolvedConfig.fullscreen) {
-        newViewElement.classList.add('fullscreen-page'); // Add fullscreen-page class for styling
+        newViewElement.classList.add('fullscreen-view'); // Add fullscreen-view class for styling
       }
       targetContainer.appendChild(newViewElement);
       console.log(`Dynamically created view element: #${config.id} in ${targetContainerId}`);

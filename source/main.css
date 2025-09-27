@@ -401,24 +401,21 @@ body.fullscreen-active #fullscreen-layout {
 }
 
 /* 9. GENERIC FULLSCREEN PAGE STRUCTURE */
-.fullscreen-page {
+.fullscreen-view {
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
 
-.fullscreen-page-header {
+.fullscreen-view-header {
     flex-shrink: 0;
-    /* Add your header styles here, e.g., height, background, padding */
 }
 
-.fullscreen-page-content {
+.fullscreen-view-content {
     flex-grow: 1;
     overflow-y: auto;
-    /* Add your content area styles here, e.g., padding */
 }
 
-.fullscreen-page-footer {
+.fullscreen-view-footer {
     flex-shrink: 0;
-    /* Add your footer styles here, e.g., height, background, padding */
 }
