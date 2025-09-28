@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Updated`
-> - **Last Reviewed:** 09/09/2025 13:35:00 IST (Updated by Gemini)
+> - **Last Reviewed:** 28/09/2025 17:30:00 IST (Updated by Gemini)
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides a comprehensive guide to all Firestore data collections, detailing each schema's structure, fields, and relationships. It is the single source of truth for the data model.
 
@@ -77,19 +77,17 @@
     -   `roles` (array): उपयोगकर्ता को सौंपी गई भूमिकाएँ (`user`, `merchant`, `admin`)।
     -   `primaryRole` (string): उपयोगकर्ता की प्राथमिक भूमिका।
     -   `links` (object): अन्य संग्रहों से संबंध (`accountId`, `merchantId`)।
-    -   `flags` (object): बूलियन मान जो उपयोगकर्ता की स्थिति दर्शाते हैं (`isActive`, `isSuspended`, `isVerified`, `isAdmin`, आदि)।
+    -   `flags` (object): बूलियन मान जो उपयोगकर्ता की स्थिति दर्शाते हैं (`isActive`, `isSuspended`, `isVerified`, `isAdmin`, `isSuperAdmin` आदि)।
     -   `version` (number): दस्तावेज़ का संस्करण।
 -   **`info`**: उपयोगकर्ता की व्यक्तिगत जानकारी।
-    -   `fullName`, `nickName`, `gender`, `dob`, `avatar`, `tagline`, `bio`, `email`, `phone`।
+    -   `fullName`, `nickName`, `gender`, `dob`, `avatar`, `tags` (array of strings), `bio`, `email`, `phone`।
 -   **`address`** (array): उपयोगकर्ता के पतों की सूची।
     -   प्रत्येक ऑब्जेक्ट में `label`, `isPrimary`, `street`, `city`, `state`, `zipCode`, `geoLocation` होता है।
--   **`subscription`** (object): उपयोगकर्ता की सदस्यता का विवरण।
-    -   `plan`, `type`, `startDate`, `endDate`, `status`, `autoRenew`, `amount`।
 -   **`auth`**: प्रमाणीकरण से संबंधित विस्तृत विवरण।
     -   `login` (object): लॉगिन प्रयास, विधि और पासवर्ड की जानकारी।
     -   `flags` (object): सुरक्षा-संबंधी फ़्लैग (`twoFactorEnabled`, `emailVerified`, `accountLocked`)।
     -   `recovery` (object): खाता पुनर्प्राप्ति के लिए ईमेल, फ़ोन और सुरक्षा प्रश्न।
-    -   `provider` (object): फायरबेस प्रमाणीकरण प्रदाता (`uid`, `fcmToken`)।
+    -   `provider` (object): फायरबेस प्रमाणीकरण प्रदाता (`uid`)। `fcmToken` को `accounts` संग्रह में ले जाया गया है।
 
 ### संभावित स्थितियाँ और भविष्य के सुधार:
 -   **अतिथि से पंजीकृत उपयोगकर्ता:** जब एक अतिथि (guest) उपयोगकर्ता साइन अप करता है, तो उसके अतिथि खाते (`isGuest: true` वाले `accounts` दस्तावेज़) को एक नए `users` दस्तावेज़ से जोड़ा जा सकता है, जिससे उसकी कार्ट और सहेजी गई वस्तुएँ बनी रहें।
@@ -101,21 +99,20 @@
 
 ## 3. Accounts (`accounts.json`)
 
-यह संग्रह प्रत्येक उपयोगकर्ता के लिए गतिशील और व्यक्तिगत डेटा संग्रहीत करता है।
+यह संग्रह प्रत्येक उपयोगकर्ता के लिए गतिशील और व्यक्तिगत डेटा संग्रहीत करता है। `cart` और `saved` जैसे ऑब्जेक्ट हटा दिए गए हैं।
 
 ### मुख्य फ़ील्ड्स:
 
 -   **`meta`**: खाते का मेटाडेटा (`accountId`, `links.userId`)।
--   **`cart`**: उपयोगकर्ता की शॉपिंग कार्ट।
--   **`saved`**: उपयोगकर्ता द्वारा सहेजे गए आइटम (विशलिस्ट)।
--   **`deviceInfo`**: उपयोगकर्ता द्वारा उपयोग किए गए उपकरणों की सूची।
+-   **`deviceInfo`**: उपयोगकर्ता द्वारा उपयोग किए गए उपकरणों की सूची, जिसमें प्रत्येक डिवाइस के लिए `fcmToken` शामिल है।
 -   **`settings`**: उपयोगकर्ता-विशिष्ट सेटिंग्स (`theme`, `language`)।
 -   **`searchHistory`**: हाल की खोजें।
+-   **`subscription`** (object): उपयोगकर्ता की सदस्यता का विवरण (`plan`, `type`, `status`, आदि)।
 
 ### संभावित स्थितियाँ और भविष्य के सुधार:
 -   जब कोई नया उपयोगकर्ता पंजीकरण करता है, तो एक `users` दस्तावेज़ और एक संबंधित `accounts` दस्तावेज़ स्वचालित रूप से एक साथ बनाए जाते हैं।
--   `deviceInfo` का उपयोग यह ट्रैक करने के लिए किया जा सकता है कि उपयोगकर्ता कितने उपकरणों पर लॉग इन है।
--   **क्रॉस-डिवाइस सिंक:** जब उपयोगकर्ता किसी नए डिवाइस पर लॉग इन करता है, तो `deviceInfo` में एक नई प्रविष्टि जोड़ी जाती है। कार्ट (`cart`) और सहेजी गई वस्तुएँ (`saved`) जैसी जानकारी को सभी सक्रिय उपकरणों में सिंक किया जाना चाहिए।
+-   `deviceInfo` का उपयोग यह ट्रैक करने के लिए किया जा सकता है कि उपयोगकर्ता कितने उपकरणों पर लॉग इन है और प्रत्येक को पुश सूचनाएं भेजने के लिए।
+-   **क्रॉस-डिवाइस सिंक:** जब उपयोगकर्ता किसी नए डिवाइस पर लॉग इन करता है, तो `deviceInfo` में एक नई प्रविष्टि जोड़ी जाती है।
 -   **निजीकरण (Personalization):** `personalized` ऑब्जेक्ट का उपयोग उपयोगकर्ता के व्यवहार (देखे गए आइटम, खरीदे गए ब्रांड) के आधार पर एक वैयक्तिकृत अनुभव प्रदान करने के लिए किया जा सकता है।
 
 ---

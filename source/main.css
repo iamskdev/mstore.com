@@ -385,8 +385,7 @@ html.standalone-no-zoom * {
     display: none;
 }
 
-body.fullscreen-active .top-navigation,
-body.fullscreen-active .bottom-navigation {
+body.fullscreen-active #default-layout {
     display: none;
 }
 
