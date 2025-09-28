@@ -31,6 +31,14 @@
   background-color: var(--bg-secondary); /* Add a background for when the image is loading */
 }
 
+/* --- NEW: Active state for the account avatar --- */
+/* When the account tab is active, add a colored border to the avatar image */
+.nav-btn.active .account-icon {
+  border: 1px solid var(--accent-primary);
+  /* Optional: Add a subtle box-shadow for a glowing effect */
+  box-shadow: 0 0 5px rgba(var(--accent-primary-rgb), 0.5);
+}
+
 /* --- 2. General Button Styles --- */
 .nav-btn {
   background: transparent;
@@ -159,11 +167,11 @@
     <span>Chat</span>
   </button>
 
-  <button class="nav-btn" data-role="guest" data-path="saved">
+  <button class="nav-btn" data-role="guest" data-path="updates">
     <div class="icon-container">
-      <i class="fas fa-heart"></i>
+      <i class="fas fa-users"></i>
     </div>
-    <span>Saved</span>
+    <span>Updates</span>
   </button>
 
   <button class="nav-btn" data-role="guest" data-path="cart">
@@ -195,11 +203,11 @@
     <span>Chat</span>
   </button>
 
-  <button class="nav-btn hidden" data-role="user" data-path="saved">
+  <button class="nav-btn hidden" data-role="user" data-path="updates">
     <div class="icon-container">
-      <i class="fas fa-heart"></i>
+      <i class="fas fa-users"></i>
     </div>
-    <span>Saved</span>
+    <span>Updates</span>
   </button>
 
   <button class="nav-btn hidden" data-role="user" data-path="cart">

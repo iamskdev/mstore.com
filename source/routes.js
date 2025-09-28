@@ -1,4 +1,4 @@
-// Define the default "landing" view for each role.
+ // Define the default "landing" view for each role.
 // This makes the logic cleaner and easier to manage.
 const defaultViews = {
   guest: 'home',
@@ -6,8 +6,6 @@ const defaultViews = {
   merchant: 'add',
   admin: 'home' 
 };
-
-
 
 /**
  * @file View Configuration
@@ -17,41 +15,6 @@ const defaultViews = {
 
 const routeConfig = {
   guest: {
-    home: {
-      id: 'home-view',
-      path: './source/common/pages/home.html',
-      cssPath: './source/common/styles/home.css',
-      jsPath: './source/common/scripts/home.js',
-      
-      embedFooter: true,
-      title: 'Home',
-      dataDependencies: ['items', 'promotions', 'categories', 'brands']
-    },
-    chat: {
-      id: 'guest-chat-view',
-      path: './source/common/pages/chat.html',
-      cssPath: './source/common/styles/chat.css',
-      jsPath: './source/common/scripts/chat.js',
-      title: 'Chat',
-      dataDependencies: ['merchants', 'users']
-    },
-    saved: {
-      id: 'guest-saved-view',
-      path: './source/common/pages/wishlist.html',
-      cssPath: './source/common/styles/wishlist.css',
-      jsPath: './source/common/scripts/wishlist.js',
-      title: 'Saved',
-      dataDependencies: ['items']
-    },
-    cart: {
-      id: 'cart-view',
-      path: './source/common/pages/cart.html',
-      cssPath: './source/common/styles/cart.css',
-      jsPath: './source/common/scripts/cart.js',
-      title: 'Cart',
-      
-      dataDependencies: []
-    },
     account: {
       id: 'guest-account-view',
       path: './source/common/pages/authentication.html',
@@ -60,68 +23,8 @@ const routeConfig = {
       title: 'Account',
       dataDependencies: ['users', 'accounts', 'merchants']
     },
-    notifications: {
-      id: 'notifications-view',
-      path: './source/common/pages/notification.html',
-      cssPath: './source/common/styles/notification.css',
-      jsPath: './source/common/scripts/notification.js',
-      title: 'Notifications',
-      allowedTypes: ['promotions', 'general'],
-      dataDependencies: ['alerts', 'promotions']
-    }
   },
   user: {
-    home: {
-      id: 'home-view',
-      path: './source/common/pages/home.html',
-      cssPath: './source/common/styles/home.css',
-      jsPath: './source/common/scripts/home.js',
-      
-      embedFooter: true, // Embed it directly into the view content
-      title: 'Home',
-      dataDependencies: ['items', 'promotions', 'categories', 'brands']
-    },
-    chat: {
-      id: 'user-chat-view',
-      path: './source/common/pages/chat.html',
-      cssPath: './source/common/styles/chat.css',
-      jsPath: './source/common/scripts/chat.js',
-      title: 'Chat',
-      dataDependencies: ['merchants', 'users']
-    },
-    saved: {
-      id: 'user-saved-view',
-      path: './source/common/pages/wishlist.html',
-      cssPath: './source/common/styles/wishlist.css',
-      jsPath: './source/common/scripts/wishlist.js',
-      title: 'Saved',
-      dataDependencies: ['items']
-    },
-    cart: {
-      id: 'cart-view',
-      path: './source/common/pages/cart.html',
-      cssPath: './source/common/styles/cart.css',
-      jsPath: './source/common/scripts/cart.js',
-      title: 'Cart',
-      
-      dataDependencies: []
-    },
-    account: {
-      id: 'user-account-view',
-      path: './source/common/pages/account.html',
-      cssPath: './source/common/styles/account.css',
-      jsPath: './source/common/scripts/account.js',
-      title: 'Account',
-      dataDependencies: ['users', 'accounts']
-    },
-    notifications: {
-      id: 'notifications-view',
-      path: './source/common/pages/notification.html',
-      cssPath: './source/common/styles/notification.css',
-      jsPath: './source/common/scripts/notification.js',
-      title: 'Notifications',
-      dataDependencies: ['alerts', 'promotions', 'orders']
-    }
   },
   merchant: {
     home: {
@@ -134,32 +37,8 @@ const routeConfig = {
       title: 'Home',
       dataDependencies: ['items', 'promotions', 'categories', 'brands', 'orders', 'price-logs', 'alerts']
     },
-    chat: {
-      id: 'merchant-chat-view',
-      path: './source/common/pages/chat.html',
-      cssPath: './source/common/styles/chat.css',
-      jsPath: './source/common/scripts/chat.js',
-      title: 'Chat',
-      dataDependencies: ['merchants', 'users'] // Already correct, but good to confirm
-    },
     add: { id: 'merchant-add-view', path: null, title: 'Add', dataDependencies: ['categories', 'brands', 'units'] },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items'] },
-    account: {
-      id: 'merchant-account-view',
-      path: './source/common/pages/account.html',
-      cssPath: './source/common/styles/account.css',
-      jsPath: './source/common/scripts/account.js',
-      title: 'Account',
-      dataDependencies: ['merchants', 'users', 'accounts']
-    },
-    notifications: {
-      id: 'notifications-view',
-      path: './source/common/pages/notification.html',
-      cssPath: './source/common/styles/notification.css',
-      jsPath: './source/common/scripts/notification.js',
-      title: 'Notifications',
-      dataDependencies: ['alerts', 'orders']
-    }
   },
   admin: {
     home: {
@@ -175,26 +54,41 @@ const routeConfig = {
     analytics: { id: 'admin-analytics-view', path: null, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items', 'merchants', 'users', 'logs'] },
     requests: { id: 'admin-request-view', path: null, title: 'Request', dataDependencies: ['orders', 'users', 'merchants'] },
     logs: { id: 'admin-logs-view', path: null, title: 'Logs', dataDependencies: ['logs'] },
-    promo: { id: 'admin-promo-view', path: null, title: 'Promo', dataDependencies: ['promotions', 'campaigns'] },
-    campaigns: { id: 'admin-campaigns-view', path: null, title: 'Campaigns', dataDependencies: [] },
+  },
+  commonViews: {
+    home: {
+      id: 'home-view',
+      path: './source/common/pages/home.html',
+      cssPath: './source/common/styles/home.css',
+      jsPath: './source/common/scripts/home.js',
+      embedFooter: true,
+      title: 'Home',
+      dataDependencies: ['items', 'promotions', 'categories', 'brands']
+    },
+    chat: {
+      id: 'chat-view',
+      path: './source/common/pages/chat.html',
+      cssPath: './source/common/styles/chat.css',
+      jsPath: './source/common/scripts/chat.js',
+      title: 'Chat',
+      dataDependencies: ['merchants', 'users']
+    },
     account: {
-      id: 'admin-account-view',
+      id: 'account-view',
       path: './source/common/pages/account.html',
       cssPath: './source/common/styles/account.css',
       jsPath: './source/common/scripts/account.js',
       title: 'Account',
-      dataDependencies: ['users', 'accounts']
+      dataDependencies: ['users', 'accounts', 'merchants']
     },
-    notifications: {
-      id: 'notifications-view',
-      path: './source/common/pages/notification.html',
-      cssPath: './source/common/styles/notification.css',
-      jsPath: './source/common/scripts/notification.js',
-      title: 'Notifications',
-      dataDependencies: ['alerts', 'promotions', 'orders', 'logs'] // Keeping original dependencies
-    }
-  },
-  commonViews: {
+    cart: {
+      id: 'cart-view',
+      path: './source/common/pages/cart.html',
+      cssPath: './source/common/styles/cart.css',
+      jsPath: './source/common/scripts/cart.js',
+      title: 'Cart',
+      dataDependencies: []
+    },
     'conversation/:id': {
       id: 'conversation-view',
       path: './source/common/pages/conversation.html',
@@ -211,6 +105,29 @@ const routeConfig = {
       fullscreen: false,
       dataDependencies: ['merchants'],
       fullscreen: true
+    },
+    saved: {
+      id: 'wishlist-view',
+      path: './source/common/pages/wishlist.html',
+      cssPath: './source/common/styles/wishlist.css',
+      jsPath: './source/common/scripts/wishlist.js',
+      title: 'Saved Items',
+      dataDependencies: ['items']
+    },
+    updates: {
+      id: 'updates-view',
+      path: null, // No HTML file yet, will show a placeholder
+      title: 'Updates',
+      dataDependencies: []
+    },
+    notifications: {
+      id: 'notifications-view',
+      path: './source/common/pages/notification.html',
+      cssPath: './source/common/styles/notification.css',
+      jsPath: './source/common/scripts/notification.js',
+      title: 'Notifications',
+      // Merged superset of all dependencies
+      dataDependencies: ['alerts', 'promotions', 'orders', 'logs']
     }
   }
   };

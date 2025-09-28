@@ -699,19 +699,13 @@ function simulateProgress(targetPercentage) {
 // Listen for navigation requests from dynamically loaded views
 window.addEventListener('requestViewChange', (e) => {
   const { role, view } = e.detail;
-  if (routeManager.routeConfig[role]?.[view]) {
+  // Check if the view exists in the role-specific config OR in the commonViews
+  if (routeManager.routeConfig[role]?.[view] || routeManager.routeConfig.commonViews?.[view]) {
     routeManager.switchView(role, view);
   } else {
     console.warn(`View change request for a non-existent view was ignored: ${role}/${view}`);
   }
 });
-
-
-
-
-
-
-
 
 // Main application initialization function
 export async function initializeApp() {

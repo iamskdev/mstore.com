@@ -228,7 +228,7 @@ async function initSwitchAccountModal() {
             });
         } catch (error) {
             console.error('Failed to fetch user roles:', error);
-            roleListContainer.innerHTML = '<p>Could not load roles.</p>';
+            roleListContainer.innerHTML = '<p>Could not load Accounts.</p>';
         }
     };
 
@@ -261,8 +261,31 @@ export function init() {
     // Initialize the switch account modal logic
     initSwitchAccountModal();
 
-    // Simple interaction for menu items
-    document.querySelectorAll('.menu-item').forEach(item => {
+    // --- NEW: Specific handler for the Wishlist menu item ---
+    const wishlistMenuItem = document.getElementById('wishlist-menu-item');
+    if (wishlistMenuItem) {
+        wishlistMenuItem.addEventListener('click', () => {
+            // Get the current role from localStorage to navigate correctly
+            const role = localStorage.getItem('currentUserType') || 'guest';
+            // Navigate to the 'saved' view, which is now a common view
+            routeManager.switchView(role, 'saved');
+        });
+    }
+
+    // --- NEW: Specific handler for the Feedback menu item ---
+    const feedbackMenuItem = document.getElementById('account-feedback-btn');
+    if (feedbackMenuItem) {
+        feedbackMenuItem.addEventListener('click', (e) => {
+            e.preventDefault();
+            const feedbackModal = document.getElementById('feedback-modal');
+            if (feedbackModal) {
+                feedbackModal.style.display = 'flex'; // Show the modal
+            }
+        });
+    }
+
+    // Generic interaction for other menu items (excluding wishlist and feedback)
+    document.querySelectorAll('.menu-item:not(#wishlist-menu-item):not(#account-feedback-btn)').forEach(item => {
         item.addEventListener('click', function () {
             this.style.backgroundColor = 'rgba(255, 123, 0, 0.2)';
             setTimeout(() => {
