@@ -168,9 +168,8 @@ export const AuthService = (() => {
             const userDocData = {
                 meta: { userId, version: 1.0, primaryRole, roles: [primaryRole], registeredOn: new Date().toISOString(), links: { accountId }, flags: { isActive: true, isSuspended: false, isVerified: user.emailVerified, isCustomer: true, isAdmin: false, isMerchant: false, isAgent: false, isStaff: false }, lastUpdated: new Date().toISOString() },
                 info: { fullName: fullName || user.displayName || '', nickName: '', gender: '', dob: '', avatar: user.photoURL || '', tagline: '', bio: '', email: user.email, phone: phone || user.phoneNumber || '' },
-                auth: { login: { attempts: 0, method, password: { hash: '', updatedAt: new Date().toISOString() } }, provider: { name: providerName, uid: user.uid, fcmToken: '', lastUpdated: new Date().toISOString() }, flags: { twoFactorEnabled: false, emailVerified: user.emailVerified, phoneVerified: !!user.phoneNumber, accountLocked: false, tempPasswordUsed: false }, recovery: { email: '', phone: '', securityQuestions: [] } },
-                address: [],
-                subscription: { plan: "Free", type: null, startDate: null, endDate: null, status: "inactive", autoRenew: false, amount: 0 }
+                auth: { login: { attempts: 0, method, password: { hash: '', updatedAt: new Date().toISOString() } }, provider: { name: providerName, uid: user.uid, lastUpdated: new Date().toISOString() }, flags: { twoFactorEnabled: false, emailVerified: user.emailVerified, phoneVerified: !!user.phoneNumber, accountLocked: false, tempPasswordUsed: false }, recovery: { email: '', phone: '', securityQuestions: [] } },
+                address: []
             };
             await userRef.set(userDocData); // First write operation
 
@@ -181,16 +180,15 @@ export const AuthService = (() => {
             const deviceType = /android/i.test(userAgent) ? 'android' : (/iphone|ipad|ipod/i.test(userAgent) ? 'ios' : 'web');
             const accountDocData = {
                 meta: { accountId, createdOn: new Date().toISOString(), isGuest: false, links: { userId }, lastUpdated: new Date().toISOString(), note: note || "Account created on login.", ownerUID: user.uid },
-                deviceInfo: [{ status: "active", isLoggedIn: true, deviceId: `DEV-${Date.now()}`, device: deviceType, model: null, platform: navigator.platform || '', browser: navigator.appName || '', name: null, ipAddress: null, location: null, loginTime: new Date().toISOString(), lastActive: new Date().toISOString(), sessionToken: `SST-${Date.now()}`, userAgent }],
-                cart: { items: [] },
-                saved: { items: [] },
+                deviceInfo: [{ status: "active", isLoggedIn: true, deviceId: `DEV-${Date.now()}`, device: deviceType, model: null, platform: navigator.platform || '', browser: navigator.appName || '', name: null, ipAddress: null, location: null, loginTime: new Date().toISOString(), lastActive: new Date().toISOString(), sessionToken: `SST-${Date.now()}`, fcmToken: '', userAgent }],
                 Alerts: { alertId: [], isCleared: false, updatedAt: null },
                 settings: { language: "en", theme: "light", push: true, email: false, sms: false, clearSettings: false },
                 privacy: { showOnline: true, personalizedAds: false },
                 autoClear: { recentlyViewed: false, saved: false, notifications: false },
                 searchHistory: [],
                 personalized: { enabled: false, isCleared: false, users: [], merchants: [], brands: [], items: [], activeHours: [] },
-                recentlyViewed: { items: [] }
+                recentlyViewed: { items: [] },
+                subscription: { plan: "Free", type: "Monthly", startDate: null, endDate: null, status: "inactive", autoRenew: false, clearSettings: false }
             };
             await accountRef.set(accountDocData); // Second write operation
 

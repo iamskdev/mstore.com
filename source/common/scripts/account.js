@@ -1,4 +1,4 @@
-import { fetchUserById } from '../../utils/data-manager.js';
+import { fetchUserById, fetchAccountById, fetchMerchantById } from '../../utils/data-manager.js';
 import { routeManager } from '../../main.js';
 
 /**
@@ -24,16 +24,20 @@ async function renderProfileData() {
     try {
         const user = await fetchUserById(userId);
         if (!user) throw new Error('User not found');
-        console.log('DEBUG: User data fetched in account.js:', user); // Debug: Check the full user object
+
+        // Fetch related data for the user
+        const account = user.meta.links.accountId ? await fetchAccountById(user.meta.links.accountId) : null;
+        const merchant = user.meta.links.merchantId ? await fetchMerchantById(user.meta.links.merchantId) : null;
+        console.log('DEBUG: Fetched data in account.js:', { user, account, merchant });
 
         // Update Name
         nameDisplay.textContent = user.info?.fullName || 'Anonymous User';
 
-        // --- Collect and Render All Profile Tags ---
+        // --- Collect and Render All Profile Tags using both user and account data ---
         const tags = [];
 
         // Use the centralized getTagsForRole function to ensure consistency.
-        tagsContainer.innerHTML = getTagsForRole(user.meta?.primaryRole, user);
+        tagsContainer.innerHTML = getTagsForRole(user.meta?.primaryRole, user, account, merchant);
 
         // Render tags to the container
 
@@ -63,20 +67,18 @@ async function renderProfileData() {
  * This logic is now centralized to be used by both the profile header and the switch account modal.
  * @param {string} role - The role to generate tags for (e.g., 'user', 'admin').
  * @param {object} user - The full user data object.
+ * @param {object|null} account - The full account data object.
+ * @param {object|null} merchant - The full merchant data object.
+ * @param {object} [options={}] - Optional parameters to control tag generation.
  * @returns {string} A dot-separated string of tags (e.g., "User • Consumer Account • Premium").
  */
-function getTagsForRole(role, user) {
+function getTagsForRole(role, user, account, merchant, options = {}) {
     const tags = [];
 
-    // 1. Special override for the owner.
-    if (user.meta?.flags?.isOwner) {
-        return 'User • Top Contributor';
-    }
-
-    // 2. General logic for all other roles
+    // Base tag for all users
     tags.push('User'); // Base tag for all
 
-    // 3. Add specific role account type
+    // Add specific role account type
     if (role === 'user') {
         tags.push('Consumer Account');
     } else if (role === 'merchant') {
@@ -85,19 +87,23 @@ function getTagsForRole(role, user) {
         tags.push('Admin Account');
     }
 
-    // 4. Add Premium subscription tag
-    if (user.subscription?.status === 'active' && user.subscription?.plan === 'Premium') {
+    // Add special privilege tags after the account type
+    if (user.meta?.flags?.isOwner) {
+        // As per rule, Owner also gets 'Top Contributor'
+        tags.push('Top Contributor');
+    } 
+    // Rule: Super Admin (non-owner) gets a specific tag.
+    // The 'else if' prevents 'Super Admin' from showing if 'Owner' is already shown.
+    else if (user.meta?.flags?.isSuperAdmin) {
+        tags.push('Super Admin');
+    }
+
+    // Rule: Add Premium tag only for the 'merchant' role if applicable.
+    // The options parameter can disable this for specific contexts like the account switcher modal.
+    const showPremium = options.showPremium !== false; // Default to true
+
+    if (showPremium && role === 'merchant' && merchant?.subscription?.status === 'active' && merchant?.subscription?.plan === 'Premium') {
         tags.push('Premium');
-    }
-
-    // 5. Add other custom tags like "Top Contributor" for non-owners
-    if (user.info?.tags && Array.isArray(user.info.tags)) {
-        tags.push(...user.info.tags);
-    }
-
-    // 6. Add other status flags like "Suspended"
-    if (user.meta?.flags?.isSuspended) {
-        tags.push('Suspended');
     }
 
     return tags.join(' • ');
@@ -137,12 +143,34 @@ async function initSwitchAccountModal() {
             return;
         }
 
-        roleListContainer.innerHTML = '<div class="spinner"></div>'; // Show loader
+        // --- NEW: Show skeleton loader instead of spinner ---
+        let skeletonHtml = '';
+        for (let i = 0; i < 2; i++) { // Show 2 skeleton items
+            skeletonHtml += `
+                <div class="switch-account-item skeleton-item">
+                    <div class="skeleton skeleton-avatar"></div>
+                    <div class="switch-account-details">
+                        <div class="skeleton skeleton-text" style="width: 60%; margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 80%; height: 0.8em;"></div>
+                    </div>
+                    <div class="skeleton" style="width: 20px; height: 20px; margin-left: 10px; border-radius: 50%;"></div>
+                </div>`;
+        }
+        roleListContainer.innerHTML = skeletonHtml;
         modal.classList.add('visible');
 
         try {
             const user = await fetchUserById(userId);
-            const roles = user?.meta?.roles || [];
+            const account = user.meta.links.accountId ? await fetchAccountById(user.meta.links.accountId) : null;
+            const merchant = user.meta.links.merchantId ? await fetchMerchantById(user.meta.links.merchantId) : null;
+            
+            let roles;
+            if (user?.meta?.flags?.isSuperAdmin) {
+                // If the user is a Super Admin, grant them access to all primary roles.
+                roles = ['user', 'merchant', 'admin'];
+            } else {
+                roles = user?.meta?.roles || [];
+            }
             const currentRole = localStorage.getItem('currentUserType');
 
             const roleIcons = {
@@ -153,25 +181,43 @@ async function initSwitchAccountModal() {
 
             roleListContainer.innerHTML = ''; // Clear loader
 
+            // Determine if the primary user account is suspended
+            const isUserSuspended = user.meta?.flags?.isSuspended;
+
             roles.forEach(role => {
                 const item = document.createElement('div');
                 item.className = 'switch-account-item';
                 item.dataset.role = role;
+
+                // --- NEW: Logic for suspended accounts ---
+                let isRoleSuspended = false;
+                // For now, we assume only the entire user can be suspended.
+                // In the future, you could have role-specific suspension flags.
+                if (isUserSuspended) {
+                    isRoleSuspended = true;
+                }
+
+                let statusIconHtml = '';
+                if (isRoleSuspended) {
+                    item.classList.add('disabled'); // Make it non-interactive
+                    statusIconHtml = '<div class="status-icon suspended"><i class="fas fa-ban"></i></div>';
+                } else if (role === currentRole) {
+                    statusIconHtml = '<div class="status-icon active"><i class="fas fa-check-circle"></i></div>';
+                }
+
                 const avatarHtml = user.info?.avatar
                     ? `<img src="${user.info.avatar}" alt="Avatar">`
                     : `<i class="fas ${roleIcons[role] || 'fa-user-circle'}"></i>`;
 
                 item.innerHTML = `
                     <div class="switch-account-avatar">${avatarHtml}</div>
-                    <div class="switch-account-details">
-                        <span class="user-full-name">${user.info?.fullName || 'Apna User'}</span>
-                        <span class="account-role-type">${getTagsForRole(role, user)}</span>
-                    </div>
-                    ${role === currentRole ? '<div class="active-role-tick"><i class="fas fa-check-circle"></i></div>' : ''}
+                    <div class="switch-account-details"><span class="user-full-name">${user.info?.fullName || 'Apna User'}</span><span class="account-role-type">${getTagsForRole(role, user, account, merchant, { showPremium: false })}</span></div>
+                    ${statusIconHtml}
                 `;
-                item.addEventListener('click', () => {
-                    switchRole(role);
-                });
+                // Only add click listener if the role is not suspended
+                if (!isRoleSuspended) {
+                    item.addEventListener('click', () => switchRole(role));
+                }
                 roleListContainer.appendChild(item);
             });
         } catch (error) {

@@ -185,7 +185,7 @@
   .impersonate-user-info {
     display: flex;
     flex-direction: column;
-    text-align: right; /* Align text to the right */
+    text-align: left; /* Align text to the left for better readability */
     flex-grow: 1; /* Allow info to take available width */
   }
   .dev-btn.guest { background: #f0f0f0; }
@@ -210,6 +210,36 @@
   .impersonate-user-info .email {
     font-size: 0.8em;
     color: var(--text-tertiary); /* Use a more subtle color */
+  }
+
+  /* --- Impersonate Modal Skeleton Loader --- */
+  .impersonate-user-item.skeleton {
+    pointer-events: none;
+  }
+
+  .impersonate-user-item.skeleton:hover {
+    background-color: var(--bg-primary);
+  }
+
+  .skeleton-element {
+    background-color: var(--bg-tertiary);
+    border-radius: 4px;
+    animation: shimmer 1.5s infinite ease-in-out;
+  }
+
+  @keyframes shimmer {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+  }
+
+  .skeleton-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  .skeleton-text {
+    height: 1em;
   }
 </style>
 <script type="module">
@@ -342,7 +372,21 @@
 
     impersonateBtn.addEventListener('click', async () => {
       impersonateModal.classList.add('visible');
-      userListContainer.innerHTML = '<div class="spinner"></div>'; // Show loader
+      // --- NEW: Show skeleton loader ---
+      let skeletonHtml = '';
+      for (let i = 0; i < 4; i++) { // Show 4 skeleton items
+          skeletonHtml += `
+            <div class="impersonate-user-item skeleton">
+              <div class="avatar skeleton-element skeleton-avatar"></div>
+              <div class="impersonate-user-info">
+                <div class="skeleton-element skeleton-text" style="width: 60%; margin-bottom: 6px;"></div>
+                <div class="skeleton-element skeleton-text" style="width: 80%; height: 0.8em;"></div>
+              </div>
+            </div>
+          `;
+      }
+      userListContainer.innerHTML = skeletonHtml;
+
       try {
         const { fetchAllUsers } = await import('./source/utils/data-manager.js');
         // Also cache all users in session storage for the generic buttons to use

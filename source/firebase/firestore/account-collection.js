@@ -44,11 +44,11 @@ export async function createAccountDocument(userId, note) {
           loginTime: new Date().toISOString(),
           lastActive: new Date().toISOString(),
           sessionToken: `SST-${Date.now()}`,
+          fcmToken: '',
           userAgent: userAgent
         }
       ],
-      cart: { items: [] },
-      saved: { items: [] },
+
       Alerts: { alertId: [], isCleared: false, updatedAt: null },
       settings: {
         language: "en",
@@ -62,7 +62,16 @@ export async function createAccountDocument(userId, note) {
       autoClear: { recentlyViewed: false, saved: false, notifications: false },
       searchHistory: [],
       personalized: { enabled: false, isCleared: false, users: [], merchants: [], brands: [], items: [], activeHours: [] },
-      recentlyViewed: { items: [] }
+      recentlyViewed: { items: [] },
+      subscription: {
+        plan: "Free",
+        type: "Monthly",
+        startDate: null,
+        endDate: null,
+        status: "inactive",
+        autoRenew: false,
+        clearSettings: false
+      }
     };
 
     await db.collection("accounts").doc(accountId).set(accountData);

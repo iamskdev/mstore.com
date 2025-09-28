@@ -84,6 +84,13 @@
     transform: scale(1.02);
 }
 
+.switch-account-item.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: var(--bg-primary); /* Ensure it doesn't get hover effect */
+    transform: none;
+}
+
 .switch-account-item .switch-account-avatar {
     width: 40px;
     height: 40px;
@@ -127,11 +134,54 @@
     color: var(--text-secondary);
 }
 
-.active-role-tick {
-    color: var(--accent-secondary);
+.status-icon {
     font-size: 1.2rem;
     margin-left: 10px;
     flex-shrink: 0;
+}
+
+.status-icon.active {
+    color: var(--accent-secondary);
+}
+
+.status-icon.suspended {
+    color: var(--danger-color);
+}
+
+/* --- Skeleton Loader Styles --- */
+.skeleton {
+    background-color: var(--bg-tertiary);
+    border-radius: 4px;
+    animation: shimmer 1.5s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.skeleton-item {
+    cursor: default;
+    pointer-events: none;
+}
+
+.skeleton-item:hover {
+    transform: none;
+    background-color: var(--bg-primary);
+}
+
+.skeleton-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px; /* Match real avatar margin */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.skeleton-text {
+    height: 1em;
+    width: 80%;
 }
 </style>
 

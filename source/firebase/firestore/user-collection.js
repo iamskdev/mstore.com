@@ -60,7 +60,7 @@ export async function createUserDocument(user, { fullName, phone, method, provid
         provider: {
           name: providerName,
           uid: user.uid,
-          fcmToken: '',
+
           lastUpdated: new Date().toISOString()
         },
         flags: {
@@ -73,15 +73,7 @@ export async function createUserDocument(user, { fullName, phone, method, provid
         recovery: { email: '', phone: '', securityQuestions: [] }
       },
       address: [],
-      subscription: {
-        plan: "Free",
-        type: null,
-        startDate: null,
-        endDate: null,
-        status: "inactive",
-        autoRenew: false,
-        amount: 0
-      }
+
     };
 
     await db.collection("users").doc(userId).set(newUserAccount);

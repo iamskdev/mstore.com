@@ -26,17 +26,7 @@
           "lng": 86.1679
         }
       }
-    ],
-    "subscription": {
-      "plan": "Premium",
-      "type": "Monthly",
-      "startDate": "2025-08-1T00:00:00Z",
-      "endDate": "2025-09-01T00:00:00Z",
-      "status": "active",
-      "autoRenew": true,
-      "amount": 499
-    },
-    "meta": {
+    ],"meta": {
       "userId": "USR000000000001",
       "version": 1,
       "primaryRole": "admin",
@@ -52,7 +42,8 @@
         "isAgent": false,
         "isStaff": false,
         "isAdmin": true,
-        "isOwner": true
+        "isOwner": true,
+        "isSuperAdmin": true
       },
       "roles": [
         "user",
@@ -87,7 +78,6 @@
       },
       "provider": {
         "name": "firebase",
-        "fcmToken": "abcdef123456",
         "lastUpdated": "2025-08-07T14:23:00Z",
         "uid": "YdeQseJVzYgYw7GpZMYgDsMVVMf1"
       }
@@ -140,17 +130,7 @@
         "zipCode": "827013",
         "geoLocation": null
       }
-    ],
-    "subscription": {
-      "plan": "Free",
-      "type": "Monthly",
-      "startDate": null,
-      "endDate": null,
-      "status": "inactive",
-      "autoRenew": false,
-      "amount": 0
-    },
-    "auth": {
+    ],"auth": {
       "login": {
         "attempts": 0,
         "method": null,
@@ -173,7 +153,6 @@
       },
       "provider": {
         "name": null,
-        "fcmToken": null,
         "lastUpdated": null,
         "uid": "ehouEQmUnZdTBFYK2FrgXKlmqPA2"
       }
@@ -213,17 +192,7 @@
         "zipCode": "827013",
         "geoLocation": null
       }
-    ],
-    "subscription": {
-      "plan": "Free",
-      "type": null,
-      "startDate": null,
-      "endDate": null,
-      "status": "inactive",
-      "autoRenew": false,
-      "amount": 0
-    },
-    "info": {
+    ],"info": {
       "fullName": "Vivek Kumar",
       "nickName": "Vivek Kumar",
       "gender": null,
@@ -257,7 +226,6 @@
       },
       "provider": {
         "name": null,
-        "fcmToken": null,
         "lastUpdated": null,
         "uid": "oxSL4dxnJBX1aPomPryMmQXhRP52"
       }
@@ -310,17 +278,7 @@
         "zipCode": "208001",
         "geoLocation": null
       }
-    ],
-    "subscription": {
-      "plan": "Free",
-      "type": "Monthly",
-      "startDate": null,
-      "endDate": null,
-      "status": "inactive",
-      "autoRenew": false,
-      "amount": 0
-    },
-    "auth": {
+    ],"auth": {
       "login": {
         "attempts": 0,
         "method": null,
@@ -343,7 +301,6 @@
       },
       "provider": {
         "name": null,
-        "fcmToken": null,
         "lastUpdated": null,
         "uid": "jA7uyYv7xnOsU4KmX1QqUdrpLUe2"
       }
