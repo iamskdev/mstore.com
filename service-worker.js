@@ -78,6 +78,9 @@ const APP_SHELL_URLS = [
   './source/modules/admin/pages/admin-home.css',
   './source/modules/admin/pages/admin-home.js',
 
+  //Modals
+  './source/modals/account-switcher.html',
+
   // Chat feature
   './source/common/pages/chat.html',
   './source/common/styles/chat.css',

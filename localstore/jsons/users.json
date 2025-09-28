@@ -6,7 +6,7 @@
       "gender": "male",
       "dob": "2000-04-15",
       "avatar": "./localstore/images/users/dev.png",
-      "tagline": "Top Contributor",
+      "tags": ["Top Contributor"],
       "bio": "Passionate developer & tech enthusiast",
       "email": "dev@apnastore.io",
       "phone": "+91 9634557007"
@@ -51,7 +51,8 @@
         "isCustomer": false,
         "isAgent": false,
         "isStaff": false,
-        "isAdmin": true
+        "isAdmin": true,
+        "isOwner": true
       },
       "roles": [
         "user",
@@ -174,7 +175,7 @@
         "name": null,
         "fcmToken": null,
         "lastUpdated": null,
-        "uid": "sN5ajjPcYcctBfPspN8kqjtTKWx2"
+        "uid": "ehouEQmUnZdTBFYK2FrgXKlmqPA2"
       }
     }
   },
@@ -228,7 +229,7 @@
       "gender": null,
       "dob": null,
       "avatar": "./localstore/images/users/vivek.jpg",
-      "tagline": "Premium User",
+      "tags": ["Top Contributor"],
       "bio": null,
       "email": "vivekkumar@outlook.in",
       "phone": "+919876543210"

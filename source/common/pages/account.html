@@ -1,28 +1,29 @@
 <div class="container">
   <div class="profile-header">
 
-    <div class="profile-image">
-      <i class="fas fa-user"></i>
-
+    <div class="profile-image" id="profile-image-container">
+      <!-- Default Icon -->
+      <i class="fas fa-user" id="profile-default-icon"></i>
+      <!-- Dynamic Image (hidden by default) -->
+      <img id="profile-avatar-img" alt="User Avatar">
       <!-- Blue Verified Tick -->
+       <!--
       <div class="verified-badge">
         <i class="fas fa-plus-circle"></i>
       </div>
+      -->
     </div>
     <div class="profile-info">
-      <div class="profile-name">
-        <span>I'm SkDev</span>
-      </div>
-      <div class="contact-info">
-
-        <div class="email">User • Top Contributor </div>
+      <div class="profile-name" id="profile-name-display">Loading...</div>
+      <div class="accout-type-info">
+        <div class="type-info-row" id="profile-tags-container">Fetching details...</div>
       </div>
     </div>
   </div>
 
   <!-- Horizontal scrollable buttons -->
   <div class="scrollable-buttons">
-    <button class="action-btn">
+    <button class="action-btn" id="switch-account-btn">
       <i class="fas fa-sync-alt"></i> Switch Account
     </button>
     <button class="action-btn">
@@ -129,3 +130,5 @@
 
 
 </div>
+<!-- Placeholder for the Switch Account Modal, which will be loaded dynamically -->
+<div id="account-modal-placeholder"></div>

@@ -15,6 +15,22 @@
   position: fixed;
 }
 
+/* NEW: Styles for dynamic profile image in nav */
+.nav-btn .account-icon {
+  /* FIX: Use absolute positioning to overlay the image on top of the default icon. */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px; /* Adjusted size to better match other icons */
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+  display: none; /* Hide by default */
+  background-color: var(--bg-secondary); /* Add a background for when the image is loading */
+}
+
 /* --- 2. General Button Styles --- */
 .nav-btn {
   background: transparent;
@@ -195,7 +211,8 @@
 
   <button class="nav-btn hidden" data-role="user" data-path="account">
     <div class="icon-container">
-      <i class="fas fa-user"></i>
+      <i class="fas fa-user default-icon"></i>
+      <img class="account-icon" alt="User Avatar">
     </div>
     <span>Account</span>
   </button>
@@ -231,7 +248,8 @@
 
   <button class="nav-btn hidden" data-role="merchant" data-path="account">
     <div class="icon-container">
-      <i class="fas fa-user-shield"></i>
+      <i class="fas fa-user-shield default-icon"></i>
+      <img class="account-icon" alt="User Avatar">
     </div>
     <span>Account</span>
   </button>
@@ -267,7 +285,8 @@
 
   <button class="nav-btn hidden" data-role="admin" data-path="account">
     <div class="icon-container">
-      <i class="fas fa-user-shield"></i>
+      <i class="fas fa-user-shield default-icon"></i>
+      <img class="account-icon" alt="User Avatar">
     </div>
     <span>Account</span>
   </button>

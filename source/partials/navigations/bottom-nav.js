@@ -1,3 +1,4 @@
+import { fetchUserById } from '../../utils/data-manager.js';
 
 /**
  * Initializes the dynamic behavior of the bottom navigation bar.
@@ -17,7 +18,7 @@ export function initializeBottomNavigationLogic() {
   const navBar = document.getElementById('bottom-nav');
 
   // --- UI Update Function ---
-  function updateNavUI({ role, view }) {
+  async function updateNavUI({ role, view }) {
     console.log(`TabNav: updateNavUI called with role: ${role}, view: ${view}`);
     // If promo is active, don't run the standard UI update logic.
     if (navBar.dataset.promoActive === "true") {
@@ -32,6 +33,32 @@ export function initializeBottomNavigationLogic() {
       btn.classList.toggle('active', isCorrectRole && isCorrectView);
     });
     navBar.classList.toggle('dev-mode', role === 'admin');
+
+    // --- Dynamic Account Icon Logic ---
+    const accountBtn = navBar.querySelector(`.nav-btn[data-role="${role}"][data-path="account"]`);
+    if (accountBtn) {
+      const defaultIcon = accountBtn.querySelector('.default-icon');
+      const accountIconImg = accountBtn.querySelector('.account-icon');
+      const userId = localStorage.getItem('currentUserId');
+
+      // Reset to default state first
+      if (defaultIcon) defaultIcon.style.display = 'inline-block';
+      if (accountIconImg) accountIconImg.style.display = 'none';
+
+      if (userId && (role === 'user' || role === 'merchant' || role === 'admin')) {
+        try {
+          const userData = await fetchUserById(userId);
+          const avatarUrl = userData?.info?.avatar;
+          if (avatarUrl && defaultIcon && accountIconImg) {
+            accountIconImg.src = avatarUrl;
+            accountIconImg.style.display = 'inline-block';
+            defaultIcon.style.display = 'none';
+          }
+        } catch (error) {
+          console.error('BottomNav: Failed to fetch user avatar.', error);
+        }
+      }
+    }
   }
 
   // Listen for a promotion to be activated
@@ -94,6 +121,14 @@ export function initializeBottomNavigationLogic() {
   // 2. Listen for view changes FROM the routeManager to keep the UI in sync
   routeManager.subscribe(updateNavUI);
   console.log("✅ TabNav: Subscribed to routeManager for state updates.");
+
+  // 3. Listen for authentication state changes to force a UI refresh.
+  // This solves the issue where the avatar doesn't update immediately after login.
+  window.addEventListener('authStateChanged', (e) => {
+    console.log('BottomNav: Auth state changed, forcing UI update.', e.detail);
+    // We need to get the current state from the routeManager to update correctly.
+    updateNavUI(routeManager.getCurrentState());
+  });
 }
 
 /**

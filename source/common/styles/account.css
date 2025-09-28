@@ -23,13 +23,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: visible;
+    overflow: hidden; /* FIX: Change to hidden to clip the inner image */
     flex-shrink: 0;
 }
 
 .profile-image i {
     font-size: 30px;
     color: var(--accent-text);
+}
+
+/* NEW: Styles for the dynamic avatar image */
+.profile-image img {
+    /* FIX: Use absolute positioning to overlay the image on the icon */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the circle without distortion */
+    background-color: var(--bg-secondary); /* Shows a background while image is loading */
+    display: none; /* Hide by default, JS will show it */
 }
 
 .verified-badge {
@@ -65,7 +78,7 @@
     color: var(--text-primary);
 }
 
-.contact-info {
+.accout-type-info {
     display: flex;
     flex-direction: column;
     /* ek ke niche ek */
@@ -77,31 +90,31 @@
     color: var(--text-secondary);
 }
 
-.contact-info .email {
-    font-weight: 700; /* Hace el texto más grueso (semi-negrita) */
+.accout-type-info .type-info-row {
+    /* Reverted to a simpler style for dot-separated text */
+    font-size: 12px;
+    font-weight: 500; /* Hace el texto más grueso (semi-negrita) */
     color: var(--text-primary); /* Mejora la legibilidad con un color de texto más oscuro */
+    line-height: 1.4; /* Add some line height for readability if it wraps */
 }
 
-.contact-info a:link,
-.contact-info a:visited,
-.contact-info a:hover,
-.contact-info a:active {
+.accout-type-info a:link,
+.accout-type-info a:visited,
+.accout-type-info a:hover,
+.accout-type-info a:active {
     color: var(--accent-primary);
     /* hamesha blue */
     text-decoration: none;
 }
 
-.contact-info a:hover {
+.accout-type-info a:hover {
     text-decoration: none;
 }
 
-.contact-info a:hover {
+.accout-type-info a:hover {
     text-decoration: none;
     /* sirf hover pe underline chhodo, chaaho to hata bhi sakte ho */
 }
-
-
-
 
 .arrow-icon {
     font-size: 18px;

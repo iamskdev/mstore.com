@@ -528,7 +528,6 @@ class RouteManager {
            console.log(`Switching view from popstate: Role=${e.state.role}, View=${e.state.view}`);
            this.switchView(e.state.role, e.state.view);
        }
-      if (e.state && e.state.role && e.state.view) { this.switchView(e.state.role, e.state.view); } // This call in an event handler doesn't need to be awaited.
     });
     
 
