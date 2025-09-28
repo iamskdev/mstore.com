@@ -1,9 +1,11 @@
 .conversation-screen {
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
-  height: 100vh;
+  background: var(--bg-tertiary);
+  /* height is now controlled by JS for keyboard compatibility */
   width: 100%;
+  overflow: hidden; /* Prevent internal scrolling from affecting the body */
+  position: relative; /* Needed for child element positioning */
 }
 
 .conversation-header {
@@ -15,6 +17,12 @@
   justify-content: space-between;
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 2px 4px var(--shadow-color);
+  /* --- FIX: Make header sticky --- */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
 }
 
 .conversation-header .left {
@@ -32,6 +40,13 @@
   /* Ensure visibility against header background */
 }
 
+.header-info-clickable {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
 .conversation-header .avatar {
   width: 35px;
   height: 35px;
@@ -42,6 +57,7 @@
   align-items: center;
   justify-content: center;
   margin-right: 5px;
+  overflow: hidden; /* This is the fix: It clips the inner image to the circle's shape */
   font-weight: bold;
 }
 
@@ -58,23 +74,43 @@
 
 .header-actions {
   display: flex;
-  gap: 15px;
   margin-right: 10px;
 }
 
 .header-actions i {
   cursor: pointer;
+  padding: 0 5px;
+  font-size: 20px;
   color: var(--text-secondary);
-  padding: 8px;
 }
 
-/* Messages */
-.messages {
+/* Message List Area */
+.message-list {
   flex: 1;
   padding: 15px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  /* --- FIX: Add padding to prevent content from hiding behind header/footer --- */
+  /* Values should be based on header/footer height */
+  padding-top: 70px; /* Approx header height + some buffer */
+  padding-bottom: 70px; /* Approx footer height + some buffer */
+  background: var(--bg-primary);
+}
+
+/* --- NEW: Date Separator --- */
+.date-separator {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.date-separator span {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .message {
@@ -125,7 +161,13 @@
   background: var(--bg-secondary);
   display: flex;
   border-top: 1px solid var(--border-color);
-  align-items: center; /* Added for vertical alignment */
+  align-items: center;
+  /* --- FIX: Make footer sticky --- */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
 }
 
 .input-container {

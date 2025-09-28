@@ -1,7 +1,95 @@
-import { renderChatList } from '../../templates/chat/chat-list.js';
-// Assuming AuthService and Router are globally available or imported elsewhere
-// import { AuthService } from '../path/to/auth-service.js';
-// import { Router } from '../path/to/router.js';
+import { fetchAllMerchants, fetchAllUsers, waitForData } from '../../utils/data-manager.js';
+import { AuthService } from '../../firebase/auth/auth.js';
+
+/**
+ * Renders the chat list into the container.
+ * This logic was moved from chat-list.js to simplify the view's structure.
+ */
+async function renderChatList() {
+  const container = document.getElementById('chat-list-container');
+  const template = document.getElementById('chat-list-template');
+
+  if (!container || !template) {
+    console.error('Error: Chat list container or template not found in chat.html.');
+    return;
+  }
+
+  try {
+    // Data is now pre-loaded by the router, so we can fetch from cache.
+    const merchants = await fetchAllMerchants();
+    const users = await fetchAllUsers();
+
+    // Create maps for efficient lookup
+    const merchantMap = new Map(merchants.map(m => [m.meta.merchantId, m]));
+    const userMap = new Map(users.map(u => [u.meta.userId, u]));
+
+    // Clear the container before rendering new items
+    container.innerHTML = '';
+
+    // Handle case where no merchants are found
+    if (!merchants || merchants.length === 0) {
+      container.innerHTML = '<p style="text-align:center; padding:20px;">No contacts available to chat with.</p>';
+      console.warn("No merchants found to display in the chat list.");
+      return;
+    }
+
+    // Iterate through merchants to display them as chatable entities
+    merchants.forEach((merchant) => {
+      if (!merchant?.meta?.info) {
+        console.warn('Skipping merchant with incomplete data:', merchant);
+        return;
+      }
+
+      const chatItem = document.importNode(template.content, true).firstElementChild;
+      chatItem.dataset.id = merchant.meta.merchantId;
+
+      // --- Avatar ---
+      const avatarEl = chatItem.querySelector('.chat-avatar');
+      if (avatarEl) {
+        const logoUrl = merchant.meta.info.logo;
+        if (logoUrl) {
+          avatarEl.innerHTML = `<img src="${logoUrl}" alt="${merchant.meta.info.name} Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        } else {
+          avatarEl.textContent = merchant.meta.info.name ? merchant.meta.info.name.charAt(0).toUpperCase() : '';
+        }
+      }
+
+      // --- Avatar Badge (e.g., Verified) ---
+      const avatarContainer = chatItem.querySelector('.avatar-container');
+      if (avatarContainer && merchant.meta.flags.isVerified) {
+        const badgeHTML = `<div class="avatar-badge" style="background-color: var(--accent-secondary);">✓</div>`;
+        avatarContainer.insertAdjacentHTML('beforeend', badgeHTML);
+      }
+
+      // --- Chat Info (Business Name) ---
+      const merchantNameEl = chatItem.querySelector('.merchant-name');
+      if (merchantNameEl) merchantNameEl.textContent = merchant.meta.info.name || 'Unknown Merchant';
+
+      // --- Last Message (Temporary Text) ---
+      const lastMessageEl = chatItem.querySelector('.chat-info p');
+      if (lastMessageEl) lastMessageEl.textContent = 'Tap to start a new chat';
+
+      // --- Chat Meta (Time and Unread Count) ---
+      const chatTimeEl = chatItem.querySelector('.chat-time');
+      if (chatTimeEl) chatTimeEl.textContent = ''; // Placeholder for time
+
+      // Add click listener to navigate to the conversation view
+      chatItem.addEventListener('click', () => {
+        const conversationId = chatItem.dataset.id;
+        if (conversationId) {
+          const currentRole = window.routeManager.currentRole || 'guest';
+          window.routeManager.switchView(currentRole, `conversation/${conversationId}`);
+        }
+      });
+
+      container.appendChild(chatItem);
+    });
+
+  } catch (error) {
+    console.error('Error rendering chat list:', error);
+    container.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Could not load merchants for chat.</p>';
+  }
+}
 
 export async function init() {
   console.log("Chat View Initialized");
@@ -10,41 +98,23 @@ export async function init() {
   const loginInstructionContainer = document.getElementById('login-instruction');
   const supportChatButton = document.getElementById('chat-support-btn');
 
-  // Placeholder for isLoggedIn check. Replace with actual authentication logic.
-  // For now, let's assume it's false for demonstration of the instruction.
-  const isLoggedIn = true; // AuthService.isLoggedIn(); 
-
-  if (isLoggedIn) {
+  // Use the actual AuthService to check if the user is logged in.
+  if (AuthService.isLoggedIn()) {
     chatListContainer.style.display = ''; // Show chat list
     loginInstructionContainer.style.display = 'none'; // Hide instruction
 
     try {
-      const templateFileResponse = await fetch('./source/templates/chat/chat-list.html');
-      if (!templateFileResponse.ok) throw new Error(`Failed to fetch template: ${templateFileResponse.statusText}`);
-      let templateText = await templateFileResponse.text();
-
-      // Extract CSS from the template and inject it into the head
-      const styleRegex = /<style>([\s\S]*?)<\/style>/;
-      const match = templateText.match(styleRegex);
-      if (match && match[1]) {
-        const styleContent = match[1];
-        const styleElement = document.createElement('style');
-        styleElement.textContent = styleContent;
-        document.head.appendChild(styleElement);
-        console.log("Injected chat-list styles into document head.");
-
-        // Remove the style block from the templateText so it's not re-injected with innerHTML
-        templateText = templateText.replace(styleRegex, '');
-      }
-
-      await renderChatList('chat-list-container', templateText);
+      // FIX: Wait for essential data to be ready before rendering.
+      // This prevents a race condition on fast navigation after login.
+      await waitForData(['merchants', 'users']);
+      await renderChatList(); // Now render the list
     } catch (error) {
       console.error('Error initializing chat view:', error);
       chatListContainer.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Failed to load chat view.</p>';
     }
   } else {
     chatListContainer.style.display = 'none'; // Hide chat list
-    loginInstructionContainer.style.display = ''; // Show instruction
+    loginInstructionContainer.style.display = 'flex'; // Show instruction using flex
 
     const goToLoginButton = document.getElementById('go-for-auth');
     if (goToLoginButton) {

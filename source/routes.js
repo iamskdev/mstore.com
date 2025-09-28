@@ -33,7 +33,7 @@ const routeConfig = {
       cssPath: './source/common/styles/chat.css',
       jsPath: './source/common/scripts/chat.js',
       title: 'Chat',
-      dataDependencies: []
+      dataDependencies: ['merchants', 'users']
     },
     saved: {
       id: 'guest-saved-view',
@@ -87,7 +87,7 @@ const routeConfig = {
       cssPath: './source/common/styles/chat.css',
       jsPath: './source/common/scripts/chat.js',
       title: 'Chat',
-      dataDependencies: []
+      dataDependencies: ['merchants', 'users']
     },
     saved: {
       id: 'user-saved-view',
@@ -140,7 +140,7 @@ const routeConfig = {
       cssPath: './source/common/styles/chat.css',
       jsPath: './source/common/scripts/chat.js',
       title: 'Chat',
-      dataDependencies: ['merchants', 'users']
+      dataDependencies: ['merchants', 'users'] // Already correct, but good to confirm
     },
     add: { id: 'merchant-add-view', path: null, title: 'Add', dataDependencies: ['categories', 'brands', 'units'] },
     analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items'] },
@@ -203,6 +203,14 @@ const routeConfig = {
       title: 'Conversation',
       fullscreen: true, // Custom flag for the router
       dataDependencies: ['users'] // Example dependency
+    },
+    'merchant-profile/:id': {
+      id: 'merchant-profile-view',
+      path: null, // No HTML file yet, will show a placeholder
+      title: 'Merchant Profile',
+      fullscreen: false,
+      dataDependencies: ['merchants'],
+      fullscreen: true
     }
   }
   };

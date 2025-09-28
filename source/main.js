@@ -31,6 +31,7 @@ class RouteManager {
     this.currentView = 'home';
     this.routeConfig = routeConfig; // Expose config if needed externally
     this.defaultViews = defaultViews;
+    this.currentModule = null; // NEW: To hold the currently active view's module
     this.loadedViews = new Set();
     
     this.footerHelper = null; // To be lazy-loaded for managing the footer
@@ -106,6 +107,19 @@ class RouteManager {
    * @param {string} role The user role for the view.
    * @param {string} viewId The ID of the view to switch to.
    */
+  _unloadViewCss(viewId) {
+    const cssElement = document.getElementById(`${viewId}-style`);
+    if (cssElement) {
+      cssElement.remove();
+      console.log(`routeManager: Unloaded CSS for view: ${viewId}`);
+    }
+  }
+
+  /**
+   * Switches the active view with a transition.
+   * @param {string} role The user role for the view.
+   * @param {string} viewId The ID of the view to switch to.
+   */
   async switchView(role, viewId) {
     console.log(`routeManager: Attempting to switch to role: ${role}, viewId: ${viewId}`); // Added log
     // --- FIX: Close any open modals before switching views ---
@@ -153,6 +167,37 @@ class RouteManager {
     // Resolve view configuration, checking commonViews for paths if not present in role-specific config
     let resolvedConfig = { ...config }; // Start with role-specific config
 
+    // --- NEW: Unload CSS of the previous view ---
+    // This prevents style conflicts, especially when moving between default and fullscreen layouts.
+    if (this.currentView && this.currentView !== viewId) {
+      let previousConfig;
+      // First, try a direct match for the previous view
+      previousConfig = this.routeConfig[this.currentRole]?.[this.currentView] || this.routeConfig.commonViews[this.currentView];
+
+      // If not found, it might be a parameterized route (like 'conversation/:id')
+      if (!previousConfig) {
+        const commonViewMatch = Object.keys(this.routeConfig.commonViews).find(key => {
+          // Simple check: does the start of the key match the start of the view?
+          // e.g., key 'conversation/:id' starts with 'conversation' which matches this.currentView 'conversation/chat123'
+          return key.split('/')[0] === this.currentView.split('/')[0];
+        });
+        if (commonViewMatch) {
+          previousConfig = this.routeConfig.commonViews[commonViewMatch];
+        }
+      }
+
+      if (previousConfig) {
+        console.log(`routeManager: Found previous config for '${this.currentView}'. Unloading CSS for ID: '${previousConfig.id}'.`);
+        this._unloadViewCss(previousConfig.id);
+      }
+    }
+
+    // --- NEW: Cleanup the previous view's module ---
+    // This is crucial to prevent memory leaks and event listener conflicts.
+    if (this.currentModule && typeof this.currentModule.cleanup === 'function') {
+      console.log(`routeManager: Cleaning up module for view: ${this.currentView}`);
+      this.currentModule.cleanup();
+    }
     
     // --- NEW: Explicitly hide all view containers before switching ---
     document.querySelectorAll('.page-view-area').forEach(element => {
@@ -347,6 +392,7 @@ class RouteManager {
         const modulePath = getAppConfig().app.environment === 'development' ? `${absoluteJsPath}?v=${new Date().getTime()}` : absoluteJsPath;
         const module = await import(modulePath);
         if (module.init && typeof module.init === 'function') {
+          this.currentModule = module; // Store the loaded module
           console.log(`routeManager: Calling init() for ${config.id}`);
           module.init();
           console.log(`routeManager: Successfully initialized JS for ${config.id}`);
@@ -359,6 +405,7 @@ class RouteManager {
         if (!e.message.includes('Failed to fetch') && !e.message.includes('404')) {
           console.error(`Error executing script for ${config.id} at ${jsPath}:`, e);
         } else {
+          this.currentModule = null; // No module was loaded
           console.warn(`routeManager: JS file not found for ${config.id} at ${jsPath}. This might be expected for simple views.`);
         }
       }

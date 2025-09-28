@@ -69,6 +69,7 @@ async function renderProfileData() {
  * @param {object} user - The full user data object.
  * @param {object|null} account - The full account data object.
  * @param {object|null} merchant - The full merchant data object.
+ * @param {object} [options={ showPremium: true, showPrivilegeTags: true }] - Optional parameters to control tag generation.
  * @param {object} [options={}] - Optional parameters to control tag generation.
  * @returns {string} A dot-separated string of tags (e.g., "User • Consumer Account • Premium").
  */
@@ -87,21 +88,26 @@ function getTagsForRole(role, user, account, merchant, options = {}) {
         tags.push('Admin Account');
     }
 
+    // --- NEW: Control visibility of special privilege tags ---
+    const showPrivilegeTags = options.showPrivilegeTags !== false; // Default to true
+
     // Add special privilege tags after the account type
-    if (user.meta?.flags?.isOwner) {
-        // As per rule, Owner also gets 'Top Contributor'
-        tags.push('Top Contributor');
-    } 
-    // Rule: Super Admin (non-owner) gets a specific tag.
-    // The 'else if' prevents 'Super Admin' from showing if 'Owner' is already shown.
-    else if (user.meta?.flags?.isSuperAdmin) {
-        tags.push('Super Admin');
+    if (showPrivilegeTags) {
+        if (user.meta?.flags?.isOwner) {
+            // As per rule, Owner also gets 'Top Contributor'
+            tags.push('Top Contributor');
+        } 
+        // Rule: Super Admin (non-owner) gets a specific tag.
+        // The 'else if' prevents 'Super Admin' from showing if 'Owner' is already shown.
+        else if (user.meta?.flags?.isSuperAdmin) {
+            tags.push('Super Admin');
+        }
     }
 
     // Rule: Add Premium tag only for the 'merchant' role if applicable.
     // The options parameter can disable this for specific contexts like the account switcher modal.
     const showPremium = options.showPremium !== false; // Default to true
-
+    
     if (showPremium && role === 'merchant' && merchant?.subscription?.status === 'active' && merchant?.subscription?.plan === 'Premium') {
         tags.push('Premium');
     }
@@ -211,7 +217,7 @@ async function initSwitchAccountModal() {
 
                 item.innerHTML = `
                     <div class="switch-account-avatar">${avatarHtml}</div>
-                    <div class="switch-account-details"><span class="user-full-name">${user.info?.fullName || 'Apna User'}</span><span class="account-role-type">${getTagsForRole(role, user, account, merchant, { showPremium: false })}</span></div>
+                    <div class="switch-account-details"><span class="user-full-name">${user.info?.fullName || 'Apna User'}</span><span class="account-role-type">${getTagsForRole(role, user, account, merchant, { showPremium: false, showPrivilegeTags: false })}</span></div>
                     ${statusIconHtml}
                 `;
                 // Only add click listener if the role is not suspended

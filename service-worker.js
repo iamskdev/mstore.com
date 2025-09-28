@@ -85,8 +85,6 @@ const APP_SHELL_URLS = [
   './source/common/pages/chat.html',
   './source/common/styles/chat.css',
   './source/common/scripts/chat.js',
-  './source/templates/chat/chat-list.html',
-  './source/templates/chat/chat-list.js',
   './source/common/pages/conversation.html',
   './source/common/styles/conversation.css',
   './source/common/scripts/conversation.js',

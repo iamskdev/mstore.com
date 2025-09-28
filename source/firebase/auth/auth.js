@@ -833,6 +833,18 @@ export const AuthService = (() => {
         });
     }
 
+    /**
+     * Checks if a user is currently considered logged in by the application.
+     * This is determined by the presence of a non-guest role and a user ID in localStorage.
+     * @returns {boolean} True if a user is logged in, false otherwise.
+     */
+    function isLoggedIn() {
+        const userType = localStorage.getItem('currentUserType');
+        const userId = localStorage.getItem('currentUserId');
+        // A user is logged in if their type is set, it's not 'guest', and there's a userId.
+        return !!(userType && userType !== 'guest' && userId);
+    }
+
     return {
         validateForm,
         handleLogin,
@@ -845,5 +857,6 @@ export const AuthService = (() => {
         signInWithGoogle,
         signInWithApple,
         initializeAuthListener, // Export the new function
+        isLoggedIn, // Export the new isLoggedIn function
     };
 })();

@@ -107,6 +107,25 @@ const createDataFetcher = (collectionName, idKey) => {
     return { fetchAll, fetchById };
 };
 
+/**
+ * A utility to wait for one or more data caches to be populated.
+ * This is useful for views that are accessed immediately after login,
+ * before the initial data fetch might be complete.
+ * @param {Array<string>} dataKeys - Array of keys to wait for (e.g., ['merchants', 'users']).
+ * @returns {Promise<void>} A promise that resolves when all specified data is cached.
+ */
+export async function waitForData(dataKeys) {
+    const fetcherMap = {
+        merchants: fetchAllMerchants,
+        users: fetchAllUsers,
+        items: fetchAllItems,
+        // Add other fetchers here as needed
+    };
+
+    const promises = dataKeys.map(key => fetcherMap[key] ? fetcherMap[key]() : Promise.resolve());
+    await Promise.all(promises);
+}
+
 // Create and export fetchers for all data collections.
 // This makes the data manager complete and easy to extend.
 export const { fetchAll: fetchAllItems, fetchById: fetchItemById } = createDataFetcher('items', 'itemId');

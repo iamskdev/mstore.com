@@ -12,3 +12,20 @@
     <i class="fa-solid fa-circle-question"></i> <!-- Font Awesome icon for comments -->
   </button>
 </div>
+
+<!-- 
+  Template for a single chat item, moved from chat-list.html for simplification.
+  This template is now part of the chat view itself.
+-->
+<template id="chat-list-template">
+  <div class="chat-item" data-id="{{id}}">
+    <div class="avatar-container">
+      <div class="chat-avatar">{{avatarChatList}}</div>
+    </div>
+    <div class="chat-info">
+      <h4><span class="merchant-name">{{businessName}}</span></h4>
+      <p>{{lastMessage}}</p>
+    </div>
+    <div class="chat-meta"><div class="chat-time">{{time}}</div></div>
+  </div>
+</template>

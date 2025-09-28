@@ -20,6 +20,7 @@ html {
   box-sizing: border-box;
   height: 100%;
   background: var(--bg-primary);
+  overscroll-behavior-y: none; /* Prevent pull-to-refresh and rubber-band scrolling */
 }
 
 *, *::before, *::after {
@@ -381,12 +382,19 @@ html.standalone-no-zoom * {
 }
 
 /* 8. LAYOUT SWITCHING */
+#default-layout {
+  display: block;
+  position: relative;
+}
+
 #fullscreen-layout {
     display: none;
+    position: relative;
 }
 
 body.fullscreen-active #default-layout {
     display: none;
+    position: relative;
 }
 
 body.fullscreen-active #fullscreen-layout {
