@@ -25,10 +25,11 @@ const routeConfig = {
       
       embedFooter: true,
       title: 'Home',
+      isMainTab: true, // This is a main tab for merchants if they land here
       dataDependencies: ['items', 'promotions', 'categories', 'brands', 'orders', 'price-logs', 'alerts']
     },
-    add: { id: 'merchant-add-view', path: null, title: 'Add', dataDependencies: ['categories', 'brands', 'units'] },
-    analytics: { id: 'merchant-analytics-view', path: null, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items'] },
+    add: { id: 'merchant-add-view', path: null, title: 'Add', isMainTab: true, dataDependencies: ['categories', 'brands', 'units'] },
+    analytics: { id: 'merchant-analytics-view', path: null, isMainTab: true, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items'] },
   },
   admin: {
     home: {
@@ -37,13 +38,13 @@ const routeConfig = {
       cssPath: "./source/modules/admin/pages/admin-home.css",
       jsPath: "./source/modules/admin/pages/admin-home.js",
       embedFooter: true,
+      isMainTab: true,
       title: 'Home',
       dataDependencies: ['items', 'promotions', 'users', 'merchants', 'categories', 'brands', 'alerts', 'orders', 'logs', 'accounts', 'campaigns', 'counters']
     },
-    users: { id: 'admin-users-view', path: null, title: 'User Data', dataDependencies: ['users', 'accounts'] },
-    analytics: { id: 'admin-analytics-view', path: null, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items', 'merchants', 'users', 'logs'] },
-    requests: { id: 'admin-request-view', path: null, title: 'Request', dataDependencies: ['orders', 'users', 'merchants'] },
-    logs: { id: 'admin-logs-view', path: null, title: 'Logs', dataDependencies: ['logs'] },
+    users: { id: 'admin-users-view', path: null, isMainTab: true, title: 'User Data', dataDependencies: ['users', 'accounts'] },
+    analytics: { id: 'admin-analytics-view', path: null, isMainTab: true, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items', 'merchants', 'users', 'logs'] },
+    requests: { id: 'admin-request-view', path: null, isMainTab: true, title: 'Request', dataDependencies: ['orders', 'users', 'merchants'] },
   },
   commonViews: {
     home: {
@@ -53,6 +54,7 @@ const routeConfig = {
       jsPath: './source/common/scripts/home.js',
       embedFooter: true,
       title: 'Home',
+      isMainTab: true,
       dataDependencies: ['items', 'promotions', 'categories', 'brands']
     },
     chat: {
@@ -60,6 +62,7 @@ const routeConfig = {
       path: './source/common/pages/chat.html',
       cssPath: './source/common/styles/chat.css',
       jsPath: './source/common/scripts/chat.js',
+      isMainTab: true,
       title: 'Chat',
       dataDependencies: ['merchants', 'users']
     },
@@ -68,6 +71,7 @@ const routeConfig = {
       path: './source/common/pages/account.html',
       cssPath: './source/common/styles/account.css',
       jsPath: './source/common/scripts/account.js',
+      isMainTab: true,
       title: 'Account',
       dataDependencies: ['users', 'accounts', 'merchants']
     },
@@ -76,6 +80,7 @@ const routeConfig = {
       path: './source/common/pages/cart.html',
       cssPath: './source/common/styles/cart.css',
       jsPath: './source/common/scripts/cart.js',
+      isMainTab: true,
       title: 'Cart',
       dataDependencies: []
     },
@@ -101,12 +106,14 @@ const routeConfig = {
       path: './source/common/pages/wishlist.html',
       cssPath: './source/common/styles/wishlist.css',
       jsPath: './source/common/scripts/wishlist.js',
+      isMainTab: true,
       title: 'Saved Items',
       dataDependencies: ['items']
     },
     updates: {
       id: 'updates-view',
       path: null, // No HTML file yet, will show a placeholder
+      isMainTab: true,
       title: 'Updates',
       dataDependencies: []
     },
@@ -124,7 +131,7 @@ const routeConfig = {
       path: './source/common/pages/authentication.html',
       cssPath: './source/common/styles/authentication.css',
       jsPath: './source/common/scripts/authentication.js',
-      title: 'Login or Sign Up'
+      title: 'Authentication'
     }
   }
   };

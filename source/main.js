@@ -61,7 +61,15 @@ class RouteManager {
   /** @private Notifies all subscribers about a state change. */
   _notifySubscribers() {
     console.log("routeManager: Notifying subscribers about state change.");
-    const config = this.routeConfig[this.currentRole]?.[this.currentView] || {};
+    // --- FIX: Correctly resolve config from role-specific OR common views ---
+    // This ensures that subscribers (like top-nav) always get the correct title and config.
+    let config = this.routeConfig[this.currentRole]?.[this.currentView];
+    // FIX: If not found in role-specific config, check commonViews for an *exact* match first.
+    // This correctly distinguishes 'account' from 'account/authentication'.
+    if (!config) {
+        config = this.routeConfig.commonViews?.[this.currentView];
+    }
+    config = config || {}; // Ensure config is at least an empty object
     const state = { role: this.currentRole, view: this.currentView, config: config };
     this.subscribers.forEach(callback => callback(state));
   }

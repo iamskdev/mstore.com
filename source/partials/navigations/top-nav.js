@@ -15,7 +15,11 @@ export function initializeTopNavigation() {
     const badge = notificationIcon?.querySelector('.notification-badge');
     const logoEl = document.querySelector('.logo-container img');
     const nameEl = document.getElementById('header-name');
+    const menuIconEl = document.getElementById('header-menu-icon');
     const logoContainer = document.querySelector('.logo-container');
+
+    // NEW: Universal Back Button for secondary views
+    const viewBackBtn = document.getElementById('view-back-btn');
 
     const notificationHeaderContent = document.querySelector('.notification-header-content');
     const notificationBackBtn = document.getElementById('notification-back-btn');
@@ -23,11 +27,21 @@ export function initializeTopNavigation() {
 
     // --- Functions ---
     function initializeHeaderStyle() {
-      const headerStyle = getAppConfig().ui.headerStyle || 'logo';
-      const menuIconEl = document.querySelector('[data-header-item="menu"]');
+      // NEW: Handles 'logo', 'menu', and 'both' styles.
       if (logoContainer && menuIconEl) {
-        logoContainer.classList.toggle('hidden', headerStyle === 'menu');
-        menuIconEl.classList.toggle('hidden', headerStyle !== 'menu');
+        const headerStyle = getAppConfig().ui.headerStyle || 'logo';
+
+        // Determine visibility based on the style
+        const showLogo = (headerStyle === 'logo' || headerStyle === 'both');
+        const showMenu = (headerStyle === 'menu' || headerStyle === 'both');
+
+        // Apply the 'hidden' class based on the logic
+        logoContainer.classList.toggle('hidden', !showLogo);
+        menuIconEl.classList.toggle('hidden', !showMenu);
+
+        // This function is only for main views, so the universal back button is always hidden.
+        // The secondary view logic handles showing it.
+        viewBackBtn.classList.add('hidden');
       }
     }
 
@@ -37,6 +51,11 @@ export function initializeTopNavigation() {
       searchInput.focus();
     }
 
+    /**
+     * Closes the search view and correctly restores the header's state.
+     * FIX: This function now re-evaluates the header UI based on the current view
+     * to prevent the bug where the wrong icon (e.g., menu icon) appears after search.
+     */
     function closeSearchView() {
       topNav.classList.remove('search-active');
       searchClearBtn.style.display = 'none';
@@ -45,6 +64,9 @@ export function initializeTopNavigation() {
         suggestionsBox.style.display = 'none';
         suggestionsBox.innerHTML = '';
       }
+      // Re-run the header UI update to restore the correct state (logo/menu/back button).
+      // This is crucial for fixing the inconsistent icon display bug.
+      updateHeaderUI(window.routeManager.getCurrentState());
     }
 
     function updateHeaderUI({ role, view, config }) {
@@ -61,46 +83,30 @@ export function initializeTopNavigation() {
         logoContainer.classList.remove('is-loading-avatar');
       };
 
-      // Dynamic Branding Logic
-      if (userType === 'user' && userId) {
-        logoContainer.classList.add('is-loading-avatar');
-        nameEl.textContent = 'User Panel';
-        fetchUserById(userId).then(userData => {
-          if (userData) {
-            nameEl.textContent = userData.info?.nickName || userData.info?.fullName || 'Apna User';
-            setLogo(userData.info?.avatar);
-          }
-        });
-      } else if (userType === 'merchant' && userId) {
-        logoContainer.classList.add('is-loading-avatar');
-        nameEl.textContent = 'User Panel';
-        (async () => {
-          try {
-            const userData = await fetchUserById(userId);
-            if (!userData) throw new Error("User data not found for merchant.");
-            const merchantId = userData.meta?.links?.merchantId;
-            if (merchantId) {
-              const merchantData = await fetchMerchantById(merchantId);
-              if (merchantData) {
-                nameEl.textContent = merchantData.meta?.info?.name || 'Merchant Store';
-                setLogo(merchantData.meta?.info?.logo);
-              } else {
-                nameEl.textContent = userData.info?.fullName || 'Merchant Panel';
-                setLogo(userData.info?.avatar);
-              }
-            } else {
-              nameEl.textContent = userData.info?.fullName || 'Merchant Panel';
-              setLogo(userData.info?.avatar);
-            }
-          } catch (error) {
-            console.error("Header: Failed to fetch merchant branding.", error);
-            nameEl.textContent = 'Merchant Panel';
-            setLogo(defaultLogo);
-          }
-        })();
+      // --- NEW: Dynamic Header Logic based on View Type ---
+      // FIX: Check the config of the *exact* view, not just the base path.
+      // This correctly distinguishes 'account' (main tab) from 'account/authentication' (secondary view).
+      // The config object passed here is already correctly resolved by the routeManager.
+      const isMainTabView = config.isMainTab === true;
+
+      if (isMainTabView) {
+        // --- Main Tab View (e.g., Home, Account) ---
+        nameEl.textContent = defaultName; // Always show app name
+        setLogo(defaultLogo); // Always show app logo
+
+        // Show the correct branding item (logo or menu icon)
+        initializeHeaderStyle();
+
       } else {
-        setLogo(defaultLogo);
-        nameEl.textContent = defaultName;
+        // --- Secondary View (e.g., Notifications, Login, Conversation) ---
+        nameEl.textContent = config?.title || defaultName; // Use view-specific title
+
+        // Show the universal back button
+        viewBackBtn.classList.remove('hidden');
+
+        // Hide the main branding items (logo and menu icon)
+        logoContainer.classList.add('hidden');
+        menuIconEl.classList.add('hidden');
       }
 
       // Reset indicators
@@ -138,9 +144,6 @@ export function initializeTopNavigation() {
         }
       }
 
-      // Re-apply header style
-      initializeHeaderStyle();
-
       // --- NEW: Show/Hide Settings Icon ---
       // Show the settings icon only when the current view is 'account'.
       if (settingsIcon) {
@@ -169,6 +172,13 @@ export function initializeTopNavigation() {
     document.querySelectorAll('#header-logo-container, #header-menu-icon').forEach(el => {
       el.addEventListener('click', () => window.dispatchEvent(new CustomEvent('toggleDrawerRequest')));
     });
+
+    // NEW: Add click listener for the universal back button
+    if (viewBackBtn) {
+      viewBackBtn.addEventListener('click', () => {
+        window.history.back(); // Go to the previous page in history
+      });
+    }
 
     if (searchToggleBtn) searchToggleBtn.addEventListener('click', openSearchView);
     if (searchBackBtn) searchBackBtn.addEventListener('click', closeSearchView);
