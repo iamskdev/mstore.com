@@ -9,15 +9,32 @@ async function renderProfileData() {
 
     // Get DOM elements
     const nameDisplay = document.getElementById('profile-name-display');
+    const usernameDisplay = document.getElementById('profile-username-display'); // NEW
     const tagsContainer = document.getElementById('profile-tags-container');
     const avatarImg = document.getElementById('profile-avatar-img');
     const defaultIcon = document.getElementById('profile-default-icon');
+    // NEW: Get elements to hide for guest users
+    const scrollableButtons = document.querySelector('.scrollable-buttons');
+    const buttonsDivider = scrollableButtons?.nextElementSibling;
 
     if (!userId) {
+        // --- NEW: Make the guest prompt clickable ---
         nameDisplay.textContent = 'Guest User';
-        tagsContainer.innerHTML = `<span class="profile-tag">Please log in</span>`;
+        usernameDisplay.style.display = 'none'; // Hide username for guests
+        tagsContainer.innerHTML = `<span class="clickable-link">Click to Log In or Sign Up</span>`;
         if (defaultIcon) defaultIcon.style.display = 'block';
         if (avatarImg) avatarImg.style.display = 'none';
+
+        // --- FIX: Add click listener directly to the newly created span ---
+        // Find the span that was just added.
+        const loginLink = tagsContainer.querySelector('.clickable-link');
+        // Add the event listener only to the link, not the whole container.
+        loginLink.addEventListener('click', () => {
+            routeManager.switchView('guest', 'account/authentication');
+        });
+
+        // --- NEW: Hide buttons and divider for guests ---
+        if (scrollableButtons) scrollableButtons.style.display = 'none';
         return;
     }
 
@@ -30,8 +47,19 @@ async function renderProfileData() {
         const merchant = user.meta.links.merchantId ? await fetchMerchantById(user.meta.links.merchantId) : null;
         console.log('DEBUG: Fetched data in account.js:', { user, account, merchant });
 
+        // --- NEW: Ensure buttons and divider are visible for logged-in users ---
+        if (scrollableButtons) scrollableButtons.style.display = 'flex';
+
+        usernameDisplay.style.display = 'block'; // Ensure username is visible for logged-in users
+
         // Update Name
-        nameDisplay.textContent = user.info?.fullName || 'Anonymous User';
+        // FIX: Prioritize nickName over fullName for consistency with top-nav.
+        nameDisplay.textContent = user.info?.nickName || user.info?.fullName || 'Anonymous User';
+
+        // --- NEW: Display the @username ---
+        if (user.info?.username) {
+            usernameDisplay.textContent = `@${user.info.username}`;
+        }
 
         // --- Collect and Render All Profile Tags using both user and account data ---
         const tags = [];
@@ -64,6 +92,7 @@ async function renderProfileData() {
     } catch (error) {
         console.error('Failed to render profile data:', error);
         nameDisplay.textContent = 'Error';
+        usernameDisplay.textContent = '';
         tagsContainer.innerHTML = `<span class="profile-tag">Could not load profile.</span>`;
     }
 }
@@ -102,7 +131,7 @@ function getTagsForRole(role, user, account, merchant, options = {}) {
         if (user.meta?.flags?.isOwner) {
             // As per rule, Owner also gets 'Top Contributor'
             tags.push('Top Contributor');
-        } 
+        }
         // Rule: Super Admin (non-owner) gets a specific tag.
         // The 'else if' prevents 'Super Admin' from showing if 'Owner' is already shown.
         else if (user.meta?.flags?.isSuperAdmin) {
@@ -113,7 +142,7 @@ function getTagsForRole(role, user, account, merchant, options = {}) {
     // Rule: Add Premium tag only for the 'merchant' role if applicable.
     // The options parameter can disable this for specific contexts like the account switcher modal.
     const showPremium = options.showPremium !== false; // Default to true
-    
+
     if (showPremium && role === 'merchant' && merchant?.subscription?.status === 'active' && merchant?.subscription?.plan === 'Premium') {
         tags.push('Premium');
     }
@@ -151,8 +180,19 @@ async function initSwitchAccountModal() {
     const openModal = async () => {
         const userId = localStorage.getItem('currentUserId');
         if (!userId) {
-            alert('You must be logged in to switch roles.');
-            return;
+            // FIX: Use custom alert instead of native alert.
+            window.showCustomAlert({
+                title: 'Login Required',
+                message: 'You need to be logged in to switch between account roles.',
+                buttons: [
+                    {
+                        text: 'Log In',
+                        class: 'primary',
+                        onClick: () => { window.hideCustomAlert(); routeManager.switchView('guest', 'account/authentication'); }
+                    }
+                ]
+            });
+            return; // Stop execution
         }
 
         // --- NEW: Show skeleton loader instead of spinner ---
@@ -175,7 +215,7 @@ async function initSwitchAccountModal() {
             const user = await fetchUserById(userId);
             const account = user.meta.links.accountId ? await fetchAccountById(user.meta.links.accountId) : null;
             const merchant = user.meta.links.merchantId ? await fetchMerchantById(user.meta.links.merchantId) : null;
-            
+
             let roles;
             if (user?.meta?.flags?.isSuperAdmin) {
                 // If the user is a Super Admin, grant them access to all primary roles.
@@ -223,7 +263,10 @@ async function initSwitchAccountModal() {
 
                 item.innerHTML = `
                     <div class="switch-account-avatar">${avatarHtml}</div>
-                    <div class="switch-account-details"><span class="user-full-name">${user.info?.fullName || 'Apna User'}</span><span class="account-role-type">${getTagsForRole(role, user, account, merchant, { showPremium: false, showPrivilegeTags: false })}</span></div>
+                    <div class="switch-account-details">
+                        <span class="user-full-name">${user.info?.nickName || user.info?.fullName || 'Apna User'}</span>
+                        <span class="account-role-type">${getTagsForRole(role, user, account, merchant, { showPremium: false, showPrivilegeTags: false })}</span>
+                    </div>
                     ${statusIconHtml}
                 `;
                 // Only add click listener if the role is not suspended
@@ -291,14 +334,20 @@ export function init() {
     }
 
     // Generic interaction for other menu items (excluding wishlist and feedback)
-    document.querySelectorAll('.menu-item:not(#wishlist-menu-item):not(#account-feedback-btn)').forEach(item => {
-        item.addEventListener('click', function () {
-            this.style.backgroundColor = 'rgba(255, 123, 0, 0.2)';
-            setTimeout(() => {
-                this.style.backgroundColor = '';
-            }, 300);
+    // FIX: Add event listener to the parent and delegate to the actual menu items.
+    // This is more efficient and correctly targets only the items.
+    const menuContainer = document.querySelector('.menu-list'); // Assuming a container like .menu-list exists
+    if (menuContainer) {
+        menuContainer.addEventListener('click', function (e) {
+            const item = e.target.closest('.menu-item:not(#wishlist-menu-item):not(#account-feedback-btn)');
+            if (item) {
+                item.style.backgroundColor = 'rgba(255, 123, 0, 0.2)';
+                setTimeout(() => {
+                    item.style.backgroundColor = '';
+                }, 300);
+            }
         });
-    });
+    }
 
     // Add animation to feature cards
     document.querySelectorAll('.feature-card').forEach(card => {
@@ -310,22 +359,20 @@ export function init() {
         });
     });
 
-    // Profile image click handler
-    document.getElementById('profile-image-container').addEventListener('click', function () {
-        alert('Profile image clicked! Would you like to change your profile picture?');
-    });
-
-    // Profile name click handler
-    document.getElementById('profile-name-display').addEventListener('click', function () {
-        alert('Profile options would appear here');
-    });
-
     // Action buttons click handler
-    // FIX: Exclude the switch account button which has its own specific handler.
-    document.querySelectorAll('.action-btn:not(#switch-account-btn)').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const btnText = this.textContent.trim();
-            alert(`You clicked: ${btnText}`);
+    // FIX: Use event delegation on the container to avoid capturing clicks on blank space.
+    const scrollableButtonsContainer = document.querySelector('.scrollable-buttons');
+    if (scrollableButtonsContainer) {
+        scrollableButtonsContainer.addEventListener('click', function (e) {
+            const btn = e.target.closest('.action-btn:not(#switch-account-btn)');
+            if (btn) {
+                const btnText = btn.textContent.trim();
+                // FIX: Use custom alert for placeholder actions.
+                window.showCustomAlert({
+                    title: 'Feature Coming Soon',
+                    message: `The "${btnText}" feature is currently under development and will be available soon.`
+                });
+            }
         });
-    });
+    }
 }

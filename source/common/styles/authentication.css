@@ -1,4 +1,4 @@
-#guest-account-view { /* Corrected typo */
+#auth-view { /* Corrected typo */
       flex-direction: column;
       /* Removed min-height: 100vh; to avoid conflict with parent's fixed height */
       background: var(--bg-primary);

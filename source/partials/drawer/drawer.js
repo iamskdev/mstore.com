@@ -159,7 +159,7 @@ export function initializeDrawer() {
   // This function dispatches an event to request the auth modal.
   function requestAuth(formType) {
     sessionStorage.setItem('initialAuthTab', formType); // Use sessionStorage to reliably set the initial tab
-    routeManager.switchView('guest', 'account');
+    routeManager.switchView('guest', 'account/authentication');
     closeDrawer();
   }
 

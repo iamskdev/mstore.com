@@ -97,12 +97,49 @@ async function createAuthUsers() {
                     continue;
                 }
                 
-                if (doc.data().auth?.provider?.uid !== userRecord.uid) {
-                    console.log(`   - 🔄 Updating Firestore document ${customUserId} with UID ${userRecord.uid}...`);
-                    await firestoreDocRef.update({ 'auth.provider.uid': userRecord.uid });
+                const firestoreUid = doc.data().auth?.provider?.uid;
+                const firestoreProvider = doc.data().auth?.provider?.name;
+
+                // Update if UID is missing/different or if provider name is not 'firebase'
+                if (firestoreUid !== userRecord.uid || firestoreProvider !== 'firebase') {
+                    console.log(`   - 🔄 Syncing Firestore document ${customUserId} with Auth UID ${userRecord.uid}...`);
+                    await firestoreDocRef.update({ 
+                        'auth.provider.uid': userRecord.uid,
+                        'auth.provider.name': 'firebase' // Explicitly set the provider
+                    });
                     console.log(`   - ✅ Firestore document updated.`);
                 } else {
                     console.log(`   - 👍 Firestore document ${customUserId} is already in sync.`);
+                }
+
+                // 5. Check for and create the corresponding 'accounts' document if it doesn't exist.
+                // This makes the script's behavior consistent with the live _createFirestoreUserBundle function.
+                const accountId = doc.data().meta?.links?.accountId;
+                if (accountId) {
+                    const accountRef = db.collection('accounts').doc(accountId);
+                    const accountDoc = await accountRef.get();
+
+                    if (!accountDoc.exists) {
+                        console.log(`   - 🏦 Account document ${accountId} not found. Creating it...`);
+                        const accountDocData = {
+                            meta: {
+                                accountId,
+                                createdOn: new Date().toISOString(),
+                                isGuest: false,
+                                links: { userId: customUserId },
+                                lastUpdated: new Date().toISOString(),
+                                note: "Account created via dev script (create-auth-users.js).",
+                                ownerUID: userRecord.uid
+                            },
+                            // Add other essential fields with default values as needed
+                            deviceInfo: [],
+                            settings: { language: "en", theme: "light", push: true, email: false, sms: false },
+                        };
+                        await accountRef.set(accountDocData);
+                        console.log(`   - ✅ Account document ${accountId} created successfully.`);
+                    }
+                } else {
+                    console.warn(`   - ⚠️ No accountId link found in user document ${customUserId}. Cannot sync account document.`);
                 }
 
             } catch (error) {

@@ -81,6 +81,7 @@
     -   `version` (number): दस्तावेज़ का संस्करण।
 -   **`info`**: उपयोगकर्ता की व्यक्तिगत जानकारी।
     -   `fullName`, `nickName`, `gender`, `dob`, `avatar`, `tags` (array of strings), `bio`, `email`, `phone`।
+    -   **`username` (string): एक अद्वितीय, सार्वजनिक `@username` जो उपयोगकर्ता की पहचान करता है।**
 -   **`address`** (array): उपयोगकर्ता के पतों की सूची।
     -   प्रत्येक ऑब्जेक्ट में `label`, `isPrimary`, `street`, `city`, `state`, `zipCode`, `geoLocation` होता है।
 -   **`auth`**: प्रमाणीकरण से संबंधित विस्तृत विवरण।

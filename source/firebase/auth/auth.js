@@ -153,28 +153,37 @@ export const AuthService = (() => {
         const { method = 'unknown', fullName = '', phone = '', note = 'Account created on user registration.' } = options;
         if (!firestore) throw new Error("Firestore not available for user creation.");
 
-        // This function is no longer a single atomic batch due to security rule limitations.
-        // It performs sequential writes, and the calling function (handleSignup) is responsible for rollback.
-        let userId; // Declare userId here to make it available in the catch block.
-
         try {
-            userId = await generateSequentialId('users', 'USR');
-            const accountId = await generateSequentialId('accounts', 'ACC');
+            // --- ATOMIC BATCH WRITE ---
+            // Create a new batch instance. This will group all our writes into a single atomic operation.
+            const batch = firestore.batch();
 
-            // --- Step 1: Create and write the User Document ---
+            // --- Step 1: Prepare User Document ---
+            const userId = await generateSequentialId('users', 'USR');
+            const accountId = await generateSequentialId('accounts', 'ACC');
             const userRef = firestore.collection('users').doc(userId);
             const primaryRole = 'user';
             const providerName = method.includes('google') ? 'google.com' : (method.includes('apple') ? 'apple.com' : 'firebase');
             const userDocData = {
                 meta: { userId, version: 1.0, primaryRole, roles: [primaryRole], registeredOn: new Date().toISOString(), links: { accountId }, flags: { isActive: true, isSuspended: false, isVerified: user.emailVerified, isCustomer: true, isAdmin: false, isMerchant: false, isAgent: false, isStaff: false }, lastUpdated: new Date().toISOString() },
-                info: { fullName: fullName || user.displayName || '', nickName: '', gender: '', dob: '', avatar: user.photoURL || '', tagline: '', bio: '', email: user.email, phone: phone || user.phoneNumber || '' },
+                info: {
+                    fullName: fullName || user.displayName || '',
+                    nickName: '',
+                    username: (user.email?.split('@')[0] || `user${Date.now()}`).replace(/[^a-zA-Z0-9_]/g, ''),
+                    gender: '',
+                    dob: '',
+                    avatar: user.photoURL || '',
+                    tagline: '',
+                    bio: '',
+                    email: user.email,
+                    phone: phone || user.phoneNumber || ''
+                },
                 auth: { login: { attempts: 0, method, password: { hash: '', updatedAt: new Date().toISOString() } }, provider: { name: providerName, uid: user.uid, lastUpdated: new Date().toISOString() }, flags: { twoFactorEnabled: false, emailVerified: user.emailVerified, phoneVerified: !!user.phoneNumber, accountLocked: false, tempPasswordUsed: false }, recovery: { email: '', phone: '', securityQuestions: [] } },
                 address: []
             };
-            await userRef.set(userDocData); // First write operation
+            batch.set(userRef, userDocData); // Add user creation to the batch
 
-            // --- Step 2: Create and write the Account Document ---
-            // This now works because the user document exists for the security rule 'get()' call.
+            // --- Step 2: Prepare Account Document ---
             const accountRef = firestore.collection('accounts').doc(accountId);
             const userAgent = navigator.userAgent;
             const deviceType = /android/i.test(userAgent) ? 'android' : (/iphone|ipad|ipod/i.test(userAgent) ? 'ios' : 'web');
@@ -190,9 +199,14 @@ export const AuthService = (() => {
                 recentlyViewed: { items: [] },
                 subscription: { plan: "Free", type: "Monthly", startDate: null, endDate: null, status: "inactive", autoRenew: false, clearSettings: false }
             };
-            await accountRef.set(accountDocData); // Second write operation
+            batch.set(accountRef, accountDocData); // Add account creation to the batch
 
-            // --- Log the event AFTER the batch is successful ---
+            // --- Step 3: Commit the Batch ---
+            // This single command will attempt to write both documents.
+            // If either fails, both will be rolled back automatically by Firestore.
+            await batch.commit();
+
+            // --- Step 4: Log the event AFTER the batch is successful ---
             await createLog({
                 ownerUID: user.uid, // Pass the auth UID for the security rule check
                 userId: userId,
@@ -205,12 +219,8 @@ export const AuthService = (() => {
             return userId;
 
         } catch (error) {
-            console.error("Error in sequential user/account creation bundle:", error);
-            // Attach the partially created userId to the error object so the rollback handler can find and delete it.
-            if (userId) {
-                error.createdUserId = userId;
-            }
-            throw error;
+            console.error("Error in atomic user/account creation bundle:", error);
+            throw error; // Re-throw the error to be handled by handleSignup's rollback logic.
         }
     }
 
@@ -298,6 +308,10 @@ export const AuthService = (() => {
                     description: `User logged in successfully via ${isEmail ? 'email' : 'phone'}.`,
                     details: { method: isEmail ? 'email' : 'phone', credential: credentialValue }
                 });
+                // FIX: Immediately update localStorage before notifying the router.
+                // This ensures any subscribers (like the drawer) have access to the correct state instantly.
+                localStorage.setItem('currentUserType', role);
+                localStorage.setItem('currentUserId', userId);
                 // Centralized state update via routeManager
                 routeManager.handleRoleChange(role, userId);
                 showToast('login');
@@ -427,6 +441,11 @@ export const AuthService = (() => {
             });
 
             // --- Step 4: Post-creation Actions (Login & Verification) ---
+            // FIX: Immediately update localStorage before notifying the router.
+            // This prevents race conditions where subscribers (like the drawer) get the role change
+            // before the userId is available in localStorage.
+            localStorage.setItem('currentUserType', 'user');
+            localStorage.setItem('currentUserId', userId);
             routeManager.handleRoleChange('user', userId);
 
             if (getAppConfig().flags.phoneVerification) {
@@ -443,10 +462,21 @@ export const AuthService = (() => {
             // --- MASTER ROLLBACK HANDLER ---
             // If we have a partially created Auth user and an error occurred, delete the Auth user.
             if (user) {
-                await user.delete().catch(deleteError => {
-                    console.error("CRITICAL: Failed to delete orphaned Auth user during signup rollback.", deleteError);
-                });
-                console.log(`Auth user for ${email} successfully rolled back due to error: ${error.message}`);
+                try {
+                    // FIX: To reliably delete an orphaned user, we must re-authenticate them first.
+                    // This creates a fresh credential which gives the permission to execute user.delete().
+                    console.warn(`Attempting to roll back orphaned Auth user for ${email}...`);
+                    const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+                    await user.reauthenticateWithCredential(credential);
+                    
+                    // Now that the user is re-authenticated, the delete operation will succeed.
+                    await user.delete();
+                    console.log(`Auth user for ${email} successfully rolled back due to error: ${error.message}`);
+                } catch (rollbackError) {
+                    // This is a critical failure. The user might be stuck in a state where they can't sign up or log in.
+                    console.error(`CRITICAL: Failed to delete orphaned Auth user '${email}' during signup rollback. Manual cleanup may be required in Firebase console.`, rollbackError);
+                    showToast('error', 'A critical error occurred. Please contact support.', 8000);
+                }
             }
             // If the Firestore user document was partially created before an error, delete it.
             // The `_createFirestoreUserBundle` function attaches the ID to the thrown error.
@@ -798,11 +828,29 @@ export const AuthService = (() => {
                                     localStorage.setItem('currentUserId', userId);
                                 }
                             } else {
-                                console.error(`Auth Listener: Critical data inconsistency. User ${user.uid} exists in Auth but not Firestore. Forcing logout.`);
-                                showToast('error', 'User data missing. Logging out.', 5000);
-                                await auth.signOut();
-                                localStorage.removeItem('currentUserType');
-                                localStorage.removeItem('currentUserId');
+                                // FIX: Handle race condition during signup. The user document might still be in the process of being created.
+                                // We will wait a moment and then re-check before declaring an error.
+                                console.warn(`Auth Listener: User ${user.uid} found in Auth but not Firestore. This can happen during signup. Re-checking in 3 seconds...`);
+                                await new Promise(resolve => setTimeout(resolve, 3000));
+                                const finalCheck = await usersRef.where('auth.provider.uid', '==', user.uid).limit(1).get();
+                                
+                                if (finalCheck.empty) {
+                                    console.error(`Auth Listener: Confirmed data inconsistency after delay. User ${user.uid} exists in Auth but not Firestore. Forcing logout.`);
+                                    showToast('error', 'User data missing. Logging out.', 5000);
+                                    await auth.signOut();
+                                    // Clear all storage on forced logout
+                                    localStorage.removeItem('currentUserType');
+                                    localStorage.removeItem('currentUserId');
+                                } else {
+                                    // The document appeared after the delay. This is the expected outcome for a new signup.
+                                    console.log(`Auth Listener: Resolved. User document for ${user.uid} found after delay. Proceeding with login.`);
+                                    // Set the user state now that the document is confirmed to exist.
+                                    const userAccount = finalCheck.docs[0].data();
+                                    const role = _determineBestRole(userAccount.meta);
+                                    const userId = userAccount.meta?.userId;
+                                    localStorage.setItem('currentUserType', role);
+                                    localStorage.setItem('currentUserId', userId);
+                                }
                             }
                         } catch (error) {
                             console.error("Auth Listener: Error fetching user document during state sync. Forcing logout.", error);

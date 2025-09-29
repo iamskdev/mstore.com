@@ -2,6 +2,7 @@
  * @file Manages the internal logic for the feedback modal component.
  * This script should be self-contained and only handle events within the modal.
  */
+import { showToast } from '../../utils/toast.js';
 
 /**
  * Fetches the feedback modal HTML and inserts it into the DOM.
@@ -167,8 +168,11 @@ export function initFeedbackModal() {
     const itemName = decodeURIComponent(urlParams.get('name'));
 
     if (!feedbackMessage) {
-      // TODO: Replace with a more sophisticated UI element in the new component
-      alert("Please enter your feedback message.");
+      // FIX: Use the global custom alert for validation.
+      window.showCustomAlert({
+        title: 'Message Required',
+        message: 'Please enter your feedback or suggestion before submitting.'
+      });
       return;
     }
 
@@ -178,8 +182,8 @@ export function initFeedbackModal() {
     // TODO: Yahan par data ko Firebase mein save karne ka logic aayega.
 
     closeModal();
-    // TODO: Replace with a more sophisticated UI element in the new component
-    alert("Feedback submitted successfully");
+    // FIX: Use a non-blocking toast notification for success.
+    showToast('success', 'Feedback has been submitted.');
   });
 }
 

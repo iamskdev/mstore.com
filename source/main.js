@@ -695,6 +695,52 @@ function simulateProgress(targetPercentage) {
   });
 }
 
+/**
+ * =========================================================================
+ * --- GLOBAL CUSTOM ALERT ---
+ * These functions are attached to the window object to be globally accessible.
+ * =========================================================================
+ */
+
+/**
+ * Displays the global custom alert.
+ * @param {object} options
+ * @param {string} options.title - The title of the alert.
+ * @param {string} options.message - The message content of the alert.
+ * @param {Array<object>} [options.buttons] - Array of button objects { text, class, onClick }.
+ */
+window.showCustomAlert = function({ title, message, buttons = [] }) {
+    const alertOverlay = document.getElementById('custom-alert-popup');
+    if (!alertOverlay) return;
+
+    const titleEl = alertOverlay.querySelector('.alert-title');
+    const messageEl = alertOverlay.querySelector('.alert-message');
+    const actionsEl = alertOverlay.querySelector('.alert-actions');
+
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    actionsEl.innerHTML = ''; // Clear old buttons
+
+    if (buttons.length === 0) {
+        // Default button if none are provided
+        buttons.push({ text: 'OK', class: 'primary', onClick: () => window.hideCustomAlert() });
+    }
+
+    buttons.forEach(btnData => {
+        const button = document.createElement('button');
+        button.textContent = btnData.text;
+        button.className = `alert-btn ${btnData.class || ''}`;
+        button.onclick = btnData.onClick;
+        actionsEl.appendChild(button);
+    });
+
+    alertOverlay.classList.add('visible');
+}
+
+window.hideCustomAlert = function() {
+    const alertOverlay = document.getElementById('custom-alert-popup');
+    if (alertOverlay) alertOverlay.classList.remove('visible');
+}
 
 // Listen for navigation requests from dynamically loaded views
 window.addEventListener('requestViewChange', (e) => {

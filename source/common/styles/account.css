@@ -81,6 +81,15 @@
     color: var(--text-primary);
 }
 
+/* NEW: Style for the username display */
+.profile-username {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-top: -2px; /* Pull it closer to the name */
+    margin-bottom: 8px;
+}
+
 .accout-type-info {
     display: flex;
     flex-direction: column;

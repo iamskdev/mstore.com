@@ -14,16 +14,6 @@ const defaultViews = {
  */
 
 const routeConfig = {
-  guest: {
-    account: {
-      id: 'guest-account-view',
-      path: './source/common/pages/authentication.html',
-      cssPath: './source/common/styles/authentication.css',
-      jsPath: './source/common/scripts/authentication.js',
-      title: 'Account',
-      dataDependencies: ['users', 'accounts', 'merchants']
-    },
-  },
   user: {
   },
   merchant: {
@@ -128,6 +118,13 @@ const routeConfig = {
       title: 'Notifications',
       // Merged superset of all dependencies
       dataDependencies: ['alerts', 'promotions', 'orders', 'logs']
+    },
+    'account/authentication': {
+      id: 'auth-view', // Uses the same element ID
+      path: './source/common/pages/authentication.html',
+      cssPath: './source/common/styles/authentication.css',
+      jsPath: './source/common/scripts/authentication.js',
+      title: 'Login or Sign Up'
     }
   }
   };

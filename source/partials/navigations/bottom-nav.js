@@ -28,8 +28,11 @@ export function initializeBottomNavigationLogic() {
     // Standard UI update logic
     navBar.querySelectorAll('.nav-btn').forEach(btn => {
       btn.classList.toggle('hidden', btn.dataset.role !== role);
+      const path = btn.dataset.path;
       const isCorrectRole = btn.dataset.role === role;
-      const isCorrectView = btn.dataset.path === view;
+      // --- FIX: Make tab active for parent and child routes ---
+      // Check if the current view is an exact match OR a sub-route (e.g., 'account/authentication' for 'account' tab)
+      const isCorrectView = (view === path) || view.startsWith(path + '/');
       btn.classList.toggle('active', isCorrectRole && isCorrectView);
     });
     navBar.classList.toggle('dev-mode', role === 'admin');

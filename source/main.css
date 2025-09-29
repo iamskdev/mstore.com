@@ -427,3 +427,94 @@ body.fullscreen-active #fullscreen-layout {
 .fullscreen-view-footer {
     flex-shrink: 0;
 }
+/* --- NEW: Global Clickable Link Style --- */
+/* This class can be used anywhere to make text look like a clickable link. */
+/* It uses global CSS variables for consistency. */
+.clickable-link {
+  color: var(--accent-primary);
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  transition: text-decoration 0.2s ease;
+}
+
+/* ==========================================================================
+   Custom Alert Popup Styles
+   ========================================================================== */
+
+.alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 30, 30, 0.5); /* Semi-transparent dark overlay */
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.alert-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.alert-box {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    width: calc(100% - 40px);
+    max-width: 320px;
+    padding: 20px;
+    text-align: center;
+    border-top: 4px solid var(--accent-primary);
+    transform: scale(0.9);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.alert-overlay.visible .alert-box {
+    transform: scale(1);
+}
+
+.alert-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 10px 0;
+}
+
+.alert-message {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+}
+
+.alert-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.alert-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.alert-btn.primary {
+    background: var(--accent-primary);
+    color: var(--accent-text);
+}
+
+.alert-btn:active {
+    transform: scale(0.96);
+}

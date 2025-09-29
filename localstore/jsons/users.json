@@ -3,6 +3,7 @@
     "info": {
       "fullName": "Santosh Kumar",
       "nickName": "Mr. Santosh",
+      "username": "iamskdev",
       "gender": "male",
       "dob": "2000-04-15",
       "avatar": "./localstore/images/users/dev.png",
@@ -110,6 +111,7 @@
     "info": {
       "fullName": "Rohit Kumar",
       "nickName": "Rohit Kumar",
+      "username": "mycafe",
       "gender": "male",
       "dob": null,
       "avatar": "./localstore/images/users/rohit.jpg",
@@ -195,6 +197,7 @@
     ],"info": {
       "fullName": "Vivek Kumar",
       "nickName": "Vivek Kumar",
+      "username": "vivekkumar",
       "gender": null,
       "dob": null,
       "avatar": "./localstore/images/users/vivek.jpg",
@@ -258,6 +261,7 @@
     "info": {
       "fullName": "Anita Kumari",
       "nickName": "Anita Kumari",
+      "username": "anita_store",
       "gender": null,
       "dob": null,
       "avatar": "./localstore/images/users/anita.jpg",

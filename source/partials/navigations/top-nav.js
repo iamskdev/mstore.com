@@ -9,6 +9,7 @@ export function initializeTopNavigation() {
     const searchInput = document.getElementById('header-search-input');
     const searchClearBtn = document.getElementById('search-clear');
     
+    const settingsIcon = document.getElementById('settings-icon'); // NEW: Get settings icon
     const notificationIcon = document.getElementById('notification-icon');
     const bellIcon = notificationIcon?.querySelector('i');
     const badge = notificationIcon?.querySelector('.notification-badge');
@@ -139,6 +140,12 @@ export function initializeTopNavigation() {
 
       // Re-apply header style
       initializeHeaderStyle();
+
+      // --- NEW: Show/Hide Settings Icon ---
+      // Show the settings icon only when the current view is 'account'.
+      if (settingsIcon) {
+        settingsIcon.classList.toggle('hidden', view !== 'account');
+      }
     }
 
     // NEW: Function to update the notification icon's UI
@@ -166,6 +173,24 @@ export function initializeTopNavigation() {
     if (searchToggleBtn) searchToggleBtn.addEventListener('click', openSearchView);
     if (searchBackBtn) searchBackBtn.addEventListener('click', closeSearchView);
     window.addEventListener('closeSearchViewRequest', closeSearchView);
+
+    // NEW: Add a click listener for the settings icon
+    if (settingsIcon) {
+      settingsIcon.addEventListener('click', () => {
+        // Use the new global custom alert
+        window.showCustomAlert({
+          title: 'Settings',
+          message: 'This feature is under development. Account settings will appear here soon!',
+          buttons: [
+            {
+              text: 'Got It',
+              class: 'primary',
+              onClick: () => window.hideCustomAlert()
+            }
+          ]
+        });
+      });
+    }
 
     if (searchInput) {
       searchInput.addEventListener('input', () => {

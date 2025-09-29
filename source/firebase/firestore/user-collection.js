@@ -43,6 +43,7 @@ export async function createUserDocument(user, { fullName, phone, method, provid
       info: {
         fullName: fullName || user.displayName || '',
         nickName: '',
+        username: (user.email?.split('@')[0] || `user${Date.now()}`).replace(/[^a-zA-Z0-9_]/g, ''), // Auto-generate a username
         gender: '',
         dob: '',
         avatar: user.photoURL || '',

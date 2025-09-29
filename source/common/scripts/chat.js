@@ -135,8 +135,18 @@ export async function init() {
   if (supportChatButton) {
     supportChatButton.addEventListener('click', () => {
       console.log('Support Chat button clicked!');
-      // TODO: Implement actual chat functionality here
-      alert('Opening support chat...');
+      // FIX: Use custom alert for placeholder action
+      window.showCustomAlert({
+        title: 'Chat Support',
+        message: 'This feature is under development and will be available soon.',
+        buttons: [
+          {
+            text: 'Got It',
+            class: 'primary',
+            onClick: () => window.hideCustomAlert()
+          }
+        ]
+      });
     });
   }
 }
