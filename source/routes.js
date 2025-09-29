@@ -101,14 +101,14 @@ const routeConfig = {
       dataDependencies: ['merchants'],
       fullscreen: true
     },
-    saved: {
+    'account/saved': {
       id: 'wishlist-view',
       path: './source/common/pages/wishlist.html',
       cssPath: './source/common/styles/wishlist.css',
       jsPath: './source/common/scripts/wishlist.js',
-      isMainTab: true,
-      title: 'Saved Items',
-      dataDependencies: ['items']
+      title: 'Saved items',
+      dataDependencies: ['items'],
+      isMainTab: false // It's a sub-view of Account, not a main tab itself
     },
     updates: {
       id: 'updates-view',

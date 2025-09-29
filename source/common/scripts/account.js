@@ -316,8 +316,8 @@ export function init() {
         wishlistMenuItem.addEventListener('click', () => {
             // Get the current role from localStorage to navigate correctly
             const role = localStorage.getItem('currentUserType') || 'guest';
-            // Navigate to the 'saved' view, which is now a common view
-            routeManager.switchView(role, 'saved');
+            // Navigate to the 'account/saved' view, which is a sub-view of account
+            routeManager.switchView(role, 'account/saved');
         });
     }
 

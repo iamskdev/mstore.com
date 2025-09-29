@@ -28,27 +28,36 @@
           <div class="arrow"></div>
         </div>
         <div class="custom-options">
-          <div class="custom-select-search-wrapper">
-            <input type="text" class="custom-select-search" placeholder="Search country...">
+          <!-- FIX: Header now contains title, close button, AND search -->
+          <div class="custom-select-header">
+            <div class="custom-select-header-top">
+              <h3>Select Country</h3>
+              <button id="country-select-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="custom-select-search-wrapper">
+              <input type="text" class="custom-select-search" placeholder="Search country...">
+            </div>
           </div>
-          <!-- Neighboring Countries -->
-          <div class="custom-option selected" data-value="+91">(+91) India <span class="flag-emoji">🇮🇳</span></div>
-          <div class="custom-option" data-value="+92">(+92) Pakistan <span class="flag-emoji">🇵🇰</span></div>
-          <div class="custom-option" data-value="+880">(+880) Bangladesh <span class="flag-emoji">🇧🇩</span></div>
-          <div class="custom-option" data-value="+977">(+977) Nepal <span class="flag-emoji">🇳🇵</span></div>
-          <div class="custom-option" data-value="+94">(+94) Sri Lanka <span class="flag-emoji">🇱🇰</span></div>
-          <div class="custom-option" data-value="+975">(+975) Bhutan <span class="flag-emoji">🇧🇹</span></div>
-          <div class="custom-option" data-value="+95">(+95) Myanmar <span class="flag-emoji">🇲🇲</span></div>
-          <div class="custom-option" data-value="+86">(+86) China <span class="flag-emoji">🇨🇳</span></div>
-          <!-- Other Major Countries -->
-          <div class="custom-option" data-value="+1">(+1) USA <span class="flag-emoji">🇺🇸</span></div>
-          <div class="custom-option" data-value="+44">(+44) UK <span class="flag-emoji">🇬🇧</span></div>
-          <div class="custom-option" data-value="+1">(+1) Canada <span class="flag-emoji">🇨🇦</span></div>
-          <div class="custom-option" data-value="+61">(+61) Australia <span class="flag-emoji">🇦🇺</span></div>
-          <div class="custom-option" data-value="+971">(+971) UAE <span class="flag-emoji">🇦🇪</span></div>
-          <div class="custom-option" data-value="+65">(+65) Singapore <span class="flag-emoji">🇸🇬</span></div>
-          <div class="custom-option" data-value="+49">(+49) Germany <span class="flag-emoji">🇩🇪</span></div>
-          <div class="custom-option" data-value="+81">(+81) Japan <span class="flag-emoji">🇯🇵</span></div>
+          <div class="custom-options-body">
+            <!-- Neighboring Countries -->
+            <div class="custom-option selected" data-value="+91">(+91) India <span class="flag-emoji">🇮🇳</span></div>
+            <div class="custom-option" data-value="+92">(+92) Pakistan <span class="flag-emoji">🇵🇰</span></div>
+            <div class="custom-option" data-value="+880">(+880) Bangladesh <span class="flag-emoji">🇧🇩</span></div>
+            <div class="custom-option" data-value="+977">(+977) Nepal <span class="flag-emoji">🇳🇵</span></div>
+            <div class="custom-option" data-value="+94">(+94) Sri Lanka <span class="flag-emoji">🇱🇰</span></div>
+            <div class="custom-option" data-value="+975">(+975) Bhutan <span class="flag-emoji">🇧🇹</span></div>
+            <div class="custom-option" data-value="+95">(+95) Myanmar <span class="flag-emoji">🇲🇲</span></div>
+            <div class="custom-option" data-value="+86">(+86) China <span class="flag-emoji">🇨🇳</span></div>
+            <!-- Other Major Countries -->
+            <div class="custom-option" data-value="+1">(+1) USA <span class="flag-emoji">🇺🇸</span></div>
+            <div class="custom-option" data-value="+44">(+44) UK <span class="flag-emoji">🇬🇧</span></div>
+            <div class="custom-option" data-value="+1">(+1) Canada <span class="flag-emoji">🇨🇦</span></div>
+            <div class="custom-option" data-value="+61">(+61) Australia <span class="flag-emoji">🇦🇺</span></div>
+            <div class="custom-option" data-value="+971">(+971) UAE <span class="flag-emoji">🇦🇪</span></div>
+            <div class="custom-option" data-value="+65">(+65) Singapore <span class="flag-emoji">🇸🇬</span></div>
+            <div class="custom-option" data-value="+49">(+49) Germany <span class="flag-emoji">🇩🇪</span></div>
+            <div class="custom-option" data-value="+81">(+81) Japan <span class="flag-emoji">🇯🇵</span></div>
+          </div>
         </div>
       </div>
       <input type="text" id="feedback-contact-number" placeholder="Phone Number" autocomplete="off"/>
@@ -93,7 +102,7 @@
 
 .modal-content {
   background: var(--bg-secondary);
-  padding: 1.5rem;
+  padding: 1rem 1.5rem 1.5rem;
   border-radius: 0;
   border: 1px solid var(--border-color);
   max-width: 400px;
@@ -106,8 +115,8 @@
 .modal-content h2 {
   margin-top: 0;
   font-size: 1.4rem;
-  margin-bottom: 1rem;
-  text-align: center;
+  margin-bottom: 0.8rem;
+  text-align: left;
 }
 
 .modal-content label {
@@ -123,7 +132,7 @@
   margin-bottom: 1rem;
   border-radius: 6px;
   border: 1px solid var(--border-color);
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
   color: var(--text-primary);
   font-size: 1rem;
   box-sizing: border-box;
@@ -136,7 +145,7 @@
   margin-bottom: 1rem;
   border-radius: 6px;
   border: 1px solid var(--border-color);
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
   color: var(--text-primary);
   font-size: 1rem;
   box-sizing: border-box;
@@ -176,7 +185,7 @@
   padding: 0.65rem 0.9rem;
   font-size: 1rem;
   color: var(--text-primary);
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
   border-radius: 6px;
   border: 1px solid var(--border-color);
   cursor: pointer;
@@ -191,16 +200,12 @@
 }
 
 .custom-select-search-wrapper {
-  padding: 8px;
-  background: var(--bg-tertiary);
-  position: sticky;
-  top: 0;
-  z-index: 11;
+  padding: 5px; /* Remove top padding, add bottom padding */
+  background: var(--bg-secondary);
 }
 
 .custom-select-search {
   width: 100%;
-  padding: 0.5rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   background: var(--bg-primary);
@@ -214,37 +219,51 @@
 }
 /* Dropdown list Type */
 .custom-options {
-  position: absolute;
-  top: 100%;
-  left: 0;
   width: 100%;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: var(--bg-tertiary);
-  margin-top: 4px;
-  z-index: 10;
+  border-radius: 0;
+  background: var(--bg-secondary);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
   visibility: hidden;
-  max-height: 220px; /* Scroll after this height */
+  position: fixed; /* Change to fixed to position relative to viewport */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95); /* Start smaller for animation */
+  z-index: 1006; /* Higher than the modal's z-index */
+  max-height: 70vh; /* Use viewport height */
+  width: 90%; /* Use viewport width */
+  max-width: 275px; /* Set a max-width, slightly larger for better look */
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Let the inner body scroll, not the whole container */
+}
+
+/* NEW: Wrapper for the scrollable list of options */
+.custom-options-body {
+  flex-grow: 1;
   overflow-y: auto;
 }
 
-#country-code-select .custom-options {
-  /* Yahi fix hai. 100% width (jo 85px trigger ka 100% tha) ke bajaye,
-     'width: auto' dropdown ko apne content (desh ke naam) ke hisab se failne dega.
-     'min-width: 100%' yeh sunishchit karta hai ki yeh kam se kam trigger button jitna chauda ho. */
-  width: auto;
-  min-width: 100%;
+/* Backdrop for the centered dropdown */
+.custom-select-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1005; /* Just below the dropdown */
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
-.custom-options::-webkit-scrollbar {
-  width: 6px;
-}
 .custom-options::-webkit-scrollbar-track {
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
 }
 .custom-options::-webkit-scrollbar-thumb {
   background-color: var(--border-color);
@@ -252,15 +271,46 @@
 }
 
 .custom-select-wrapper.open .custom-options {
+  transform: translate(-50%, -50%) scale(1); /* Animate to full size */
   opacity: 1;
-  transform: translateY(0);
   visibility: visible;
+}
+
+/* --- NEW: Header for the country select modal --- */
+.custom-select-header {
+  display: flex; /* Changed to flex */
+  flex-direction: column; /* Stack items vertically */
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  position: sticky; /* Make header sticky */
+  top: 0; /* Stick to the top of the modal */
+  background: var(--bg-secondary); /* Give it a background */
+  z-index: 1; /* Ensure it's above the scrolling list */
+}
+.custom-select-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px 8px 16px; /* Adjust padding */
+  margin: 0;
+}
+
+.custom-select-header-top h3 {
+  margin: 0;
+}
+
+.custom-options-body::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-options-body::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
 }
 
 .custom-option {
   display: flex;
   align-items: center;
-  padding: 0.65rem 0.9rem;
+  margin: 5px 0;
+  padding: 5px 16px; /* Slightly reduced vertical padding */
   font-size: 1rem;
   color: var(--text-primary);
   cursor: pointer;
@@ -321,7 +371,7 @@
 }
 
 .cancel-btn {
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
   color: var(--text-secondary);
 }
 </style>

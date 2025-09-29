@@ -58,6 +58,7 @@ export function initFeedbackModal() {
     return;
   }
 
+  const backdrop = document.getElementById('custom-select-backdrop');
   const closeBtn = document.getElementById('modal-close-btn');
   const cancelBtn = document.getElementById('modal-cancel-btn');
   const submitBtn = document.getElementById('modal-submit-btn');
@@ -83,7 +84,18 @@ export function initFeedbackModal() {
       const trigger = selectWrapper.querySelector('.custom-select-trigger');
       const options = selectWrapper.querySelector('.custom-options');
       const triggerSpan = trigger.querySelector('span');
+      // Backdrop is now defined outside and passed or accessed globally
       const searchInput = selectWrapper.querySelector('.custom-select-search');
+      const isCountrySelect = (wrapperId === 'country-code-select');
+      const countrySelectCloseBtn = selectWrapper.querySelector('#country-select-close-btn'); // Only exists for country select
+
+      const closeThisSelect = () => {
+        selectWrapper.classList.remove('open');
+        if (isCountrySelect && backdrop) {
+          backdrop.style.opacity = '0';
+          setTimeout(() => backdrop.style.display = 'none', 200);
+        }
+      };
 
       trigger.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -91,19 +103,44 @@ export function initFeedbackModal() {
           document.querySelectorAll('.custom-select-wrapper.open').forEach(openSelect => {
               if (openSelect.id !== wrapperId) {
                   openSelect.classList.remove('open');
+                  // If the other open select was the country select, hide its backdrop
+                  if (openSelect.id === 'country-code-select' && backdrop) {
+                    backdrop.style.opacity = '0';
+                    setTimeout(() => backdrop.style.display = 'none', 200);
+                  }
               }
           });
           selectWrapper.classList.toggle('open');
+
+          // Show/Hide backdrop only for the country select
+          if (isCountrySelect && backdrop) {
+            if (selectWrapper.classList.contains('open')) {
+              backdrop.style.display = 'block';
+              setTimeout(() => backdrop.style.opacity = '1', 10);
+            } else {
+              backdrop.style.opacity = '0';
+              setTimeout(() => backdrop.style.display = 'none', 200);
+            }
+          }
+
           // Focus the search input when dropdown opens
           if (selectWrapper.classList.contains('open') && searchInput) {
             setTimeout(() => searchInput.focus(), 0);
           }
       });
+      
+      // Listener for the country select's internal close button
+      if (countrySelectCloseBtn) {
+        countrySelectCloseBtn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Prevent trigger from re-opening it
+          closeThisSelect();
+        });
+      }
 
       options.addEventListener('click', (e) => {
           const option = e.target.closest('.custom-option');
           if (option) {
-              if (wrapperId === 'country-code-select') {
+              if (isCountrySelect) {
                 triggerSpan.textContent = option.dataset.value;
               } else {
                 triggerSpan.textContent = option.textContent;
@@ -113,14 +150,14 @@ export function initFeedbackModal() {
               const currentSelected = options.querySelector('.custom-option.selected');
               if (currentSelected) currentSelected.classList.remove('selected');
               option.classList.add('selected');
-              selectWrapper.classList.remove('open');
+              closeThisSelect(); // Use the new helper function
           }
       });
 
       const initialSelected = options.querySelector('.custom-option.selected');
       if(initialSelected) {
           trigger.dataset.value = initialSelected.dataset.value;
-          if (wrapperId !== 'country-code-select') {
+          if (!isCountrySelect) { // Only update text for type select, country select already has it
             triggerSpan.textContent = initialSelected.textContent;
           }
       }
@@ -145,12 +182,45 @@ export function initFeedbackModal() {
   setupCustomSelect('country-code-select');
   setupCustomSelect('type-select');
 
+  // --- NEW: Add listener to backdrop to close the select ---
+  // This listener should only close the country-code-select if it's open.
+  if (backdrop) {
+    backdrop.addEventListener('click', () => {
+      const countrySelect = document.getElementById('country-code-select');
+      if (countrySelect && countrySelect.classList.contains('open')) {
+        countrySelect.classList.remove('open');
+        backdrop.style.opacity = '0';
+        setTimeout(() => backdrop.style.display = 'none', 200);
+      }
+    });
+  }
+
+  // Global click listener to close any open custom select when clicking outside
   window.addEventListener('click', (e) => {
     document.querySelectorAll('.custom-select-wrapper.open').forEach(openSelect => {
-        if (!openSelect.contains(e.target)) {
-            openSelect.classList.remove('open');
+      // Check if the click target is outside the current open select wrapper
+      if (!openSelect.contains(e.target)) {
+        openSelect.classList.remove('open');
+        // If the closed select was the country select, hide its backdrop
+        if (openSelect.id === 'country-code-select' && backdrop) {
+          backdrop.style.opacity = '0';
+          setTimeout(() => backdrop.style.display = 'none', 200);
         }
-    });
+      } // Closing brace for the if (!openSelect.contains(e.target))
+    }); // Closing brace for the forEach callback
+  });
+
+  // FIX: Apply this js
+  document.addEventListener('click', function(e) {
+    const feedbackModal = document.getElementById('feedback-modal');
+    const countryCodeSelect = document.querySelector('#country-code-select');
+
+    // Main modal close buttons
+    if (e.target && (e.target.id === 'modal-close-btn' || e.target.id === 'modal-cancel-btn')) {
+      if (feedbackModal) {
+        feedbackModal.style.display = 'none';
+      }
+    }
   });
 
   // --- Submit Logic ---
@@ -186,21 +256,3 @@ export function initFeedbackModal() {
     showToast('success', 'Feedback has been submitted.');
   });
 }
-
-// How to use these functions:
-// 1. Call loadFeedbackModal() to fetch and insert the HTML into the DOM.
-// 2. Once the promise from loadFeedbackModal() resolves, call initFeedbackModal()
-//    to attach all the event listeners and set up the modal's functionality.
-//
-// Example in your main application logic (e.g., in item-details.js or main.js):
-// import { loadFeedbackModal, initFeedbackModal } from './partials/modals/feedback.js';
-//
-// async function setupApp() {
-//   await loadFeedbackModal(); // Load the HTML first
-//   initFeedbackModal();       // Then initialize its logic
-//   // Now you can show/hide the modal as needed, e.g., when a button is clicked
-//   // document.getElementById('some-button-to-open-modal').style.display = 'flex';
-// }
-//
-// // Call the initialization function when the DOM is ready
-// document.addEventListener('DOMContentLoaded', setupApp);

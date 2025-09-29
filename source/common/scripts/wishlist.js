@@ -368,7 +368,7 @@ export async function init() {
     });
 
     window.addEventListener('viewChanged', (event) => {
-        if (event.detail.view === 'saved') {
+        if (event.detail.view === 'account/saved') {
             requestRenderSavedItems();
         }
     });
@@ -428,5 +428,3 @@ export async function init() {
 
     isSavedInitialized = true;
 }
-
-
