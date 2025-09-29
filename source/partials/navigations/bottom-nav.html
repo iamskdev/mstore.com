@@ -31,10 +31,8 @@
   background-color: var(--bg-secondary); /* Add a background for when the image is loading */
 }
 
-/* --- NEW: Active state for the account avatar --- */
-/* When the account tab is active, add a colored border to the avatar image */
 .nav-btn.active .account-icon {
-  border: 1px solid var(--accent-primary);
+  border: 1.5px solid var(--accent-primary);
   /* Optional: Add a subtle box-shadow for a glowing effect */
   box-shadow: 0 0 5px rgba(var(--accent-primary-rgb), 0.5);
 }
@@ -44,11 +42,11 @@
   background: transparent;
   border: none;
   outline: none;
-  padding: 6px 4px 10px; /* Adjusted padding for new font size */
-  font-size: 13px; /* Increased font size for better readability */
-  letter-spacing: 0.2px; /* Added subtle letter spacing for a cleaner look */
-  font-weight: 700; /* BOLD: Set a bolder font weight for all tabs for better visibility. */
-  color: var(--text-secondary); /* Use global variable for inactive icon color */
+  padding: 6px 4px 10px; 
+  font-size: 13px; 
+  letter-spacing: 0.2px; 
+  font-weight: 700; 
+  color: var(--text-secondary); 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,11 +86,6 @@
 
 .nav-btn-add span { display: none; } /* Hide text label */
 
-/*
-  FIX: The 'add' button is unique. Its icon container should not be constrained
-  in height, allowing the larger icon to display correctly. We also remove
-  the bottom margin as there's no text label below it.
-*/
 .nav-btn-add .icon-container {
   height: auto;
   margin-bottom: 0;
@@ -139,14 +132,6 @@
   }
 }
 
-
-
-/* --- 7. Utility Classes --- */
-.bottom-navigation.dev-mode {
-  border: 2px dashed rgba(255, 59, 48, 0.3);
-  background: rgba(255, 59, 48, 0.05);
-}
-
 </style>
 
 <!-- 🔻 Enhanced Bottom Navigation -->
@@ -183,7 +168,7 @@
 
   <button class="nav-btn" data-role="guest" data-path="account">
     <div class="icon-container">
-      <i class="fas fa-user"></i>
+      <i class="fas fa-user-circle"></i>
     </div>
     <span>Account</span>
   </button>
@@ -219,7 +204,7 @@
 
   <button class="nav-btn hidden" data-role="user" data-path="account">
     <div class="icon-container">
-      <i class="fas fa-user default-icon"></i>
+      <i class="fas fa-user-circle default-icon"></i>
       <img class="account-icon" alt="User Avatar">
     </div>
     <span>Account</span>
@@ -256,7 +241,7 @@
 
   <button class="nav-btn hidden" data-role="merchant" data-path="account">
     <div class="icon-container">
-      <i class="fas fa-user-shield default-icon"></i>
+      <i class="fas fa-user-circle default-icon"></i>
       <img class="account-icon" alt="User Avatar">
     </div>
     <span>Account</span>
@@ -293,7 +278,7 @@
 
   <button class="nav-btn hidden" data-role="admin" data-path="account">
     <div class="icon-container">
-      <i class="fas fa-user-shield default-icon"></i>
+      <i class="fas fa-user-circle default-icon"></i>
       <img class="account-icon" alt="User Avatar">
     </div>
     <span>Account</span>

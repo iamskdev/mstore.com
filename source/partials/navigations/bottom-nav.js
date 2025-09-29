@@ -35,24 +35,30 @@ export function initializeBottomNavigationLogic() {
     navBar.classList.toggle('dev-mode', role === 'admin');
 
     // --- Dynamic Account Icon Logic ---
+    // This function is now separate to be called more selectively.
+    updateAccountAvatar(role);
+  }
+
+  async function updateAccountAvatar(role) {
     const accountBtn = navBar.querySelector(`.nav-btn[data-role="${role}"][data-path="account"]`);
     if (accountBtn) {
       const defaultIcon = accountBtn.querySelector('.default-icon');
       const accountIconImg = accountBtn.querySelector('.account-icon');
       const userId = localStorage.getItem('currentUserId');
 
-      // Reset to default state first
-      if (defaultIcon) defaultIcon.style.display = 'inline-block';
-      if (accountIconImg) accountIconImg.style.display = 'none';
-
       if (userId && (role === 'user' || role === 'merchant' || role === 'admin')) {
+        // Only fetch and update if the avatar isn't already set.
+        // This prevents blinking on every navigation click.
+        if (accountIconImg && accountIconImg.src && accountIconImg.style.display === 'inline-block') {
+          return; // Avatar is already visible, no need to update.
+        }
         try {
           const userData = await fetchUserById(userId);
           const avatarUrl = userData?.info?.avatar;
           if (avatarUrl && defaultIcon && accountIconImg) {
             accountIconImg.src = avatarUrl;
             accountIconImg.style.display = 'inline-block';
-            defaultIcon.style.display = 'none';
+            if (defaultIcon) defaultIcon.style.display = 'none';
           }
         } catch (error) {
           console.error('BottomNav: Failed to fetch user avatar.', error);
@@ -126,8 +132,15 @@ export function initializeBottomNavigationLogic() {
   // This solves the issue where the avatar doesn't update immediately after login.
   window.addEventListener('authStateChanged', (e) => {
     console.log('BottomNav: Auth state changed, forcing UI update.', e.detail);
-    // We need to get the current state from the routeManager to update correctly.
-    updateNavUI(routeManager.getCurrentState());
+    const currentState = routeManager.getCurrentState();
+    
+    // Reset avatar on logout/auth change to show default icon
+    const accountIconImg = navBar.querySelector('.account-icon');
+    const defaultIcon = navBar.querySelector('.default-icon');
+    if (accountIconImg) accountIconImg.style.display = 'none';
+    if (defaultIcon) defaultIcon.style.display = 'inline-block';
+
+    updateNavUI(currentState);
   });
 }
 

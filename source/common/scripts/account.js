@@ -43,6 +43,12 @@ async function renderProfileData() {
 
         // Update Profile Picture
         if (user.info?.avatar && avatarImg && defaultIcon) {
+            // --- FIX: Prevent blinking on re-render ---
+            // If the correct avatar is already displayed, do nothing.
+            if (avatarImg.src === user.info.avatar && avatarImg.style.display === 'block') {
+                return; // Exit to prevent re-loading and blinking
+            }
+
             // FIX: Show image only after it has successfully loaded
             // to prevent showing a broken image icon.
             avatarImg.onload = () => {

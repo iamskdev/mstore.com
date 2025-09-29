@@ -69,6 +69,8 @@
   --color-warning-user: #f8961e;
   --color-danger-user: #ef233c;
 
+  /* --- 9. Component-Specific: Profile Gradient Border --- */
+  --profile-gradient-border: linear-gradient(135deg, #4895ef, #f72585, #f8961e);
 
 }
 
@@ -123,4 +125,7 @@ html.dark-mode {
   --header-banner-admin-text: #000;
   --header-badge-bg: #e74c3c;
   --header-badge-text: #fff;
+  
+  /* --- 9. Component-Specific: Profile Gradient Border (Dark Mode) --- */
+  --profile-gradient-border: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
 }

@@ -1032,8 +1032,11 @@ function initializePullToRefresh() {
       // Trigger a refresh of the current view
       const currentRole = routeManager.currentRole;
       const currentView = routeManager.currentView;
-      const config = routeManager.routeConfig[currentRole]?.[currentView];
-      const newViewElement = document.getElementById(config.id);
+      // FIX: Correctly resolve config from role-specific views OR commonViews.
+      const config = routeManager.routeConfig[currentRole]?.[currentView] || routeManager.routeConfig.commonViews?.[currentView];
+
+      // The view element ID is stored in the config.
+      const newViewElement = config ? document.getElementById(config.id) : null;
 
       if (currentRole && currentView && config && newViewElement) {
         console.log(`Pull-to-Refresh: Forcing content reload for: ${currentRole}/${currentView}.`);

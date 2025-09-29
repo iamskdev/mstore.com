@@ -19,17 +19,20 @@
     position: relative;
     border-radius: 50%;
     border: 2px solid var(--border-color);
-    background: linear-gradient(45deg, var(--color-warning-user), var(--color-danger-user));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* FIX: Change to hidden to clip the inner image */
+    overflow: hidden;
     flex-shrink: 0;
 }
 
 .profile-image i {
-    font-size: 30px;
-    color: var(--accent-text);
+    font-family: "Font Awesome 6 Free";
+    content: "\f2bd";
+    font-weight: 900;
+    font-size: 4rem;
+    color: var(--text-secondary);
 }
 
 /* NEW: Styles for the dynamic avatar image */

@@ -1,244 +1,286 @@
 <style>
+  .navigation-drawer {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    z-index: var(--z-index-drawer);
+    width: 100%;
+    width: 80%;
+    max-width: 320px;
+    height: 100%;
+    background: var(--bg-primary);
+    overflow-y: auto;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+    transition: left 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Prevent the whole drawer from scrolling */
+  }
 
-    .navigation-drawer {
-      position: fixed;
-      top: 0;
-      left: -100%;
-      z-index: var(--z-index-drawer);
-      width: 100%;
-      width: 80%;
-      max-width: 320px;
-      height: 100%;
-      background: var(--bg-primary);
-      overflow-y: auto;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.15);
-      transition: left 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden; /* Prevent the whole drawer from scrolling */
-    }
-    .navigation-drawer.open { left: 0; }
+  .navigation-drawer.open {
+    left: 0;
+  }
 
-    .drawer-header {
-      padding: 16px;
-      border-bottom: 1px solid var(--border-color);
-      flex-shrink: 0; /* Prevent header from shrinking */
-    }
+  .drawer-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    /* Prevent header from shrinking */
+  }
 
-    .greeting {
-      font-weight: bold;
-      font-size: 1.1rem;
-      line-height: 1.3; /* Reduce line height to tighten vertical space */
-      color: var(--text-primary); /* Ensure text color respects the current theme */
-    }
-    .subtext {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      line-height: 1.3; /* Reduce line height to tighten vertical space */
-    }
+  .greeting {
+    font-weight: bold;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    color: var(--text-primary);
+  }
 
-    /* Ensure long text (name, email) truncates with '...' on small screens */
-    .greeting, .subtext {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .subtext {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.3;
+    /* Reduce line height to tighten vertical space */
+  }
 
-    .phone-number {
-      color: var(--accent-primary); /* Standard blue for links/actions */
-      font-weight: 500;
-    }
+  /* Ensure long text (name, email) truncates with '...' on small screens */
+  .greeting,
+  .subtext {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    .avatar-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+  .phone-number {
+    color: var(--accent-primary);
+    /* Standard blue for links/actions */
+    font-weight: 500;
+  }
 
-    .user-info {
-      /* flex: 1; */ /* This was causing the extra space, so it's removed. */
-      min-width: 0; /* Crucial for allowing text to truncate inside a flex container */
-      display: flex;
-      flex-direction: column;
-      gap: 2px; /* Control spacing between name, email, phone */
-    }
+  .avatar-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
 
-    .avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      flex-shrink: 0; /* Prevent the avatar from shrinking on small screens */
-      border: 2px solid var(--border-color); /* Consistent border for all avatars */
+  .user-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
 
-      /* Use background properties for better control over image fitting. */
-      /* This method works well even if the source image has extra whitespace. */
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      
-      /* A light background provides a better look for logos with transparency */
-      background-color: var(--bg-tertiary);
-    }
+  .avatar {
+    width: 70px;
+    height: 70px;
+    position: relative;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 
-    /* Fallback style for when an avatar image fails to load */
-    .avatar.fallback-icon {
-      background-image: none !important; /* Remove broken background image */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  .avatar.fallback-icon::before {
+    font-family: "Font Awesome 6 Free";
+    content: "\f2bd";
+    font-weight: 900;
+    font-size: 4rem;
+    color: var(--text-secondary);
+  }
 
-    .avatar.fallback-icon::before {
-      font-family: "Font Awesome 6 Free";
-      content: "\f2bd"; /* Font Awesome user-circle icon */
-      font-weight: 900;
-      font-size: 3rem; /* Large icon to fill the space */
-      color: var(--border-color); /* A light grey color for the icon */
-    }
+  .drawer-section {
+    padding: 0;
+    border-bottom: 1px solid var(--border-color);
+  }
 
-    .drawer-section {
-      padding: 0; /* Padding removed to make sections more compact */
-      border-bottom: 1px solid var(--border-color);
-    }
+  /* Remove the border from the last section to prevent a double-divider with the footer */
+  .drawer-body .drawer-section:last-child {
+    border-bottom: none;
+  }
 
-    /* Remove the border from the last section to prevent a double-divider with the footer */
-    .drawer-body .drawer-section:last-child {
-      border-bottom: none;
-    }
+  .drawer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
 
-    .drawer-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px; /* Apply padding here */
-      font-size: 0.95rem;
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
+  a.drawer-item,
+  a.drawer-item:visited {
+    text-decoration: none;
+    color: var(--text-primary);
+  }
 
-    a.drawer-item, a.drawer-item:visited {
-      text-decoration: none;
-      /* Explicitly set color to override browser defaults for visited links */
-      color: var(--text-primary);
-    }
+  .drawer-item.active {
+    background-color: var(--accent-primary-translucent);
+    color: var(--accent-primary);
+    font-weight: 600;
+  }
 
-    .drawer-item.active {
-      background-color: var(--accent-primary-translucent);
-      color: var(--accent-primary);
-      font-weight: 600;
-    }
+  .drawer-item-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+  }
 
-    .drawer-item-content {
-      display: flex;
-      align-items: center;
-      gap: 16px; /* Icon aur text ke beech mein space */
-      /* These properties ensure the container can shrink and allow text inside to truncate */
-      flex: 1;
-      min-width: 0;
-    }
+  /* Ensure long text in drawer items truncates with '...' */
+  .drawer-item-content span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    /* Ensure long text in drawer items truncates with '...' */
-    .drawer-item-content span {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .drawer-item .drawer-item-content i {
+    width: 20px;
+    text-align: center;
+    color: inherit;
+    font-size: 1rem;
+    opacity: 0.8;
+  }
 
-    .drawer-item .drawer-item-content i {
-      width: 20px; /* Icon ko ek fixed width di gayi hai taaki text aapas mein align rahe */
-      text-align: center;
-      color: inherit; /* Let the icon color match the text color for a cleaner look */
-      font-size: 1rem;
-      opacity: 0.8; /* Slightly less prominent than text */
-    }
-    /* The right arrow icon should remain subtle */
-    .drawer-item > .fa-chevron-right {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
+  /* The right arrow icon should remain subtle */
+  .drawer-item>.fa-chevron-right {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
 
-    /* Special styling for the PWA install button in the drawer */
-    .drawer-install-btn .drawer-item-content {
-      color: var(--accent-primary);
-      font-weight: 600;
-    }
+  /* Special styling for the PWA install button in the drawer */
+  .drawer-install-btn .drawer-item-content {
+    color: var(--accent-primary);
+    font-weight: 600;
+  }
 
-    .drawer-section-header {
-      padding: 10px 16px 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-tertiary);
-      background-color: var(--bg-primary); /* Slightly different from item background */
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+  .drawer-section-header {
+    padding: 10px 16px 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background-color: var(--bg-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-    .drawer-body {
-      flex: 1; /* Takes up all available space between header and footer */
-      overflow-y: auto; /* Becomes scrollable if content is too long */
-    }
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+  }
 
-    .drawer-footer {
-      border-top: 1px solid var(--border-color);
-      padding: 0;
-      background: var(--bg-secondary);
-      flex-shrink: 0; /* Prevent footer from shrinking */
-    }
+  .drawer-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 0;
+    background: var(--bg-secondary);
+    flex-shrink: 0;
+  }
 
-    .drawer-view {
-      display: flex;
-      flex-direction: column;
-      flex: 1; /* Make view fill the drawer */
-      min-height: 0; /* Crucial for flex children with overflow */
-    }
+  .drawer-view {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
 
-    .hidden { display: none !important; }
+  .hidden {
+    display: none !important;
+  }
 
-    .drawer-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.3);
-      display: none;
-      z-index: var(--z-index-drawer-overlay);
-    }
-    .drawer-overlay.visible {
-      display: block;
-    }
+  .drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: var(--z-index-drawer-overlay);
+  }
 
-    /* --- Theme Toggle Switch --- */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 24px;
-    }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; }
-    input:checked + .slider { background-color: var(--accent-primary); }
-    input:checked + .slider:before { transform: translateX(26px); }
-    .slider.round { border-radius: 24px; }
-    .slider.round:before { border-radius: 50%; }
+  .drawer-overlay.visible {
+    display: block;
+  }
 
-    .app-version {
-      display: block;
-      padding: 12px 16px;
-      font-size: 0.7rem;
-      color: var(--text-tertiary);
-      text-align: center;
-      opacity: 0.8;
-      letter-spacing: 0.5px;
-    }
+  /* --- Theme Toggle Switch --- */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
 
-    .theme-toggle-switch .fa-moon { color: var(--text-secondary); }
-    .theme-toggle-switch .fa-sun {
-      color: var(--text-secondary);
-    }
-  </style>
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+  }
+
+  input:checked+.slider {
+    background-color: var(--accent-primary);
+  }
+
+  input:checked+.slider:before {
+    transform: translateX(26px);
+  }
+
+  .slider.round {
+    border-radius: 24px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .app-version {
+    display: block;
+    padding: 12px 16px;
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    text-align: center;
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+  }
+
+  .theme-toggle-switch .fa-moon {
+    color: var(--text-secondary);
+  }
+
+  .theme-toggle-switch .fa-sun {
+    color: var(--text-secondary);
+  }
+</style>
 <!-- Overlay -->
 <div class="drawer-overlay" id="drawerOverlay"></div>
 
@@ -293,7 +335,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-        <span class="app-version">© 2025 mStore | v... | ...</span>
+      <span class="app-version">© 2025 mStore | v... | ...</span>
     </div>
   </div>
 
@@ -378,7 +420,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-        <span class="app-version">© 2025 mStore | v... | ...</span>
+      <span class="app-version">© 2025 mStore | v... | ...</span>
     </div>
   </div>
 
@@ -473,7 +515,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-        <span class="app-version">© 2025 mStore | v... | ...</span>
+      <span class="app-version">© 2025 mStore | v... | ...</span>
     </div>
   </div>
 
@@ -500,43 +542,53 @@
       <!-- Section 1: Analytics & Reports -->
       <div class="drawer-section">
         <a href="#" class="drawer-item feature-not-implemented">
-          <div class="drawer-item-content"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
         <a href="#" class="drawer-item feature-not-implemented">
-          <div class="drawer-item-content"><i class="fas fa-chart-pie"></i><span>Analytics</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-chart-pie"></i><span>Analytics</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
         <a href="#" class="drawer-item" data-role="admin" data-path="logs">
-          <div class="drawer-item-content"><i class="fas fa-file-alt"></i><span>Logs</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-file-alt"></i><span>Logs</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
       </div>
       <!-- Section 2: Management -->
       <div class="drawer-section">
         <a href="#" class="drawer-item feature-not-implemented">
-          <div class="drawer-item-content"><i class="fas fa-users-cog"></i><span>User Management</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-users-cog"></i><span>User Management</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
         <a href="#" class="drawer-item feature-not-implemented">
-          <div class="drawer-item-content"><i class="fas fa-store-alt-slash"></i><span>Merchant Approvals</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-store-alt-slash"></i><span>Merchant Approvals</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
         <a href="#" class="drawer-item feature-not-implemented">
-          <div class="drawer-item-content"><i class="fas fa-edit"></i><span>Content Management</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-edit"></i><span>Content Management</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
       </div>
       <!-- Section 3: Promotions & Campaigns -->
       <div class="drawer-section">
         <a href="#" class="drawer-item feature-not-implemented" data-role="admin" data-path="promo">
-          <div class="drawer-item-content"><i class="fas fa-bullhorn"></i><span>Promo</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-bullhorn"></i><span>Promo</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
         <a href="#" class="drawer-item feature-not-implemented" data-role="admin" data-path="campaigns">
-          <div class="drawer-item-content"><i class="fas fa-bullseye"></i><span>Campaigns</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-bullseye"></i><span>Campaigns</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
       </div>
       <!-- Section 4: System & Tools -->
       <div class="drawer-section">
         <a href="#" class="drawer-item feature-not-implemented">
-          <div class="drawer-item-content"><i class="fas fa-bullhorn"></i><span>Broadcast Message</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-bullhorn"></i><span>Broadcast Message</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
         <a href="#" class="drawer-item feature-not-implemented">
-          <div class="drawer-item-content"><i class="fas fa-cogs"></i><span>System Config</span></div><i class="fas fa-chevron-right"></i>
+          <div class="drawer-item-content"><i class="fas fa-cogs"></i><span>System Config</span></div><i
+            class="fas fa-chevron-right"></i>
         </a>
         <div class="drawer-item" id="dev-clear-storage">
           <div class="drawer-item-content"><i class="fas fa-trash-alt"></i><span>Clear Storage</span></div>
@@ -575,7 +627,7 @@
       </div>
     </div>
     <div class="drawer-footer">
-        <span class="app-version">© 2025 mStore | v... | ...</span>
+      <span class="app-version">© 2025 mStore | v... | ...</span>
     </div>
   </div>
 </div>
