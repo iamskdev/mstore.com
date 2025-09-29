@@ -75,6 +75,23 @@ class RouteManager {
   }
 
   /**
+   * Returns the current state of the router.
+   * This is a getter method to be used by external modules like top-nav.
+   * @returns {{role: string, view: string, config: object}} The current state object.
+   */
+  getCurrentState() {
+    // This logic mirrors _notifySubscribers to ensure consistent state objects.
+    let config = this.routeConfig[this.currentRole]?.[this.currentView];
+    // If not found in role-specific config, check commonViews.
+    if (!config) {
+        config = this.routeConfig.commonViews?.[this.currentView];
+    }
+    config = config || {}; // Ensure config is at least an empty object.
+    const state = { role: this.currentRole, view: this.currentView, config: config };
+    return state;
+  }
+
+  /**
    * @private Loads and embeds the footer into a view element, then initializes its logic.
    * This helper centralizes the logic for both path-based and pathless views.
    * @param {HTMLElement} viewElement - The view container element.

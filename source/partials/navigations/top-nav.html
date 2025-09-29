@@ -19,9 +19,12 @@
       display: none !important; /* This will override the default flex */
     }
 
-    /* This class is toggled by JS to show/hide search elements */
-    .top-navigation.search-active .header-branding,
-    .top-navigation.search-active .pwa-install-button,
+    /* --- FINAL & SIMPLIFIED FIX for Search/Branding Bug --- */
+
+    /* When search is active, hide all branding items and standard action icons. */
+    .top-navigation.search-active .header-toggle-item,
+    .top-navigation.search-active .brand-name,
+    /* .top-navigation.search-active #view-back-btn,  <-- This rule is no longer needed, JS will handle visibility */
     .top-navigation.search-active #search-toggle,
     .top-navigation.search-active #notification-icon {
       display: none;
@@ -110,11 +113,10 @@
       margin-right: 8px;
     }
     .top-navigation.search-active #search-back {
-      display: block; /* Visible in search mode */
+      display: none; /* This element is removed, rule is obsolete */
     }
-
     .header-search-input-container {
-      display: none; /* Hidden by default */
+      display: none; /* FIX: Hide search container by default */
       flex: 1;
       position: relative;
     }
@@ -126,12 +128,11 @@
       background: var(--bg-tertiary);
       font-size: 0.95rem;
       outline: none;
-      /* Explicitly set box-sizing to prevent layout breaks from other stylesheets */
       box-sizing: border-box;
       color: var(--text-primary);
     }
 
-        .top-navigation.search-active .header-search-input-container {
+    .top-navigation.search-active .header-search-input-container {
       display: block; /* Visible in search mode */
     }
 
@@ -224,16 +225,14 @@
     }
   </style>
   <nav id="top-nav" class="top-navigation">
-  <i class="fas fa-arrow-left header-icon" id="search-back"></i>
       <!-- NEW: Notification Header Content -->
       <div class="notification-header-content hidden">
         <i class="fas fa-arrow-left header-icon" id="notification-back-btn"></i>
         <span class="brand-name" id="notification-title">Notifications</span>
       </div>
-      <div class="header-branding">
       <!-- Universal Back Button (Initially Hidden) -->
-      <i class="fas fa-arrow-left header-icon hidden" id="view-back-btn" style="font-size: 1.2rem; cursor: pointer; margin-right: 8px;"></i>
-
+      <i class="fas fa-arrow-left header-icon hidden" id="view-back-btn" style="font-size: 1.2rem; cursor: pointer; margin-right: 12px;"></i>
+      <div class="header-branding">
       <i class="fas fa-bars header-icon header-toggle-item menu-icon" id="header-menu-icon" style="font-size: 1.4rem; cursor: pointer; margin-right: 4px;" data-header-item="menu"></i>
       <span class="brand-logo header-toggle-item logo-container" id="header-logo-container" data-header-item="logo">
                 <img src="./source/assets/logos/app-logo.png" alt="App Logo">

@@ -1,11 +1,11 @@
 import { fetchUserById, fetchMerchantById } from '../../utils/data-manager.js';
 import { getAppConfig } from '../../settings/main-config.js';
+import { routeManager } from '../../main.js'; // DEFINITIVE FIX: Import routeManager directly
 
 export function initializeTopNavigation() {
     // --- Elements ---
     const topNav = document.getElementById('top-nav');
-    const searchToggleBtn = document.getElementById('search-toggle');
-    const searchBackBtn = document.getElementById('search-back');
+    const searchToggleBtn = document.getElementById('search-toggle');    
     const searchInput = document.getElementById('header-search-input');
     const searchClearBtn = document.getElementById('search-clear');
     
@@ -48,6 +48,8 @@ export function initializeTopNavigation() {
     function openSearchView() {
       topNav.classList.add('search-active');
       searchInput.value = '';
+      // Show the universal back button for search mode
+      viewBackBtn.classList.remove('hidden');
       searchInput.focus();
     }
 
@@ -57,16 +59,15 @@ export function initializeTopNavigation() {
      * to prevent the bug where the wrong icon (e.g., menu icon) appears after search.
      */
     function closeSearchView() {
-      topNav.classList.remove('search-active');
       searchClearBtn.style.display = 'none';
       const suggestionsBox = document.getElementById('search-suggestions');
       if (suggestionsBox) {
         suggestionsBox.style.display = 'none';
         suggestionsBox.innerHTML = '';
       }
-      // Re-run the header UI update to restore the correct state (logo/menu/back button).
-      // This is crucial for fixing the inconsistent icon display bug.
-      updateHeaderUI(window.routeManager.getCurrentState());
+
+      topNav.classList.remove('search-active');
+      updateHeaderUI(routeManager.getCurrentState());
     }
 
     function updateHeaderUI({ role, view, config }) {
@@ -93,10 +94,22 @@ export function initializeTopNavigation() {
         // --- Main Tab View (e.g., Home, Account) ---
         nameEl.textContent = defaultName; // Always show app name
         setLogo(defaultLogo); // Always show app logo
+        
+        // DEFINITIVE FIX: Directly control visibility like the settings icon.
+        // This avoids all CSS race conditions and complexity.
+        const headerStyle = getAppConfig().ui.headerStyle || 'logo';
+        const showLogo = (headerStyle === 'logo' || headerStyle === 'both');
+        const showMenu = (headerStyle === 'menu' || headerStyle === 'both');
 
-        // Show the correct branding item (logo or menu icon)
-        initializeHeaderStyle();
+        // 1. Hide both first to ensure a clean state.
+        logoContainer.classList.add('hidden');
+        menuIconEl.classList.add('hidden');
+        // 2. Then, explicitly un-hide the correct one(s).
+        logoContainer.classList.toggle('hidden', !showLogo);
+        menuIconEl.classList.toggle('hidden', !showMenu);
 
+        // On a main tab, the back button should be hidden (unless search is active, which is handled by open/closeSearchView).
+        viewBackBtn.classList.add('hidden');
       } else {
         // --- Secondary View (e.g., Notifications, Login, Conversation) ---
         nameEl.textContent = config?.title || defaultName; // Use view-specific title
@@ -175,13 +188,18 @@ export function initializeTopNavigation() {
 
     // NEW: Add click listener for the universal back button
     if (viewBackBtn) {
-      viewBackBtn.addEventListener('click', () => {
-        window.history.back(); // Go to the previous page in history
-      });
+        viewBackBtn.addEventListener('click', () => {
+            // If search is active, the button's job is to close the search.
+            if (topNav.classList.contains('search-active')) {
+                closeSearchView();
+            } else {
+                // Otherwise, its job is to go back in history.
+                window.history.back();
+            }
+        });
     }
 
-    if (searchToggleBtn) searchToggleBtn.addEventListener('click', openSearchView);
-    if (searchBackBtn) searchBackBtn.addEventListener('click', closeSearchView);
+    if (searchToggleBtn) searchToggleBtn.addEventListener('click', openSearchView);    
     window.addEventListener('closeSearchViewRequest', closeSearchView);
 
     // NEW: Add a click listener for the settings icon
@@ -236,12 +254,12 @@ export function initializeTopNavigation() {
         setTimeout(() => ripple.remove(), 600); // Remove after animation
 
         // NEW LOGIC: Check current view before dispatching
-        if (window.routeManager.currentView === 'notifications') {
+        if (routeManager.currentView === 'notifications') {
           // If already in notifications view, go back
           window.history.back();
         } else {
           // Otherwise, open notifications view
-          const currentRole = window.routeManager.currentRole;
+          const currentRole = routeManager.currentRole;
           window.dispatchEvent(new CustomEvent('requestViewChange', {
             detail: { role: currentRole, view: 'notifications' }
           }));
@@ -250,9 +268,9 @@ export function initializeTopNavigation() {
     }
 
     // --- Initialization ---
-    window.routeManager.subscribe(updateHeaderUI);
+    routeManager.subscribe(updateHeaderUI);
     // NEW: Subscribe the notification icon UI update function
-    window.routeManager.subscribe(updateNotificationIconUI);
+    routeManager.subscribe(updateNotificationIconUI);
     console.log("✅ Header: Subscribed to routeManager for state updates.");
 }
 
