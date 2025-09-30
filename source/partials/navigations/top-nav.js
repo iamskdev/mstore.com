@@ -190,8 +190,13 @@ export function initializeTopNavigation() {
     if (viewBackBtn) {
         viewBackBtn.addEventListener('click', () => {
             // If search is active, the button's job is to close the search.
+            // --- FIX: Prioritize closing search over other back actions ---
             if (topNav.classList.contains('search-active')) {
                 closeSearchView();
+            } else if (topNav.classList.contains('manual-override')) {
+                // If not searching, but in a manual override state (like from updates.js),
+                // dispatch an event to let the view handle the back action.
+                window.dispatchEvent(new CustomEvent('handleManualBack'));
             } else {
                 // Otherwise, its job is to go back in history.
                 window.history.back();
@@ -266,6 +271,31 @@ export function initializeTopNavigation() {
         }
       });
     }
+
+    // --- NEW: Listener for manual header override ---
+    // This allows views like 'updates.js' to manually control the header
+    // without a full route change.
+    window.addEventListener('viewStateOverride', (e) => {
+        const { isSecondary, title } = e.detail;
+        topNav.classList.toggle('manual-override', isSecondary); // Add/remove override class
+
+        if (isSecondary) {
+            // --- Force Secondary View State ---
+            nameEl.textContent = title || 'Details'; // Use provided title
+
+            // Show the universal back button
+            viewBackBtn.classList.remove('hidden');
+
+            // Hide the main branding items (logo and menu icon)
+            logoContainer.classList.add('hidden');
+            menuIconEl.classList.add('hidden');
+        } else {
+            // --- Revert to Default State ---
+            // Re-run the standard UI update logic based on the actual current route.
+            // This correctly restores the header for the main 'updates' tab.
+            updateHeaderUI(routeManager.getCurrentState());
+        }
+    });
 
     // --- Initialization ---
     routeManager.subscribe(updateHeaderUI);

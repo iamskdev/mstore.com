@@ -75,6 +75,11 @@ const APP_SHELL_URLS = [
   './source/common/styles/notification.css',
   './source/common/scripts/notification.js',
   './source/modules/admin/pages/admin-home.html',
+
+  // Updates View
+  './source/common/pages/updates.html',
+  './source/common/styles/updates.css',
+  './source/common/scripts/updates.js',
   './source/modules/admin/pages/admin-home.css',
   './source/modules/admin/pages/admin-home.js',
 

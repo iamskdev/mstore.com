@@ -45,6 +45,8 @@
   --shadow-focus-secondary: rgba(40, 167, 69, 0.2);
   --shadow-focus-error: rgba(217, 48, 37, 0.2);
   --shadow-hover-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Added for card hover effect */
+  --shadow-glow-accent: 0 0 10px rgba(var(--accent-primary-rgb), 0.7); /* For glowing effects */
+
 
   /* --- 6. Component-Specific: Header --- */
   --header-banner-dev-bg: #ffc107;
@@ -70,7 +72,9 @@
   --color-danger-user: #ef233c;
 
   /* --- 9. Component-Specific: Profile Gradient Border --- */
-  --profile-gradient-border: linear-gradient(135deg, #4895ef, #f72585, #f8961e);
+  --profile-gradient-border: linear-gradient(135deg, #4895ef, #f72585, #f8961e); /* For profile pages */
+  --story-ring-gradient: conic-gradient(from 30deg, #f97794, #f72585, #c42d8f, #833ab4, #f97794); /* For update stories */
+  --story-ring-viewed-gradient: conic-gradient(from 45deg, #2af598, #009efd, #2af598); /* For viewed stories (Ocean Breeze) */
 
 }
 
@@ -115,6 +119,7 @@ html.dark-mode {
   --shadow-focus-secondary: rgba(105, 240, 174, 0.25);
   --shadow-focus-error: rgba(255, 82, 82, 0.25);
   --shadow-hover-card: 0 10px 15px -3px rgba(255, 255, 255, 0.07), 0 4px 6px -2px rgba(255, 255, 255, 0.05); /* Changed to a light shadow for dark mode */
+  --shadow-glow-accent: 0 0 10px rgba(var(--accent-primary-rgb), 0.7); /* For glowing effects */
 
   /* --- 6. Component-Specific: Header --- */
   --header-banner-dev-bg: #f39c12;
@@ -127,5 +132,7 @@ html.dark-mode {
   --header-badge-text: #fff;
   
   /* --- 9. Component-Specific: Profile Gradient Border (Dark Mode) --- */
-  --profile-gradient-border: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+  --profile-gradient-border: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); /* For profile pages */
+  --story-ring-gradient: conic-gradient(from 30deg, #f97794, #f72585, #c42d8f, #833ab4, #f97794); /* For update stories */
+  --story-ring-viewed-gradient: conic-gradient(from 45deg, #08aeea, #2af598, #08aeea); /* For viewed stories in dark mode (Vibrant Ocean) */
 }

@@ -1,0 +1,35 @@
+<div class="updates-container">
+  <!-- Stories row -->
+  <div class="story-container" id="storiesRow" aria-label="Merchant stories">
+    <!-- JS will populate -->
+  </div>
+
+  <!-- Enhanced Segmented filters -->
+  <div class="segmented-controls" role="tablist" aria-label="filters">
+    <button id="filterAll" class="active">All</button>
+    <button id="filterToday">Today</button>
+    <button id="filterPost">Post</button>
+    <button id="filterOffers">Offers</button>
+    <button id="filterPopular">Popular</button>
+    <button id="filterNew">New</button>
+    <button id="filterTemp1">Temp 1</button>
+    <button id="filterTemp2">Temp 2</button>
+    <button id="filterTemp3">Temp 3</button>
+    <button id="filterTemp4">Temp 4</button>
+    <button id="filterSettings"><i class="fas fa-gear"></i> Settings</button>
+  </div>
+
+  <div class="subscription-content" id="updatesContentWrapper">
+    <!-- Enhanced Merchant page (hidden by default) -->
+    <div class="merchant-page" id="merchantPage">
+      <div style="padding:6px;color:var(--text-secondary);font-size:13px">Latest Items</div>
+      <div class="feed-grid" id="merchantFeed"></div>
+    </div>
+
+    <!-- Default feed -->
+    <div id="defaultFeed">
+      <div class="feed-grid" id="feedGrid"></div>
+      <div id="feed-loader" class="hidden">Loading more...</div>
+    </div>
+  </div>
+</div>

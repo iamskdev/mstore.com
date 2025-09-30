@@ -419,7 +419,8 @@ class RouteManager {
         if (module.init && typeof module.init === 'function') {
           this.currentModule = module; // Store the loaded module
           console.log(`routeManager: Calling init() for ${config.id}`);
-          module.init();
+          // Pass a 'force' flag to the init function to bypass initialization checks.
+          module.init(true); // Pass true to force re-initialization
           console.log(`routeManager: Successfully initialized JS for ${config.id}`);
         } else {
           console.warn(`routeManager: init() function not found or not a function in ${config.id} at ${jsPath}.`);

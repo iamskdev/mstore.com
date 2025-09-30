@@ -29,7 +29,6 @@ const routeConfig = {
       dataDependencies: ['items', 'promotions', 'categories', 'brands', 'orders', 'price-logs', 'alerts']
     },
     add: { id: 'merchant-add-view', path: null, title: 'Add', isMainTab: true, dataDependencies: ['categories', 'brands', 'units'] },
-    analytics: { id: 'merchant-analytics-view', path: null, isMainTab: true, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items'] },
   },
   admin: {
     home: {
@@ -112,10 +111,11 @@ const routeConfig = {
     },
     updates: {
       id: 'updates-view',
-      path: null, // No HTML file yet, will show a placeholder
+      path: './source/common/pages/updates.html',
+      cssPath: './source/common/styles/updates.css',
+      jsPath: './source/common/scripts/updates.js',
       isMainTab: true,
-      title: 'Updates',
-      dataDependencies: []
+      title: 'Updates'
     },
     notifications: {
       id: 'notifications-view',
