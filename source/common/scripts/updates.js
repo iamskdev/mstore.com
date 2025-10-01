@@ -1,97 +1,23 @@
-// import { fetchAllItems, fetchAllMerchants } from '../../utils/data-manager.js';
+import { fetchAllItems, fetchAllMerchants, fetchUserById, fetchMerchantById } from '../../utils/data-manager.js';
 import { showToast } from '../../utils/toast.js';
+import { createListCard, initCardHelper } from '../../templates/cards/card-helper.js';
 
-export function init(force = false) { // Add a 'force' parameter
+export async function init(force = false) { // Make function async
     const view = document.getElementById('updates-view');
     // यह सुनिश्चित करता है कि लॉजिक दोबारा न चले
     if (view.dataset.initialized && !force) { // Check for the force flag
         return;
     }
     console.log('🚀 Initializing Updates View...');
-    
-    // --- डमी डेटा का उपयोग करें ---
-    const merchants = [
-        { 
-          id: 1, 
-          name: 'Internet Cafe', 
-          avatar:'https://picsum.photos/seed/m1/200', 
-          hasStory: true, 
-          followedAt: new Date(Date.now() - 86400000 * 5), // Followed 5 days ago
-          followers: '1.2K',
-          stories:[
-            { type:'img', src:'https://picsum.photos/seed/s11/1000/1600', duration: 5000 },
-            { type:'img', src:'https://picsum.photos/seed/s12/1000/1600', duration: 5000 }
-          ]
-        },
-        { 
-          id: 2, 
-          name: 'Anita Store', 
-          avatar:'https://picsum.photos/seed/m2/200', 
-          hasStory: true, 
-          followedAt: new Date(Date.now() - 86400000 * 10), // Followed 10 days ago
-          followers: '3.4K',
-          stories:[
-            { type:'img', src:'https://picsum.photos/seed/s21/1000/1600', duration: 5000 }
-          ]
-        },
-        { 
-          id: 3, 
-          name: 'Ak Electrician', 
-          avatar:'https://picsum.photos/seed/m3/200', 
-          hasStory: false, 
-          followedAt: new Date(Date.now() - 86400000 * 2), // Followed 2 days ago
-          followers: '890',
-          stories:[]
-        },
-        { 
-          id: 4, 
-          name: 'City Electrical', 
-          avatar:'https://picsum.photos/seed/m4/200', 
-          hasStory: true, 
-          followedAt: new Date(Date.now() - 86400000 * 1), // Followed 1 day ago
-          followers: '2.1K',
-          stories:[
-            { type:'img', src:'https://picsum.photos/seed/s41/1000/1600', duration: 5000 },
-            { type:'img', src:'https://picsum.photos/seed/s42/1000/1600', duration: 5000 },
-            { type:'img', src:'https://picsum.photos/seed/s43/1000/1600', duration: 5000 }
-          ]
-        },
-        {
-          id:5,
-          name:'Quick Shop',
-          avatar:'https://picsum.photos/seed/m5/200',
-          hasStory:false,
-          followedAt: new Date(Date.now() - 3600000), // Followed 1 hour ago
-          followers: '1.5K',
-          stories:[]
-        },
-        { 
-          id: 6, 
-          name: 'No Story User', 
-          avatar: 'https://picsum.photos/seed/m6/200', 
-          hasStory: false, 
-          followedAt: new Date(Date.now() - 86400000 * 30), // Followed 30 days ago
-          followers: '100',
-          stories: []
-        }
-      ];
-    
-      const items = [
-        {id:101, title:'Blue Jacket', price:'1299', img:'https://picsum.photos/seed/p1/800/600', merchantId:1, date: new Date(Date.now() - 86400000)},
-        {id:102, title:'Sneakers', price:'1999', img:'https://picsum.photos/seed/p2/800/600', merchantId:2, date: new Date(Date.now() - 172800000)},
-        {id:103, title:'Headphones', price:'899', img:'https://picsum.photos/seed/p3/800/600', merchantId:1, date: new Date(Date.now() - 259200000)},
-        {id:104, title:'Notebook', price:'249', img:'https://picsum.photos/seed/p4/800/600', merchantId:3, date: new Date(Date.now() - 345600000)},
-        {id:105, title:'Lamp', price:'499', img:'https://picsum.photos/seed/p5/800/600', merchantId:4, date: new Date(Date.now() - 432000000)},
-        {id:106, title:'Bottle', price:'199', img:'https://picsum.photos/seed/p6/800/600', merchantId:2, date: new Date(Date.now() - 518400000)},
-        {id:107, title:'Smart Watch', price:'3499', img:'https://picsum.photos/seed/p7/800/600', merchantId:1, date: new Date()},
-        {id:108, title:'Wireless Earbuds', price:'1599', img:'https://picsum.photos/seed/p8/800/600', merchantId:4, date: new Date(Date.now() - 3600000)}, // 1 hour ago
-        {id:109, title:'Backpack', price:'999', img:'https://picsum.photos/seed/p9/800/600', merchantId:5, date: new Date(Date.now() - 7200000)}, // 2 hours ago
-        {id:110, title:'Coffee Mug', price:'349', img:'https://picsum.photos/seed/p10/800/600', merchantId:3, date: new Date(Date.now() - 86400000 * 3)},
-        {id:111, title:'Desk Chair', price:'4999', img:'https://picsum.photos/seed/p11/800/600', merchantId:1, date: new Date(Date.now() - 86400000 * 4)},
-        {id:112, title:'Sunglasses', price:'799', img:'https://picsum.photos/seed/p12/800/600', merchantId:2, date: new Date(Date.now() - 86400000 * 6)},
-        {id:113, title:'Keyboard', price:'2199', img:'https://picsum.photos/seed/p13/800/600', merchantId:4, date: new Date(Date.now() - 86400000 * 7)},
-        {id:114, title:'Mousepad', price:'499', img:'https://picsum.photos/seed/p14/800/600', merchantId:5, date: new Date(Date.now() - 86400000 * 8)},
-      ];
+
+    // --- NEW: Initialize the card helper to load templates ---
+    await initCardHelper();
+
+    // --- Fetch real data ---
+    const [merchants, items] = await Promise.all([
+        fetchAllMerchants(),
+        fetchAllItems()
+    ]);
 
     // DOM refs
     const updatesContainer = view.querySelector('.updates-container');
@@ -108,49 +34,77 @@ export function init(force = false) { // Add a 'force' parameter
     let currentMerchant = null;
 
     // render stories
-    function renderStories() {
+    async function renderStories() {
         storiesRow.innerHTML = '';
 
-        // Add "My Status" element first
-        const myStoryEl = document.createElement('div');
-        myStoryEl.className = 'story-item my-story';
-        myStoryEl.innerHTML = `
-            <div class="avatar-wrap" role="button" tabindex="0" aria-label="Add to your story">
-              <img class="story-avatar" src="./source/assets/logos/app-logo.png" alt="My Story" />
-              <div class="add-story-btn"><i class="fas fa-plus-circle"></i></div>
-            </div>
-            <div class="avatar-name">My Status</div>
-        `;
-        myStoryEl.querySelector('.avatar-wrap').addEventListener('click', () => {
-            // Future: open story creation UI
-            alert('Add Story feature coming soon!');
-        });
-        storiesRow.appendChild(myStoryEl);
+        // --- FIX: Conditionally show "My Status" only for merchants ---
+        const currentUserRole = localStorage.getItem('currentUserType');
+        const currentUserId = localStorage.getItem('currentUserId');
+        let selfMerchantId = null; // To store the logged-in merchant's ID
+
+        if (currentUserRole === 'merchant' && currentUserId) {
+            const user = await fetchUserById(currentUserId);
+            const merchantId = user?.meta?.links?.merchantId;
+            selfMerchantId = merchantId; // Store the ID for filtering later
+            if (merchantId) {
+                const selfMerchant = await fetchMerchantById(merchantId);
+                const avatarUrl = selfMerchant?.meta?.info?.logo || './source/assets/logos/app-logo.png';
+
+                const myStoryEl = document.createElement('div');
+                myStoryEl.className = 'story-item my-story';
+                myStoryEl.setAttribute('data-id', merchantId); // Add data-id for selection
+                myStoryEl.innerHTML = `
+                    <div class="avatar-wrap" role="button" tabindex="0" aria-label="Add to your story">
+                      <img class="story-avatar" src="${avatarUrl}" alt="My Story" />
+                      <div class="add-story-btn"><i class="fas fa-plus-circle"></i></div>
+                    </div>
+                    <div class="avatar-name">My Status</div>
+                `;
+                // --- FIX: Separate click events for plus button and the rest of the circle ---
+                myStoryEl.querySelector('.add-story-btn').addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent the parent click event from firing
+                    alert('Add Story feature coming soon!');
+                });
+
+                myStoryEl.querySelector('.avatar-wrap').addEventListener('click', (e) => {
+                    showMerchantPage(selfMerchant);
+                });
+
+                storiesRow.appendChild(myStoryEl);
+            }
+        }
 
         const oneDayAgo = Date.now() - 86400000;
 
         const getScore = (merchant) => {
             let score = 0;
-            if (merchant.hasStory) score += 1000;
-            if (merchant.followedAt > oneDayAgo) score += 500;
-            const hasNewItem = items.some(item => item.merchantId === merchant.id && new Date(item.date) > oneDayAgo);
+            if (merchant.meta?.flags?.hasStory) score += 1000;
+            // Note: followedAt is user-specific, not on merchant object. Skipping for now.
+            const hasNewItem = items.some(item => item.meta.links.merchantId === merchant.meta.merchantId && new Date(item.meta.createdOn) > oneDayAgo);
             if (hasNewItem) score += 100;
-            score += new Date(merchant.followedAt).getTime() / 1e9;
+            // score += new Date(merchant.followedAt).getTime() / 1e9; // Skipping
             return score;
         };
 
-        const sortedMerchants = [...merchants].sort((a, b) => getScore(b) - getScore(a));
+        let sortedMerchants = [...merchants].sort((a, b) => getScore(b) - getScore(a));
+
+        // --- FIX: Filter out the logged-in merchant from the story list ---
+        if (selfMerchantId) {
+            sortedMerchants = sortedMerchants.filter(m => m.meta.merchantId !== selfMerchantId);
+        }
+
         storiesRow.setAttribute('data-rendered', 'true');
 
         sortedMerchants.forEach(m => {
+            // --- FIX: Use correct data structure from merchants.json (meta.info) ---
             const wrap = document.createElement('div');
-            wrap.className = 'story-item' + (m.hasStory ? ' has-story' : '');
-            wrap.setAttribute('data-id', m.id);
+            wrap.className = 'story-item' + (m.meta?.flags?.hasStory ? ' has-story' : '');
+            wrap.setAttribute('data-id', m.meta.merchantId);
             wrap.innerHTML = `
             <div class="avatar-wrap" role="button" tabindex="0">
-              <img class="story-avatar" src="${m.avatar}" alt="${m.name}" />
+              <img class="story-avatar" src="${m.meta.info.logo}" alt="${m.meta.info.name}" />
             </div>
-            <div class="avatar-name">${m.name}</div>
+            <div class="avatar-name">${m.meta.info.name}</div>
           `;
             storiesRow.appendChild(wrap);
         });
@@ -162,13 +116,63 @@ export function init(force = false) { // Add a 'force' parameter
     let allItemsLoaded = false;
     let currentFilterState = { type: 'all', merchantId: null };
 
+    // --- REFACTOR: Create a single common card config to be used everywhere ---
+    const commonCardConfig = {
+        fields: [
+            { key: 'info.name', selector: '.card-title', visible: true },
+            {
+                key: 'media.thumbnail',
+                selector: '.card-image',
+                type: 'image',
+                default: './localstore/images/default-product.jpg'
+            },
+            {
+                key: 'pricing.sellingPrice',
+                selector: '.selling-price',
+                visible: true,
+                formatter: (price) => `₹${price.toFixed(2)}`
+            },
+            {
+                key: 'pricing.mrp',
+                selector: '.max-price',
+                visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
+                formatter: (mrp) => `₹${mrp.toFixed(2)}`
+            },
+            {
+                key: 'pricing.mrp',
+                selector: '.card-discount',
+                visible: (item) => item.pricing && item.pricing.mrp > item.pricing.sellingPrice,
+                formatter: (mrp, item) => {
+                    const discount = ((item.pricing.mrp - item.pricing.sellingPrice) / item.pricing.mrp) * 100;
+                    return `${Math.round(discount)}% off`;
+                }
+            },
+            { key: 'analytics.rating', selector: '.stars', visible: true },
+            { key: 'stock.status', selector: '.stock-status', visible: true },
+            { selector: '.card-note', visible: false },
+            { selector: '.cost-price', visible: false },
+        ],
+        buttons: [
+            { label: 'View Details', action: 'VIEW_DETAILS', class: 'btn-secondary', visible: true },
+            { label: 'Add to Cart', action: 'ADD_TO_CART', class: 'btn-primary', visible: true },
+            { label: 'Save for later', action: 'SAVE_FOR_LATER', class: 'btn-secondary', visible: true },
+            { label: 'Share me', action: 'SHARE_ITEM', class: 'btn-secondary', visible: true }
+        ],
+        actionHandlers: {
+            'VIEW_DETAILS': (item) => showToast('info', `Viewing details for ${item.info.name}`),
+            'ADD_TO_CART': (item) => showToast('success', `${item.info.name} added to cart!`),
+            'SAVE_FOR_LATER': (item) => showToast('info', `${item.info.name} saved for later!`),
+            'SHARE_ITEM': (item) => showToast('info', `Sharing ${item.info.name}`),
+        }
+    };
+
     // render feed (all items)
     function renderFeed(filterMerchantId = null, filterType = 'all', page = 1) {
         isLoading = true;
         let list = [...items];
 
         if (filterMerchantId) {
-            list = list.filter(it => it.merchantId === filterMerchantId);
+            list = list.filter(it => it.meta.links.merchantId === filterMerchantId);
         }
 
         if (filterType === 'today') {
@@ -181,7 +185,12 @@ export function init(force = false) { // Add a 'force' parameter
             list = list.filter(it => it.id > 105);
         }
 
-        list.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // --- NEW: Add filtering for 'product' and 'service' types ---
+        if (filterType === 'product' || filterType === 'service') {
+            list = list.filter(it => it.meta.type === filterType);
+        }
+
+        list.sort((a, b) => new Date(b.meta.createdOn) - new Date(a.meta.createdOn));
 
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
@@ -200,78 +209,41 @@ export function init(force = false) { // Add a 'force' parameter
             feedGrid.innerHTML = `<div style="color:var(--text-secondary);padding:20px;text-align:center">No items found</div>`;
             return;
         }
+        
+        // --- FIX: Add the card creation logic back into the renderFeed function ---
         paginatedItems.forEach(it => {
-            const c = document.createElement('div');
-            // Use the new list-style card structure
-            c.className = 'item-list-card'; // Changed class name
-            c.dataset.itemId = it.id;
-            c.innerHTML = `
-                <div class="card-top">
-                    <div class="card-info">
-                        <p class="card-title">${it.title}</p>
-                        <div class="price-container">
-                            <span class="selling-price">₹${it.price}</span>
-                        </div>
-                    </div>
-                    <div class="img-container">
-                        <img src="${it.img}" alt="${it.title}" class="card-image" />
-                    </div>
-                </div>
-            `;
-            feedGrid.appendChild(c);
-        });
-        isLoading = false;
-        feedLoader.classList.add('hidden');
-    }
-
-    function showMerchantPage(merchant) {
-        currentMerchant = merchant;
-
-        view.querySelectorAll('.story-item.active').forEach(el => el.classList.remove('active'));
-        const storyEl = storiesRow.querySelector(`.story-item[data-id='${merchant.id}']`);
-        if (storyEl) {
-            storyEl.classList.add('active');
-            if (merchant.hasStory) {
-                storyEl.classList.add('viewed');
+            const cardElement = createListCard(it, commonCardConfig);
+            if (cardElement) {
+                feedGrid.appendChild(cardElement);
             }
-        }
-
-        renderMerchantFeed(merchant.id);
-
-        merchantPage.style.display = 'flex';
-        defaultFeed.style.display = 'none';
-        segmentedControls.style.display = 'none';
-        updatesContentWrapper.scrollTop = 0;
+        });
     }
 
-    function renderMerchantFeed(merchantId) {
+    function renderMerchantFeed(merchantId, filterType = 'all') {
         merchantFeed.innerHTML = '';
-        const related = items
-            .filter(i => i.merchantId === merchantId)
-            .sort((a, b) => new Date(b.date) - new Date(a.date));
-
+        let related = items
+            .filter(i => i.meta.links.merchantId === merchantId)
+            .sort((a, b) => new Date(b.meta.createdOn) - new Date(a.meta.createdOn));
+        
+        // --- FIX: Add filtering logic within the merchant's item list ---
+        if (filterType === 'today') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            related = related.filter(it => new Date(it.meta.createdOn) >= today);
+        } else if (filterType === 'product' || filterType === 'service' || filterType === 'post' || filterType === 'offers') {
+            // Note: 'post' and 'offers' logic might need refinement based on actual data structure
+            related = related.filter(it => it.meta.type === filterType);
+        }
+        
         if (related.length === 0) {
-            merchantFeed.innerHTML = `<div style="color:var(--text-secondary);padding:8px;text-align:center">No products yet.</div>`;
+            merchantFeed.innerHTML = `<div style="color:var(--text-secondary);padding:20px;text-align:center">No products yet.</div>`;
         } else {
+            // --- REFACTOR: Use the common config for consistency ---
             related.forEach(it => {
-                const c = document.createElement('div');
-                // Use the new list-style card structure
-                c.className = 'item-list-card'; // Changed class name
-                c.dataset.itemId = it.id;
-                c.innerHTML = `
-                    <div class="card-top">
-                        <div class="card-info">
-                            <p class="card-title">${it.title}</p>
-                            <div class="price-container">
-                                <span class="selling-price">₹${it.price}</span>
-                            </div>
-                        </div>
-                        <div class="img-container">
-                            <img src="${it.img}" alt="${it.title}" class="card-image" />
-                        </div>
-                    </div>
-                `;
-                merchantFeed.appendChild(c);
+                const cardElement = createListCard(it, commonCardConfig);
+                if (cardElement) {
+                    merchantFeed.appendChild(cardElement);
+                }
             });
         }
     }
@@ -300,34 +272,34 @@ export function init(force = false) { // Add a 'force' parameter
         // 1. Remove 'active' from any previously selected story
         view.querySelectorAll('.story-item.active').forEach(el => el.classList.remove('active'));
         // 2. Find and add 'active' to the newly clicked story
-        const storyEl = storiesRow.querySelector(`.story-item[data-id='${merchant.id}']`);
+        const storyEl = storiesRow.querySelector(`.story-item[data-id='${merchant.meta.merchantId}']`);
         if (storyEl) {
             storyEl.classList.add('active');
         }
 
-        // Dispatch an event to notify top-nav to change its state
-        window.dispatchEvent(new CustomEvent('viewStateOverride', {
-            // --- FIX: Correctly set to secondary view state ---
-            detail: {
-                isSecondary: true,
-                title: merchant.name
-            }
-        }));
-
-        // --- FIX: Restore the logic to show the merchant page ---
-        renderMerchantFeed(merchant.id);
+        // --- FIX: Restore the call to render the merchant's items ---
+        renderMerchantFeed(merchant.meta.merchantId); 
 
         merchantPage.style.display = 'flex';
         defaultFeed.style.display = 'none';
-        segmentedControls.style.display = 'none';
+        // segmentedControls.style.display = 'none'; // Allow filters to be visible
         updatesContentWrapper.scrollTop = 0;
+
+        // --- FIX: Dispatch the event AFTER all other UI changes are complete ---
+        // This prevents a race condition where the top-nav tries to update before the view is ready.
+        window.dispatchEvent(new CustomEvent('viewStateOverride', {
+            detail: {
+                isSecondary: true,
+                title: merchant.meta.info.name
+            }
+        }));
     }
 
     function onAvatarClick(merchant) {
         showMerchantPage(merchant);
     }
 
-    renderStories();
+    await renderStories();
     renderFeed();
 
     function enableHorizontalScroll(element) {
@@ -364,23 +336,23 @@ export function init(force = false) { // Add a 'force' parameter
             view.querySelectorAll('.segmented-controls button').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
 
-            if (currentMerchant) {
-                hideMerchantPage();
-            }
-
+            // --- FIX: Moved filterMap definition to the top of the handler for correct scope ---
             const filterMap = {
                 'filterAll': 'all',
                 'filterToday': 'today',
                 'filterPost': 'post',
                 'filterOffers': 'offers',
-                'filterPopular': 'all',
-                'filterNew': 'all',
-                'filterTemp1': 'all',
-                'filterTemp2': 'all',
-                'filterTemp3': 'all',
-                'filterTemp4': 'all'
+                'filterProduct': 'product',
+                'filterService': 'service'
             };
-            handleFilterClick(filterMap[id] || 'all');
+            const filterType = filterMap[id] || 'all';
+
+            if (currentMerchant) { // If on a merchant page, filter its feed
+                renderMerchantFeed(currentMerchant.meta.merchantId, filterType);
+                return; // Stop further execution
+            }
+
+            handleFilterClick(filterType);
         });
     });
 
@@ -402,7 +374,7 @@ export function init(force = false) { // Add a 'force' parameter
 
         const id = storyWrap.getAttribute('data-id');
         if (id) {
-            const m = merchants.find(x => String(x.id) === String(id));
+            const m = merchants.find(x => String(x.meta.merchantId) === String(id));
             if (m) {
                 showMerchantPage(m);
             }
