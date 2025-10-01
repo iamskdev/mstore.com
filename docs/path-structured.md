@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 27/09/2025, 19:22
+📅 Last Updated: 02/10/2025, 00:44
 
 ├── .firebaserc
 ├── .gitignore
@@ -37,9 +37,12 @@
 │   └── pre-push
 ├── 📁 archive\
 │   ├── card-old.html
-│   └── error-page.html
+│   ├── error-page.html
+│   ├── story-viewer-demo.html
+│   └── updates-demo.html
 ├── 📁 docs\
 │   ├── CHANGELOG.md
+│   ├── Id-generation.md
 │   ├── brands_list.md
 │   ├── commit-guide.md
 │   ├── commit_message.txt
@@ -118,6 +121,8 @@
 │       ├── orders.json
 │       ├── price-logs.json
 │       ├── promotions.json
+│       ├── stories-schema.json
+│       ├── stories.json
 │       ├── temp-chats.json
 │       ├── units.json
 │       ├── users.json
@@ -257,6 +262,7 @@
 │   │   │   ├── item-details.html
 │   │   │   ├── notification.html
 │   │   │   ├── offline.html
+│   │   │   ├── updates.html
 │   │   │   └── wishlist.html
 │   │   ├── 📁 scripts\
 │   │   │   ├── account.js
@@ -267,6 +273,7 @@
 │   │   │   ├── home.js
 │   │   │   ├── item-details.js
 │   │   │   ├── notification.js
+│   │   │   ├── updates.js
 │   │   │   └── wishlist.js
 │   │   └── 📁 styles\
 │   │       ├── account.css
@@ -278,6 +285,7 @@
 │   │       ├── item-details.css
 │   │       ├── notification.css
 │   │       ├── theme.css
+│   │       ├── updates.css
 │   │       └── wishlist.css
 │   ├── 📁 firebase\
 │   │   ├── 📁 auth\
@@ -291,6 +299,11 @@
 │   │   ├── firebase-config.js
 │   │   ├── firebase-credentials.js
 │   │   └── serviceAccountKey.json
+│   ├── 📁 modals\
+│   │   ├── 📁 story-viewer\
+│   │   │   ├── story-viewer.html
+│   │   │   └── story-viewer.js
+│   │   └── account-switcher.html
 │   ├── 📁 modules\
 │   │   ├── 📁 admin\
 │   │   │   ├── 📁 logs\
@@ -320,7 +333,6 @@
 │   │   ├── 📁 client\
 │   │   └── 📁 merchant\
 │   │       ├── 📁 pages\
-│   │       ├── account.html
 │   │       ├── analytics.html
 │   │       └── merchant-home.html
 │   ├── 📁 partials\
@@ -354,9 +366,6 @@
 │   │   │   ├── card-grid.html
 │   │   │   ├── card-helper.js
 │   │   │   └── card-list.html
-│   │   ├── 📁 chat\
-│   │   │   ├── chat-list.html
-│   │   │   └── chat-list.js
 │   │   ├── banner.html
 │   │   └── banner.js
 │   ├── 📁 utils\

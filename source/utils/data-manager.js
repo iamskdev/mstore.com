@@ -27,14 +27,23 @@ const createDataFetcher = (collectionName, idKey) => {
         if (cachePromise && !force) {
             return cachePromise;
         }
-
-
+ 
         const promise = (async () => {
             if (dataSource === 'localstore') {
                 try {
                     const response = await fetch(`../../localstore/jsons/${collectionName}.json`);
                     if (!response.ok) throw new Error(`Failed to fetch local ${collectionName}.json: ${response.statusText}`);
                     const data = await response.json();
+                    // --- FIX: Handle both array and single object JSON files ---
+                    // stories.json is a single object, but the app expects an array of story collections.
+                    // For consistency, we'll wrap the single object in an array if it's not already one.
+                    if (collectionName === 'stories' && !Array.isArray(data)) {
+                        // If data is a single object and not null/undefined, wrap it.
+                        if (data && typeof data === 'object') {
+                            return [data];
+                        }
+                        return []; // Return empty array if it's not a valid object
+                    }
                     return data;
                 } catch (err) {
                     cachePromise = null; // Reset cache on error
@@ -140,6 +149,7 @@ export const { fetchAll: fetchAllPriceLogs, fetchById: fetchPriceLogById } = cre
 export const { fetchAll: fetchAllLogs, fetchById: fetchLogById } = createDataFetcher('logs', 'logId');
 export const { fetchAll: fetchAllAccounts, fetchById: fetchAccountById } = createDataFetcher('accounts', 'accountId');
 export const { fetchAll: fetchAllPromotions, fetchById: fetchPromotionById } = createDataFetcher('promotions', 'promoId');
+export const { fetchAll: fetchAllStories, fetchById: fetchStoryById } = createDataFetcher('stories', 'meta.links.merchantId');
 
 /**
  * Simulates writing data to a local JSON file.

@@ -98,7 +98,8 @@ async function uploadDataToFirestore() {
                 "categories": "meta.categoryId",
                 "alerts": "meta.alertId",
                 "accounts": "meta.accountId",
-                "campaigns": "meta.campaignId"
+                "campaigns": "meta.campaignId",
+                "stories": "meta.links.merchantId" // --- NEW: Add mapping for stories ---
         };
 
         for (const file of filesToProcess) {
@@ -110,10 +111,18 @@ async function uploadDataToFirestore() {
             const fileContent = await fs.readFile(filePath, 'utf8');
             const documents = JSON.parse(fileContent);
 
-            if (!Array.isArray(documents) || documents.length === 0) {
-                console.warn(`     ⚠️ ${file} does not contain a non-empty array. Skipping.`);
+            // --- FIX: Handle both array of documents and single object documents (like stories.json) ---
+            const docsToProcess = Array.isArray(documents) ? documents : [documents];
+
+            if (docsToProcess.length === 0) {
+                console.warn(`     ⚠️ ${file} is empty or invalid. Skipping.`);
                 continue;
             }
+            
+            if (!Array.isArray(documents)) {
+                console.log(`     ℹ️ Detected single object file. Processing as one document.`);
+            }
+
 
             const idFieldPath = idFieldMap[collectionId];
             const collectionRef = db.collection(collectionId);
@@ -121,7 +130,7 @@ async function uploadDataToFirestore() {
             let docCountInBatch = 0;
             let totalDocsUploaded = 0;
 
-            for (const doc of documents) {
+            for (const doc of docsToProcess) {
                 // Ensure docId is a string, as Firestore requires.
                 const docId = String(getNestedValue(doc, idFieldPath) || doc.id);
 

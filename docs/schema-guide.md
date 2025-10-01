@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Updated`
-> - **Last Reviewed:** 28/09/2025 17:30:00 IST (Updated by Gemini)
+> - **Last Reviewed:** 02/10/2025 00:41:00 IST (Updated by Gemini)
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides a comprehensive guide to all Firestore data collections, detailing each schema's structure, fields, and relationships. It is the single source of truth for the data model.
 
@@ -22,10 +22,11 @@
 7.  [Orders (`orders.json`)](#7-orders-ordersjson) - ग्राहक के ऑर्डर और उनकी स्थिति।
 8.  [Alerts & Campaigns (`alerts.json`, `campaigns.json`)](#8-alerts--campaigns-alertsjson-campaignsjson) - अधिसूचना प्रणाली।
 9.  [Promotions (`promotions.json`)](#9-promotions-promotionsjson) - विशेष UI ओवरराइड और प्रचार।
-10. [Logs (`logs.json`)](#10-logs-logsjson) - ऑडिटिंग और डिबगिंग के लिए इवेंट लॉग।
-11. [Price Logs (`price-logs.json`)](#11-price-logs-price-logsjson) - मूल्य परिवर्तन का इतिहास।
-12. [Units (`units.json`)](#12-units-unitsjson) - माप की इकाइयाँ।
-13. [Brands (`brands.json`)](#13-brands-brandsjson) - उत्पाद ब्रांड.
+10. [Stories (`stories.json` and `stories-schema.json`)](#10-stories-storiesjson-and-stories-schemajson) - Stories created by merchants.
+11. [Logs (`logs.json`)](#11-logs-logsjson) - ऑडिटिंग और डिबगिंग के लिए इवेंट लॉग।
+12. [Price Logs (`price-logs.json`)](#12-price-logs-price-logsjson) - मूल्य परिवर्तन का इतिहास।
+13. [Units (`units.json`)](#13-units-unitsjson) - माप की इकाइयाँ।
+14. [Brands (`brands.json`)](#14-brands-brandsjson) - उत्पाद ब्रांड.
 
 ---
 
@@ -301,25 +302,74 @@
 
 ---
 
-## 10. Logs (`logs.json`)
+## 10. Stories (`stories.json` and `stories-schema.json`)
+
+This collection stores the stories created by merchants. The `stories.json` file contains the actual data for the stories, while `stories-schema.json` provides a detailed blueprint of the entire data structure, including all possible fields and configurations.
+
+### `stories-schema.json`
+
+This file is the "master guide" for the stories feature. It defines everything that a story *can* contain, even if it's not currently used in the app.
+
+#### Key Objects in Schema:
+
+*   **`meta`**: Contains metadata about the story collection, such as version, API compatibility, and supported features (like AR, live, shoppable, etc.).
+*   **`stories` (array)**: An array of story objects. Each object can have a very rich structure:
+    *   **`flags`**: Boolean flags for visibility, interactivity, and other attributes.
+    *   **`content`**: The actual visual content of the story, built with a layer-based system. It can include images, videos, text overlays, and interactive components like polls.
+    *   **`navigation`**: Defines swipe and tap actions.
+    *   **`cta`**: Call-to-action buttons.
+    *   **`products`**: Links to products featured in the story.
+    *   **`analytics`**: A very detailed structure for tracking views, engagement, audience demographics, etc.
+    *   **`monetization`**: Defines how the story can generate revenue.
+    *   **`audit`**: Tracks when the story was created, published, and when it expires.
+*   **`config`**: Configuration for performance, fallbacks, and experiments.
+
+### `stories.json`
+
+This file contains the actual story data that the app currently uses. It is a simplified version of the `stories-schema.json`.
+
+#### Key Objects in `stories.json`:
+
+*   **`meta`**: Basic metadata, including links to the merchant (`merchantId`) and the user who created it (`userId`).
+*   **`stories` (array)**: A list of the merchant's active stories.
+    *   **`storyId`**: Unique ID for the story.
+    *   **`status`**: The current status of the story (e.g., `active`).
+    *   **`content`**: The visual content, typically with a `background` layer (image) and sometimes a `text_overlay`.
+    *   **`analytics`**: Basic analytics, like `views` and `likes`.
+    *   **`audit`**: `created` and `expires` timestamps.
+
+### Relationship and Workflow
+
+1.  `stories-schema.json` serves as the complete reference for developers. It shows the full potential of the stories feature.
+2.  `stories.json` is the "live" data, containing only the fields necessary for the current features of the app.
+3.  When a developer wants to add a new feature to stories (e.g., polls), they would:
+    1.  Refer to `stories-schema.json` to see how the `poll` object should be structured.
+    2.  Update the application code to render and handle polls.
+    3.  Update `stories.json` to include poll data in new stories.
+
+This approach allows the feature to evolve without breaking the existing structure. The app is built to handle the fields present in `stories.json`, and can be extended in the future to support more of the fields defined in `stories-schema.json`.
+
+---
+
+## 11. Logs (`logs.json`)
 
 यह संग्रह ऑडिटिंग, डिबगिंग और विश्लेषण के लिए ऐप के भीतर होने वाली महत्वपूर्ण घटनाओं (`order_created`, `user_registered`) का रिकॉर्ड रखता है।
 
 ---
 
-## 11. Price Logs (`price-logs.json`)
+## 12. Price Logs (`price-logs.json`)
 
 यह संग्रह किसी आइटम के मूल्य में होने वाले प्रत्येक परिवर्तन को ट्रैक करता है, जो पारदर्शिता और ऐतिहासिक डेटा विश्लेषण के लिए महत्वपूर्ण है।
 
 ---
 
-## 12. Units (`units.json`)
+## 13. Units (`units.json`)
 
 यह संग्रह माप की विभिन्न इकाइयों (`weight`, `volume`) और उनके रूपांतरण कारकों को परिभाषित करता है।
 
 ---
 
-## 13. Brands (`brands.json`)
+## 14. Brands (`brands.json`)
 
 यह संग्रह उन सभी ब्रांडों की सूची संग्रहीत करता है जिनके उत्पाद प्लेटफॉर्म पर बेचे जाते हैं।
 

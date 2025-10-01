@@ -1,5 +1,6 @@
-import { fetchAllItems, fetchAllMerchants, fetchUserById, fetchMerchantById } from '../../utils/data-manager.js';
+import { fetchAllItems, fetchAllMerchants, fetchAllStories, fetchUserById, fetchMerchantById } from '../../utils/data-manager.js';
 import { showToast } from '../../utils/toast.js';
+import * as storyViewer from '../../modals/story-viewer/story-viewer.js';
 import { createListCard, initCardHelper } from '../../templates/cards/card-helper.js';
 
 export async function init(force = false) { // Make function async
@@ -13,11 +14,28 @@ export async function init(force = false) { // Make function async
     // --- NEW: Initialize the card helper to load templates ---
     await initCardHelper();
 
-    // --- Fetch real data ---
-    const [merchants, items] = await Promise.all([
-        fetchAllMerchants(),
-        fetchAllItems()
-    ]);
+    // --- FIX: Fetch data individually to prevent a single failure from blocking the entire view ---
+    let merchants = [], items = [], stories = [];
+    try {
+        // Fetch essential data. If these fail, we might want to show a bigger error.
+        [merchants, items] = await Promise.all([
+            fetchAllMerchants(),
+            fetchAllItems()
+        ]);
+    } catch (error) {
+        console.error("🚨 Critical error fetching merchants or items:", error);
+        // Optionally, show a full-page error message here
+        return; // Stop execution if essential data fails
+    }
+
+    try {
+        // Fetch stories separately. If it fails, the rest of the page can still render.
+        stories = await fetchAllStories();
+    } catch (error) {
+        console.error("⚠️ Error fetching stories, but continuing with feed rendering:", error);
+        showToast('error', 'Could not load stories.');
+        stories = []; // Default to an empty array so the rest of the code doesn't break
+    }
 
     // DOM refs
     const updatesContainer = view.querySelector('.updates-container');
@@ -78,8 +96,13 @@ export async function init(force = false) { // Make function async
 
         const getScore = (merchant) => {
             let score = 0;
-            if (merchant.meta?.flags?.hasStory) score += 1000;
-            // Note: followedAt is user-specific, not on merchant object. Skipping for now.
+            // --- FIX: Check for stories from the fetched stories data ---
+            const hasStory = stories.some(storyCollection => 
+                storyCollection.meta.links.merchantId === merchant.meta.merchantId &&
+                storyCollection.stories?.some(s => s.status === 'active')
+            );
+            if (hasStory) score += 1000;
+
             const hasNewItem = items.some(item => item.meta.links.merchantId === merchant.meta.merchantId && new Date(item.meta.createdOn) > oneDayAgo);
             if (hasNewItem) score += 100;
             // score += new Date(merchant.followedAt).getTime() / 1e9; // Skipping
@@ -98,7 +121,13 @@ export async function init(force = false) { // Make function async
         sortedMerchants.forEach(m => {
             // --- FIX: Use correct data structure from merchants.json (meta.info) ---
             const wrap = document.createElement('div');
-            wrap.className = 'story-item' + (m.meta?.flags?.hasStory ? ' has-story' : '');
+            // --- FIX: Check for stories from the fetched stories data ---
+            const hasStory = stories.some(storyCollection => 
+                storyCollection.meta.links.merchantId === m.meta.merchantId &&
+                storyCollection.stories?.some(s => s.status === 'active')
+            );
+
+            wrap.className = 'story-item' + (hasStory ? ' has-story' : '');
             wrap.setAttribute('data-id', m.meta.merchantId);
             wrap.innerHTML = `
             <div class="avatar-wrap" role="button" tabindex="0">
@@ -251,9 +280,6 @@ export async function init(force = false) { // Make function async
     function hideMerchantPage() {
         merchantPage.style.display = 'none';
         defaultFeed.style.display = '';
-        segmentedControls.style.display = 'flex';
-        const activeStory = storiesRow.querySelector('.story-item.active');
-        if (activeStory) activeStory.classList.remove('active');
         currentMerchant = null;
 
         // Dispatch an event to notify top-nav to revert to its original state
@@ -267,15 +293,6 @@ export async function init(force = false) { // Make function async
 
     function showMerchantPage(merchant) {
         currentMerchant = merchant;
-
-        // --- FIX: Restore the logic to add the 'active' class ---
-        // 1. Remove 'active' from any previously selected story
-        view.querySelectorAll('.story-item.active').forEach(el => el.classList.remove('active'));
-        // 2. Find and add 'active' to the newly clicked story
-        const storyEl = storiesRow.querySelector(`.story-item[data-id='${merchant.meta.merchantId}']`);
-        if (storyEl) {
-            storyEl.classList.add('active');
-        }
 
         // --- FIX: Restore the call to render the merchant's items ---
         renderMerchantFeed(merchant.meta.merchantId); 
@@ -376,7 +393,19 @@ export async function init(force = false) { // Make function async
         if (id) {
             const m = merchants.find(x => String(x.meta.merchantId) === String(id));
             if (m) {
-                showMerchantPage(m);
+                // --- FIX: Check for stories from the fetched stories data ---
+                const hasStory = stories.some(storyCollection => 
+                    storyCollection.meta.links.merchantId === m.meta.merchantId &&
+                    storyCollection.stories?.some(s => s.status === 'active')
+                );
+
+                if (hasStory) {
+                    // --- FIX: Show merchant page BEFORE opening story viewer ---
+                    showMerchantPage(m);
+                    storyViewer.open(m.meta.merchantId); // Open story viewer
+                } else {
+                    showMerchantPage(m); // Fallback to merchant page
+                }
             }
         }
     });

@@ -85,6 +85,8 @@ const APP_SHELL_URLS = [
 
   //Modals
   './source/modals/account-switcher.html',
+  './source/modals/story-viewer/story-viewer.html',
+  './source/modals/story-viewer/story-viewer.js',
 
   // Chat feature
   './source/common/pages/chat.html',

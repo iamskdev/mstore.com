@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <title>Story Viewer - Demo</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --accent-color: #e74c3c;
+      --text-color: #fff;
+      --background-color: #000;
+      --overlay-color: rgba(0, 0, 0, 0.8);
+      --card-color: rgba(255, 255, 255, 0.1);
+      --border-radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--background-color);
+      color: var(--text-color);
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+
+    .story-viewer-container {
+      position: fixed;
+      inset: 0;
+      background: var(--background-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    /* Fullscreen mode specific adjustments */
+    :fullscreen .story-viewer-content {
+      height: auto; /* Let content define the height, respecting flex properties */
+      border: none; /* Remove border in true fullscreen */
+      box-shadow: none; /* Remove shadow in true fullscreen */
+      /* Ensure safe area is respected even in fullscreen */
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .story-viewer-content {
+      width: 100%;
+      height: 100dvh; /* Use dynamic viewport height to adjust for browser UI */
+      background: var(--background-color);
+      display: flex; /* Use flexbox for a structured layout */
+      flex-direction: column; /* Stack children vertically */
+      position: relative; /* Keep for gesture indicators */
+      overflow: hidden;
+      padding-top: env(safe-area-inset-top, 0px); /* Space for status bar */
+      padding-bottom: env(safe-area-inset-bottom, 0px); /* Space for home/gesture bar */
+    }
+
+/* --- Desktop & Tablet View --- */
+/* On larger screens, constrain the viewer to a phone-like aspect ratio */
+@media screen and (min-width: 360px) {
+  .story-viewer-content {
+    max-width: 360px; /* A good width for a phone-like view */
+    height: 100%; /* Make it take the full height of the padded container */
+    border: 2px solid var(--border-color); /* Added border for visibility on large screens */
+    padding: 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Ensure content stays within rounded corners */
+    flex-grow: 0; /* Do not allow the container to grow unnecessarily */
+  }
+
+  .story-part-media {
+    flex-grow: 0; /* Don't allow media area to grow unnecessarily */
+    /* Set a fixed aspect ratio for the media area */
+    aspect-ratio: 9 / 16;
+  }
+}
+
+    /* Header */
+    .story-header {
+      flex-shrink: 0; /* Prevent header from shrinking */ 
+      padding: 8px 8px 8px 4px; /* Adjusted padding for balance */
+      display: flex;
+      align-items: center;
+      gap: 4px; /* Reduced from 8px for tighter spacing */
+      z-index: 20;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .fullscreen-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+      display: none; /* JS se control hoga */
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+    }
+
+    .story-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
+    }
+
+    .story-info {
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
+      line-height: 1.2;
+      flex: 1;
+    }
+
+    .story-name {
+      font-weight: bold;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .story-time {
+      font-size: 11px;
+      color: #bbb;
+    }
+
+    .menu-container {
+      position: relative;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      transition: background 0.2s;
+    }
+
+    .menu-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--overlay-color);
+      backdrop-filter: blur(10px);
+      border-radius: var(--border-radius);
+      padding: 8px 0;
+      min-width: 150px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 30;
+      display: none;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+      background: none;
+      color: white;
+      width: 100%;
+      text-align: left;
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-item.delete {
+      color: var(--accent-color);
+    }
+
+    /* Toggle Role */
+    .toggle-role {
+      position: absolute;
+      bottom: 70px;
+      left: 12px;
+      z-index: 20;
+      background: #ff9800;
+      color: #000;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Progress */
+    .progress-container {
+      flex-shrink: 0; /* Prevent progress bar from shrinking */
+      padding: 2px 2px 0 2px; /* Give it some space */
+      display: flex;
+      gap: 4px;
+      z-index: 15;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: white;
+      width: 0;
+      transition: width 0.1s linear;
+    }
+
+    /* Slide Area */
+    #slideArea {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      background: #111;
+      position: relative;
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+
+    #slideArea img, 
+    #slideArea video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Reverted to 'contain' to prevent cropping */
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* Bottom bar */
+    .bottom-bar {
+      flex-shrink: 0; /* Prevent footer from shrinking */
+      display: flex;
+      justify-content: center; /* Center content in owner mode */
+      align-items: center;
+      gap: 10px;
+      padding: 8px 8px; /* Adjusted padding for balance */
+      font-size: 13px;
+      height: 50px; /* Set a minimum height for stability */
+      z-index: 20;
+    }
+
+    .action-button {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 15px;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .action-button:hover {
+      color: var(--primary-color);
+    }
+
+    .story-stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      vertical-align: middle;
+      font-size: 20px;
+      transition: color 0.2s;
+    }
+
+    .story-stat:hover {
+      color: var(--primary-color);
+    }
+
+    /* New style for the send button */
+    .send-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 17px; /* Increased size to match other icons */
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+   
+    /* New styles for the message input in the bottom bar */
+    .bottom-bar .middle-content {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Wrapper for the input and send button */
+    .message-input-wrapper {
+      position: relative;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .message-input {
+      flex-grow: 1;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px; /* Make it more rounded */
+      padding: 8px 16px; /* Adjust padding */
+      color: white;
+      font-size: 13px;
+      width: 100%;
+    }
+
+    /* Remove border from input in owner view */
+    .bottom-bar.owner-view .message-input {
+      border: none;
+      background: transparent; /* Also remove background for a cleaner look */
+      padding: 0; /* Remove padding from the base message-input in owner view */
+    }
+
+    /* New class for owner view button to ensure alignment */
+    .owner-view-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 100%; /* Ensure it takes full height of its parent */
+      padding: 8px 16px; /* Apply padding here instead */
+    }
+    .owner-view-button i {
+      line-height: 1; /* Helps with vertical centering of the icon font */
+      font-size: 13px; /* Explicitly set font size to match text */
+      position: relative; /* Enable positioning */
+      top: 1px; /* Nudge the icon down slightly */
+      vertical-align: middle; /* Explicitly align icon */
+    }
+    .owner-view-button span {
+      font-size: 13px; /* Explicitly set font size to match icon */
+      line-height: 1; /* Ensure text also has consistent line height */
+      vertical-align: middle; /* Explicitly align text */
+    }
+
+    /* Config Modal */
+    .config-modal {
+      position: fixed;
+      inset: 0;
+      background: var(--overlay-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      padding: 20px;
+      display: none;
+    }
+
+    .config-modal.show {
+      display: flex;
+    }
+
+    .config-content {
+      background: #1a1a1a;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      max-width: 400px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .config-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .config-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .config-group {
+      margin-bottom: 16px;
+    }
+
+    .config-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .config-input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+
+    .config-checkbox {
+      margin-right: 8px;
+    }
+
+    /* Insights Modal */
+    .insights-modal {
+      position: fixed;
+      inset: 0;
+      padding: 0 12px;
+      background: var(--overlay-color);
+      z-index: 200;
+      display: none;
+      align-items: flex-end; /* Align content to the bottom */
+      transition: background-color 0.3s ease;
+    }
+
+    .insights-modal.show {
+      display: flex;
+      background-color: var(--overlay-color);
+    }
+
+    .insights-modal:not(.show) {
+      background-color: transparent;
+    }
+
+    .insights-content {
+      background: #1a1a1a;
+      border-radius: 16px 16px 0 0; /* Rounded corners only at the top */
+      padding: 20px;
+      width: 100%;
+      max-height: 75vh; /* Limit height */
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.3s ease-out;
+    }
+
+    .insights-modal.show .insights-content {
+      transform: translateY(0);
+    }
+
+    /* Handle for dragging */
+    .insights-handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      margin: -10px auto 10px;
+      transition: opacity 0.1s ease-out; /* Handle ke fade-out ke liye */
+    }
+
+    .insights-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .insights-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* Remove tabs styling */
+    .insights-tabs { display: none; }
+
+
+    .insights-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .insight-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between; /* To push like icon to the right */
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .insight-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .insight-info {
+      flex: 1;
+    }
+
+    .insight-name {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .insight-time {
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    .insight-like-icon {
+      font-size: 16px;
+      color: var(--accent-color);
+      flex-shrink: 0;
+    }
+
+    /* Gesture indicators */
+    .gesture-indicator {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      z-index: 10;
+      display: none;
+      pointer-events: none;
+    }
+
+    .gesture-prev {
+      left: 10px;
+    }
+
+    .gesture-next {
+      right: 10px;
+    }
+
+    /* --- NEW: Flexbox Layout Structure --- */
+    .story-part-progress,
+    .story-part-header,
+    .story-part-footer {
+      flex-shrink: 0; /* Prevent these parts from shrinking */
+      position: relative; /* Ensure z-index works */
+      z-index: 20;
+    }
+
+    .story-part-media {
+      flex-grow: 1; /* Allow this part to take up all remaining space on mobile */
+      position: relative; /* For gesture indicators */
+      display: grid; /* To center the content */
+      place-items: center;
+      overflow: hidden;
+      background: #111;
+      width: 100%; /* Ensure it takes the full width of the container */
+      touch-action: pan-y;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="story-viewer-container" id="storyModal">
+  <div class="story-viewer-content">
+    <!-- Part 1: Progress Bar Area -->
+    <div class="story-part-progress" id="storyPartProgress">
+        <div class="progress-container" id="progressContainer"></div>
+      </div>
+
+    <!-- Part 2: Header Area -->
+    <div class="story-part-header" id="storyPartHeader">
+        <div class="story-header">
+          <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+          <img src="https://picsum.photos/40" alt="DP" class="story-avatar">
+          <div class="story-info">
+            <div class="story-name" id="storyName">Merchant</div>
+            <div class="story-time" id="storyTime">2h ago</div>
+          </div>
+          <button class="fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen"><i class="fas fa-expand"></i></button>
+          <div class="menu-container">
+            <button class="menu-btn" id="menuBtn"><i class="fas fa-ellipsis-v"></i></button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <button class="menu-item" id="reportBtn">Report</button>
+              <button class="menu-item delete" id="deleteBtn" style="display: none;">Delete</button>
+              <button class="menu-item" id="shareBtn">Share</button>
+              <button class="menu-item" id="saveBtn">Save</button>
+              <button class="menu-item" id="configBtn">Settings</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Toggle Role -->
+    <button class="toggle-role" id="toggleRoleBtn">Switch to Owner</button> <!-- This remains absolutely positioned -->
+
+    <!-- Part 3: Media Area -->
+    <div class="story-part-media" id="slideArea"> <!-- This ID is still used by JS -->
+        <div class="gesture-indicator gesture-prev">← Previous</div>
+        <div class="gesture-indicator gesture-next">Next →</div>
+    </div>
+
+    <!-- Part 4: Footer Area -->
+    <div class="story-part-footer">
+      <div class="bottom-bar" id="bottomBar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Config Modal -->
+<div class="config-modal" id="configModal">
+  <div class="config-content">
+    <div class="config-header">
+      <div class="config-title">Story Settings</div>
+      <button class="close-btn" id="closeConfigBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="config-group">
+      <label class="config-label">
+        <input type="checkbox" class="config-checkbox" id="autoNextCheckbox" checked>
+        Auto advance to next story
+      </label>
+    </div>
+    <div class="config-group">
+      <label class="config-label">
+        <input type="checkbox" class="config-checkbox" id="tapToPauseCheckbox">
+        Tap to pause/resume
+      </label>
+    </div>
+    <div class="config-group">
+      <label class="config-label">
+        <input type="checkbox" class="config-checkbox" id="swipeNavigationCheckbox" checked>
+        Swipe navigation
+      </label>
+    </div>
+    <div class="config-group">
+      <label class="config-label" for="storyDuration">Story duration (seconds)</label>
+      <input type="number" class="config-input" id="storyDuration" min="3" max="15" value="5">
+    </div>
+    <div class="config-group">
+      <label class="config-label" for="volumeControl">Volume</label>
+      <input type="range" class="config-input" id="volumeControl" min="0" max="100" value="80">
+    </div>
+    <div class="config-group">
+      <button class="action-button" id="resetConfigBtn" style="width: 100%;">Reset to Default</button>
+    </div>
+  </div>
+</div>
+
+<!-- Insights Modal -->
+<div class="insights-modal" id="insightsModal">
+  <div class="insights-content">
+    <div class="insights-handle"></div>
+    <div class="insights-header">
+        <div class="insights-title" id="insightsTitle">Story Insights</div>
+      <button class="close-btn" id="closeInsightsBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="insights-list" id="insightsList">
+      <!-- Will be populated dynamically -->
+    </div>
+  </div>
+</div>
+
+<script>
+
+</script>
+
+</body>
+</html>

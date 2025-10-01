@@ -98,6 +98,16 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // --- NEW: Story-specific rules ---
+    match /stories/{merchantId} {
+      // Anyone can read stories.
+      allow read: if true;
+      // Only the linked owner or an Admin can create stories.
+      allow create: if isOwnerOfLinkedDoc(request.resource.data.meta.links.userId) || isAdmin();
+      // Only the linked owner or an Admin can update/delete stories.
+      allow update, delete: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
+    }
+
     // Alerts are linked to users and should only be accessible by them or an Admin.
     match /alerts/{alertId} {
       allow read, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();

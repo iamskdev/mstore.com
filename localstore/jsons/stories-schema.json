@@ -1,0 +1,338 @@
+{
+  "meta": {
+    "version": "1.0",
+    "schemaVersion": "2025.2",
+    "apiVersion": "v3",
+    "compatibility": ["v3", "v2", "v1"],
+    "features": [
+      "interactive", "ar", "live", "shoppable", 
+      "multi_media", "real_time", "analytics_v2", "blockchain"
+    ],
+    "links": {
+      "merchantId": "MRC000000000001",
+      "userId": "USR000000000002",
+      "businessUnit": "BU000000000001",
+      "campaignId": "CMP000000000001",
+      "workspaceId": "WS000000000001"
+    },
+    "createdAt": "2025-09-30T10:00:00Z",
+    "updatedAt": "2025-09-30T18:30:00Z",
+    "pagination": {
+      "totalStories": 2,
+      "currentPage": 1,
+      "totalPages": 1,
+      "hasMore": false
+    },
+    "capabilities": {
+      "maxMediaLayers": 5,
+      "supportsAR": true,
+      "supportsLive": true,
+      "maxDuration": 30000,
+      "supportedFormats": ["image", "video", "3d", "live", "ar", "html5"]
+    }
+  },
+  "stories": [
+    {
+      "storyId": "STY000000000001",
+      "version": "interactive-v2",
+      "status": "active",
+      "storyType": "composition",
+      "category": "product_launch",
+      "subCategory": "food_grocery",
+      "priority": "high",
+      "weight": 1.0,
+      
+      "flags": {
+        "visibility": {
+          "isPublic": true,
+          "isArchived": false,
+          "isDraft": false,
+          "isTest": false
+        },
+        "interactivity": {
+          "isInteractive": true,
+          "isShoppable": true,
+          "hasUserInput": true,
+          "isMultiUser": false
+        },
+        "attributes": {
+          "isPromotional": false,
+          "isSensitive": false,
+          "isAgeRestricted": false,
+          "hasAudio": true,
+          "isVertical": true,
+          "isLooping": false
+        },
+        "technology": {
+          "usesAR": false,
+          "usesAI": true,
+          "isLive": false,
+          "isRealTime": false,
+          "usesBlockchain": false
+        }
+      },
+
+      "content": {
+        "type": "composition",
+        "layout": "stacked",
+        "aspectRatio": "9:16",
+        "theme": "modern_light",
+        "layers": [
+          {
+            "layerId": "LYR000000000001",
+            "type": "background",
+            "zIndex": 0,
+            "mediaType": "image",
+            "format": "jpeg",
+            "urls": {
+              "original": "https://picsum.photos/seed/story01/1080/1920",
+              "thumbnail": "https://picsum.photos/seed/story01/200/355",
+              "optimized": "https://picsum.photos/seed/story01/540/960",
+              "fallback": "https://picsum.photos/seed/story01/300/533",
+              "ar_asset": "https://assets.com/ar/story01.usdz"
+            },
+            "duration": 5000,
+            "metadata": {
+              "width": 1080,
+              "height": 1920,
+              "size": 2048576,
+              "dominantColor": "#FF6B35",
+              "altText": "Fresh bakery items and dairy products"
+            }
+          },
+          {
+            "layerId": "LYR000000000002",
+            "type": "text_overlay",
+            "zIndex": 1,
+            "text": "Fresh arrivals this week! 🍞🥛",
+            "style": {
+              "fontFamily": "Inter",
+              "fontSize": 24,
+              "fontWeight": "bold",
+              "textColor": "#FFFFFF",
+              "backgroundColor": "#00000080",
+              "position": "bottom",
+              "alignment": "center",
+              "animation": "slide_up"
+            }
+          },
+          {
+            "layerId": "LYR000000000003",
+            "type": "interactive",
+            "zIndex": 2,
+            "component": "poll",
+            "position": {"x": 50, "y": 30},
+            "config": {
+              "question": "Which bread do you prefer?",
+              "options": [
+                {"id": "opt1", "text": "Whole Wheat", "emoji": "🍞"},
+                {"id": "opt2", "text": "Multigrain", "emoji": "🥖"}
+              ],
+              "isAnonymous": false,
+              "allowsMultiple": false,
+              "duration": 5000
+            }
+          }
+        ],
+        
+        "navigation": {
+          "swipeUp": {
+            "enabled": true,
+            "action": "cta",
+            "target": "/items/ITM000000000001"
+          },
+          "tap": {
+            "enabled": true,
+            "actions": [
+              {"area": "left", "action": "previous"},
+              {"area": "right", "action": "next"},
+              {"area": "center", "action": "pause"}
+            ]
+          }
+        },
+
+        "cta": {
+          "primary": {
+            "type": "product",
+            "text": "Shop Now 🛒",
+            "link": "/items/ITM000000000001",
+            "style": {
+              "backgroundColor": "#FF6B35",
+              "textColor": "#FFFFFF",
+              "position": "bottom_right"
+            },
+            "analyticsTag": "story_cta_primary"
+          },
+          "secondary": {
+            "type": "share",
+            "text": "Share with Friends",
+            "action": "share_story",
+            "style": {
+              "backgroundColor": "#4A90E2",
+              "textColor": "#FFFFFF",
+              "position": "bottom_left"
+            }
+          }
+        },
+
+        "personalization": {
+          "enabled": true,
+          "type": "ai_recommendation",
+          "factors": ["user_history", "location", "preferences"],
+          "dynamicContent": [
+            {
+              "field": "textOverlay",
+              "type": "user_name",
+              "template": "Hey {name}, fresh arrivals!"
+            }
+          ]
+        }
+      },
+
+      "products": [
+        {
+          "productId": "ITM000000000001",
+          "type": "physical",
+          "name": "Organic Whole Wheat Bread",
+          "price": 4.99,
+          "currency": "USD",
+          "tags": ["bakery", "organic", "fresh"],
+          "position": {"x": 65, "y": 40},
+          "hotspot": {
+            "radius": 50,
+            "pulseEffect": true
+          }
+        }
+      ],
+
+      "analytics": {
+        "basic": {
+          "views": 452,
+          "uniqueViews": 420,
+          "likes": 120,
+          "replies": 15,
+          "shares": 25
+        },
+        "advanced": {
+          "completionRate": 89.2,
+          "avgViewTime": 4200,
+          "dropOffPoint": 3800,
+          "interactionRate": 26.5,
+          "conversionRate": 9.8
+        },
+        "engagement": {
+          "ctaClicks": 45,
+          "pollResponses": 89,
+          "productViews": 67,
+          "hotspotClicks": 23,
+          "shareCompletions": 18
+        },
+        "audience": {
+          "demographics": {
+            "ageRange": "25-34",
+            "genderSplit": {"male": 45, "female": 52, "other": 3},
+            "topLocations": ["New York", "London", "Tokyo"]
+          },
+          "deviceBreakdown": {
+            "mobile": 78,
+            "tablet": 15,
+            "desktop": 7
+          }
+        }
+      },
+
+      "monetization": {
+        "type": "affiliate",
+        "model": "cps",
+        "commissionRate": 5.0,
+        "revenueGenerated": 224.55,
+        "currency": "USD",
+        "products": ["ITM000000000001"]
+      },
+
+      "privacy": {
+        "visibility": "public",
+        "allowedAudience": "all",
+        "geoRestrictions": [],
+        "ageRestriction": false,
+        "dataCollection": {
+          "collectUserData": true,
+          "trackBehavior": true,
+          "retentionPeriod": 30
+        },
+        "compliance": ["GDPR", "CCPA", "COPPA"]
+      },
+
+      "audit": {
+        "created": {
+          "at": "2025-09-30T14:00:00Z",
+          "by": "USR000000000002",
+          "platform": "story_creator_v3"
+        },
+        "published": {
+          "at": "2025-09-30T14:00:00Z",
+          "by": "USR000000000002",
+          "channel": "mobile_app"
+        },
+        "updated": {
+          "at": "2025-09-30T14:00:00Z",
+          "by": "USR000000000002",
+          "reason": "content_optimization"
+        },
+        "expires": {
+          "at": "2025-10-01T14:00:00Z",
+          "autoDelete": true
+        },
+        "versionHistory": [
+          {
+            "version": "1.0",
+            "timestamp": "2025-09-30T13:30:00Z",
+            "changes": ["initial_creation"]
+          }
+        ]
+      },
+
+      "extensions": {
+        "ar": {
+          "enabled": false,
+          "assetUrl": null,
+          "platforms": ["ios_arkit", "android_arcore"]
+        },
+        "ai": {
+          "enabled": true,
+          "model": "gpt-4",
+          "features": ["content_personalization", "analytics_insights"]
+        },
+        "blockchain": {
+          "enabled": false,
+          "nftMetadata": null,
+          "smartContract": null
+        },
+        "plugins": [
+          {
+            "id": "weather_plugin",
+            "enabled": true,
+            "config": {"showTemperature": true}
+          }
+        ]
+      }
+    }
+  ],
+
+  "config": {
+    "performance": {
+      "lazyLoading": true,
+      "prefetch": true,
+      "cacheTtl": 3600
+    },
+    "fallbacks": {
+      "onError": "show_thumbnail",
+      "onSlowNetwork": "reduce_quality",
+      "onUnsupported": "show_alternative"
+    },
+    "experiments": {
+      "abTesting": true,
+      "featureFlags": ["new_ui", "enhanced_analytics"]
+    }
+  }
+}

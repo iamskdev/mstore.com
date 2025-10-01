@@ -1,0 +1,755 @@
+<div class="story-viewer-container" id="storyModal">
+  <div class="story-viewer-content">
+    <!-- Part 1: Progress Bar Area -->
+    <!-- FIX: Moved progress bar outside of the flex layout to correctly position it at the top -->
+    <div class="story-part-progress" id="storyPartProgress">
+      <div class="progress-container" id="progressContainer"></div>
+    </div>
+
+    <!-- Part 2: Header Area -->
+    <div class="story-part-header" id="storyPartHeader">
+      <!-- FIX: Added a wrapper for header content to handle padding correctly -->
+      <div class="story-header-content">
+          <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+          <img src="https://picsum.photos/40" alt="DP" class="story-viewer-avatar">
+          <div class="story-info">
+            <div class="story-name" id="storyName">Merchant</div>
+            <div class="story-time" id="storyTime">2h ago</div>
+          </div>
+          <button class="fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen"><i class="fas fa-expand"></i></button>
+          <div class="menu-container">
+            <button class="menu-btn" id="menuBtn"><i class="fas fa-ellipsis-v"></i></button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <button class="menu-item" id="reportBtn">Report</button>
+              <button class="menu-item delete" id="deleteBtn" style="display: none;">Delete</button>
+              <button class="menu-item" id="shareBtn">Share</button>
+              <button class="menu-item" id="saveBtn">Save</button>
+              <button class="menu-item" id="configBtn">Settings</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- Toggle Role -->
+    <button class="toggle-role" id="toggleRoleBtn">Switch to Owner</button> <!-- This remains absolutely positioned -->
+
+    <!-- Part 3: Media Area -->
+    <div class="story-part-media" id="slideArea"> <!-- This ID is still used by JS -->
+        <div class="gesture-indicator gesture-prev">← Previous</div>
+        <div class="gesture-indicator gesture-next">Next →</div>
+    </div>
+
+    <!-- Part 4: Footer Area -->
+    <div class="story-part-footer">
+      <div class="bottom-bar" id="bottomBar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Config Modal -->
+<div class="config-modal" id="configModal">
+  <div class="config-content">
+    <div class="config-header">
+      <div class="config-title">Story Settings</div>
+      <button class="close-btn" id="closeConfigBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="config-group">
+      <label class="config-label">
+        <input type="checkbox" class="config-checkbox" id="autoNextCheckbox" checked>
+        Auto advance to next story
+      </label>
+    </div>
+    <div class="config-group">
+      <label class="config-label">
+        <input type="checkbox" class="config-checkbox" id="tapToPauseCheckbox">
+        Tap to pause/resume
+      </label>
+    </div>
+    <div class="config-group">
+      <label class="config-label">
+        <input type="checkbox" class="config-checkbox" id="swipeNavigationCheckbox" checked>
+        Swipe navigation
+      </label>
+    </div>
+    <div class="config-group">
+      <label class="config-label" for="storyDuration">Story duration (seconds)</label>
+      <input type="number" class="config-input" id="storyDuration" min="3" max="15" value="5">
+    </div>
+    <div class="config-group">
+      <label class="config-label" for="volumeControl">Volume</label>
+      <input type="range" class="config-input" id="volumeControl" min="0" max="100" value="80">
+    </div>
+    <div class="config-group">
+      <button class="action-button" id="resetConfigBtn" style="width: 100%;">Reset to Default</button>
+    </div>
+  </div>
+</div>
+
+<!-- Insights Modal -->
+<div class="insights-modal" id="insightsModal">
+  <div class="insights-content">
+    <div class="insights-handle"></div>
+    <div class="insights-header">
+        <div class="insights-title" id="insightsTitle">Story Insights</div>
+      <button class="close-btn" id="closeInsightsBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="insights-list" id="insightsList">
+      <!-- Will be populated dynamically -->
+    </div>
+  </div>
+</div>
+
+<style>
+    .story-viewer-container {
+        position: fixed;
+        inset: 0;
+        background: var(--bg-primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: var(--z-index-story-viewer, 10000); /* --- FIX: Use global z-index variable --- */
+        overflow: hidden;
+    }
+
+    /* Fullscreen mode specific adjustments */
+    :fullscreen .story-viewer-content {
+        height: auto;
+        /* Let content define the height, respecting flex properties */
+        border: none;
+        /* Remove border in true fullscreen */
+        box-shadow: none;
+        /* Remove shadow in true fullscreen */
+        /* Ensure safe area is respected even in fullscreen */
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .story-viewer-content {
+        width: 100%;
+        height: 100dvh;
+        /* Use dynamic viewport height to adjust for browser UI */
+        background: var(--bg-primary);
+        display: flex;
+        /* Use flexbox for a structured layout */
+        flex-direction: column;
+        /* Stack children vertically */
+        position: relative;
+        /* Keep for gesture indicators */
+        overflow: hidden;
+        /* FIX: Removed padding-top. This will be handled by individual components. */
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        /* Space for home/gesture bar */
+    }
+
+    /* --- Desktop & Tablet View --- */
+    /* On larger screens, constrain the viewer to a phone-like aspect ratio */
+    @media screen and (min-width: 360px) {
+        .story-viewer-content {
+            max-width: 360px;
+            /* A good width for a phone-like view */
+            height: 100%;
+            /* Make it take the full height of the padded container */
+            border: 2px solid var(--border-color);
+            /* Added border for visibility on large screens */
+            padding: 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            /* Ensure content stays within rounded corners */
+            flex-grow: 0;
+            /* Do not allow the container to grow unnecessarily */
+        }
+
+        .story-part-media {
+            flex-grow: 0;
+            /* Don't allow media area to grow unnecessarily */
+            /* Set a fixed aspect ratio for the media area */
+            aspect-ratio: 9 / 16;
+        }
+    }
+
+    /* --- NEW: Flexbox Layout Structure --- */
+    .story-part-progress {
+        position: absolute;
+        left: 4px; /* FIX: Use left/right for full width with margin */
+        right: 4px;
+        top: -30px; /* FIX: Add top property to position it from the top edge */
+        z-index: 25; /* High z-index to be on top */
+    }
+    .story-part-header {
+        flex-shrink: 0; /* Prevent these parts from shrinking */
+        z-index: 20; /* FIX: Removed position: relative as it was causing layout issues */
+        padding-top: 3px;
+    }
+    .story-part-footer {
+        flex-shrink: 0; /* Prevent these parts from shrinking */
+        position: relative; /* Ensure z-index works */
+        z-index: 20;
+    }
+
+    /* Header */
+    .story-header-content {
+        flex-shrink: 0;
+        /* Prevent header from shrinking. The progress bar is positioned absolutely above this. */
+        padding: 8px 8px 8px 4px; /* FIX: Padding applied directly to the header part */
+        /* Adjusted padding for balance */
+        display: flex;
+        align-items: center;
+        gap: 4px; /* Reduced from 8px for tighter spacing */
+        z-index: 20;
+    }
+
+    .back-btn {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 20px;
+        cursor: pointer;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .fullscreen-btn {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 18px;
+        cursor: pointer;
+        padding: 4px;
+        display: none;
+        /* JS se control hoga */
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+    }
+
+    .story-viewer-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 2px solid white;
+        object-fit: cover;
+    }
+
+    .story-info {
+        display: flex;
+        flex-direction: column;
+        font-size: 12px;
+        line-height: 1.2;
+        flex: 1;
+    }
+
+    .story-name {
+        font-weight: bold;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .story-time {
+        font-size: 11px;
+        color: #bbb;
+    }
+
+    .menu-container {
+        position: relative;
+    }
+
+    .menu-btn {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 20px;
+        cursor: pointer;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        transition: background 0.2s;
+    }
+
+    .menu-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: rgba(var(--bg-secondary-rgb), 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 8px;
+        padding: 8px 0;
+        min-width: 150px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 30;
+        display: none;
+    }
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s;
+        border: none;
+        background: none;
+      color: var(--text-primary);
+        width: 100%;
+        text-align: left;
+    }
+
+    .menu-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-item.delete {
+        color: var(--accent-danger);
+    }
+
+    /* Toggle Role */
+    .toggle-role {
+        position: absolute;
+        bottom: 70px;
+        left: 12px;
+        z-index: 20;
+        background: #ff9800;
+        color: #000;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    /* Progress */
+    .progress-container {
+        flex-shrink: 0;
+        height: 2.5px;
+        background: transparent;
+        display: flex;
+        width: 100%; /* FIX: Ensure the container takes full width of its parent */
+        gap: 4px;
+        z-index: 15;
+    }
+
+    .progress-bar {
+        flex: 1;
+        height: 2.5px; /* FIX: Set a specific, thinner height */
+        background: rgba(255, 255, 255, 0.3); /* --- FIX: Set a background for the unfilled part --- */
+        border-radius: 2.5px; /* --- FIX: Add border-radius to match the height and make it a perfect pill shape --- */
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .progress-fill {
+        height: 100%; /* --- FIX: Use 100% to fill the parent's height --- */
+        border-radius: 2.5px; /* --- FIX: Add border-radius to the fill element as well for consistency --- */
+        background: white;
+        width: 0;
+    }
+
+    /* Slide Area */
+    .story-part-media {
+        flex-grow: 1;
+        /* Allow this part to take up all remaining space on mobile */
+        position: relative;
+        /* For gesture indicators */
+        display: grid;
+        /* To center the content */
+        place-items: center;
+        overflow: hidden;
+        background: #111;
+        width: 100%;
+        /* Ensure it takes the full width of the container */
+        touch-action: pan-y;
+    }
+
+    .story-part-media img,
+    .story-part-media video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        /* Reverted to 'contain' to prevent cropping */
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+
+    /* Bottom bar */
+    .story-part-footer {
+        flex-shrink: 0; /* Prevent footer from shrinking */
+        padding: 8px;
+        height: 50px; /* Set a minimum height for stability */
+        z-index: 20;
+    }
+
+    .bottom-bar {
+      width: 100%;
+      display: flex;
+      justify-content: center; /* Center content in owner mode */
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      height: 100%;
+    }
+
+    .action-button {
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        padding: 8px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 15px;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .action-button:hover {
+        color: var(--accent-primary);
+    }
+
+    .story-stat {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        vertical-align: middle;
+        font-size: 20px;
+        transition: color 0.2s;
+    }
+
+    .story-stat:hover {
+        color: var(--accent-primary);
+    }
+
+    /* New style for the send button */
+    .send-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        font-size: 17px;
+        /* Increased size to match other icons */
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* New styles for the message input in the bottom bar */
+    .bottom-bar .middle-content {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Wrapper for the input and send button */
+    .message-input-wrapper {
+        position: relative;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .message-input {
+        flex-grow: 1;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        /* Make it more rounded */
+        padding: 8px 16px;
+        /* Adjust padding */
+      color: var(--text-primary);
+        font-size: 13px;
+        width: 100%;
+    }
+
+    /* Remove border from input in owner view */
+    .bottom-bar.owner-view .message-input {
+        border: none;
+        background: transparent;
+        /* Also remove background for a cleaner look */
+        padding: 0;
+        /* Remove padding from the base message-input in owner view */
+    }
+
+    /* New class for owner view button to ensure alignment */
+    .owner-view-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        height: 100%;
+        /* Ensure it takes full height of its parent */
+        padding: 8px 16px;
+        /* Apply padding here instead */
+    }
+
+    .owner-view-button i {
+        line-height: 1;
+        /* Helps with vertical centering of the icon font */
+        font-size: 13px;
+        /* Explicitly set font size to match text */
+        position: relative;
+        /* Enable positioning */
+        top: 1px;
+        /* Nudge the icon down slightly */
+        vertical-align: middle;
+        /* Explicitly align icon */
+    }
+
+    .owner-view-button span {
+        font-size: 13px;
+        /* Explicitly set font size to match icon */
+        line-height: 1;
+        /* Ensure text also has consistent line height */
+        vertical-align: middle;
+        /* Explicitly align text */
+    }
+
+    /* --- NEW: Like Button Animation --- */
+    .like-btn .fa-heart {
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .like-btn.liked .fa-heart {
+        color: var(--accent-danger, #e74c3c); /* Red color for liked state */
+        animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes heart-pop {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+    }
+
+    /* Config Modal */
+    .config-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(var(--bg-secondary-rgb), 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 200;
+        padding: 20px;
+        display: none;
+    }
+
+    .config-modal.show {
+        display: flex;
+    }
+
+    .config-content {
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        padding: 20px;
+        max-width: 400px;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .config-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .config-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .config-group {
+        margin-bottom: 16px;
+    }
+
+    .config-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .config-input {
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .config-checkbox {
+        margin-right: 8px;
+    }
+
+    /* Insights Modal */
+    .insights-modal {
+        position: fixed;
+        inset: 0;
+        padding: 0 12px;
+        background: rgba(var(--bg-secondary-rgb), 0.8);
+        z-index: var(--z-index-story-viewer, 1);
+        display: none;
+        align-items: flex-end;
+        /* Align content to the bottom */
+        transition: background-color 0.3s ease;
+    }
+
+    .insights-modal.show {
+        display: flex;
+        background-color: rgba(var(--bg-secondary-rgb), 0.8);
+    }
+
+    .insights-modal:not(.show) {
+        background-color: transparent;
+    }
+
+    .insights-content {
+        background: var(--bg-secondary);
+        border-radius: 16px 16px 0 0;
+        /* Rounded corners only at the top */
+        padding: 20px;
+        width: 100%;
+        max-height: 75vh;
+        /* Limit height */
+        display: flex;
+        flex-direction: column;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-out;
+    }
+
+    .insights-modal.show .insights-content {
+        transform: translateY(0);
+    }
+
+    /* Handle for dragging */
+    .insights-handle {
+        width: 40px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        margin: -10px auto 10px;
+        transition: opacity 0.1s ease-out;
+        /* Handle ke fade-out ke liye */
+    }
+
+    .insights-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .insights-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    /* Remove tabs styling */
+    .insights-tabs {
+        display: none;
+    }
+
+
+    .insights-list {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .insight-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        /* To push like icon to the right */
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .insight-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .insight-info {
+        flex: 1;
+    }
+
+    .insight-name {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .insight-time {
+        font-size: 12px;
+        color: #bbb;
+    }
+
+    .insight-like-icon {
+        font-size: 16px;
+        color: var(--accent-danger);
+        flex-shrink: 0;
+    }
+
+    /* Gesture indicators */
+    .gesture-indicator {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+      color: var(--text-primary);
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        z-index: 10;
+        display: none;
+        pointer-events: none;
+    }
+
+    .gesture-prev {
+        left: 10px;
+    }
+
+    .gesture-next {
+        right: 10px;
+    }
+
+</style>

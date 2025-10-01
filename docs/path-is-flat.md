@@ -1,5 +1,5 @@
 # 📁 Project Path Tree (Gemini-friendly)
-📅 Last Updated: 27/09/2025, 19:22
+📅 Last Updated: 02/10/2025, 00:44
 
 S:\My Projects\Apna Store\mStore\.firebaserc
 S:\My Projects\Apna Store\mStore\.github\workflows\release.yml
@@ -26,7 +26,10 @@ S:\My Projects\Apna Store\mStore\.husky\pre-commit
 S:\My Projects\Apna Store\mStore\.husky\pre-push
 S:\My Projects\Apna Store\mStore\archive\card-old.html
 S:\My Projects\Apna Store\mStore\archive\error-page.html
+S:\My Projects\Apna Store\mStore\archive\story-viewer-demo.html
+S:\My Projects\Apna Store\mStore\archive\updates-demo.html
 S:\My Projects\Apna Store\mStore\docs\CHANGELOG.md
+S:\My Projects\Apna Store\mStore\docs\Id-generation.md
 S:\My Projects\Apna Store\mStore\docs\brands_list.md
 S:\My Projects\Apna Store\mStore\docs\commit-guide.md
 S:\My Projects\Apna Store\mStore\docs\commit_message.txt
@@ -100,6 +103,8 @@ S:\My Projects\Apna Store\mStore\localstore\jsons\merchants.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\orders.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\price-logs.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\promotions.json
+S:\My Projects\Apna Store\mStore\localstore\jsons\stories-schema.json
+S:\My Projects\Apna Store\mStore\localstore\jsons\stories.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\temp-chats.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\units.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\users.json
@@ -221,6 +226,7 @@ S:\My Projects\Apna Store\mStore\source\common\pages\home.html
 S:\My Projects\Apna Store\mStore\source\common\pages\item-details.html
 S:\My Projects\Apna Store\mStore\source\common\pages\notification.html
 S:\My Projects\Apna Store\mStore\source\common\pages\offline.html
+S:\My Projects\Apna Store\mStore\source\common\pages\updates.html
 S:\My Projects\Apna Store\mStore\source\common\pages\wishlist.html
 S:\My Projects\Apna Store\mStore\source\common\scripts\account.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\authentication.js
@@ -230,6 +236,7 @@ S:\My Projects\Apna Store\mStore\source\common\scripts\conversation.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\home.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\item-details.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\notification.js
+S:\My Projects\Apna Store\mStore\source\common\scripts\updates.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\wishlist.js
 S:\My Projects\Apna Store\mStore\source\common\styles\account.css
 S:\My Projects\Apna Store\mStore\source\common\styles\authentication.css
@@ -240,6 +247,7 @@ S:\My Projects\Apna Store\mStore\source\common\styles\home.css
 S:\My Projects\Apna Store\mStore\source\common\styles\item-details.css
 S:\My Projects\Apna Store\mStore\source\common\styles\notification.css
 S:\My Projects\Apna Store\mStore\source\common\styles\theme.css
+S:\My Projects\Apna Store\mStore\source\common\styles\updates.css
 S:\My Projects\Apna Store\mStore\source\common\styles\wishlist.css
 S:\My Projects\Apna Store\mStore\source\firebase\auth\auth.js
 S:\My Projects\Apna Store\mStore\source\firebase\firebase-config.js
@@ -251,6 +259,9 @@ S:\My Projects\Apna Store\mStore\source\firebase\rules\firestore.rules
 S:\My Projects\Apna Store\mStore\source\firebase\serviceAccountKey.json
 S:\My Projects\Apna Store\mStore\source\main.css
 S:\My Projects\Apna Store\mStore\source\main.js
+S:\My Projects\Apna Store\mStore\source\modals\account-switcher.html
+S:\My Projects\Apna Store\mStore\source\modals\story-viewer\story-viewer.html
+S:\My Projects\Apna Store\mStore\source\modals\story-viewer\story-viewer.js
 S:\My Projects\Apna Store\mStore\source\modules\admin\logs\activity.log
 S:\My Projects\Apna Store\mStore\source\modules\admin\logs\daily-report.log
 S:\My Projects\Apna Store\mStore\source\modules\admin\logs\error.log
@@ -270,7 +281,6 @@ S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\dev-tools.js
 S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\log-reader.js
 S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\mock-inject.js
 S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\mode-switcher.js
-S:\My Projects\Apna Store\mStore\source\modules\merchant\account.html
 S:\My Projects\Apna Store\mStore\source\modules\merchant\analytics.html
 S:\My Projects\Apna Store\mStore\source\modules\merchant\merchant-home.html
 S:\My Projects\Apna Store\mStore\source\partials\drawer\drawer.html
@@ -297,8 +307,6 @@ S:\My Projects\Apna Store\mStore\source\templates\banner.js
 S:\My Projects\Apna Store\mStore\source\templates\cards\card-grid.html
 S:\My Projects\Apna Store\mStore\source\templates\cards\card-helper.js
 S:\My Projects\Apna Store\mStore\source\templates\cards\card-list.html
-S:\My Projects\Apna Store\mStore\source\templates\chat\chat-list.html
-S:\My Projects\Apna Store\mStore\source\templates\chat\chat-list.js
 S:\My Projects\Apna Store\mStore\source\utils\cart-manager.js
 S:\My Projects\Apna Store\mStore\source\utils\cursor-zoom.js
 S:\My Projects\Apna Store\mStore\source\utils\data-manager.js

@@ -1,0 +1,106 @@
+{
+  "meta": {
+    "version": "1.0",
+    "links": {
+      "merchantId": "MRC000000000001",
+      "userId": "USR000000000002"
+    },
+    "createdAt": "2025-09-30T10:00:00Z",
+    "updatedAt": "2025-09-30T18:30:00Z"
+  },
+  "stories": [
+    {
+      "storyId": "STY000000000001",
+      "status": "active",
+      "storyType": "composition",
+      "flags": {
+        "visibility": { "isPublic": true, "isArchived": false },
+        "interactivity": { "isInteractive": false, "isShoppable": false },
+        "content": { "isPromotional": false }
+      },
+      "content": {
+        "type": "composition",
+        "layers": [
+          {
+            "layerId": "LYR000000000001",
+            "type": "background",
+            "zIndex": 0,
+            "mediaType": "image",
+            "urls": {
+              "original": "https://picsum.photos/seed/story01/1080/1920",
+              "thumbnail": "https://picsum.photos/seed/story01/200/355"
+            },
+            "duration": 5000,
+            "metadata": {
+              "altText": "Fresh bakery items and dairy products"
+            }
+          }
+        ]
+      },
+      "analytics": {
+        "basic": { "views": 452, "likes": 120 }
+      },
+      "audit": {
+        "created": { "at": "2025-09-30T14:00:00Z" },
+        "expires": { "at": "2025-10-01T14:00:00Z" }
+      }
+    },
+    {
+      "storyId": "STY000000000002",
+      "status": "active",
+      "storyType": "composition",
+      "flags": {
+        "visibility": { "isPublic": true, "isArchived": false },
+        "interactivity": { "isInteractive": false, "isShoppable": true },
+        "content": { "isPromotional": true }
+      },
+      "content": {
+        "type": "composition",
+        "layers": [
+          {
+            "layerId": "LYR000000000004",
+            "type": "background",
+            "zIndex": 0,
+            "mediaType": "image",
+            "urls": {
+              "original": "https://picsum.photos/seed/story02/1080/1920",
+              "thumbnail": "https://picsum.photos/seed/story02/200/355"
+            },
+            "duration": 7000,
+            "metadata": {
+              "altText": "Special offer on digital services"
+            }
+          },
+          {
+            "layerId": "LYR000000000005",
+            "type": "text_overlay",
+            "zIndex": 1,
+            "text": "Special offer on all digital services!",
+            "style": {
+              "fontFamily": "Inter",
+              "fontSize": 24,
+              "fontWeight": "bold",
+              "textColor": "#FFFFFF",
+              "backgroundColor": "#00000080",
+              "position": "bottom"
+            }
+          }
+        ]
+      },
+      "cta": {
+        "primary": {
+          "type": "product",
+          "text": "View Service",
+          "link": "/items/ITM000000000006"
+        }
+      },
+      "analytics": {
+        "basic": { "views": 310, "likes": 95 }
+      },
+      "audit": {
+        "created": { "at": "2025-09-30T18:30:00Z" },
+        "expires": { "at": "2025-10-01T18:30:00Z" }
+      }
+    }
+  ]
+}

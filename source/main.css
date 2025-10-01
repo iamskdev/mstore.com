@@ -9,11 +9,12 @@
   --z-index-header: 999;
   --z-index-tab-nav: 999;
   --z-index-suggestions: 9999;
+  --z-index-story-viewer: 10000; /* --- NEW: z-index for story viewer --- */
   --z-index-drawer-overlay: 9998;
   --z-index-drawer: 9999;
   --z-index-page-loader: 9997;
   --z-index-splash-screen: 99999;
-  --z-index-pwa-toast: 10000;
+  --z-index-pwa-toast: 10005;
 }
 
 html {
