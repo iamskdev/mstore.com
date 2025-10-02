@@ -1,5 +1,5 @@
 {
-  "$schema": "../../source/schemas/feedback-schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",  
   "meta": {
     "feedbackId": "FDB-20251002-190300-123",
     "type": "feedback",

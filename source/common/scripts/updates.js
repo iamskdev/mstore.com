@@ -280,6 +280,18 @@ export async function init(force = false) { // Make function async
     function hideMerchantPage() {
         merchantPage.style.display = 'none';
         defaultFeed.style.display = '';
+
+        // --- FIX: Remove active state from story avatar when closing merchant page ---
+        // This ensures the blue 'active' ring is removed when navigating back.
+        const activeStory = storiesRow.querySelector('.story-item.active');
+        if (activeStory) {
+            activeStory.classList.remove('active');
+        }
+        // Also remove active state from the "My Status" story if it was active
+        const myStoryActive = storiesRow.querySelector('.my-story.active');
+        if (myStoryActive) {
+            myStoryActive.classList.remove('active');
+        }
         currentMerchant = null;
 
         // Dispatch an event to notify top-nav to revert to its original state
@@ -293,6 +305,22 @@ export async function init(force = false) { // Make function async
 
     function showMerchantPage(merchant) {
         currentMerchant = merchant;
+
+        // --- FIX: Add active & viewed states to story avatars on click ---
+        // This provides visual feedback to the user about which merchant they are viewing.
+        document.querySelectorAll('.story-item.active').forEach(el => el.classList.remove('active'));
+        const storyEl = storiesRow.querySelector(`.story-item[data-id='${merchant.meta.merchantId}']`);
+        if (storyEl) {
+            storyEl.classList.add('active');
+            // Check if the merchant has a story to mark it as 'viewed'
+            const hasStory = stories.some(storyCollection =>
+                storyCollection.meta.links.merchantId === merchant.meta.merchantId &&
+                storyCollection.stories?.some(s => s.status === 'active')
+            );
+            if (hasStory) {
+                storyEl.classList.add('viewed');
+            }
+        }
 
         // --- FIX: Restore the call to render the merchant's items ---
         renderMerchantFeed(merchant.meta.merchantId); 
