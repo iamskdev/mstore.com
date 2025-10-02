@@ -112,15 +112,16 @@ async function createAuthUsers() {
                     console.log(`   - 👍 Firestore document ${customUserId} is already in sync.`);
                 }
 
-                // 5. Check for and create the corresponding 'accounts' document if it doesn't exist.
-                // This makes the script's behavior consistent with the live _createFirestoreUserBundle function.
+                // 5. Self-Healing: Check for and create the corresponding 'accounts' document if it doesn't exist.
+                // This makes the script's behavior consistent with the live _createFirestoreUserBundle function,
+                // ensuring data integrity between users and their associated accounts.
                 const accountId = doc.data().meta?.links?.accountId;
                 if (accountId) {
                     const accountRef = db.collection('accounts').doc(accountId);
                     const accountDoc = await accountRef.get();
 
                     if (!accountDoc.exists) {
-                        console.log(`   - 🏦 Account document ${accountId} not found. Creating it...`);
+                        console.log(`   - 🏦 Account document ${accountId} not found. Creating it for consistency...`);
                         const accountDocData = {
                             meta: {
                                 accountId,
@@ -131,9 +132,13 @@ async function createAuthUsers() {
                                 note: "Account created via dev script (create-auth-users.js).",
                                 ownerUID: userRecord.uid
                             },
-                            // Add other essential fields with default values as needed
+                            // Add other essential fields with default values to match the live schema
                             deviceInfo: [],
-                            settings: { language: "en", theme: "light", push: true, email: false, sms: false },
+                            settings: { language: "en", theme: "light", push: true, email: false, sms: false, clearSettings: false },
+                            privacy: { showOnline: true, personalizedAds: false },
+                            searchHistory: [],
+                            recentlyViewed: { items: [] },
+                            subscription: { plan: "Free", status: "inactive", autoRenew: false }
                         };
                         await accountRef.set(accountDocData);
                         console.log(`   - ✅ Account document ${accountId} created successfully.`);

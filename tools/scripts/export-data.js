@@ -99,7 +99,8 @@ async function uploadDataToFirestore() {
                 "alerts": "meta.alertId",
                 "accounts": "meta.accountId",
                 "campaigns": "meta.campaignId",
-                "stories": "meta.links.merchantId" // --- NEW: Add mapping for stories ---
+                "stories": "meta.links.merchantId",
+                "feedbacks": "meta.feedbackId"
         };
 
         for (const file of filesToProcess) {

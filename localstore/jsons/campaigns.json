@@ -1,12 +1,12 @@
 [
   {
     "meta": {
-      "campaignId": "CMP000000000001",
+      "campaignId": "CMP-20251002-172002-701-ZXCV",
       "name": "Diwali Sale Announcement 2025",
       "type": "promotional",
       "status": "active",
       "createdAt": "2025-10-15T10:00:00Z",
-      "createdBy": "USR000000000001",
+      "createdBy": "USR-20251002-170601-101-ABCD",
       "scheduledAt": "2025-10-20T09:00:00Z"
     },
     "targeting": {

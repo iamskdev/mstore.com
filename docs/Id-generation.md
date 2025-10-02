@@ -33,24 +33,27 @@ TYPE-YYYYMMDD-HHMMSS-SSS-RRRR
 
 ## Type Codes
 
-- **USR** → User (all types: customer, admin, etc.)
 - **ACC** → Account
 - **ALT** → Alert
 - **BRD** → Brand
 - **CMP** → Campaign
 - **CON** → Conversation
 - **CTG** → Category (Main collection)
+- **FDB** → Feedback
 - **ICT** → Item Category (Link/reference within an item)
-- **ITM** → Item (Products/Services/etc)
 - **ISC** → Item Sub-Category (Link/reference within an item)
+- **ITM** → Item (Products/Services/etc)
 - **LOG** → Log
+- **LYR** → Story Layer
 - **MRC** → Merchant
 - **MSG** → Message (in a conversation)
 - **ORD** → Order
 - **PLG** → Price Log
 - **PRM** → Promotion
+- **SHM** → Shipment
 - **STY** → Story
 - **UNT** → Unit
+- **USR** → User (all types: customer, admin, etc.)
 
 ---
 

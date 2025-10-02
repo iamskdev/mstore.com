@@ -1,13 +1,13 @@
 [
   {
     "meta": {
-      "promoId": "PRM000000000001",
+      "promoId": "PRM-20251002-173002-001-SXED",
       "title": null,
       "type": "storefront",
       "version": 1,
       "links": {
         "userId": null,
-        "merchantId": "MRC000000000001"
+        "merchantId": "MRC-20251002-170602-401-ASDF"
       },
       "status": {
         "isActive": true,
@@ -85,27 +85,27 @@
         {
           "label": "Home",
           "icon": "fas fa-home",
-          "link": "/merchant/MRC000000000001"
+          "link": "/merchant/MRC-20251002-170602-401-ASDF"
         },
         {
           "label": "Chat",
           "icon": "fas fa-comment-dots",
-          "link": "/merchant/MRC000000000001/chat"
+          "link": "/merchant/MRC-20251002-170602-401-ASDF/chat"
         },
         {
           "label": "Saved",
           "icon": "fas fa-heart",
-          "link": "/merchant/MRC000000000001/saved"
+          "link": "/merchant/MRC-20251002-170602-401-ASDF/saved"
         },
         {
           "label": "Cart",
           "icon": "fas fa-shopping-cart",
-          "link": "/merchant/MRC000000000001/cart"
+          "link": "/merchant/MRC-20251002-170602-401-ASDF/cart"
         },
         {
           "label": "Profile",
           "icon": "fas fa-user",
-          "link": "/merchant/MRC000000000001/profile"
+          "link": "/merchant/MRC-20251002-170602-401-ASDF/profile"
         }
       ]
     },
@@ -117,7 +117,7 @@
   },
   {
     "meta": {
-      "promoId": "PRM000000000002",
+      "promoId": "PRM-20251002-173003-002-CFRV",
       "type": "banner",
       "version": 1,
       "links": {
@@ -158,7 +158,7 @@
   },
   {
     "meta": {
-      "promoId": "PRM000000000003",
+      "promoId": "PRM-20251002-173004-003-TGBH",
       "type": "banner",
       "version": 1,
       "links": {
@@ -199,7 +199,7 @@
   },
   {
     "meta": {
-      "promoId": "PRM000000000004",
+      "promoId": "PRM-20251002-173005-004-YJNM",
       "type": "banner",
       "version": 1,
       "links": {
@@ -240,7 +240,7 @@
   },
   {
     "meta": {
-      "promoId": "PRM000000000005",
+      "promoId": "PRM-20251002-173006-005-UKIL",
       "title": null,
       "type": "banner",
       "version": 1,
@@ -282,7 +282,7 @@
   },
   {
     "meta": {
-      "promoId": "PRM000000000006",
+      "promoId": "PRM-20251002-173007-006-OLPK",
       "title": null,
       "type": "banner",
       "version": 1,

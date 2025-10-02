@@ -9,11 +9,11 @@
       "multi_media", "real_time", "analytics_v2", "blockchain"
     ],
     "links": {
-      "merchantId": "MRC000000000001",
-      "userId": "USR000000000002",
-      "businessUnit": "BU000000000001",
-      "campaignId": "CMP000000000001",
-      "workspaceId": "WS000000000001"
+      "merchantId": "MRC-YYYYMMDD-HHMMSS-SSS-RRRR",
+      "userId": "USR-YYYYMMDD-HHMMSS-SSS-RRRR",
+      "businessUnit": "BU-YYYYMMDD-HHMMSS-SSS-RRRR",
+      "campaignId": "CMP-YYYYMMDD-HHMMSS-SSS-RRRR",
+      "workspaceId": "WS-YYYYMMDD-HHMMSS-SSS-RRRR"
     },
     "createdAt": "2025-09-30T10:00:00Z",
     "updatedAt": "2025-09-30T18:30:00Z",
@@ -33,7 +33,7 @@
   },
   "stories": [
     {
-      "storyId": "STY000000000001",
+      "storyId": "STY-YYYYMMDD-HHMMSS-SSS-RRRR",
       "version": "interactive-v2",
       "status": "active",
       "storyType": "composition",
@@ -79,7 +79,7 @@
         "theme": "modern_light",
         "layers": [
           {
-            "layerId": "LYR000000000001",
+            "layerId": "LYR-YYYYMMDD-HHMMSS-SSS-RRRR",
             "type": "background",
             "zIndex": 0,
             "mediaType": "image",
@@ -101,7 +101,7 @@
             }
           },
           {
-            "layerId": "LYR000000000002",
+            "layerId": "LYR-YYYYMMDD-HHMMSS-SSS-RRRR",
             "type": "text_overlay",
             "zIndex": 1,
             "text": "Fresh arrivals this week! 🍞🥛",
@@ -117,7 +117,7 @@
             }
           },
           {
-            "layerId": "LYR000000000003",
+            "layerId": "LYR-YYYYMMDD-HHMMSS-SSS-RRRR",
             "type": "interactive",
             "zIndex": 2,
             "component": "poll",
@@ -139,7 +139,7 @@
           "swipeUp": {
             "enabled": true,
             "action": "cta",
-            "target": "/items/ITM000000000001"
+            "target": "/items/ITM-YYYYMMDD-HHMMSS-SSS-RRRR"
           },
           "tap": {
             "enabled": true,
@@ -155,7 +155,7 @@
           "primary": {
             "type": "product",
             "text": "Shop Now 🛒",
-            "link": "/items/ITM000000000001",
+            "link": "/items/ITM-YYYYMMDD-HHMMSS-SSS-RRRR",
             "style": {
               "backgroundColor": "#FF6B35",
               "textColor": "#FFFFFF",
@@ -191,7 +191,7 @@
 
       "products": [
         {
-          "productId": "ITM000000000001",
+          "productId": "ITM-YYYYMMDD-HHMMSS-SSS-RRRR",
           "type": "physical",
           "name": "Organic Whole Wheat Bread",
           "price": 4.99,
@@ -266,17 +266,17 @@
       "audit": {
         "created": {
           "at": "2025-09-30T14:00:00Z",
-          "by": "USR000000000002",
+          "by": "USR-YYYYMMDD-HHMMSS-SSS-RRRR",
           "platform": "story_creator_v3"
         },
         "published": {
           "at": "2025-09-30T14:00:00Z",
-          "by": "USR000000000002",
+          "by": "USR-YYYYMMDD-HHMMSS-SSS-RRRR",
           "channel": "mobile_app"
         },
         "updated": {
           "at": "2025-09-30T14:00:00Z",
-          "by": "USR000000000002",
+          "by": "USR-YYYYMMDD-HHMMSS-SSS-RRRR",
           "reason": "content_optimization"
         },
         "expires": {

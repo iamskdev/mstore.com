@@ -1,18 +1,18 @@
 [
   {
     "meta": {
-      "orderId": "ORD000000000001",
+      "orderId": "ORD-20251002-172001-601-ASDF",
       "platform": "android",
       "device": "mobile",
       "orderDate": "2025-07-22T10:30:00Z",
       "version": 1,
       "links": {
-        "userId": "USR000000000003",
+        "userId": "USR-20251002-170603-103-CDEF",
         "agentId": null
       }
     },
     "orderItems": {
-      "ITM000000000001": {
+      "ITM-20251002-172501-801-QWRS": {
         "quantity": 3,
         "priceAtOrder": 10,
         "snapshot": {
@@ -20,7 +20,7 @@
           "thumbnail": "./localstore/images/items/parleg-cup.jpg"
         }
       },
-      "ITM000000000002": {
+      "ITM-20251002-172502-802-ASDF": {
         "quantity": 2,
         "priceAtOrder": 150,
         "snapshot": {
@@ -28,7 +28,7 @@
           "thumbnail": "./localstore/images/items/amul-butter.jpg"
         }
       },
-      "ITM000000000003": {
+      "ITM-20251002-172503-803-ZXCV": {
         "quantity": 1,
         "priceAtOrder": 50,
         "snapshot": {
@@ -84,7 +84,7 @@
       ]
     },
     "logistics": {
-      "shipmentId": "SHM000000000001",
+      "shipmentId": "SHM-20251002-172001-651-QWER",
       "packaging": {
         "type": "standard",
         "material": "corrugated_box",

@@ -1,12 +1,12 @@
 [
   {
     "meta": {
-      "priceLogId": "PLG000000000001",
+      "priceLogId": "PLG-20251002-173001-901-QAZW",
       "version": 1,
       "currency": "INR",
       "links": {
-        "itemId": "ITM000000000001",
-        "merchantId": "MRC000000000001"
+        "itemId": "ITM-20251002-172501-801-QWRS",
+        "merchantId": "MRC-20251002-170602-401-ASDF"
       }
     },
     "price": {
@@ -22,7 +22,7 @@
     "audit": {
       "changedAt": "2025-08-05T14:30:00Z",
       "changedBy": {
-        "userId": "MRC000000000001",
+        "merchantId": "MRC-20251002-170602-401-ASDF",
         "role": "merchant",
         "name": "Rajesh Kumar"
       },

@@ -1,7 +1,7 @@
 [
   {
     "meta": {
-      "brandId": "BRD000000000001",
+      "brandId": "BRD-20251002-175001-001-ABCD",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -39,7 +39,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000002",
+      "brandId": "BRD-20251002-175002-002-BCDE",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -78,7 +78,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000003",
+      "brandId": "BRD-20251002-175003-003-CDEF",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -117,7 +117,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000004",
+      "brandId": "BRD-20251002-175004-004-DEFG",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -155,7 +155,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000005",
+      "brandId": "BRD-20251002-175005-005-EFGH",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -193,7 +193,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000006",
+      "brandId": "BRD-20251002-175006-006-FGHI",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -232,7 +232,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000007",
+      "brandId": "BRD-20251002-175007-007-GHIJ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -270,7 +270,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000008",
+      "brandId": "BRD-20251002-175008-008-HIJK",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -308,7 +308,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000009",
+      "brandId": "BRD-20251002-175009-009-IJKL",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -346,7 +346,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000010",
+      "brandId": "BRD-20251002-175010-010-JKLM",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -384,7 +384,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000011",
+      "brandId": "BRD-20251002-175011-011-KLMN",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -421,7 +421,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000012",
+      "brandId": "BRD-20251002-175012-012-LMNO",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -459,7 +459,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000013",
+      "brandId": "BRD-20251002-175013-013-MNOP",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -497,7 +497,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000014",
+      "brandId": "BRD-20251002-175014-014-NOPQ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -534,7 +534,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000015",
+      "brandId": "BRD-20251002-175015-015-OPQR",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -572,7 +572,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000016",
+      "brandId": "BRD-20251002-175016-016-PQRS",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -609,7 +609,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000017",
+      "brandId": "BRD-20251002-175017-017-QRST",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -647,7 +647,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000018",
+      "brandId": "BRD-20251002-175018-018-RSTU",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -684,7 +684,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000019",
+      "brandId": "BRD-20251002-175019-019-STUV",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -721,7 +721,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000020",
+      "brandId": "BRD-20251002-175020-020-TUVW",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -758,7 +758,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000021",
+      "brandId": "BRD-20251002-175021-021-UVWX",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -795,7 +795,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000022",
+      "brandId": "BRD-20251002-175022-022-VWXY",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -832,7 +832,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000023",
+      "brandId": "BRD-20251002-175023-023-WXYZ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -868,7 +868,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000024",
+      "brandId": "BRD-20251002-175024-024-XYZA",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -904,7 +904,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000025",
+      "brandId": "BRD-20251002-175025-025-YZAB",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -941,7 +941,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000026",
+      "brandId": "BRD-20251002-175026-026-ZABC",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -978,7 +978,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000027",
+      "brandId": "BRD-20251002-175027-027-ABCD",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1015,7 +1015,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000028",
+      "brandId": "BRD-20251002-175028-028-BCDE",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1052,7 +1052,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000029",
+      "brandId": "BRD-20251002-175029-029-CDEF",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1089,7 +1089,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000030",
+      "brandId": "BRD-20251002-175030-030-DEFG",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1126,7 +1126,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000031",
+      "brandId": "BRD-20251002-175031-031-EFGH",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1163,7 +1163,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000032",
+      "brandId": "BRD-20251002-175032-032-FGHI",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1200,7 +1200,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000033",
+      "brandId": "BRD-20251002-175033-033-GHIJ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1237,7 +1237,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000034",
+      "brandId": "BRD-20251002-175034-034-HIJK",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1274,7 +1274,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000035",
+      "brandId": "BRD-20251002-175035-035-IJKL",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1311,7 +1311,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000036",
+      "brandId": "BRD-20251002-175036-036-JKLM",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1349,7 +1349,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000037",
+      "brandId": "BRD-20251002-175037-037-KLMN",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1386,7 +1386,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000038",
+      "brandId": "BRD-20251002-175038-038-LMNO",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1423,7 +1423,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000039",
+      "brandId": "BRD-20251002-175039-039-MNOP",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1460,7 +1460,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000040",
+      "brandId": "BRD-20251002-175040-040-NOPQ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1497,7 +1497,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000041",
+      "brandId": "BRD-20251002-175041-041-OPQR",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1534,7 +1534,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000042",
+      "brandId": "BRD-20251002-175042-042-PQRS",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1571,7 +1571,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000043",
+      "brandId": "BRD-20251002-175043-043-QRST",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1608,7 +1608,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000044",
+      "brandId": "BRD-20251002-175044-044-RSTU",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1645,7 +1645,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000045",
+      "brandId": "BRD-20251002-175045-045-STUV",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1682,7 +1682,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000046",
+      "brandId": "BRD-20251002-175046-046-TUVW",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1719,7 +1719,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000047",
+      "brandId": "BRD-20251002-175047-047-UVWX",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1756,7 +1756,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000048",
+      "brandId": "BRD-20251002-175048-048-VWXY",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1793,7 +1793,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000049",
+      "brandId": "BRD-20251002-175049-049-WXYZ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1830,7 +1830,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000050",
+      "brandId": "BRD-20251002-175050-050-XYZA",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1867,7 +1867,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000051",
+      "brandId": "BRD-20251002-175051-051-YZAB",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1904,7 +1904,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000052",
+      "brandId": "BRD-20251002-175052-052-ZABC",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1941,7 +1941,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000053",
+      "brandId": "BRD-20251002-175053-053-ABCD",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -1978,7 +1978,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000054",
+      "brandId": "BRD-20251002-175054-054-BCDE",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2015,7 +2015,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000055",
+      "brandId": "BRD-20251002-175055-055-CDEF",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2054,7 +2054,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000056",
+      "brandId": "BRD-20251002-175056-056-DEFG",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2093,7 +2093,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000057",
+      "brandId": "BRD-20251002-175057-057-EFGH",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2130,7 +2130,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000058",
+      "brandId": "BRD-20251002-175058-058-FGHI",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2167,7 +2167,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000059",
+      "brandId": "BRD-20251002-175059-059-GHIJ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2204,7 +2204,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000060",
+      "brandId": "BRD-20251002-175100-060-HIJK",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2241,7 +2241,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000061",
+      "brandId": "BRD-20251002-175101-061-IJKL",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2278,7 +2278,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000062",
+      "brandId": "BRD-20251002-175102-062-JKLM",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2315,7 +2315,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000063",
+      "brandId": "BRD-20251002-175103-063-KLMN",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2352,7 +2352,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000064",
+      "brandId": "BRD-20251002-175104-064-LMNO",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2389,7 +2389,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000065",
+      "brandId": "BRD-20251002-175105-065-MNOP",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2426,7 +2426,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000066",
+      "brandId": "BRD-20251002-175106-066-NOPQ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2463,7 +2463,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000067",
+      "brandId": "BRD-20251002-175107-067-OPQR",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2500,7 +2500,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000068",
+      "brandId": "BRD-20251002-175108-068-PQRS",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2537,7 +2537,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000069",
+      "brandId": "BRD-20251002-175109-069-QRST",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2574,7 +2574,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000070",
+      "brandId": "BRD-20251002-175110-070-RSTU",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2611,7 +2611,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000071",
+      "brandId": "BRD-20251002-175111-071-STUV",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2648,7 +2648,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000072",
+      "brandId": "BRD-20251002-175112-072-TUVW",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2685,7 +2685,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000073",
+      "brandId": "BRD-20251002-175113-073-UVWX",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2722,7 +2722,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000074",
+      "brandId": "BRD-20251002-175114-074-VWXY",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2759,7 +2759,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000075",
+      "brandId": "BRD-20251002-175115-075-WXYZ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2796,7 +2796,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000076",
+      "brandId": "BRD-20251002-175116-076-XYZA",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2833,7 +2833,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000077",
+      "brandId": "BRD-20251002-175117-077-YZAB",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2870,7 +2870,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000078",
+      "brandId": "BRD-20251002-175118-078-ZABC",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2907,7 +2907,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000079",
+      "brandId": "BRD-20251002-175119-079-ABCD",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2944,7 +2944,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000080",
+      "brandId": "BRD-20251002-175120-080-BCDE",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -2981,7 +2981,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000081",
+      "brandId": "BRD-20251002-175121-081-CDEF",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3018,7 +3018,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000082",
+      "brandId": "BRD-20251002-175122-082-DEFG",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3055,7 +3055,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000083",
+      "brandId": "BRD-20251002-175123-083-EFGH",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3092,7 +3092,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000084",
+      "brandId": "BRD-20251002-175124-084-FGHI",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3129,7 +3129,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000085",
+      "brandId": "BRD-20251002-175125-085-GHIJ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3166,7 +3166,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000086",
+      "brandId": "BRD-20251002-175126-086-HIJK",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3203,7 +3203,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000087",
+      "brandId": "BRD-20251002-175127-087-IJKL",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3240,7 +3240,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000088",
+      "brandId": "BRD-20251002-175128-088-JKLM",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3277,7 +3277,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000089",
+      "brandId": "BRD-20251002-175129-089-KLMN",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3314,7 +3314,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000090",
+      "brandId": "BRD-20251002-175130-090-LMNO",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3351,7 +3351,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000091",
+      "brandId": "BRD-20251002-175131-091-MNOP",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3388,7 +3388,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000092",
+      "brandId": "BRD-20251002-175132-092-NOPQ",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3425,7 +3425,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000093",
+      "brandId": "BRD-20251002-175133-093-OPQR",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3462,7 +3462,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000094",
+      "brandId": "BRD-20251002-175134-094-PQRS",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3499,7 +3499,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000095",
+      "brandId": "BRD-20251002-175135-095-QRST",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3536,7 +3536,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000096",
+      "brandId": "BRD-20251002-175136-096-RSTU",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3573,7 +3573,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000097",
+      "brandId": "BRD-20251002-175137-097-STUV",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3610,7 +3610,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000098",
+      "brandId": "BRD-20251002-175138-098-TUVW",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3647,7 +3647,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000099",
+      "brandId": "BRD-20251002-175139-099-UVWX",
       "version": 1,
       "flags": {
         "isActive": true,
@@ -3684,7 +3684,7 @@
   },
   {
     "meta": {
-      "brandId": "BRD000000000100",
+      "brandId": "BRD-20251002-175140-100-VWXY",
       "version": 1,
       "flags": {
         "isActive": true,

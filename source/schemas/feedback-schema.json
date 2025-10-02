@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",  
   "meta": {
-    "feedbackId": "FDB-20251002-190300-123",
+    "feedbackId": "FDB-YYYYMMDD-HHMMSS-SSS-RRRR",
     "type": "feedback",
     "version": 1,
     "userId": "",

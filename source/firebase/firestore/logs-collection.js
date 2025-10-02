@@ -1,4 +1,4 @@
-import { generateSequentialId } from '../../utils/data-manager.js';
+import { generateId } from '../../utils/idGenerator.js';
 import { firestore } from '../firebase-config.js'; // ✅ Import firestore service
 
 /**
@@ -38,7 +38,7 @@ export async function createLog(logData) {
         return null;
     }
 
-    const logId = await generateSequentialId('logs', 'LOG');
+    const logId = generateId('LOG');
     const userAgent = navigator.userAgent;
     const deviceType = /android/i.test(userAgent) ? 'android' : (/iphone|ipad|ipod/i.test(userAgent) ? 'ios' : 'web');
 

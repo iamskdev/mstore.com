@@ -1,9 +1,10 @@
-import { fetchAllUsers, generateSequentialId } from '../../utils/data-manager.js';
+import { fetchAllUsers } from '../../utils/data-manager.js';
 import { createLog } from '../firestore/logs-collection.js';
 import { showToast } from '../../utils/toast.js';
 import { routeManager } from '../../main.js';
 import { getAppConfig } from '../../settings/main-config.js';
 import { auth, firestore, firebase } from '../firebase-config.js'; // ✅ Import services directly
+import { generateId } from '../../utils/idGenerator.js';
 
 export const AuthService = (() => {
     let errorTimeouts = {};
@@ -159,8 +160,8 @@ export const AuthService = (() => {
             const batch = firestore.batch();
 
             // --- Step 1: Prepare User Document ---
-            const userId = await generateSequentialId('users', 'USR');
-            const accountId = await generateSequentialId('accounts', 'ACC');
+            const userId = generateId('USR');
+            const accountId = generateId('ACC');
             const userRef = firestore.collection('users').doc(userId);
             const primaryRole = 'user';
             const providerName = method.includes('google') ? 'google.com' : (method.includes('apple') ? 'apple.com' : 'firebase');

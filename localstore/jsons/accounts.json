@@ -1,12 +1,12 @@
 [
   {
     "meta": {
-      "accountId": "ACC000000000001",
+      "accountId": "ACC-20251002-170601-201-WXYZ",
       "isGuest": false,
       "createdOn": "2025-08-06T10:30:00Z",
       "lastUpdated": "2025-08-07T14:23:00Z",
       "links": {
-        "userId": "USR000000000001"
+        "userId": "USR-20251002-170601-101-ABCD"
       },
       "note": "Account created on login, synced across devices."
     },
@@ -48,9 +48,9 @@
     ],
     "Alerts": {
       "alertId": [
-        "ALT000000000001",
-        "ALT000000000002",
-        "ALT000000000003"
+        "ALT-20251002-172001-501-QWER",
+        "ALT-20251002-172001-502-ASDF",
+        "ALT-20251002-172001-503-ZXCV"
       ],
       "isCleared": false,
       "updatedAt": "2025-08-07T13:55:00Z"
@@ -86,11 +86,11 @@
     "recentlyViewed": {
       "items": [
         {
-          "itemId": "ITM000000000005",
+          "itemId": "ITM-20251002-172505-805-BNMK",
           "viewedAt": "2025-08-07T14:12:00Z"
         },
         {
-          "itemId": "ITM000000000006",
+          "itemId": "ITM-20251002-172506-806-QAZX",
           "viewedAt": "2025-08-07T14:11:00Z"
         }
       ]
@@ -116,12 +116,12 @@
   },
   {
     "meta": {
-      "accountId": "ACC000000000002",
+      "accountId": "ACC-20251002-170602-202-XYZA",
       "isGuest": false,
       "createdOn": "2025-08-06T10:30:00Z",
       "lastUpdated": "2025-08-07T14:23:00Z",
       "links": {
-        "userId": "USR000000000002"
+        "userId": "USR-20251002-170602-102-BCDE"
       },
       "note": "Account created on login, synced across devices."
     },
@@ -173,12 +173,12 @@
   },
   {
     "meta": {
-      "accountId": "ACC000000000003",
+      "accountId": "ACC-20251002-170603-203-YZAB",
       "isGuest": false,
       "createdOn": "2025-08-06T10:30:00Z",
       "lastUpdated": "2025-08-07T14:23:00Z",
       "links": {
-        "userId": "USR000000000003"
+        "userId": "USR-20251002-170603-103-CDEF"
       },
       "note": "Account created on login, synced across devices."
     },
@@ -230,12 +230,12 @@
   },
   {
     "meta": {
-      "accountId": "ACC000000000004",
+      "accountId": "ACC-20251002-170604-204-ZABC",
       "isGuest": false,
       "createdOn": "2025-08-06T10:30:00Z",
       "lastUpdated": "2025-08-07T14:23:00Z",
       "links": {
-        "userId": "USR000000000004"
+        "userId": "USR-20251002-170604-104-DEFG"
       },
       "note": "Account created on login, synced across devices."
     },

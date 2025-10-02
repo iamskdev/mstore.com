@@ -1,4 +1,4 @@
-import { generateSequentialId } from '../../utils/data-manager.js';
+import { generateId } from '../../utils/idGenerator.js';
 
 const db = window._firestore;
 
@@ -15,7 +15,7 @@ export async function createAccountDocument(userId, note) {
       throw new Error("Firestore not available");
     }
 
-    const accountId = await generateSequentialId('accounts', 'ACC');
+    const accountId = generateId('ACC');
     const userAgent = navigator.userAgent;
     const deviceType = /android/i.test(userAgent) ? 'android' : (/iphone|ipad|ipod/i.test(userAgent) ? 'ios' : 'web');
 

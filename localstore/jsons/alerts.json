@@ -1,15 +1,15 @@
 [
   {
     "meta": {
-      "alertId": "ALT000000000001",
+      "alertId": "ALT-20251002-172001-501-QWER",
       "type": "transactional",
       "category": "order_update",
       "priority": "high",
       "version": 1,
       "links": {
-        "orderId": "ORD000000000001",
-        "userId": "USR000000000003",
-        "merchantId": "MRC000000000001"
+        "orderId": "ORD-20251002-172001-601-ASDF",
+        "userId": "USR-20251002-170603-103-CDEF",
+        "merchantId": "MRC-20251002-170602-401-ASDF"
       },
       "schedule": {
         "sendAt": "2025-08-05T10:00:00Z",
@@ -53,14 +53,14 @@
       "cta": [
         {
           "label": "Track Order",
-          "url": "/user/orders/ORD12345",
-          "deeplink": "apnastore://order/ORD12345",
+          "url": "/user/orders/ORD-20251002-172001-601-ASDF",
+          "deeplink": "apnastore://order/ORD-20251002-172001-601-ASDF",
           "type": "primary"
         },
         {
           "label": "View Details",
-          "url": "/user/orders/details/ORD12345",
-          "deeplink": "apnastore://order/details/ORD12345",
+          "url": "/user/orders/details/ORD-20251002-172001-601-ASDF",
+          "deeplink": "apnastore://order/details/ORD-20251002-172001-601-ASDF",
           "type": "secondary"
         }
       ],

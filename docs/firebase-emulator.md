@@ -1,3 +1,11 @@
+> **DOCUMENT AUDIT**
+> - **Status:** `Updated`
+> - **Last Reviewed:** 02/10/2025 21:31:00 IST
+> - **Reviewer:** Santosh (with Gemini)
+> - **Purpose:** This document explains how to set up and use the Firebase Emulator Suite for local development and testing.
+
+---
+
 # Firebase Emulator Suite का उपयोग कैसे करें
 
 ## ⚠️ पूर्वापेक्षाएँ (Prerequisites)

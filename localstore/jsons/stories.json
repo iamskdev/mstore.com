@@ -2,15 +2,15 @@
   "meta": {
     "version": "1.0",
     "links": {
-      "merchantId": "MRC000000000001",
-      "userId": "USR000000000002"
+      "merchantId": "MRC-20251002-170602-401-ASDF",
+      "userId": "USR-20251002-170602-102-BCDE"
     },
     "createdAt": "2025-09-30T10:00:00Z",
     "updatedAt": "2025-09-30T18:30:00Z"
   },
   "stories": [
     {
-      "storyId": "STY000000000001",
+      "storyId": "STY-20251002-173501-001-ASDF",
       "status": "active",
       "storyType": "composition",
       "flags": {
@@ -22,7 +22,7 @@
         "type": "composition",
         "layers": [
           {
-            "layerId": "LYR000000000001",
+            "layerId": "LYR-20251002-173501-011-GHJK",
             "type": "background",
             "zIndex": 0,
             "mediaType": "image",
@@ -46,7 +46,7 @@
       }
     },
     {
-      "storyId": "STY000000000002",
+      "storyId": "STY-20251002-173502-002-FGHJ",
       "status": "active",
       "storyType": "composition",
       "flags": {
@@ -58,7 +58,7 @@
         "type": "composition",
         "layers": [
           {
-            "layerId": "LYR000000000004",
+            "layerId": "LYR-20251002-173502-012-KLMN",
             "type": "background",
             "zIndex": 0,
             "mediaType": "image",
@@ -72,7 +72,7 @@
             }
           },
           {
-            "layerId": "LYR000000000005",
+            "layerId": "LYR-20251002-173502-013-OPQR",
             "type": "text_overlay",
             "zIndex": 1,
             "text": "Special offer on all digital services!",
@@ -91,7 +91,7 @@
         "primary": {
           "type": "product",
           "text": "View Service",
-          "link": "/items/ITM000000000006"
+          "link": "/items/ITM-20251002-172506-806-QAZX"
         }
       },
       "analytics": {

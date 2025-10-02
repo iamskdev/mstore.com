@@ -1,7 +1,7 @@
 [
   {
     "meta": {
-      "categoryId": "ICT000000000001",
+      "categoryId": "ICT-20251002-174001-001-ASDF",
       "type": "product",
       "slug": "groceries",
       "createdAt": "2025-08-06T10:00:00Z",
@@ -30,7 +30,7 @@
     },
     "subcategories": [
       {
-        "subCatId": "ISC000000000001",
+        "subCatId": "ISC-20251002-174001-011-GHJK",
         "description": "ISC000000000001_DESCRIPTION",
         "slug": "atta-rice-grains",
         "icon": "🌾",
@@ -38,7 +38,7 @@
         "displayOrder": 1
       },
       {
-        "subCatId": "ISC000000000002",
+        "subCatId": "ISC-20251002-174001-012-KLMN",
         "description": "ISC000000000002_DESCRIPTION",
         "slug": "spices-masala",
         "icon": "🌶️",
@@ -46,7 +46,7 @@
         "displayOrder": 2
       },
       {
-        "subCatId": "ISC000000000003",
+        "subCatId": "ISC-20251002-174001-013-OPQR",
         "description": "ISC000000000003_DESCRIPTION",
         "slug": "fruits",
         "icon": "🍎",
@@ -54,7 +54,7 @@
         "displayOrder": 3
       },
       {
-        "subCatId": "ISC000000000004",
+        "subCatId": "ISC-20251002-174001-014-STUV",
         "description": "ISC000000000004_DESCRIPTION",
         "slug": "dairy-products",
         "icon": "🥛",
@@ -62,7 +62,7 @@
         "displayOrder": 4
       },
       {
-        "subCatId": "ISC000000000005",
+        "subCatId": "ISC-20251002-174001-015-WXYZ",
         "description": "ISC000000000005_DESCRIPTION",
         "slug": "bakery-products",
         "icon": "🍞",
@@ -73,7 +73,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000002",
+      "categoryId": "ICT-20251002-174002-002-FGHJ",
       "type": "product",
       "slug": "electronics",
       "createdAt": "2025-08-06T10:05:00Z",
@@ -104,7 +104,7 @@
 
   {
     "meta": {
-      "categoryId": "ICT000000000003",
+      "categoryId": "ICT-20251002-174003-003-KLMN",
       "type": "service",
       "slug": "home-services",
       "createdAt": "2025-08-06T10:10:00Z",
@@ -134,7 +134,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000004",
+      "categoryId": "ICT-20251002-174004-004-OPQR",
       "type": "product",
       "slug": "fashion",
       "createdAt": "2025-08-06T10:15:00Z",
@@ -164,7 +164,7 @@
   },
     {
     "meta": {
-      "categoryId": "ICT000000000005",
+      "categoryId": "ICT-20251002-174005-005-STUV",
       "type": "product",
       "slug": "books-stationery",
       "createdAt": "2025-08-06T10:20:00Z",
@@ -194,7 +194,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000006",
+      "categoryId": "ICT-20251002-174006-006-WXYZ",
       "type": "service",
       "slug": "health-fitness",
       "createdAt": "2025-08-06T10:25:00Z",
@@ -224,7 +224,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000007",
+      "categoryId": "ICT-20251002-174007-007-ABCD",
       "type": "product",
       "slug": "sports-outdoors",
       "createdAt": "2025-08-06T10:30:00Z",
@@ -254,7 +254,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000008",
+      "categoryId": "ICT-20251002-174008-008-EFGH",
       "type": "service",
       "slug": "automotive-services",
       "createdAt": "2025-08-06T10:35:00Z",
@@ -284,7 +284,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000009",
+      "categoryId": "ICT-20251002-174009-009-IJKL",
       "type": "product",
       "slug": "beauty-personal-care",
       "createdAt": "2025-08-06T10:40:00Z",
@@ -314,7 +314,7 @@
   },
  {
     "meta": {
-      "categoryId": "ICT000000000010",
+      "categoryId": "ICT-20251002-174010-010-MNOP",
       "type": "service",
       "slug": "food-delivery",
       "createdAt": "2025-08-06T10:45:00Z",
@@ -344,7 +344,7 @@
  },
   {
     "meta": {
-      "categoryId": "ICT000000000011",
+      "categoryId": "ICT-20251002-174011-011-QRST",
       "type": "product",
       "slug": "home-kitchen",
       "createdAt": "2025-08-06T10:50:00Z",
@@ -374,7 +374,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000012",
+      "categoryId": "ICT-20251002-174012-012-UVWX",
       "type": "product",
       "slug": "toys-games",
       "createdAt": "2025-08-06T10:55:00Z",
@@ -404,7 +404,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000013",
+      "categoryId": "ICT-20251002-174013-013-YZAB",
       "type": "product",
       "slug": "pet-supplies",
       "createdAt": "2025-08-06T11:00:00Z",
@@ -434,7 +434,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000014",
+      "categoryId": "ICT-20251002-174014-014-CDEF",
       "type": "service",
       "slug": "travel-tourism",
       "createdAt": "2025-08-06T11:05:00Z",
@@ -464,7 +464,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000015",
+      "categoryId": "ICT-20251002-174015-015-GHIJ",
       "type": "product",
       "slug": "automotive",
       "createdAt": "2025-08-06T11:10:00Z",
@@ -494,7 +494,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000016",
+      "categoryId": "ICT-20251002-174016-016-KLMN",
       "type": "service",
       "slug": "education-training",
       "createdAt": "2025-08-06T11:15:00Z",
@@ -524,7 +524,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000017",
+      "categoryId": "ICT-20251002-174017-017-OPQR",
       "type": "product",
       "slug": "gifts-flowers",
       "createdAt": "2025-08-06T11:20:00Z",
@@ -554,7 +554,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000018",
+      "categoryId": "ICT-20251002-174018-018-STUV",
       "type": "service",
       "slug": "legal-financial",
       "createdAt": "2025-08-06T11:25:00Z",
@@ -584,7 +584,7 @@
   },
   {
     "meta": {
-      "categoryId": "ICT000000000019",
+      "categoryId": "ICT-20251002-174019-019-WXYZ",
       "type": "product",
       "slug": "home-improvement",
       "createdAt": "2025-08-06T11:30:00Z",

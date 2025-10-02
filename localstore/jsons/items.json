@@ -1,7 +1,7 @@
 [
   {
     "meta": {
-      "itemId": "ITM000000000001",
+      "itemId": "ITM-20251002-172501-801-QWRS",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -17,10 +17,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "brandId": "BRD000000000016",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000001"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "brandId": "BRD-20251002-175016-016-PQRS",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174001-001-ASDF"
       }
     },
     "info": {
@@ -100,7 +100,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000002",
+      "itemId": "ITM-20251002-172502-802-ASDF",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -116,10 +116,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "brandId": "BRD000000000005",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000001"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "brandId": "BRD-20251002-175005-005-EFGH",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174001-001-ASDF"
       }
     },
     "info": {
@@ -191,7 +191,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000003",
+      "itemId": "ITM-20251002-172503-803-ZXCV",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -207,10 +207,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "brandId": "BRD000000000002",
-        "unitId": "UNT000000000002",
-        "categoryId": "ICT000000000001"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "brandId": "BRD-20251002-175002-002-BCDE",
+        "unitId": "UNT-20251002-174502-002-FGHJ",
+        "categoryId": "ICT-20251002-174001-001-ASDF"
       }
     },
     "info": {
@@ -282,7 +282,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000004",
+      "itemId": "ITM-20251002-172504-804-CVBN",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -298,10 +298,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "brandId": "BRD000000000063",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000006"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "brandId": "BRD-20251002-175103-063-KLMN",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174006-006-WXYZ"
       }
     },
     "info": {
@@ -372,7 +372,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000005",
+      "itemId": "ITM-20251002-172505-805-BNMK",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -388,10 +388,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "brandId": "BRD000000000061",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000005"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "brandId": "BRD-20251002-175101-061-IJKL",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174005-005-STUV"
       }
     },
     "info": {
@@ -462,7 +462,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000006",
+      "itemId": "ITM-20251002-172506-806-QAZX",
       "type": "service",
       "version": 1,
       "priority": "normal",
@@ -478,9 +478,9 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "unitId": "UNT000000000036",
-        "categoryId": "ICT000000000011"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "unitId": "UNT-20251002-174536-036-ASDF",
+        "categoryId": "ICT-20251002-174011-011-QRST"
       }
     },
     "info": {
@@ -555,7 +555,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000007",
+      "itemId": "ITM-20251002-172507-807-WSXE",
       "type": "service",
       "version": 1,
       "priority": "normal",
@@ -571,9 +571,9 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "unitId": "UNT000000000005",
-        "categoryId": "ICT000000000011"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "unitId": "UNT-20251002-174505-005-TYUI",
+        "categoryId": "ICT-20251002-174011-011-QRST"
       }
     },
     "info": {
@@ -647,7 +647,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000008",
+      "itemId": "ITM-20251002-172508-808-EDCR",
       "type": "service",
       "version": 1,
       "priority": "normal",
@@ -663,9 +663,9 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000002",
-        "unitId": "UNT000000000038",
-        "categoryId": "ICT000000000011"
+        "merchantId": "MRC-20251002-170604-402-FGHJ",
+        "unitId": "UNT-20251002-174538-038-LPOK",
+        "categoryId": "ICT-20251002-174011-011-QRST"
       }
     },
     "info": {
@@ -739,7 +739,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000009",
+      "itemId": "ITM-20251002-172509-809-FVGT",
       "type": "service",
       "version": 1,
       "priority": "normal",
@@ -755,9 +755,9 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000002",
-        "unitId": "UNT000000000038",
-        "categoryId": "ICT000000000011"
+        "merchantId": "MRC-20251002-170604-402-FGHJ",
+        "unitId": "UNT-20251002-174538-038-LPOK",
+        "categoryId": "ICT-20251002-174011-011-QRST"
       }
     },
     "info": {
@@ -831,7 +831,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000010",
+      "itemId": "ITM-20251002-172510-810-BHYN",
       "type": "service",
       "version": 1,
       "priority": "normal",
@@ -847,9 +847,9 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000002",
-        "unitId": "UNT000000000036",
-        "categoryId": "ICT000000000011"
+        "merchantId": "MRC-20251002-170604-402-FGHJ",
+        "unitId": "UNT-20251002-174536-036-ASDF",
+        "categoryId": "ICT-20251002-174011-011-QRST"
       }
     },
     "info": {
@@ -924,7 +924,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000011",
+      "itemId": "ITM-20251002-172511-811-UJMJ",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -940,10 +940,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "brandId": "BRD000000000017",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000005"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "brandId": "BRD-20251002-175017-017-QRST",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174005-005-STUV"
       }
     },
     "info": {
@@ -1015,7 +1015,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000012",
+      "itemId": "ITM-20251002-172512-812-KIKL",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -1031,10 +1031,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "brandId": "BRD000000000026",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000005"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "brandId": "BRD-20251002-175026-026-ZABC",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174005-005-STUV"
       }
     },
     "info": {
@@ -1106,7 +1106,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000013",
+      "itemId": "ITM-20251002-172513-813-OLPO",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -1122,10 +1122,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000002",
-        "brandId": "BRD000000000071",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000001"
+        "merchantId": "MRC-20251002-170604-402-FGHJ",
+        "brandId": "BRD-20251002-175111-071-STUV",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174001-001-ASDF"
       }
     },
     "info": {
@@ -1197,7 +1197,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000014",
+      "itemId": "ITM-20251002-172514-814-QWER",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -1213,10 +1213,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000002",
-        "brandId": "BRD000000000021",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000001"
+        "merchantId": "MRC-20251002-170604-402-FGHJ",
+        "brandId": "BRD-20251002-175021-021-UVWX",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174001-001-ASDF"
       }
     },
     "info": {
@@ -1288,7 +1288,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000015",
+      "itemId": "ITM-20251002-172515-815-ASDF",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -1304,10 +1304,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "brandId": "BRD000000000001",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000001"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "brandId": "BRD-20251002-175001-001-ABCD",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174001-001-ASDF"
       }
     },
     "info": {
@@ -1378,7 +1378,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000016",
+      "itemId": "ITM-20251002-172516-816-ZXCV",
       "type": "product",
       "version": 1,
       "priority": "normal",
@@ -1394,10 +1394,10 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000002",
-        "brandId": "BRD000000000057",
-        "unitId": "UNT000000000001",
-        "categoryId": "ICT000000000001"
+        "merchantId": "MRC-20251002-170604-402-FGHJ",
+        "brandId": "BRD-20251002-175057-057-EFGH",
+        "unitId": "UNT-20251002-174501-001-ASDF",
+        "categoryId": "ICT-20251002-174001-001-ASDF"
       }
     },
     "info": {
@@ -1469,7 +1469,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000017",
+      "itemId": "ITM-20251002-172517-817-CVBN",
       "type": "service",
       "version": 1,
       "priority": "normal",
@@ -1485,9 +1485,9 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "unitId": "UNT000000000038",
-        "categoryId": "ICT000000000011"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "unitId": "UNT-20251002-174538-038-LPOK",
+        "categoryId": "ICT-20251002-174011-011-QRST"
       }
     },
     "info": {
@@ -1561,7 +1561,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000018",
+      "itemId": "ITM-20251002-172518-818-BNMK",
       "type": "service",
       "version": 1,
       "priority": "normal",
@@ -1577,9 +1577,9 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000001",
-        "unitId": "UNT000000000005",
-        "categoryId": "ICT000000000011"
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "unitId": "UNT-20251002-174505-005-TYUI",
+        "categoryId": "ICT-20251002-174011-011-QRST"
       }
     },
     "info": {
@@ -1653,7 +1653,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000019",
+      "itemId": "ITM-20251002-172519-819-QAZX",
       "type": "service",
       "version": 1,
       "priority": "normal",
@@ -1669,9 +1669,9 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000002",
-        "unitId": "UNT000000000036",
-        "categoryId": "ICT000000000011"
+        "merchantId": "MRC-20251002-170604-402-FGHJ",
+        "unitId": "UNT-20251002-174536-036-ASDF",
+        "categoryId": "ICT-20251002-174011-011-QRST"
       }
     },
     "info": {
@@ -1745,7 +1745,7 @@
   },
   {
     "meta": {
-      "itemId": "ITM000000000020",
+      "itemId": "ITM-20251002-172520-820-WSXE",
       "type": "service",
       "version": 1,
       "priority": "normal",
@@ -1761,9 +1761,9 @@
         "isVerified": false
       },
       "links": {
-        "merchantId": "MRC000000000002",
-        "unitId": "UNT000000000036",
-        "categoryId": "ICT000000000011"
+        "merchantId": "MRC-20251002-170604-402-FGHJ",
+        "unitId": "UNT-20251002-174536-036-ASDF",
+        "categoryId": "ICT-20251002-174011-011-QRST"
       }
     },
     "info": {

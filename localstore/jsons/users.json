@@ -28,11 +28,11 @@
         }
       }
     ],"meta": {
-      "userId": "USR000000000001",
+      "userId": "USR-20251002-170601-101-ABCD",
       "version": 1,
       "primaryRole": "admin",
       "links": {
-        "accountId": "ACC000000000001"
+        "accountId": "ACC-20251002-170601-201-WXYZ"
       },
       "flags": {
         "isActive": true,
@@ -86,7 +86,7 @@
   },
   {
     "meta": {
-      "userId": "USR000000000002",
+      "userId": "USR-20251002-170602-102-BCDE",
       "version": 1,
       "primaryRole": "merchant",
       "roles": [
@@ -94,8 +94,8 @@
         "merchant"
       ],
       "links": {
-        "accountId": "ACC000000000002",
-        "merchantId": "MRC000000000001"
+        "accountId": "ACC-20251002-170602-202-XYZA",
+        "merchantId": "MRC-20251002-170602-401-ASDF"
       },
       "flags": {
         "isActive": true,
@@ -162,14 +162,14 @@
   },
   {
     "meta": {
-      "userId": "USR000000000003",
+      "userId": "USR-20251002-170603-103-CDEF",
       "version": 1,
       "primaryRole": "user",
       "roles": [
         "user"
       ],
       "links": {
-        "accountId": "ACC000000000003"
+        "accountId": "ACC-20251002-170603-203-YZAB"
       },
       "flags": {
         "isActive": true,
@@ -236,7 +236,7 @@
   },
   {
     "meta": {
-      "userId": "USR000000000004",
+      "userId": "USR-20251002-170604-104-DEFG",
       "version": 1,
       "primaryRole": "merchant",
       "roles": [
@@ -244,8 +244,8 @@
         "merchant"
       ],
       "links": {
-        "accountId": "ACC000000000004",
-        "merchantId": "MRC000000000002"
+        "accountId": "ACC-20251002-170604-204-ZABC",
+        "merchantId": "MRC-20251002-170604-402-FGHJ"
       },
       "flags": {
         "isActive": true,

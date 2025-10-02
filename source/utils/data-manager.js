@@ -181,50 +181,6 @@ export async function simulateLocalDataWrite(collectionName, newData) {
 }
 
 /**
- * Generates a new sequential ID for a given collection.
- * @param {string} collectionName - The name of the Firestore collection.
- * @param {string} prefix - The prefix for the ID (e.g., 'USR', 'LOG', 'SES').
- * @returns {Promise<string>} A promise that resolves to the new sequential ID.
- */
-export async function generateSequentialId(collectionName, prefix) {
-    if (!firestore) {
-        throw new Error('Firestore is not initialized for ID generation!');
-    }
-
-    // Use a dedicated 'counters' collection and transactions for robust, atomic ID generation.
-    // This avoids the "descending key scans" error and is the recommended pattern.
-    const counterRef = firestore.collection('counters').doc(collectionName);
-
-    try {
-        let newIdNumber;
-        await firestore.runTransaction(async (transaction) => {
-            const counterDoc = await transaction.get(counterRef);
-            
-            let lastIdNumber = 0;
-            if (counterDoc.exists) {
-                lastIdNumber = counterDoc.data().count || 0;
-            }
-            
-            newIdNumber = lastIdNumber + 1;
-            
-            // Atomically update the counter.
-            transaction.set(counterRef, { count: newIdNumber }, { merge: true });
-        });
-
-        if (newIdNumber === undefined) {
-            throw new Error('Transaction failed to produce a new ID number.');
-        }
-
-        const paddedId = String(newIdNumber).padStart(12, '0');
-        return `${prefix}${paddedId}`;
-
-    } catch (error) {
-        // Re-throw the error to be handled by the calling function (e.g., the signup rollback)
-        throw error;
-    }
-}
-
-/**
  * Fetches the first active promotion, respecting the schedule.
  * This function has custom logic that doesn't fit the generic fetcher.
  * @returns {Promise<object|null>} The active promotion object or null.

@@ -1,4 +1,4 @@
-import { generateSequentialId } from '../../utils/data-manager.js';
+import { generateId } from '../../utils/idGenerator.js';
 
 const db = window._firestore;
 
@@ -15,7 +15,7 @@ export async function createUserDocument(user, { fullName, phone, method, provid
       throw new Error("Firestore not available");
     }
 
-    const userId = await generateSequentialId('users', 'USR');
+    const userId = generateId('USR');
 
     // The primary role for a new user is 'user'.
     const primaryRole = 'user';

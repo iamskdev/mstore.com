@@ -1,7 +1,7 @@
 [
   {
     "meta": {
-      "merchantId": "MRC000000000001",
+      "merchantId": "MRC-20251002-170602-401-ASDF",
       "version": 1,
       "type": "Retailer",
       "adminNote": "Newly registered merchant, needs verification.",
@@ -21,7 +21,7 @@
         "isPremium": false
       },
       "links": {
-        "userId": "USR000000000002",
+        "userId": "USR-20251002-170602-102-BCDE",
         "staffIds": []
       },
       "info": {
@@ -94,14 +94,14 @@
     },
     "audit": {
       "createdAt": "2025-08-01T10:30:00Z",
-      "createdBy": "USR000000000002",
+      "createdBy": "USR-20251002-170602-102-BCDE",
       "updatedAt": "2025-08-07T09:15:00Z",
-      "updatedBy": "USR000000000002"
+      "updatedBy": "USR-20251002-170602-102-BCDE"
     }
   },
   {
     "meta": {
-      "merchantId": "MRC000000000002",
+      "merchantId": "MRC-20251002-170604-402-FGHJ",
       "version": 1,
       "type": "Retailer",
       "adminNote": "New cosmetics and sringar store by Anita Kumari.",
@@ -121,7 +121,7 @@
         "isPremium": false
       },
       "links": {
-        "userId": "USR000000000004",
+        "userId": "USR-20251002-170604-104-DEFG",
         "staffIds": []
       },
       "info": {
@@ -204,9 +204,9 @@
     },
     "audit": {
       "createdAt": "2025-08-05T11:15:00Z",
-      "createdBy": "USR000000000004",
+      "createdBy": "USR-20251002-170604-104-DEFG",
       "updatedAt": "2025-08-07T11:30:00Z",
-      "updatedBy": "USR000000000004"
+      "updatedBy": "USR-20251002-170604-104-DEFG"
     }
   }
 ]
