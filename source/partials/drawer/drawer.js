@@ -347,9 +347,20 @@ export async function loadDrawer() {
     console.log('Drawer HTML loaded and replaced placeholder.');
 
     // --- Load and Initialize Feedback Modal --- <-- Added this section
-    await loadFeedbackModal(); // Load the HTML for the feedback modal
-    initFeedbackModal();       // Initialize the logic for the feedback modal
-    console.log('Feedback modal loaded and initialized.');
+    const feedbackModalElement = await loadFeedbackModal(); // Load the HTML and get the element
+    
+    // FIX: Isolate the feedback modal initialization in its own try-catch block.
+    // This ensures that if the feedback modal fails to initialize, it does not
+    // prevent the main drawer from rendering and functioning.
+    setTimeout(() => {
+      try {
+        // Pass the loaded modal element directly to the initializer.
+        // This avoids race conditions by not relying on document.getElementById.
+        initFeedbackModal(feedbackModalElement);
+      } catch (e) {
+        console.error("Drawer Warning: Failed to initialize feedback modal logic, but drawer will continue.", e);
+      }
+    }, 0); // Use setTimeout to prevent race conditions.
 
 
     initializeDrawer(); // Initialize the drawer's own logic

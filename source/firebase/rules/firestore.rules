@@ -108,6 +108,15 @@ service cloud.firestore {
       allow update, delete: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
     }
 
+    // --- NEW: Feedback Collection Rules ---
+    match /feedbacks/{feedbackId} {
+      // Anyone (logged-in user or guest) can create a new feedback document.
+      // We verify it's a guest submission by checking the flag in the document itself.
+      allow create: if request.auth != null || request.resource.data.meta.flags.guest == true;
+      // Only admins can read, update, or delete feedback.
+      allow read, update, delete: if isAdmin();
+    }
+
     // Alerts are linked to users and should only be accessible by them or an Admin.
     match /alerts/{alertId} {
       allow read, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();

@@ -303,12 +303,16 @@
           // If the button has a specific ID, use it. Otherwise, look up the default for that role.
           const userId = this.dataset.userId || defaultUserMap[userType];
 
-          // Set or remove the user ID in localStorage.
+          // --- FIX: Update both currentUserType and currentUserId in localStorage ---
+          localStorage.setItem('currentUserType', userType);
           if (userId && userType !== 'guest') {
             localStorage.setItem('currentUserId', userId);
           } else {
             localStorage.removeItem('currentUserId');
           }
+
+          // --- FIX: Manually dispatch the authStateChanged event ---
+          window.dispatchEvent(new CustomEvent('authStateChanged'));
 
           // Directly tell the routeManager to handle the role change.
           if (userType) {
@@ -423,6 +427,10 @@
         userItem.addEventListener('click', () => {
           localStorage.setItem('currentUserId', user.meta.userId);
           routeManager.handleRoleChange(user.meta.primaryRole || 'user');
+          // --- FIX: Also update type and dispatch event on impersonation ---
+          localStorage.setItem('currentUserType', user.meta.primaryRole || 'user');
+          window.dispatchEvent(new CustomEvent('authStateChanged'));
+
           impersonateModal.classList.remove('visible');
           // Show a toast to confirm the impersonation
           showToast('info', `Now impersonating: ${user.info.fullName}`, 2500);

@@ -3,6 +3,9 @@
  * This script should be self-contained and only handle events within the modal.
  */
 import { showToast } from '../../utils/toast.js';
+import { firestore } from '../../firebase/firebase-config.js';
+import { generateId } from '../../utils/idGenerator.js';
+import { AuthService } from '../../firebase/auth/auth.js';
 
 /**
  * Fetches the feedback modal HTML and inserts it into the DOM.
@@ -48,22 +51,177 @@ export async function loadFeedbackModal() {
 }
 
 
-export function initFeedbackModal() {
-  const modal = document.getElementById('feedback-modal');
-
+export function initFeedbackModal(modal) {
   // The controller (item-details.js) is responsible for showing the modal.
-  // This script only handles what happens *inside* it.
+  // This script only handles what happens *inside* it. If the modal doesn't exist, we exit gracefully.
   if (!modal) {
     console.error("Feedback modal element not found in the DOM. Ensure loadFeedbackModal() was called.");
     return;
   }
 
-  const backdrop = document.getElementById('custom-select-backdrop');
-  const closeBtn = document.getElementById('modal-close-btn');
-  const cancelBtn = document.getElementById('modal-cancel-btn');
-  const submitBtn = document.getElementById('modal-submit-btn');
-  const countrySelectWrapper = document.getElementById('country-code-select');
-  const typeSelectWrapper = document.getElementById('type-select');
+  // FIX: The backdrop is now inside the modal, so we query it from there.
+  // This removes the need to add it to index.html.
+  const backdrop = modal.querySelector('#custom-select-backdrop');
+  if (!backdrop) console.warn("Feedback Modal: Backdrop element with ID 'custom-select-backdrop' not found inside the modal.");
+  const closeBtn = modal.querySelector('#modal-close-btn');
+  const cancelBtn = modal.querySelector('#modal-cancel-btn');
+  const submitBtn = modal.querySelector('#modal-submit-btn');
+  const countrySelectWrapper = modal.querySelector('#country-code-select');
+  const typeSelectWrapper = modal.querySelector('#type-select');
+
+  // --- NEW: Get elements for conditional display ---
+  const phoneGroup = modal.querySelector('.phone-group');
+  const attachmentGroup = modal.querySelector('.attachment-group');
+  const attachmentTrigger = modal.querySelector('#feedback-attachment-trigger');
+  const attachmentInput = modal.querySelector('#feedback-attachment-input');
+  const attachmentListContainer = modal.querySelector('#feedback-attachment-list');
+  const attachmentIcon = modal.querySelector('#feedback-attachment-icon'); // The clickable icon
+  const attachmentPromptText = modal.querySelector('.attachment-prompt-text'); // The "Attach files" text
+  const singleFileDisplay = modal.querySelector('.single-file-display');
+  const singleFileName = modal.querySelector('.single-file-name');
+  let attachedFiles = []; // Array to manage selected files
+
+  /**
+   * Updates the modal UI based on the user's authentication state.
+   * This is now an async function to ensure AuthService is ready.
+   */
+  async function updateUserSpecificUI() {
+    // Wait for a brief moment to ensure the auth state is settled.
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const isLoggedIn = AuthService.isLoggedIn();
+
+    if (isLoggedIn) {
+      phoneGroup.style.display = 'none';
+      attachmentGroup.style.display = 'block';
+    } else {
+      phoneGroup.style.display = 'block';
+      attachmentGroup.style.display = 'none';
+    }
+    console.log(`Feedback Modal UI Updated. Is Logged In: ${isLoggedIn}`);
+  }
+
+  // Call this function once to set the initial state
+  updateUserSpecificUI();
+
+  // Also listen for auth state changes to update the UI if the user logs in/out
+  // while the app is running (though less likely for a modal).
+  window.addEventListener('authStateChanged', () => {
+    console.log("Feedback Modal: Auth state changed, updating UI.");
+    updateUserSpecificUI();
+  });
+
+  // --- NEW: Attachment Logic ---
+  // FIX: The icon is always clickable to add files.
+  attachmentIcon.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent this click from bubbling up to the attachmentTrigger
+    attachmentInput.click();
+  });
+
+  // NEW FEATURE: If no files are attached, the entire box is clickable.
+  attachmentTrigger.addEventListener('click', () => {
+    if (attachedFiles.length === 0) {
+      attachmentInput.click();
+    }
+  });
+
+  /**
+   * NEW: Truncates the middle of a filename if it's too long.
+   * e.g., "a_very_long_filename_for_testing.jpg" -> "a_very_long_...ing.jpg"
+   * @param {string} filename The full filename.
+   * @param {number} maxLength The maximum desired length before truncation.
+   * @returns {string} The formatted filename.
+   */
+  function formatFilename(filename, maxLength = 25) {
+    if (filename.length <= maxLength) {
+      return filename;
+    }
+
+    // FIX: Handle filenames with or without extensions more robustly.
+    const lastDotIndex = filename.lastIndexOf('.');
+    // Consider it an extension only if a dot exists and it's not the first character.
+    const hasExtension = lastDotIndex > 0 && filename.length - lastDotIndex <= 5;
+
+    const extension = hasExtension ? filename.substring(lastDotIndex) : '';
+    const nameWithoutExt = hasExtension ? filename.substring(0, lastDotIndex) : filename;
+
+    const charsToShow = maxLength - extension.length - 3; // 3 for "..."
+
+    // FIX: Allocate more characters to the beginning of the filename for better readability.
+    const frontChars = Math.max(5, Math.floor(charsToShow * 1.0)); // Show at least 5 chars at front
+    const backChars = Math.max(2, charsToShow - frontChars); // Show at least 2 chars at back
+    return `${nameWithoutExt.substring(0, frontChars)}...${nameWithoutExt.substring(nameWithoutExt.length - backChars)}${extension}`;
+  }
+
+  /**
+   * Renders the UI for attached files based on their count.
+   */
+  function renderAttachedFiles() {
+    // FIX: Clear only the pill list, not the single file display.
+    attachmentListContainer.innerHTML = '';
+
+    if (attachedFiles.length === 0) {
+      attachmentTrigger.classList.add('is-empty'); // Add class for hover effect
+      attachmentPromptText.style.display = 'block';
+      singleFileDisplay.style.display = 'none';
+      attachmentListContainer.style.display = 'none';
+    } else if (attachedFiles.length === 1) {
+      // Only one file: show it inside the box.
+      attachmentTrigger.classList.remove('is-empty'); // Remove class
+      const file = attachedFiles[0];
+      const formattedName = formatFilename(file.name, 30); // Longer max length for single view
+      singleFileName.textContent = formattedName; // FIX: Just show the filename text
+      attachmentPromptText.style.display = 'none';
+      singleFileDisplay.style.display = 'flex';
+      attachmentListContainer.style.display = 'none';
+    } else {
+      // Multiple files: show the first one inside the box, and the rest as pills.
+      attachmentTrigger.classList.remove('is-empty'); // Remove class
+      const firstFile = attachedFiles[0];
+      const firstFormattedName = formatFilename(firstFile.name, 30);
+      singleFileName.textContent = firstFormattedName; // FIX: Just show the filename text
+      attachmentPromptText.style.display = 'none';
+      singleFileDisplay.style.display = 'flex';
+
+      // Render pills for the rest of the files (from the second file onwards).
+      const filesForPills = attachedFiles.slice(1);
+      attachmentListContainer.style.display = 'flex';
+      filesForPills.forEach((file, index) => {
+        const formattedName = formatFilename(file.name, 25); // Shorter max length for pills
+        const pill = document.createElement('div');
+        pill.className = 'attachment-pill';
+        // The data-index must be the original index in the `attachedFiles` array.
+        pill.innerHTML = `<i class="fas fa-paperclip"></i><span>${formattedName}</span><i class="fas fa-times remove-file-btn" data-index="${index + 1}"></i>`; // FIX: Add paperclip icon to pill
+        attachmentListContainer.appendChild(pill);
+      });
+    }
+  }
+
+  attachmentInput.addEventListener('change', () => {
+    // Add new files to our managed array, avoiding duplicates
+    for (const newFile of attachmentInput.files) {
+      if (!attachedFiles.some(existingFile => existingFile.name === newFile.name)) {
+        attachedFiles.push(newFile);
+      }
+    }
+    renderAttachedFiles();
+    // Clear the input value so the 'change' event fires even if the same file is selected again after removal
+    attachmentInput.value = '';
+  });
+
+  // Use event delegation on the parent group to handle all remove clicks
+  attachmentGroup.addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-file-btn')) {
+      // If it's the single file view, the index is always 0
+      const indexToRemove = e.target.dataset.index ? parseInt(e.target.dataset.index, 10) : 0;
+      
+      // Remove the file from our managed array
+      attachedFiles.splice(indexToRemove, 1);
+      
+      // Re-render the UI
+      renderAttachedFiles();
+    }
+  });
+
 
   const closeModal = () => modal.style.display = 'none';
 
@@ -83,7 +241,12 @@ export function initFeedbackModal() {
 
       const trigger = selectWrapper.querySelector('.custom-select-trigger');
       const options = selectWrapper.querySelector('.custom-options');
-      const triggerSpan = trigger.querySelector('span');
+      // --- REFACTOR: Dynamically handle the text node ---
+      // Instead of relying on a pre-existing <span>, we create and manage a text node.
+      // This makes the HTML cleaner.
+      const arrowDiv = trigger.querySelector('.arrow');
+      const textNode = document.createTextNode('');
+      trigger.insertBefore(textNode, arrowDiv);
       // Backdrop is now defined outside and passed or accessed globally
       const searchInput = selectWrapper.querySelector('.custom-select-search');
       const isCountrySelect = (wrapperId === 'country-code-select');
@@ -141,9 +304,9 @@ export function initFeedbackModal() {
           const option = e.target.closest('.custom-option');
           if (option) {
               if (isCountrySelect) {
-                triggerSpan.textContent = option.dataset.value;
+                textNode.textContent = option.dataset.value;
               } else {
-                triggerSpan.textContent = option.textContent;
+                textNode.textContent = option.textContent;
               }
               trigger.dataset.value = option.dataset.value;
 
@@ -157,8 +320,10 @@ export function initFeedbackModal() {
       const initialSelected = options.querySelector('.custom-option.selected');
       if(initialSelected) {
           trigger.dataset.value = initialSelected.dataset.value;
-          if (!isCountrySelect) { // Only update text for type select, country select already has it
-            triggerSpan.textContent = initialSelected.textContent;
+          if (isCountrySelect) {
+            textNode.textContent = initialSelected.dataset.value;
+          } else {
+            textNode.textContent = initialSelected.textContent;
           }
       }
 
@@ -210,33 +375,27 @@ export function initFeedbackModal() {
     }); // Closing brace for the forEach callback
   });
 
-  // FIX: Apply this js
-  document.addEventListener('click', function(e) {
-    const feedbackModal = document.getElementById('feedback-modal');
-    const countryCodeSelect = document.querySelector('#country-code-select');
-
-    // Main modal close buttons
-    if (e.target && (e.target.id === 'modal-close-btn' || e.target.id === 'modal-cancel-btn')) {
-      if (feedbackModal) {
-        feedbackModal.style.display = 'none';
-      }
-    }
-  });
-
   // --- Submit Logic ---
-  submitBtn.addEventListener('click', () => {
+  submitBtn.addEventListener('click', async () => { // Make the function async
     const typeTrigger = document.querySelector('#type-select .custom-select-trigger');
     const feedbackType = typeTrigger ? typeTrigger.dataset.value : 'other';
     const feedbackMessage = document.getElementById('feedback-message-textarea').value.trim();
 
     const countryCodeTrigger = document.querySelector('#country-code-select .custom-select-trigger');
-    const countryCode = countryCodeTrigger ? countryCodeTrigger.dataset.value : '+91';
-    const phoneInput = document.getElementById('feedback-contact-number').value.trim();
-    const fullPhoneNumber = phoneInput ? `${countryCode}${phoneInput}` : "Not Provided";
+    let fullPhoneNumber = "Not Provided";
 
+    // Only get phone number if the user is a guest
+    if (!AuthService.isLoggedIn()) {
+      const countryCode = countryCodeTrigger ? countryCodeTrigger.dataset.value : '+91';
+      const phoneInput = document.getElementById('feedback-contact-number').value.trim();
+      if (phoneInput) {
+        fullPhoneNumber = `${countryCode}${phoneInput}`;
+      }
+    }
     const urlParams = new URLSearchParams(window.location.search);
     const itemName = decodeURIComponent(urlParams.get('name'));
 
+    // 1. Validation
     if (!feedbackMessage) {
       // FIX: Use the global custom alert for validation.
       window.showCustomAlert({
@@ -246,13 +405,79 @@ export function initFeedbackModal() {
       return;
     }
 
-    console.log("✅ Feedback Submitted:", {
-      type: feedbackType, message: feedbackMessage, phone: fullPhoneNumber, item: itemName
-    });
-    // TODO: Yahan par data ko Firebase mein save karne ka logic aayega.
+    // 2. Set loading state on the button
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
-    closeModal();
-    // FIX: Use a non-blocking toast notification for success.
-    showToast('success', 'Feedback has been submitted.');
+    try {
+      if (!firestore) {
+        throw new Error("Firestore is not initialized.");
+      }
+
+      const feedbackId = generateId('FDB');
+      const feedbackRef = firestore.collection('feedbacks').doc(feedbackId);
+
+      const isLoggedIn = AuthService.isLoggedIn();
+      const userId = isLoggedIn ? localStorage.getItem('currentUserId') : null;
+      const userRole = isLoggedIn ? localStorage.getItem('currentUserType') : 'guest';
+
+      // Create a top-level 'submitter' object for easy querying and identification.
+      const submitterInfo = {
+        userId: userId || null,
+        role: userRole,
+        // If the user is a merchant, also store their merchantId for direct queries.
+        // This assumes you can get merchantId from localStorage or by fetching user data.
+        merchantId: userRole === 'merchant' ? localStorage.getItem('currentMerchantId') : null, // Example: you might need to fetch this
+        submittedAt: new Date().toISOString()
+      };
+
+      // 3. Build the feedback document based on your schema
+      const newFeedbackDoc = {
+        meta: {
+          feedbackId: feedbackId,
+          type: "feedback",
+          version: 1.0,
+          flags: { reviewed: false, resolved: false, archived: false, guest: !isLoggedIn }
+        },
+        submitter: submitterInfo,
+        details: {
+          subject: itemName || "General Feedback",
+          message: feedbackMessage,
+          category: feedbackType,
+          sentiment: "neutral",
+          attachments: [],
+          phone: fullPhoneNumber
+        },
+        lifecycle: {
+          status: "pending",
+          milestones: {
+            reviewedAt: null,
+            resolvedAt: null,
+            archivedAt: null
+          },
+          history: [] // History starts empty. The first entry will be when an admin reviews it.
+        }
+      };
+
+      // 4. Save the document to Firestore
+      await feedbackRef.set(newFeedbackDoc);
+
+      console.log(`✅ Feedback submitted successfully with ID: ${feedbackId}`);
+      closeModal();
+      showToast('success', 'Thank you! Your feedback has been submitted.');
+
+    } catch (error) {
+      console.error("❌ Error submitting feedback:", error);
+      showToast('error', 'Could not submit feedback. Please try again.');
+    } finally {
+      // 5. Reset button state
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Submit';
+      // --- NEW: Reset form fields after submission ---
+      document.getElementById('feedback-message-textarea').value = '';
+      document.getElementById('feedback-contact-number').value = '';
+      attachedFiles = []; // Clear the managed files array
+      renderAttachedFiles(); // Clear the UI
+    }
   });
 }

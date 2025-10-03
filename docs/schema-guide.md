@@ -1,6 +1,6 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Updated`
-> - **Last Reviewed:** 03/10/2025 22:28:00 IST
+> - **Last Reviewed:** 04/10/2025 00:09:00 IST
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides a comprehensive guide to all Firestore data collections, detailing each schema's structure, fields, and relationships. It is the single source of truth for the data model.
 
@@ -355,7 +355,47 @@ This approach allows the feature to evolve without breaking the existing structu
 यह संग्रह माप की विभिन्न इकाइयों (`weight`, `volume`) और उनके रूपांतरण कारकों को परिभाषित करता है।
 
 ---
+## 14. Feedbacks (`feedbacks.json`)
 
-## 14. Brands (`brands.json`)
+**उद्देश्य:** यह संग्रह उपयोगकर्ताओं (लॉग-इन और मेहमान दोनों) से प्राप्त सभी प्रकार की प्रतिक्रिया, जैसे बग रिपोर्ट, सुविधा अनुरोध और सामान्य सुझाव, को संग्रहीत करता है।
+
+### मुख्य ऑब्जेक्ट्स:
+
+-   **`meta`**: फीडबैक का मेटाडेटा।
+    -   `feedbackId` (string): अद्वितीय फीडबैक ID (`FDB...`) - प्राइमरी की।
+    -   `type` (string): दस्तावेज़ का प्रकार, हमेशा `"feedback"`।
+    -   `version` (number): स्कीमा का संस्करण।
+    -   `flags` (object): फीडबैक की स्थिति को ट्रैक करने के लिए बूलियन मान।
+        -   `reviewed` (boolean): क्या फीडबैक की समीक्षा की गई है।
+        -   `resolved` (boolean): क्या फीडबैक का समाधान हो गया है।
+        -   `archived` (boolean): क्या फीडबैक को संग्रहीत किया गया है।
+        -   `guest` (boolean): क्या यह एक मेहमान उपयोगकर्ता द्वारा सबमिट किया गया था।
+-   **`submitter`**: फीडबैक सबमिट करने वाले की जानकारी।
+    -   `userId` (string | null): उपयोगकर्ता की अद्वितीय ID या `null`।
+    -   `role` (string): उपयोगकर्ता की भूमिका (`user`, `merchant`, `admin`, `guest`)।
+    -   `merchantId` (string | null): यदि सबमिटर एक व्यापारी है तो उसकी ID।
+    -   `submittedAt` (string - ISO DateTime): फीडबैक कब सबमिट किया गया था।
+-   **`details`**: फीडबैक का वास्तविक विवरण।
+    -   `subject` (string): फीडबैक का विषय (जैसे, संबंधित आइटम का नाम)।
+    -   `message` (string): उपयोगकर्ता का विस्तृत संदेश।
+    -   `category` (string): फीडबैक की श्रेणी (`bug_report`, `feature_request`, आदि)।
+    -   `sentiment` (string): संदेश की भावना (`positive`, `neutral`, `negative`) - इसे बाद में AI से एनालाइज किया जा सकता है।
+    -   `attachments` (array): उपयोगकर्ता द्वारा संलग्न की गई फ़ाइलों के URL की सूची।
+    -   `phone` (string): उपयोगकर्ता का संपर्क नंबर।
+-   **`lifecycle`**: फीडबैक की स्थिति का जीवनचक्र।
+    -   `status` (string): फीडबैक की वर्तमान स्थिति (`pending`, `reviewed`, `resolved`, `archived`)।
+    -   `milestones` (object): मुख्य घटनाओं के टाइमस्टैम्प।
+        -   `reviewedAt` (string | null): कब समीक्षा की गई।
+        -   `resolvedAt` (string | null): कब समाधान किया गया।
+        -   `archivedAt` (string | null): कब संग्रहीत किया गया।
+    -   `history` (array): स्थिति में हुए सभी परिवर्तनों का एक लॉग।
+        -   प्रत्येक ऑब्जेक्ट में `from`, `to`, `updatedAt`, `updatedBy`, और `note` होता है।
+
+### संबंध (Relationships)
+- **`feedbacks` Many-to-One `users`**: यदि फीडबैक एक लॉग-इन उपयोगकर्ता द्वारा दिया गया है, तो `submitter.userId` उसे `users` संग्रह से जोड़ता है।
+
+---
+
+## 15. Brands (`brands.json`)
 
 यह संग्रह उन सभी ब्रांडों की सूची संग्रहीत करता है जिनके उत्पाद प्लेटफॉर्म पर बेचे जाते हैं।

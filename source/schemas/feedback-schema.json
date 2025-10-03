@@ -4,7 +4,6 @@
     "feedbackId": "FDB-YYYYMMDD-HHMMSS-SSS-RRRR",
     "type": "feedback",
     "version": 1,
-    "userId": "",
     "flags": {
       "reviewed": false,
       "resolved": false,
@@ -12,42 +11,40 @@
       "guest": false
     }
   },
-  "audit": {
-    "createdAt": "2025-09-22T10:30:00Z",
-    "createdBy": "",
-    "updatedAt": "2025-09-24T15:20:00Z",
-    "updatedBy": ""
+  "submitter": {
+    "userId": "USR-...",
+    "role": "user",
+    "merchantId": null,
+    "submittedAt": "2025-09-22T10:30:00Z"
   },
   "details": {
-    "subject": "",
+    "subject": "General Feedback",
     "message": "App bahut accha hai, lekin search feature ko improve kiya ja sakta hai.",
     "category": "feature_request",
     "sentiment": "positive",
     "attachments": [],
-    "phone": ""
+    "phone": "+919999999999"
   },
   "lifecycle": {
-    "status": "resolved",
+    "status": "pending",
+    "milestones": {
+      "reviewedAt": null,
+      "resolvedAt": null,
+      "archivedAt": null
+    },
     "history": [
-      {
-        "from": null,
-        "to": "pending",
-        "changedAt": "2025-09-22T10:30:00Z",
-        "changedBy": "",
-        "note": "Feedback submitted by user."
-      },
       {
         "from": "pending",
         "to": "reviewed",
-        "changedAt": "2025-09-23T09:00:00Z",
-        "changedBy": "",
+        "updatedAt": "2025-09-23T09:00:00Z",
+        "updatedBy": { "id": "USR-...", "role": "admin" },
         "note": "Admin reviewed feedback."
       },
       {
         "from": "reviewed",
         "to": "resolved",
-        "changedAt": "2025-09-24T15:20:00Z",
-        "changedBy": "",
+        "updatedAt": "2025-09-24T15:20:00Z",
+        "updatedBy": { "id": "USR-...", "role": "admin" },
         "note": "Issue resolved."
       }
     ]

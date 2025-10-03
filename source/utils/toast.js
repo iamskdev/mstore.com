@@ -228,7 +228,7 @@ export function showToast(type, message, duration) {
         // Add event listeners for manual scrolling (mouse wheel/trackpad)
         messageWrapper.addEventListener('wheel', (e) => {
             messageWrapper.scrollLeft += e.deltaY; // Scroll horizontally with vertical wheel
-        });
+        }, { passive: true });
     });
 
     // --- Close Logic ---

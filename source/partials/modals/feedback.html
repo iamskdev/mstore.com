@@ -1,4 +1,8 @@
 <div id="feedback-modal" class="modal">
+  <!-- NEW: Backdrop is now inside the modal, so it doesn't need to be in index.html -->
+  <!-- It will be controlled by JavaScript. -->
+  <div id="custom-select-backdrop" class="custom-select-backdrop"></div>
+
   <div class="modal-content">
     <button class="modal-close-btn" id="modal-close-btn">&times;</button>
     <h2>Give Feedback</h2>
@@ -6,61 +10,83 @@
     <label for="select-feedback-type">Type:</label>
     <div class="custom-select-wrapper" id="type-select">
       <div class="custom-select-trigger">
-        <span>Wrong Product</span>
         <div class="arrow"></div>
       </div>
       <div class="custom-options">
-        <div class="custom-option selected" data-value="app_name">App Name Suggestion</div>
-        <div class="custom-option" data-value="feature">Feature Request</div>
+        <div class="custom-option selected" data-value="app_name_suggestion">App Name Suggestion</div>
         <div class="custom-option" data-value="bug_report">Bug Report</div>
-        <div class="custom-option" data-value="other">Other</div>
+        <div class="custom-option" data-value="feature_request">New Feature Request</div>
+        <div class="custom-option" data-value="general_improvement">General Improvement</div>
+        <div class="custom-option" data-value="ui_ux_feedback">UI/UX Feedback</div>
+        <div class="custom-option" data-value="performance_issue">Performance Issue</div>
+        <div class="custom-option" data-value="login_signup_issue">Login/Signup Issue</div>
+        <div class="custom-option" data-value="general_feedback">General Feedback</div>
       </div>
     </div>
 
     <label for="feedback-message-textarea">Message:</label>
     <textarea id="feedback-message-textarea" rows="3" placeholder="Write your feedback..."></textarea>
 
-    <label for="feedback-contact-number">Phone (optional):</label>
-    <div class="phone-group">
-      <div class="custom-select-wrapper" id="country-code-select">
-        <div class="custom-select-trigger">
-          <span>+91</span>
-          <div class="arrow"></div>
-        </div>
-        <div class="custom-options">
-          <!-- FIX: Header now contains title, close button, AND search -->
-          <div class="custom-select-header">
-            <div class="custom-select-header-top">
-              <h3>Select Country</h3>
-              <button id="country-select-close-btn" class="modal-close-btn">&times;</button>
+    <!-- Phone number group for GUESTS -->
+    <div class="phone-group guest-only">
+      <label for="feedback-contact-number">Phone (optional):</label>
+      <div class="phone-input-container">
+        <div class="custom-select-wrapper" id="country-code-select">
+          <div class="custom-select-trigger">
+            <div class="arrow"></div>
+          </div>
+          <div class="custom-options">
+            <!-- FIX: Header now contains title, close button, AND search -->
+            <div class="custom-select-header">
+              <div class="custom-select-header-top">
+                <h3>Select Country</h3>
+                <button id="country-select-close-btn" class="modal-close-btn">&times;</button>
+              </div>
+              <div class="custom-select-search-wrapper">
+                <input type="text" class="custom-select-search" placeholder="Search country...">
+              </div>
             </div>
-            <div class="custom-select-search-wrapper">
-              <input type="text" class="custom-select-search" placeholder="Search country...">
+            <div class="custom-options-body">
+              <!-- Neighboring Countries -->
+              <div class="custom-option selected" data-value="+91">(+91) India <span class="flag-emoji">🇮🇳</span></div>
+              <div class="custom-option" data-value="+92">(+92) Pakistan <span class="flag-emoji">🇵🇰</span></div>
+              <div class="custom-option" data-value="+880">(+880) Bangladesh <span class="flag-emoji">🇧🇩</span></div>
+              <div class="custom-option" data-value="+977">(+977) Nepal <span class="flag-emoji">🇳🇵</span></div>
+              <div class="custom-option" data-value="+94">(+94) Sri Lanka <span class="flag-emoji">🇱🇰</span></div>
+              <!-- Other Major Countries -->
+              <div class="custom-option" data-value="+1">(+1) USA <span class="flag-emoji">🇺🇸</span></div>
+              <div class="custom-option" data-value="+44">(+44) UK <span class="flag-emoji">🇬🇧</span></div>
+              <div class="custom-option" data-value="+1">(+1) Canada <span class="flag-emoji">🇨🇦</span></div>
+              <div class="custom-option" data-value="+61">(+61) Australia <span class="flag-emoji">🇦🇺</span></div>
+              <div class="custom-option" data-value="+971">(+971) UAE <span class="flag-emoji">🇦🇪</span></div>
             </div>
           </div>
-          <div class="custom-options-body">
-            <!-- Neighboring Countries -->
-            <div class="custom-option selected" data-value="+91">(+91) India <span class="flag-emoji">🇮🇳</span></div>
-            <div class="custom-option" data-value="+92">(+92) Pakistan <span class="flag-emoji">🇵🇰</span></div>
-            <div class="custom-option" data-value="+880">(+880) Bangladesh <span class="flag-emoji">🇧🇩</span></div>
-            <div class="custom-option" data-value="+977">(+977) Nepal <span class="flag-emoji">🇳🇵</span></div>
-            <div class="custom-option" data-value="+94">(+94) Sri Lanka <span class="flag-emoji">🇱🇰</span></div>
-            <div class="custom-option" data-value="+975">(+975) Bhutan <span class="flag-emoji">🇧🇹</span></div>
-            <div class="custom-option" data-value="+95">(+95) Myanmar <span class="flag-emoji">🇲🇲</span></div>
-            <div class="custom-option" data-value="+86">(+86) China <span class="flag-emoji">🇨🇳</span></div>
-            <!-- Other Major Countries -->
-            <div class="custom-option" data-value="+1">(+1) USA <span class="flag-emoji">🇺🇸</span></div>
-            <div class="custom-option" data-value="+44">(+44) UK <span class="flag-emoji">🇬🇧</span></div>
-            <div class="custom-option" data-value="+1">(+1) Canada <span class="flag-emoji">🇨🇦</span></div>
-            <div class="custom-option" data-value="+61">(+61) Australia <span class="flag-emoji">🇦🇺</span></div>
-            <div class="custom-option" data-value="+971">(+971) UAE <span class="flag-emoji">🇦🇪</span></div>
-            <div class="custom-option" data-value="+65">(+65) Singapore <span class="flag-emoji">🇸🇬</span></div>
-            <div class="custom-option" data-value="+49">(+49) Germany <span class="flag-emoji">🇩🇪</span></div>
-            <div class="custom-option" data-value="+81">(+81) Japan <span class="flag-emoji">🇯🇵</span></div>
-          </div>
         </div>
+        <input type="text" id="feedback-contact-number" placeholder="Phone Number" autocomplete="off"/>
       </div>
-      <input type="text" id="feedback-contact-number" placeholder="Phone Number" autocomplete="off"/>
+    </div>
+
+    <!-- Attachment group for LOGGED-IN USERS -->
+    <div class="attachment-group auth-only">
+        <label for="feedback-attachment-trigger">Attachment (optional):</label>
+        <div id="feedback-attachment-trigger" class="attachment-box">
+            <!-- FIX: The icon is now separate and will always be visible. -->
+            <i class="fas fa-paperclip" id="feedback-attachment-icon"></i>
+            
+            <!-- This container will hold either the prompt or the single file name -->
+            <div class="attachment-text-container">
+                <span class="attachment-prompt-text">Attach files (e.g., screenshots)</span>
+                <div class="single-file-display" style="display: none;">
+                    <span class="single-file-name"></span>
+                    <i class="fas fa-times remove-file-btn" title="Remove file"></i>
+                </div>
+            </div>
+        </div>
+        <!-- FIX: Add a wrapper around the list to constrain its width to 100% of the parent. -->
+        <div class="attachment-list-wrapper">
+            <div id="feedback-attachment-list" class="attachment-list"></div>
+        </div>
+        <input type="file" id="feedback-attachment-input" hidden accept="image/*,video/*,.pdf" multiple>
     </div>
 
     <div class="modal-actions">
@@ -157,14 +183,13 @@
   margin-bottom: 1rem;
 }
 
-.phone-group {
+.phone-input-container {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1rem;
   position: relative; /* Make this the positioning context for the dropdown */
 }
 
-.phone-group input {
+.phone-input-container input {
   flex-grow: 1;
   margin-bottom: 0;
   height: 44px; /* Match the height of the custom select */
@@ -373,5 +398,96 @@
 .cancel-btn {
   background: var(--bg-secondary);
   color: var(--text-secondary);
+}
+
+/* --- NEW: Attachment Box Styles --- */
+.attachment-group {
+  margin-bottom: 1rem;
+}
+.attachment-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px dashed var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease;
+}
+
+/* NEW: Add a hover effect only when the box is empty and clickable */
+.attachment-box.is-empty:hover {
+  border-color: var(--accent-primary);
+  background-color: var(--bg-hover);
+}
+
+/* FIX: The icon is now the only clickable element for triggering the file input. */
+#feedback-attachment-icon {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+#feedback-attachment-icon:hover {
+    color: var(--accent-primary);
+}
+.attachment-text-container, .single-file-display {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  /* FIX: Use flex-grow to take up remaining space instead of a fixed width. */
+  /* This prevents the cross icon from being pushed out of the box. */
+  flex-grow: 1;
+  min-width: 0; /* Important for flexbox to allow shrinking and ellipsis. */
+}
+
+.single-file-display {
+  justify-content: space-between;
+}
+
+.single-file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* FIX: Crucial for allowing text-overflow to work correctly in a flex container. */
+}
+
+/* FIX: New wrapper to control the width of the pill list */
+.attachment-list-wrapper {
+  width: 100%;
+}
+
+/* --- NEW: Attachment List Styles --- */
+.attachment-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%; /* FIX: Ensure the flex container itself takes up the full width. */
+}
+.attachment-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* NEW: Add gap between icon, text, and remove button */
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  max-width: 100%; /* FIX: Allow the pill to take up the full width of the container. */
+}
+.attachment-pill span {
+  white-space: nowrap;
+  flex-grow: 1; /* NEW: Allow filename to take available space */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* FIX: Crucial for allowing text-overflow to work correctly in a flex container. */
+}
+
+.attachment-pill .remove-file-btn {
+  /* FIX: Remove margin-left and let flex gap handle spacing */
+  /* margin-left: 8px; */
+  cursor: pointer;
+  color: var(--text-tertiary);
 }
 </style>

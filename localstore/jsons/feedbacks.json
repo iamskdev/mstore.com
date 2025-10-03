@@ -1,55 +1,54 @@
-{
-  "$schema": "../../source/schemas/feedback-schema.json",
-  "meta": {
-    "feedbackId": "FDB-20251002-173008-001-QWERT",
-    "type": "feedback",
-    "version": 1,
-    "userId": "",
-    "flags": {
-      "reviewed": false,
-      "resolved": false,
-      "archived": false,
-      "guest": false
-    }
-  },
-  "audit": {
-    "createdAt": "2025-09-22T10:30:00Z",
-    "createdBy": "",
-    "updatedAt": "2025-09-24T15:20:00Z",
-    "updatedBy": ""
-  },
-  "details": {
-    "subject": "",
-    "message": "App bahut accha hai, lekin search feature ko improve kiya ja sakta hai.",
-    "category": "feature_request",
-    "sentiment": "positive",
-    "attachments": [],
-    "phone": ""
-  },
-  "lifecycle": {
-    "status": "resolved",
-    "history": [
-      {
-        "from": null,
-        "to": "pending",
-        "changedAt": "2025-09-22T10:30:00Z",
-        "changedBy": "",
-        "note": "Feedback submitted by user."
-      },
-      {
-        "from": "pending",
-        "to": "reviewed",
-        "changedAt": "2025-09-23T09:00:00Z",
-        "changedBy": "",
-        "note": "Admin reviewed feedback."
-      },
-      {
-        "from": "reviewed",
-        "to": "resolved",
-        "changedAt": "2025-09-24T15:20:00Z",
-        "changedBy": "",
-        "note": "Issue resolved."
+[
+  {
+    "$schema": "../../source/schemas/feedback-schema.json",
+    "meta": {
+      "feedbackId": "FDB-20251003-103008-001-QWERT",
+      "type": "feedback",
+      "version": 1.0,
+      "flags": {
+        "reviewed": true,
+        "resolved": true,
+        "archived": false,
+        "guest": false
       }
-    ]
+    },
+    "submitter": {
+      "userId": "USR-20251002-170603-103-CDEF",
+      "role": "user",
+      "merchantId": null,
+      "submittedAt": "2025-10-03T10:30:00Z"
+    },
+    "details": {
+      "subject": "Search Feature Improvement",
+      "message": "App bahut accha hai, lekin search feature ko improve kiya ja sakta hai.",
+      "category": "feature_request",
+      "sentiment": "positive",
+      "attachments": [],
+      "phone": "+919876543210"
+    },
+    "lifecycle": {
+      "status": "resolved",
+      "milestones": {
+        "reviewedAt": "2025-10-03T11:00:00Z",
+        "resolvedAt": "2025-10-03T15:20:00Z",
+        "archivedAt": null
+      },
+      "history": [
+        {
+          "from": "pending",
+          "to": "reviewed",
+          "updatedAt": "2025-10-03T11:00:00Z",
+          "updatedBy": { "id": "USR-20251002-170601-101-ABCD", "role": "admin" },
+          "note": "Admin reviewed feedback."
+        },
+        {
+          "from": "reviewed",
+          "to": "resolved",
+          "updatedAt": "2025-10-03T15:20:00Z",
+          "updatedBy": { "id": "USR-20251002-170601-101-ABCD", "role": "admin" },
+          "note": "Issue resolved and marked as complete."
+        }
+      ]
+    }
   }
-}
+]
