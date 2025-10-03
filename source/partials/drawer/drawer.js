@@ -6,7 +6,8 @@ import { AuthService } from '../../firebase/auth/auth.js';
 import { routeManager } from '../../main.js';
 import { getDeferredPrompt, initializePwaInstall } from '../../utils/pwa-manager.js';
 import { getAppConfig } from '../../settings/main-config.js';
-import { loadFeedbackModal, initFeedbackModal } from '../modals/feedback.js'; // <-- Added this import
+import { loadFeedbackModal, initFeedbackModal } from '../modals/feedback.js';
+import { loadRatingModal, initRatingModal } from '../../modals/rating/rating-modal.js';
 
 export function initializeDrawer() {
   /**
@@ -112,7 +113,7 @@ export function initializeDrawer() {
       // --- Refactored View Switching Logic ---
       // This data-driven approach is cleaner and more scalable than a long if-else chain.
       const roleToViewMap = {
-        'user': userView,
+        'consumer': userView,
         'merchant': merchantView,
         'admin': adminView
       };
@@ -121,7 +122,9 @@ export function initializeDrawer() {
 
       if (viewToShow) {
         viewToShow.classList.remove('hidden');
-        populateUserInfo(userType); // The prefix is the same as the userType/role.
+        // FIX: The drawer's HTML uses 'user' as the prefix for consumer elements (e.g., 'drawer-user-avatar').
+        // Map the 'consumer' role to the 'user' prefix for the UI.
+        populateUserInfo(userType === 'consumer' ? 'user' : userType);
       } else {
         // Fallback to guest view if the role is unknown or doesn't have a specific drawer.
         guestView.classList.remove('hidden');
@@ -311,6 +314,19 @@ export function initializeDrawer() {
     });
   });
 
+  // --- Rating Modal Trigger ---
+  document.querySelectorAll('.rate-us-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const ratingModal = document.getElementById('rating-modal');
+      if (ratingModal) {
+        ratingModal.style.display = 'flex';
+      }
+      closeDrawer();
+    });
+  });
+
 
   // Subscribe to the routeManager for state changes. This is the single source of truth.
   // It will provide the initial state immediately and all subsequent state changes.
@@ -352,6 +368,16 @@ export async function loadDrawer() {
     // FIX: Isolate the feedback modal initialization in its own try-catch block.
     // This ensures that if the feedback modal fails to initialize, it does not
     // prevent the main drawer from rendering and functioning.
+    const ratingModalElement = await loadRatingModal();
+    setTimeout(() => {
+      try {
+        initRatingModal(ratingModalElement);
+      } catch (e) {
+        console.error("Drawer Warning: Failed to initialize rating modal logic.", e);
+      }
+    }, 0);
+
+
     setTimeout(() => {
       try {
         // Pass the loaded modal element directly to the initializer.

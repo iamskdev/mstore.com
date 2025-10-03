@@ -370,17 +370,18 @@ This approach allows the feature to evolve without breaking the existing structu
         -   `resolved` (boolean): क्या फीडबैक का समाधान हो गया है।
         -   `archived` (boolean): क्या फीडबैक को संग्रहीत किया गया है।
         -   `guest` (boolean): क्या यह एक मेहमान उपयोगकर्ता द्वारा सबमिट किया गया था।
+    -   `links` (object): अन्य संबंधित दस्तावेज़ों के ID (`userId`, `merchantId`)।
 -   **`submitter`**: फीडबैक सबमिट करने वाले की जानकारी।
-    -   `userId` (string | null): उपयोगकर्ता की अद्वितीय ID या `null`।
-    -   `role` (string): उपयोगकर्ता की भूमिका (`user`, `merchant`, `admin`, `guest`)।
-    -   `merchantId` (string | null): यदि सबमिटर एक व्यापारी है तो उसकी ID।
+-   **`submitter`**: फीडबैक सबमिट करने वाले की जानकारी।
+    -   `id` (string | null): सबमिट करने वाले की प्राथमिक ID (`userId` या `merchantId`)।
+    -   `role` (string): सबमिट करते समय उपयोगकर्ता की भूमिका (`consumer`, `merchant`, `admin`, `guest`)।
     -   `submittedAt` (string - ISO DateTime): फीडबैक कब सबमिट किया गया था।
 -   **`details`**: फीडबैक का वास्तविक विवरण।
     -   `subject` (string): फीडबैक का विषय (जैसे, संबंधित आइटम का नाम)।
     -   `message` (string): उपयोगकर्ता का विस्तृत संदेश।
     -   `category` (string): फीडबैक की श्रेणी (`bug_report`, `feature_request`, आदि)।
     -   `sentiment` (string): संदेश की भावना (`positive`, `neutral`, `negative`) - इसे बाद में AI से एनालाइज किया जा सकता है।
-    -   `attachments` (array): उपयोगकर्ता द्वारा संलग्न की गई फ़ाइलों के URL की सूची।
+    -   `attachments` (array): उपयोगकर्ता द्वारा संलग्न की गई फ़ाइलों के ऑब्जेक्ट्स की सूची।
     -   `phone` (string): उपयोगकर्ता का संपर्क नंबर।
 -   **`lifecycle`**: फीडबैक की स्थिति का जीवनचक्र।
     -   `status` (string): फीडबैक की वर्तमान स्थिति (`pending`, `reviewed`, `resolved`, `archived`)।
@@ -392,7 +393,51 @@ This approach allows the feature to evolve without breaking the existing structu
         -   प्रत्येक ऑब्जेक्ट में `from`, `to`, `updatedAt`, `updatedBy`, और `note` होता है।
 
 ### संबंध (Relationships)
-- **`feedbacks` Many-to-One `users`**: यदि फीडबैक एक लॉग-इन उपयोगकर्ता द्वारा दिया गया है, तो `submitter.userId` उसे `users` संग्रह से जोड़ता है।
+- **`feedbacks` Many-to-One `users`**: यदि फीडबैक एक लॉग-इन उपयोगकर्ता द्वारा दिया गया है, तो `meta.links.userId` उसे `users` संग्रह से जोड़ता है।
+
+---
+
+## 15. Ratings (`ratings.json`)
+
+**उद्देश्य:** यह संग्रह ऐप, आइटम, ऑर्डर या व्यापारियों के लिए उपयोगकर्ताओं से प्राप्त रेटिंग को संग्रहीत करता है। यह 1-5 स्टार मान, टिप्पणियाँ, टैग और प्रासंगिक जानकारी कैप्चर करता है कि रेटिंग कब और कैसे सबमिट की गई थी।
+
+### मुख्य ऑब्जेक्ट्स:
+
+-   **`meta`**: रेटिंग का मेटाडेटा।
+    -   `ratingId` (string): अद्वितीय रेटिंग ID (`RTG...`) - प्राइमरी की।
+    -   `type` (string): दस्तावेज़ का प्रकार, हमेशा `"rating"`।
+    -   `version` (number): स्कीमा का संस्करण।
+    -   `flags` (object): रेटिंग की स्थिति को ट्रैक करने के लिए बूलियन मान।
+        -   `reviewed` (boolean): क्या रेटिंग की समीक्षा की गई है।
+        -   `responded` (boolean): क्या रेटिंग पर प्रतिक्रिया दी गई है।
+        -   `archived` (boolean): क्या रेटिंग को संग्रहीत किया गया है।
+        -   `isHighImpact` (boolean): यदि रेटिंग कम है (जैसे 1-2 स्टार) तो `true`।
+        -   `guest` (boolean): क्या यह एक मेहमान उपयोगकर्ता द्वारा सबमिट किया गया था।
+    -   `links` (object): अन्य संबंधित दस्तावेज़ों के ID (`userId`, `orderId`, `itemId`, `merchantId`)
+-   **`submitter`**: रेटिंग सबमिट करने वाले की जानकारी।
+    -   `id` (string | null): सबमिट करने वाले की प्राथमिक ID (`userId` या `merchantId`)
+    -   `role` (string): सबमिट करते समय उपयोगकर्ता की भूमिका (`consumer`, `merchant`, `guest` आदि)।
+    -   `submittedAt` (string - ISO DateTime): रेटिंग सबमिट करने का समय।
+-   **`details`**: रेटिंग का वास्तविक कंटेंट।
+    -   `value` (integer): स्टार रेटिंग (1 से 5 तक)।
+    -   `comment` (string): उपयोगकर्ता द्वारा दिया गया टेक्स्ट कमेंट।
+    -   `tags` (array): उपयोगकर्ता द्वारा चुने गए टैग (जैसे `'ui_ux'`, `'performance'`)।
+-   **`context`**: यह जानकारी देता है कि रेटिंग कहाँ और कैसे सबमिट की गई थी।
+    -   `source` (string): ऐप में रेटिंग कहाँ से शुरू हुई (जैसे `'order_confirmation_page'`)।
+    -   `triggerEvent` (string): रेटिंग प्रॉम्प्ट को ट्रिगर करने वाली घटना।
+    -   `appVersion` (string): ऐप का संस्करण।
+    -   `platform` (string): प्लेटफ़ॉर्म (जैसे `'web_mobile'`)।
+    -   `device` (object): डिवाइस की जानकारी (OS, ब्राउज़र)।
+-   **`lifecycle`**: यह रेटिंग के प्रशासनिक जीवनचक्र को ट्रैक करता है।
+    -   `status` (string): वर्तमान स्थिति (`pending`, `reviewed`, `responded`, `archived`)।
+    -   `milestones` (object): मुख्य घटनाओं के टाइमस्टैम्प।
+    -   `history` (array): रेटिंग पर की गई सभी कार्रवाइयों का एक लॉग।
+
+### संबंध (Relationships)
+- **`ratings` Many-to-One `users`**: `meta.links.userId` के माध्यम से उपयोगकर्ता से जुड़ता है।
+- **`ratings` Many-to-One `orders`**: यदि रेटिंग किसी ऑर्डर के लिए है तो `meta.links.orderId` के माध्यम से जुड़ता है।
+- **`ratings` Many-to-One `items`**: यदि रेटिंग किसी आइटम के लिए है तो `meta.links.itemId` के माध्यम से जुड़ता है।
+- **`ratings` Many-to-One `merchants`**: यदि रेटिंग किसी व्यापारी के लिए है तो `meta.links.merchantId` के माध्यम से जुड़ता है।
 
 ---
 

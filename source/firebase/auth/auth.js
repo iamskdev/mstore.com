@@ -86,11 +86,10 @@ export const AuthService = (() => {
         // 2. If no primaryRole, check the roles array in order of privilege.
         const roles = meta.roles || [];
         if (roles.includes('admin')) return 'admin';
-        if (roles.includes('merchant')) return 'merchant';
-        if (roles.includes('user')) return 'user';
+        if (roles.includes('merchant')) return 'merchant';        if (roles.includes('consumer')) return 'consumer';
 
         // 3. Fallback to a default role if no valid role is found.
-        return 'user';
+        return 'consumer';
     }
 
     function validateEmail(email) {
@@ -162,11 +161,9 @@ export const AuthService = (() => {
             // --- Step 1: Prepare User Document ---
             const userId = generateId('USR');
             const accountId = generateId('ACC');
-            const userRef = firestore.collection('users').doc(userId);
-            const primaryRole = 'user';
+            const userRef = firestore.collection('users').doc(userId);            const primaryRole = 'consumer';
             const providerName = method.includes('google') ? 'google.com' : (method.includes('apple') ? 'apple.com' : 'firebase');
-            const userDocData = {
-                meta: { userId, version: 1.0, primaryRole, roles: [primaryRole], registeredOn: new Date().toISOString(), links: { accountId }, flags: { isActive: true, isSuspended: false, isVerified: user.emailVerified, isCustomer: true, isAdmin: false, isMerchant: false, isAgent: false, isStaff: false }, lastUpdated: new Date().toISOString() },
+            const userDocData = {                meta: { userId, version: 1.0, primaryRole, roles: [primaryRole], registeredOn: new Date().toISOString(), links: { accountId }, flags: { isActive: true, isSuspended: false, isVerified: user.emailVerified, isConsumer: true, isAdmin: false, isMerchant: false, isAgent: false, isStaff: false }, lastUpdated: new Date().toISOString() },
                 info: {
                     fullName: fullName || user.displayName || '',
                     nickName: '',
@@ -241,7 +238,7 @@ export const AuthService = (() => {
                 const user = users.find(u => (u.info.email === credentialValue || u.info.phone === credentialValue) && u.auth.passwordHash === passwordValue);
 
                 if (user) {
-                    const role = user.meta?.roles?.[0] || 'user';
+                    const role = user.meta?.roles?.[0] || 'consumer';
                     const userId = user.meta.userId;
                     routeManager.handleRoleChange(role, userId);
                     showToast('login');
@@ -300,7 +297,8 @@ export const AuthService = (() => {
                 const userAccount = userDocQuery.docs[0].data();
                 // FIX: Use a robust function to determine the highest-privilege role.
                 const role = _determineBestRole(userAccount.meta);
-                const userId = userAccount.meta?.userId;
+                const userId = userAccount.meta.userId;
+                const merchantId = userAccount.meta.links?.merchantId || null;
 
                 // NEW: Log the successful login event
                 await createLog({
@@ -314,7 +312,7 @@ export const AuthService = (() => {
                 localStorage.setItem('currentUserType', role);
                 localStorage.setItem('currentUserId', userId);
                 // Centralized state update via routeManager
-                routeManager.handleRoleChange(role, userId);
+                routeManager.handleRoleChange(role, userId, merchantId);
                 showToast('login');
                 return true;
             }
@@ -390,11 +388,11 @@ export const AuthService = (() => {
         if (dataSource === 'localstore') {
             // This is a simulation. For a real app, you'd need a backend to write to the JSON file.
             console.log('Simulating local signup...');
-            showToast('account');
+            showToast('account');            // Simulate redirect or state change
             // Simulate redirect or state change
-            localStorage.setItem('currentUserType', 'user');
+            localStorage.setItem('currentUserType', 'consumer');
             localStorage.setItem('currentUserId', `USR${Date.now()}`);
-            routeManager.handleRoleChange('user');
+            routeManager.handleRoleChange('consumer');
             return true;
         }
 
@@ -445,9 +443,9 @@ export const AuthService = (() => {
             // FIX: Immediately update localStorage before notifying the router.
             // This prevents race conditions where subscribers (like the drawer) get the role change
             // before the userId is available in localStorage.
-            localStorage.setItem('currentUserType', 'user');
+            localStorage.setItem('currentUserType', 'consumer');
             localStorage.setItem('currentUserId', userId);
-            routeManager.handleRoleChange('user', userId);
+            routeManager.handleRoleChange('consumer', userId);
 
             if (getAppConfig().flags.phoneVerification) {
                 await user.sendEmailVerification();
@@ -640,9 +638,9 @@ export const AuthService = (() => {
                 userAccount = userDoc.data();
             }
 
-            // FIX: Prioritize 'primaryRole' for correct role assignment.
-            const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'user';
-            routeManager.handleRoleChange(role, userId);
+            // FIX: Prioritize 'primaryRole' for correct role assignment.            const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'consumer';
+            const merchantId = userAccount.meta.links?.merchantId || null;
+            routeManager.handleRoleChange(role, userId, merchantId);
             showToast('login');
 
         } catch (error) {
@@ -693,9 +691,9 @@ export const AuthService = (() => {
                 userAccount = userDoc.data();
             }
 
-            // FIX: Prioritize 'primaryRole' for correct role assignment.
-            const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'user';
-            routeManager.handleRoleChange(role, userId);
+            // FIX: Prioritize 'primaryRole' for correct role assignment.            const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'consumer';
+            const merchantId = userAccount.meta.links?.merchantId || null;
+            routeManager.handleRoleChange(role, userId, merchantId);
             showToast('login');
 
         } catch (error) {
@@ -767,6 +765,7 @@ export const AuthService = (() => {
             // or stale state issues, even before Firebase signOut completes.
             localStorage.removeItem('currentUserType');
             localStorage.removeItem('currentUserId');
+            localStorage.removeItem('currentMerchantId');
             console.log("AuthService: Local storage cleared immediately on logout attempt.");
 
             if (getAppConfig().source.data !== 'localstore' && auth && auth.currentUser) {
@@ -774,7 +773,7 @@ export const AuthService = (() => {
                 console.log("AuthService: Firebase user signed out successfully.");
             }
             // After successful sign-out (or for local mode), tell routeManager to switch to guest state.
-            // No delay needed, as initializeAuthListener handles persistence on refresh.
+            // No userId or merchantId is passed, so handleRoleChange will clear them.
             routeManager.handleRoleChange('guest');
             showToast('logout');
         } catch (error) {
@@ -820,11 +819,13 @@ export const AuthService = (() => {
                                 const userAccount = userDocQuery.docs[0].data();
                                 const role = _determineBestRole(userAccount.meta);
                                 const userId = userAccount.meta?.userId;
+                                const merchantId = userAccount.meta.links?.merchantId || null;
                                 console.log(`Auth Listener: Determined role for ${user.uid}: ${role}, userId: ${userId}`);
 
                                 // Sync localStorage if it's out of sync with the truth (Firebase).
                                 if (savedRole !== role || savedUserId !== userId) {
                                     console.warn("Auth Listener: App state is out of sync. Updating session from Firebase state.");
+                                    if (merchantId) { localStorage.setItem('currentMerchantId', merchantId); } else { localStorage.removeItem('currentMerchantId'); }
                                     localStorage.setItem('currentUserType', role);
                                     localStorage.setItem('currentUserId', userId);
                                 }
@@ -839,6 +840,7 @@ export const AuthService = (() => {
                                     console.error(`Auth Listener: Confirmed data inconsistency after delay. User ${user.uid} exists in Auth but not Firestore. Forcing logout.`);
                                     showToast('error', 'User data missing. Logging out.', 5000);
                                     await auth.signOut();
+                                    localStorage.removeItem('currentMerchantId');
                                     // Clear all storage on forced logout
                                     localStorage.removeItem('currentUserType');
                                     localStorage.removeItem('currentUserId');
@@ -849,6 +851,8 @@ export const AuthService = (() => {
                                     const userAccount = finalCheck.docs[0].data();
                                     const role = _determineBestRole(userAccount.meta);
                                     const userId = userAccount.meta?.userId;
+                                    const merchantId = userAccount.meta.links?.merchantId || null;
+                                    if (merchantId) { localStorage.setItem('currentMerchantId', merchantId); }
                                     localStorage.setItem('currentUserType', role);
                                     localStorage.setItem('currentUserId', userId);
                                 }
@@ -857,6 +861,7 @@ export const AuthService = (() => {
                             console.error("Auth Listener: Error fetching user document during state sync. Forcing logout.", error);
                             showToast('error', 'Session sync failed. Logging out.', 5000);
                             await auth.signOut().catch(() => {});
+                            localStorage.removeItem('currentMerchantId');
                             localStorage.removeItem('currentUserType');
                             localStorage.removeItem('currentUserId');
                         }
@@ -865,6 +870,7 @@ export const AuthService = (() => {
                         console.log("Auth Listener: Firebase user is null. Checking localStorage for stale state.");
                         if (savedRole || savedUserId) {
                             console.warn("Auth Listener: App state is out of sync (shows logged in). Clearing stale session.");
+                            localStorage.removeItem('currentMerchantId');
                             localStorage.removeItem('currentUserType');
                             localStorage.removeItem('currentUserId');
                             console.log("Auth Listener: localStorage cleared. currentUserType: ", localStorage.getItem('currentUserType'), ", currentUserId: ", localStorage.getItem('currentUserId'));

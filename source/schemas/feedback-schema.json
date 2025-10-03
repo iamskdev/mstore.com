@@ -1,52 +1,166 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",  
-  "meta": {
-    "feedbackId": "FDB-YYYYMMDD-HHMMSS-SSS-RRRR",
-    "type": "feedback",
-    "version": 1,
-    "flags": {
-      "reviewed": false,
-      "resolved": false,
-      "archived": false,
-      "guest": false
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "mStore Feedback Schema",
+  "description": "Defines the structure for a single feedback document in the 'feedbacks' collection.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "A reference to this schema file for validation and documentation purposes."
+    },
+    "meta": {
+      "type": "object",
+      "description": "Core metadata about the feedback document.",
+      "properties": {
+        "feedbackId": {
+          "type": "string",
+          "description": "The unique identifier for the feedback, following the global ID format (e.g., FDB-...).",
+          "pattern": "^FDB-[0-9]{8}-[0-9]{6}-[0-9]{3}-[A-Z0-9]{4}$"
+        },
+        "type": {
+          "type": "string",
+          "description": "The document type, always 'feedback'.",
+          "const": "feedback"
+        },
+        "version": {
+          "type": "number",
+          "description": "The schema version number."
+        },
+        "flags": {
+          "type": "object",
+          "description": "Boolean flags to track the state of the feedback.",
+          "properties": {            
+            "reviewed": { "type": "boolean", "default": false },
+            "resolved": { "type": "boolean", "default": false },
+            "archived": { "type": "boolean", "default": false },
+            "guest": { "type": "boolean", "description": "True if the feedback was submitted by a non-logged-in user.", "default": false }
+          },
+          "required": ["reviewed", "resolved", "archived", "guest"]
+        },
+        "links": {
+          "type": "object",
+          "description": "References to other related documents, like the submitter's IDs.",
+          "properties": {
+            "userId": { "type": ["string", "null"], "description": "The user ID of the person taking the action, regardless of their role." },
+            "merchantId": { "type": ["string", "null"], "description": "The merchant ID of the submitter, if the submitter is a merchant." }
+          }
+        }
+      },
+      "required": ["feedbackId", "type", "version", "flags"]
+    },
+    "submitter": {
+      "type": "object",
+      "description": "Information about the user who submitted the feedback.",
+      "properties": {
+        "id": {
+          "type": ["string", "null"],
+          "description": "The primary identifier of the submitter. This will be the userId for consumers/admins, and the merchantId for merchants. Null for guests."
+        },
+        "role": {
+          "type": "string",
+          "description": "The role of the user at the time of submission.",
+          "enum": ["consumer", "merchant", "admin", "guest"]
+        },
+        "submittedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The ISO 8601 timestamp when the feedback was submitted."
+        }
+      },
+      "required": ["id", "role", "submittedAt"]
+    },
+    "details": {
+      "type": "object",
+      "description": "The actual content of the feedback.",
+      "properties": {
+        "subject": {
+          "type": "string",
+          "description": "The subject of the feedback, often the item name or a general topic."
+        },
+        "message": {
+          "type": "string",
+          "description": "The detailed message provided by the user."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the feedback (e.g., 'bug_report', 'feature_request')."
+        },
+        "sentiment": {
+          "type": "string",
+          "description": "The sentiment of the message, which can be analyzed later.",
+          "enum": ["positive", "neutral", "negative"],
+          "default": "neutral"
+        },
+        "attachments": {
+          "type": "array",
+          "description": "An array of objects for attached files, containing URL, name, type, and size.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string", "format": "uri" },
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "size": { "type": "number" }
+            },
+            "required": ["url", "name", "type", "size"]
+          }
+        },
+        "phone": {
+          "type": "string",
+          "description": "The contact phone number, primarily for guest users."
+        }
+      },
+      "required": ["subject", "message", "category"]
+    },
+    "lifecycle": {
+      "type": "object",
+      "description": "Tracks the administrative lifecycle of the feedback.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "The current status of the feedback.",
+          "enum": ["pending", "reviewed", "resolved", "archived"],
+          "default": "pending"
+        },
+        "milestones": {
+          "type": "object",
+          "description": "Timestamps for key lifecycle events.",
+          "properties": {
+            "reviewedAt": { "type": ["string", "null"], "format": "date-time" },
+            "resolvedAt": { "type": ["string", "null"], "format": "date-time" },
+            "archivedAt": { "type": ["string", "null"], "format": "date-time" }
+          }
+        },
+        "history": {
+          "type": "array",
+          "description": "A log of all status changes and actions taken on the feedback.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "from": { "type": "string", "description": "The previous status." },
+              "to": { "type": "string", "description": "The new status." },
+              "updatedAt": { "type": "string", "format": "date-time" },
+              "updatedBy": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "role": { "type": "string" }
+                },
+                "required": ["id", "role"]
+              },
+              "note": { "type": "string", "description": "An optional note about the status change." }
+            },
+            "required": ["from", "to", "updatedAt", "updatedBy"]
+          }
+        }
+      },
+      "required": ["status", "milestones", "history"]
     }
   },
-  "submitter": {
-    "userId": "USR-...",
-    "role": "user",
-    "merchantId": null,
-    "submittedAt": "2025-09-22T10:30:00Z"
-  },
-  "details": {
-    "subject": "General Feedback",
-    "message": "App bahut accha hai, lekin search feature ko improve kiya ja sakta hai.",
-    "category": "feature_request",
-    "sentiment": "positive",
-    "attachments": [],
-    "phone": "+919999999999"
-  },
-  "lifecycle": {
-    "status": "pending",
-    "milestones": {
-      "reviewedAt": null,
-      "resolvedAt": null,
-      "archivedAt": null
-    },
-    "history": [
-      {
-        "from": "pending",
-        "to": "reviewed",
-        "updatedAt": "2025-09-23T09:00:00Z",
-        "updatedBy": { "id": "USR-...", "role": "admin" },
-        "note": "Admin reviewed feedback."
-      },
-      {
-        "from": "reviewed",
-        "to": "resolved",
-        "updatedAt": "2025-09-24T15:20:00Z",
-        "updatedBy": { "id": "USR-...", "role": "admin" },
-        "note": "Issue resolved."
-      }
-    ]
+  "required": [
+    "meta",
+    "submitter",
+    "details",
+    "lifecycle"
+  ]
   }
-}

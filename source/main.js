@@ -485,20 +485,23 @@ class RouteManager {
     }
   }
 
-    handleRoleChange(newRole, userId = null) {
-    console.trace(`routeManager: handleRoleChange called. New Role: ${newRole}, User ID: ${userId}`); // Added trace
+    handleRoleChange(newRole, userId = null, merchantId = null) {
+    console.trace(`routeManager: handleRoleChange called. New Role: ${newRole}, UserID: ${userId}, MerchantID: ${merchantId}`);
 
     // Centralize state change. This is the single source of truth for the user's session role.
-     if (newRole === 'guest') {
-       // When logging out (switching to guest), clear the authenticated user's state completely.
-       // Set or remove the userId based on whether it was provided.
-       if (userId) {
-         localStorage.setItem('currentUserId', userId);
-      } else {
-        // If a non-guest role is set without a specific ID, ensure the old one is cleared.
-        localStorage.removeItem('currentUserId');
-       }
-     }
+    localStorage.setItem('currentUserType', newRole);
+
+    if (userId) {
+      localStorage.setItem('currentUserId', userId);
+    } else {
+      localStorage.removeItem('currentUserId');
+    }
+
+    if (merchantId) {
+      localStorage.setItem('currentMerchantId', merchantId);
+    } else {
+      localStorage.removeItem('currentMerchantId');
+    }
 
     // Get the default view for the new role from our config object.
     const defaultView = this.defaultViews[newRole] || 'home';

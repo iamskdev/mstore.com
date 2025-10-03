@@ -1,16 +1,20 @@
 import { generateId } from '../../utils/idGenerator.js';
 import { firestore } from '../firebase-config.js'; // ✅ Import firestore service
+import { getAppConfig } from '../../settings/main-config.js';
 
 /**
  * Creates a generic log entry in Firestore. This is the central function for all logging.
  * @param {object} logData - The data for the log.
- * @param {string} logData.userId - The ID of the user associated with the event. Can be 'system' for non-user events.
+ * @param {string} logData.userId - The custom ID of the user associated with the event (e.g., 'USR-...') or 'system'.
+ * @param {string} [logData.ownerUID] - The Firebase Auth UID of the user performing the action. Crucial for security rules.
  * @param {string} logData.action - A specific code for the action (e.g., 'user_login_success', 'item_update').
  * @param {string} [logData.type='user'] - The type of log (e.g., 'user', 'order', 'system', 'security').
  * @param {string} [logData.priority='medium'] - The priority ('low', 'medium', 'high', 'critical').
  * @param {string} [logData.status='success'] - The status of the event ('success', 'fail', 'info').
  * @param {string} [logData.description] - A human-readable description of the event.
  * @param {object} [logData.details={}] - Any additional structured data about the event.
+ * @param {object} [logData.links={}] - Any additional linked document IDs.
+ * @param {Array<string>} [logData.tags] - Custom tags to override default tag generation.
  * @returns {Promise<string>} The ID of the newly created log document.
  */
 export async function createLog(logData) {
@@ -23,8 +27,9 @@ export async function createLog(logData) {
 
     const {
         userId,
-        action,
-        type = 'user',
+        ownerUID, // NEW: Capture the Firebase Auth UID for security.
+        action,        
+        type = 'consumer', // FIX: Default log type for user-centric actions is now 'consumer'.
         priority = 'medium',
         status = 'success',
         description = '',
@@ -34,7 +39,7 @@ export async function createLog(logData) {
     } = logData;
 
     if (!userId || !action) {
-        console.error('userId and action are required for creating a log.');
+        console.error(`Log creation failed: 'userId' and 'action' are required. Received userId: ${userId}, action: ${action}`);
         return null;
     }
 
@@ -48,6 +53,7 @@ export async function createLog(logData) {
         type,
         action: action,
         priority,
+        ownerUID: ownerUID || null, // NEW: Store the owner's Auth UID.
         // Use provided tags if available, otherwise generate them more robustly.
         tags: tags || [...new Set([type, ...action.split('_')])],
         note: description,
@@ -60,14 +66,15 @@ export async function createLog(logData) {
         status,
         description: description || `Log for action: ${action}`,
         // Use the full name from details if available, otherwise use a sensible default.
-        performedBy: { role: userId === 'system' ? 'system' : 'user', id: userId, name: details.fullName || (userId === 'system' ? 'System' : 'User Action') },
+        // FIX: Get the role from localStorage for better context.
+        performedBy: { role: localStorage.getItem('currentUserType') || 'unknown', id: userId, name: details.fullName || (userId === 'system' ? 'System' : 'User Action') },
         details
       },
       source: {
         device: deviceType,
         platform: navigator.platform || '',
         browser: navigator.appName || '',
-        appVersion: '1.0.0',
+        appVersion: getAppConfig()?.app?.version || 'unknown',
         address: null,
         geolocation: null,
         network: null,

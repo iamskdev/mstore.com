@@ -1,0 +1,51 @@
+[
+  {
+    "$schema": "../../source/schemas/rating-schema.json",
+    "meta": {
+      "ratingId": "RTG-20251028-140000-123-ABCD",
+      "type": "rating",
+      "version": 1.0,
+      "flags": {
+        "reviewed": false,
+        "responded": false,
+        "archived": false,        "isHighImpact": false,
+        "guest": false
+      },
+      "links": {
+        "userId": "USR-20251002-170603-103-CDEF",
+        "orderId": null,
+        "itemId": null,
+        "merchantId": null
+      }
+    },
+    "submitter": {
+      "id": "USR-20251002-170603-103-CDEF",
+      "role": "consumer",
+      "submittedAt": "2025-10-28T14:00:00Z"
+    },
+    "details": {
+      "value": 4,
+      "comment": "The app is great, but the search could be faster.",
+      "tags": ["ui_ux", "performance"]
+    },
+    "context": {
+      "source": "order_confirmation_page",
+      "triggerEvent": "order_completed",
+      "appVersion": "1.2.3",
+      "platform": "web_mobile",
+      "device": {
+        "os": "Android 13",
+        "browser": "Chrome 118"
+      }
+    },
+    "lifecycle": {
+      "status": "pending",
+      "milestones": {
+        "reviewedAt": null,
+        "respondedAt": null,
+        "archivedAt": null
+      },
+      "history": []
+    }
+  }
+]

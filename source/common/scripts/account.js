@@ -100,7 +100,7 @@ async function renderProfileData() {
 /**
  * Generates a display string of tags for a specific role based on user data.
  * This logic is now centralized to be used by both the profile header and the switch account modal.
- * @param {string} role - The role to generate tags for (e.g., 'user', 'admin').
+ * @param {string} role - The role to generate tags for (e.g., consumer, 'admin').
  * @param {object} user - The full user data object.
  * @param {object|null} account - The full account data object.
  * @param {object|null} merchant - The full merchant data object.
@@ -115,7 +115,7 @@ function getTagsForRole(role, user, account, merchant, options = {}) {
     tags.push('User'); // Base tag for all
 
     // Add specific role account type
-    if (role === 'user') {
+    if (role === 'consumer') {
         tags.push('Consumer Account');
     } else if (role === 'merchant') {
         tags.push('Merchant Account');
@@ -219,14 +219,14 @@ async function initSwitchAccountModal() {
             let roles;
             if (user?.meta?.flags?.isSuperAdmin) {
                 // If the user is a Super Admin, grant them access to all primary roles.
-                roles = ['user', 'merchant', 'admin'];
+                roles = [consumer, 'merchant', 'admin'];
             } else {
                 roles = user?.meta?.roles || [];
             }
             const currentRole = localStorage.getItem('currentUserType');
 
             const roleIcons = {
-                user: 'fa-user',
+                consumer: 'fa-user',
                 merchant: 'fa-user-tie',
                 admin: 'fa-user-shield'
             };
@@ -329,6 +329,18 @@ export function init() {
             const feedbackModal = document.getElementById('feedback-modal');
             if (feedbackModal) {
                 feedbackModal.style.display = 'flex'; // Show the modal
+            }
+        });
+    }
+
+    // --- NEW: Specific handler for the Rate Us menu item ---
+    const rateUsMenuItem = document.getElementById('account-rate-us-btn');
+    if (rateUsMenuItem) {
+        rateUsMenuItem.addEventListener('click', (e) => {
+            e.preventDefault();
+            const ratingModal = document.getElementById('rating-modal');
+            if (ratingModal) {
+                ratingModal.style.display = 'flex'; // Show the modal
             }
         });
     }

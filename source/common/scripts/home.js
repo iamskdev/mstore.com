@@ -260,7 +260,7 @@ export async function init() {
         if (target) {
             const viewId = target.dataset.viewTarget;
             window.dispatchEvent(new CustomEvent('requestViewChange', {
-                detail: { role: 'user', view: viewId }
+                detail: { role: 'consumer', view: viewId }
             }));
         }
     });

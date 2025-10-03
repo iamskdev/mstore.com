@@ -39,7 +39,7 @@
         "isSuspended": false,
         "isVerified": true,
         "isMerchant": false,
-        "isCustomer": false,
+        "isConsumer": false,
         "isAgent": false,
         "isStaff": false,
         "isAdmin": true,
@@ -47,7 +47,7 @@
         "isSuperAdmin": true
       },
       "roles": [
-        "user",
+        "consumer",
         "admin"
       ]
     },
@@ -90,7 +90,7 @@
       "version": 1,
       "primaryRole": "merchant",
       "roles": [
-        "user",
+        "consumer",
         "merchant"
       ],
       "links": {
@@ -103,7 +103,7 @@
         "isVerified": false,
         "isAdmin": false,
         "isMerchant": true,
-        "isCustomer": false,
+        "isConsumer": false,
         "isAgent": false,
         "isStaff": false
       }
@@ -164,9 +164,9 @@
     "meta": {
       "userId": "USR-20251002-170603-103-CDEF",
       "version": 1,
-      "primaryRole": "user",
+      "primaryRole": "consumer",
       "roles": [
-        "user"
+        "consumer"
       ],
       "links": {
         "accountId": "ACC-20251002-170603-203-YZAB"
@@ -177,7 +177,7 @@
         "isVerified": false,
         "isAdmin": false,
         "isMerchant": false,
-        "isCustomer": true,
+        "isConsumer": true,
         "isAgent": false,
         "isStaff": false
       }
@@ -240,7 +240,7 @@
       "version": 1,
       "primaryRole": "merchant",
       "roles": [
-        "user",
+        "consumer",
         "merchant"
       ],
       "links": {
@@ -253,7 +253,7 @@
         "isVerified": false,
         "isAdmin": false,
         "isMerchant": true,
-        "isCustomer": false,
+        "isConsumer": false,
         "isAgent": false,
         "isStaff": false
       }

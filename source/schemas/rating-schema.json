@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "mStore Rating Schema",
+  "description": "Defines the structure for a single rating document in the 'ratings' collection.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "A reference to this schema file for validation and documentation purposes."
+    },
+    "meta": {
+      "type": "object",
+      "description": "Core metadata about the rating document.",
+      "properties": {
+        "ratingId": {
+          "type": "string",
+          "description": "The unique identifier for the rating, following the global ID format (e.g., RTG-...).",
+          "pattern": "^RTG-[0-9]{8}-[0-9]{6}-[0-9]{3}-[A-Z0-9]{4}$"
+        },
+        "type": {
+          "type": "string",
+          "description": "The document type, always 'rating'.",
+          "const": "rating"
+        },
+        "version": {
+          "type": "number",
+          "description": "The schema version number."
+        },
+        "flags": {
+          "type": "object",
+          "description": "Boolean flags to track the state of the rating.",
+          "properties": {
+            "reviewed": { "type": "boolean", "default": false },
+            "responded": { "type": "boolean", "default": false },
+            "archived": { "type": "boolean", "default": false },
+            "isHighImpact": { "type": "boolean", "description": "True if the rating is low (e.g., 1 or 2 stars), indicating it needs urgent attention.", "default": false },
+            "guest": { "type": "boolean", "description": "True if the rating was submitted by a non-logged-in user.", "default": false }
+          },
+          "required": ["reviewed", "responded", "archived", "isHighImpact", "guest"]
+        },
+        "links": {
+          "type": "object",
+          "description": "References to other related documents.",
+          "properties": {
+            "userId": { "type": ["string", "null"], "description": "The user ID of the person taking the action, regardless of their role." },
+            "orderId": { "type": ["string", "null"], "description": "ID of the order this rating is for, if applicable." },
+            "itemId": { "type": ["string", "null"], "description": "ID of the item this rating is for, if applicable." },
+            "merchantId": { "type": ["string", "null"], "description": "The merchant ID of the submitter, if the submitter is a merchant. Can also be the ID of the merchant being rated in other contexts." }
+          }
+        }
+      },
+      "required": ["ratingId", "type", "version", "flags", "links"]
+    },
+    "submitter": {
+      "type": "object",
+      "description": "Information about the user who submitted the rating.",
+      "properties": {
+        "id": {
+          "type": ["string", "null"],
+          "description": "The primary identifier of the submitter. This will be the userId for consumers/admins, and the merchantId for merchants. Null for guests."
+        },
+        "role": {
+          "type": "string",
+          "description": "The role of the user at the time of submission.",
+          "enum": ["consumer", "merchant", "admin", "guest"]
+        },
+        "submittedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The ISO 8601 timestamp when the rating was submitted."
+        }
+      },
+      "required": ["id", "role", "submittedAt"]
+    },
+    "details": {
+      "type": "object",
+      "description": "The actual content of the rating.",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "description": "The star rating value.",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "comment": {
+          "type": "string",
+          "description": "The optional text comment provided by the user."
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags selected by the user to describe their experience (e.g., 'great_ui', 'slow').",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["value"]
+    },
+    "context": {
+      "type": "object",
+      "description": "Contextual information about where and how the rating was submitted.",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Where in the app the rating was triggered from (e.g., 'order_confirmation_page', 'manual_trigger')."
+        },
+        "triggerEvent": {
+          "type": "string",
+          "description": "The specific event that triggered the rating prompt (e.g., 'order_completed', 'user_initiated_rating')."
+        },
+        "appVersion": {
+          "type": "string",
+          "description": "The version of the app when the rating was submitted."
+        },
+        "platform": {
+          "type": "string",
+          "description": "The platform the user was on (e.g., 'web_mobile', 'web_desktop')."
+        },
+        "device": {
+          "type": "object",
+          "properties": {
+            "userAgent": { "type": "string" },
+            "os": { "type": "string" },
+            "browser": { "type": "string" }
+          }
+        }
+      },
+      "required": ["source", "triggerEvent", "appVersion"]
+    },
+    "lifecycle": {
+      "type": "object",
+      "description": "Tracks the administrative lifecycle of the rating.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "The current status of the rating.",
+          "enum": ["pending", "reviewed", "responded", "archived"],
+          "default": "pending"
+        },
+        "milestones": {
+          "type": "object",
+          "description": "Timestamps for key lifecycle events.",
+          "properties": {
+            "reviewedAt": { "type": ["string", "null"], "format": "date-time" },
+            "respondedAt": { "type": ["string", "null"], "format": "date-time" },
+            "archivedAt": { "type": ["string", "null"], "format": "date-time" }
+          }
+        },
+        "history": {
+          "type": "array",
+          "description": "A log of all status changes and actions taken on the rating.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "from": { "type": "string", "description": "The previous status." },
+              "to": { "type": "string", "description": "The new status." },
+              "updatedAt": { "type": "string", "format": "date-time" },
+              "updatedBy": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "role": { "type": "string" }
+                },
+                "required": ["id", "role"]
+              },
+              "note": { "type": "string", "description": "An optional note about the status change." }
+            },
+            "required": ["from", "to", "updatedAt", "updatedBy"]
+          }
+        }
+      },
+      "required": ["status", "milestones", "history"]
+    }
+  },
+  "required": [
+    "meta",
+    "submitter",
+    "details",
+    "context",
+    "lifecycle"
+  ]
+}

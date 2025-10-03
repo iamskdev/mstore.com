@@ -419,17 +419,8 @@ export function initFeedbackModal(modal) {
 
       const isLoggedIn = AuthService.isLoggedIn();
       const userId = isLoggedIn ? localStorage.getItem('currentUserId') : null;
-      const userRole = isLoggedIn ? localStorage.getItem('currentUserType') : 'guest';
-
-      // Create a top-level 'submitter' object for easy querying and identification.
-      const submitterInfo = {
-        userId: userId || null,
-        role: userRole,
-        // If the user is a merchant, also store their merchantId for direct queries.
-        // This assumes you can get merchantId from localStorage or by fetching user data.
-        merchantId: userRole === 'merchant' ? localStorage.getItem('currentMerchantId') : null, // Example: you might need to fetch this
-        submittedAt: new Date().toISOString()
-      };
+      const role = isLoggedIn ? localStorage.getItem('currentUserType') : 'guest';
+      const merchantId = (role === 'merchant') ? localStorage.getItem('currentMerchantId') : null;
 
       // 3. Build the feedback document based on your schema
       const newFeedbackDoc = {
@@ -437,9 +428,19 @@ export function initFeedbackModal(modal) {
           feedbackId: feedbackId,
           type: "feedback",
           version: 1.0,
-          flags: { reviewed: false, resolved: false, archived: false, guest: !isLoggedIn }
+          flags: { reviewed: false, resolved: false, archived: false, guest: !isLoggedIn },
+          // NEW: Add links object for consistency with rating schema
+          links: {
+            userId: userId,
+            merchantId: merchantId
+          }
         },
-        submitter: submitterInfo,
+        // NEW: Updated submitter object to match new schema
+        submitter: {
+          id: role === 'merchant' ? merchantId : userId,
+          role: role,
+          submittedAt: new Date().toISOString()
+        },
         details: {
           subject: itemName || "General Feedback",
           message: feedbackMessage,

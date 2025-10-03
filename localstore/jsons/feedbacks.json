@@ -9,13 +9,15 @@
         "reviewed": true,
         "resolved": true,
         "archived": false,
-        "guest": false
+        "guest": false      },
+      "links": {
+        "userId": "USR-20251002-170603-103-CDEF",
+        "merchantId": null
       }
     },
     "submitter": {
-      "userId": "USR-20251002-170603-103-CDEF",
-      "role": "user",
-      "merchantId": null,
+      "id": "USR-20251002-170603-103-CDEF",
+      "role": "consumer",
       "submittedAt": "2025-10-03T10:30:00Z"
     },
     "details": {

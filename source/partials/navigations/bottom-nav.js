@@ -49,7 +49,7 @@ export function initializeBottomNavigationLogic() {
       const accountIconImg = accountBtn.querySelector('.account-icon');
       const userId = localStorage.getItem('currentUserId');
 
-      if (userId && (role === 'user' || role === 'merchant' || role === 'admin')) {
+      if (userId && (role === 'consumer' || role === 'merchant' || role === 'admin')) {
         // Only fetch and update if the avatar isn't already set.
         // This prevents blinking on every navigation click.
         if (accountIconImg && accountIconImg.src && accountIconImg.style.display === 'inline-block') {

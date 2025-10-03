@@ -1,11 +1,11 @@
 <!-- developer/partials/dev-mode-switch.html -->
 <div class="dev-mode-container">
   <button class="dev-btn guest" data-user-type="guest" title="Switch to Guest Mode">👤</button>
-  <button class="dev-btn user" data-user-type="user" title="Switch to Default User">👨</button>
+  <button class="dev-btn user" data-user-type="consumer" title="Switch to Default Consumer">👨</button>
   <button class="dev-btn merchant" data-user-type="merchant" title="Switch to Default Merchant">
     <i class="fas fa-user-tie"></i>
   </button>
-  <button class="dev-btn admin" data-user-type="admin" data-user-id="USR000000000001" title="Switch to Admin Mode">
+  <button class="dev-btn admin" data-user-type="admin" data-user-id="USR-20251002-170601-101-ABCD" title="Switch to Admin Mode">
     <i class="fas fa-user-shield"></i>
   </button>
   <button class="dev-btn impersonate" id="impersonate-btn" title="Impersonate User">
@@ -293,7 +293,7 @@
       }
 
       const defaultUserMap = {
-        user: 'USR000000000003',     // Default User (Vivek)
+        consumer: 'USR-20251002-170603-103-CDEF',     // Default Consumer (Vivek)
         merchant: 'USR000000000002'  // Default Merchant (Rohit)
       };
 
@@ -301,14 +301,14 @@
         btn.addEventListener('click', function () {
           const userType = this.dataset.userType;
           // If the button has a specific ID, use it. Otherwise, look up the default for that role.
-          const userId = this.dataset.userId || defaultUserMap[userType];
+          const userId = this.dataset.userId || (userType === 'consumer' ? 'USR-20251002-170603-103-CDEF' : defaultUserMap[userType]);
 
           // --- FIX: Update both currentUserType and currentUserId in localStorage ---
           localStorage.setItem('currentUserType', userType);
           if (userId && userType !== 'guest') {
             localStorage.setItem('currentUserId', userId);
           } else {
-            localStorage.removeItem('currentUserId');
+            localStorage.removeItem('currentUserId'); // Clear user ID for guest
           }
 
           // --- FIX: Manually dispatch the authStateChanged event ---
@@ -316,7 +316,10 @@
 
           // Directly tell the routeManager to handle the role change.
           if (userType) {
-            routeManager.handleRoleChange(userType);
+            // FIX: Pass the userId to handleRoleChange to ensure it's correctly
+            // set in localStorage and used for state updates, which is crucial
+            // for the Admin button's active state.
+            routeManager.handleRoleChange(userType, userId);
             showToast('info', `Switched to ${userType.charAt(0).toUpperCase() + userType.slice(1)} mode`, 2000);
             console.log(`DEV MODE: Requested role switch to '${userType}' with user ID '${userId || 'none'}'.`);
           }
@@ -414,8 +417,8 @@
       users.forEach(user => {
         const userItem = document.createElement('button'); // Changed to button for accessibility
         userItem.className = 'impersonate-user-item';
-        userItem.dataset.userId = user.meta.userId;
-        userItem.dataset.userType = user.meta.primaryRole || 'user';
+        userItem.dataset.userId = user.meta.userId; 
+        userItem.dataset.userType = user.meta.primaryRole || 'consumer';
         userItem.innerHTML = `
           <div class="avatar" style="background-image: url('${user.info.avatar || './source/assets/logos/app-logo.png'}')"></div>
           <div class="impersonate-user-info">
@@ -426,9 +429,9 @@
         `;
         userItem.addEventListener('click', () => {
           localStorage.setItem('currentUserId', user.meta.userId);
-          routeManager.handleRoleChange(user.meta.primaryRole || 'user');
+          routeManager.handleRoleChange(user.meta.primaryRole || 'consumer');
           // --- FIX: Also update type and dispatch event on impersonation ---
-          localStorage.setItem('currentUserType', user.meta.primaryRole || 'user');
+          localStorage.setItem('currentUserType', user.meta.primaryRole || 'consumer');
           window.dispatchEvent(new CustomEvent('authStateChanged'));
 
           impersonateModal.classList.remove('visible');

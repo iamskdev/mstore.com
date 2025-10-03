@@ -2,7 +2,7 @@
 // This makes the logic cleaner and easier to manage.
 const defaultViews = {
   guest: 'home',
-  user: 'home',
+  consumer: 'home',
   merchant: 'add',
   admin: 'home' 
 };
@@ -14,7 +14,7 @@ const defaultViews = {
  */
 
 const routeConfig = {
-  user: {
+  consumer: {
   },
   merchant: {
     home: {

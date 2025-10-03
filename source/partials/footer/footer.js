@@ -20,7 +20,7 @@ export async function getFooterHtml() {
  * Initializes all logic for a footer component embedded within a view.
  * This is the single entry point for making a footer interactive.
  * @param {HTMLElement} mainContentElement - The view element that contains the footer.
- * @param {string} role - The current user role ('guest', 'user', 'merchant', 'admin').
+ * @param {string} role - The current user role ('guest', 'consumer', 'merchant', 'admin').
  */
 export function initializeFooter(mainContentElement, role) { 
     if (!mainContentElement) {
@@ -56,7 +56,7 @@ export function initializeFooter(mainContentElement, role) {
         } else if (role === 'admin') {
             adminFooter.classList.remove('hidden');
         } else {
-            // Default to the main app footer for 'guest' and 'user'
+            // Default to the main app footer for 'guest' and 'consumer'
             appFooter.classList.remove('hidden');
         }
     }
