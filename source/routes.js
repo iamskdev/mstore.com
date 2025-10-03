@@ -34,8 +34,8 @@ const routeConfig = {
     home: {
       id: 'admin-home-view', 
       path: "./source/modules/admin/pages/admin-home.html",
-      cssPath: "./source/modules/admin/pages/admin-home.css",
-      jsPath: "./source/modules/admin/pages/admin-home.js",
+      cssPath: "./source/modules/admin/styles/admin-home.css",
+      jsPath: "./source/modules/admin/scripts/admin-home.js",
       embedFooter: true,
       isMainTab: true,
       title: 'Home',

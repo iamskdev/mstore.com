@@ -149,6 +149,10 @@ service cloud.firestore {
     match /logs/{logId} {
       // Read/Update rules can safely use get() as the document already exists.
       allow read, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
+      // GET: A user can read their own log, or an admin can read any log.
+      allow get, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
+      // LIST: Only an admin can list all logs (e.g., for the admin dashboard).
+      allow list: if isAdmin();
       // Create rule must use a direct UID check to avoid race conditions during signup.
       // The client must pass the auth UID in the document being created.
       allow create: if isRequestingUser(request.resource.data.meta.ownerUID) || isAdmin();

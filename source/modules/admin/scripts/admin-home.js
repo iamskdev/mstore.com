@@ -35,9 +35,26 @@ function renderUserRolesChart(users = []) {
   const ctx = document.getElementById('user-roles-chart');
   if (!ctx || typeof Chart === 'undefined') return;
 
+  // If no users are found (e.g., due to a fetch error), display a message instead of an empty chart.
+  if (users.length === 0) {
+    const wrapper = ctx.closest('.chart-wrapper');
+    if (wrapper) {
+      wrapper.innerHTML = `<div class="chart-placeholder">User data could not be loaded.</div>`;
+    }
+    return;
+  }
+
   const roleCounts = users.reduce((acc, user) => {
-    // Use primaryRole for simplicity, or fall back to the first role.
-    const role = user.meta?.primaryRole || user.meta?.roles?.[0] || 'unknown';
+    // FIX: Correctly determine the role. Prioritize primaryRole, then the roles array.
+    // This handles cases where a user might have multiple roles but no primary one set.
+    let role = user.meta?.primaryRole;
+    if (!role && Array.isArray(user.meta?.roles) && user.meta.roles.length > 0) {
+      // Prefer 'admin' or 'merchant' over 'consumer' if multiple roles exist without a primary.
+      if (user.meta.roles.includes('admin')) role = 'admin';
+      else if (user.meta.roles.includes('merchant')) role = 'merchant';
+      else role = user.meta.roles[0]; // Fallback to the first role in the array
+    }
+    role = role || 'consumer'; // Final fallback if no role is found at all.
     acc[role] = (acc[role] || 0) + 1;
     return acc;
   }, {});
@@ -65,7 +82,7 @@ function renderUserRolesChart(users = []) {
       plugins: {
         legend: {
           position: 'bottom',
-          labels: { color: 'var(--text-secondary)' }
+          // The color is now handled globally by Chart.defaults.color
         }
       }
     }
@@ -126,7 +143,12 @@ function renderSignupsChart() {
         backgroundColor: '#10b981'
       }]
     },
-    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false, // Add this line
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
   });
 }
 
@@ -144,7 +166,11 @@ function renderCategoriesChart() {
         backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#6b7280']
       }]
     },
-    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false, // Add this line
+      plugins: { legend: { position: 'bottom' } }
+    }
   });
 }
 /** Renders critical alerts. */
@@ -193,19 +219,42 @@ function renderActivityLog(logs = []) {
 export function init() {
   console.log("🚀 Admin Home View Initialized");
 
+  // FIX: Set the default color for all chart text (labels, scales, etc.)
+  // to use a CSS variable. This ensures that when the theme changes (light/dark mode),
+  // the chart text color updates automatically.
+  if (typeof Chart !== 'undefined') {
+    Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+  }
+
   async function loadAdminData() {
     try {
-      // Fetch all data in parallel for efficiency
-      const [users, orders, logs, alerts, merchants] = await Promise.all([
-        fetchAllUsers(true),      // Force a fresh fetch, bypassing cache
-        fetchAllOrders(true),     // Force a fresh fetch, bypassing cache
-        fetchAllLogs(true),       // Force a fresh fetch, bypassing cache
-        fetchAllAlerts(true),     // Force a fresh fetch, bypassing cache
-        fetchAllMerchants(true)   // Force a fresh fetch, bypassing cache
+      // Use Promise.allSettled to fetch all data, even if some requests fail due to permissions.
+      // This prevents the entire dashboard from failing if one data source is inaccessible.
+      const results = await Promise.allSettled([
+        fetchAllUsers(true),
+        fetchAllOrders(true),
+        fetchAllLogs(true),
+        fetchAllAlerts(true),
+        fetchAllMerchants(true)
       ]);
 
+      // Helper to safely extract data or return an empty array on failure
+      const getData = (result, name) => {
+        if (result.status === 'fulfilled') {
+          return result.value || [];
+        } else {
+          console.warn(`Partial Load Warning: Could not fetch ${name}. Reason:`, result.reason.message);
+          return []; // Return empty array on failure
+        }
+      };
+
+      const users = getData(results[0], 'users');
+      const orders = getData(results[1], 'orders');
+      const logs = getData(results[2], 'logs');
+      const alerts = getData(results[3], 'alerts');
+      const merchants = getData(results[4], 'merchants');
+
       // Render all components with the fetched data
-      console.log("Fetched Data:", { users, orders, logs, alerts, merchants }); // Add this line
       renderStats(users, orders, merchants);
       renderAlerts(alerts);
       renderUserRolesChart(users);
