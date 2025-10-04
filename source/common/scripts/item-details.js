@@ -1,12 +1,16 @@
 /**
  * @file Manages all logic for the Item Details page.
- * It retrieves item data, populates the DOM, and handles all user interactions
+ * It retrieves item data from route parameters, populates the DOM, and handles all user interactions
  * like adding to cart, saving, sharing, and viewing related items.
  */
-
-import { createItemCard } from '../../partials/card/card.js';
+import { toggleCartItem, isItemInCart } from '../../utils/cart-manager.js';
+import { toggleSavedItem } from '../../utils/saved-manager.js';
+import { createCardFromTemplate } from '../../templates/cards/card-helper.js';
+import { isItemSaved } from '../../utils/saved-manager.js';
+import { fetchItemById } from '../../utils/data-manager.js'; // Import the fetcher
 import { initializeDesktopHoverZoom } from '../../utils/cursor-zoom.js';
 import { initializeSearch } from '../../utils/search-handler.js';
+import { showFeedbackModal } from '../../partials/modals/feedback.js';
 
 // Module-level variable to hold the zoom cleanup function, preventing duplicate listeners.
 let cleanupImageZoom = () => {};
@@ -28,20 +32,26 @@ function replaceElement(elementId) {
 }
 
 /**
- * Handles navigation to the item details page.
- * It stores the selected item in sessionStorage and then redirects.
- * This function is exported to be used by main.js.
- * @param {CustomEvent} event - The event containing the item data in `event.detail`.
+ * Generates HTML for star rating display. Local to this module.
+ * @param {number} rating - The rating value (e.g., 3.5).
+ * @returns {string} HTML string for star display.
  */
-export function handleNavigateToItem(event) {
-  const item = event.detail;
-  if (item && item.meta && item.meta.itemId) {
-    sessionStorage.setItem('selectedItem', JSON.stringify(item));
-    // Navigate to the item details page. The page will then read from sessionStorage.
-    window.location.href = `/public/pages/item-details.html?id=${item.meta.itemId}`;
-  } else {
-    console.error("handleNavigateToItem: Invalid item data received.", event.detail);
-  }
+function generateStarsHtml(rating) {
+    let starsHtml = '';
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+    for (let i = 0; i < fullStars; i++) {
+        starsHtml += '<span class="filled">★</span>';
+    }
+    if (hasHalfStar) {
+        starsHtml += '<span class="half">★</span>';
+    }
+    for (let i = 0; i < emptyStars; i++) {
+        starsHtml += '<span>★</span>';
+    }
+    return starsHtml;
 }
 
 /**
@@ -59,7 +69,7 @@ function updateThumbnailHighlight(activeIndex) {
  * Updates the visual state of the "Save" button.
  * @param {boolean} isSaved - Whether the item is currently in the saved list.
  */
-function updateSaveButtonState(isSaved) {
+export function updateSaveButtonState(isSaved) { // Export this function
   const saveItemBtn = document.getElementById('save-item-btn');
   if (saveItemBtn) {
     const textEl = saveItemBtn.querySelector('.save-btn-text');
@@ -75,26 +85,29 @@ function updateSaveButtonState(isSaved) {
  * @param {object} item The item data object.
  */
 function displayItemDetails(item, scaleRef) {
-  const isService = item.type === 'service';
-  const basePath = "./localstore/images/";
-  const defaultImage = isService ? 'default-service.jpg' : 'default-product.jpg';
+  const isService = item.meta.type === 'service';
   const mainImageEl = document.getElementById('item-main-image');
   const thumbnailsContainerEl = document.getElementById('item-thumbnails');
   const imageZoomContainer = document.getElementById('image-zoom-container');
   const itemLeftEl = document.getElementById('item-left');
 
   // --- Image and Thumbnails ---
-  const images = Array.isArray(item.media?.images) && item.media.images.length > 0 ? item.media.images : [item.media?.thumbnail || defaultImage];
+  // Use gallery if available, otherwise fallback to thumbnail. Ensure it's always an array and filter out empty values.
+  const images = (item.media?.gallery?.length > 0 ? item.media.gallery : [item.media?.thumbnail]).filter(Boolean);
   
-  const getFullImagePath = (imgFile) => {
-    // If it's an external URL or an absolute path from the root, use it directly.
-    if (imgFile.startsWith('http') || imgFile.startsWith('/')) return imgFile;
-    // Otherwise, construct the path from the base mock images path.
-    return basePath + imgFile;
-  };
+  // The path from the JSON data is the source of truth. Use it directly.
+  const imageErrorPlaceholder = document.querySelector('.image-error-placeholder');
+  mainImageEl.classList.remove('hidden');
+  imageErrorPlaceholder.classList.remove('visible');
 
-  mainImageEl.src = getFullImagePath(images[0]);
-  mainImageEl.onerror = () => { mainImageEl.src = getFullImagePath(defaultImage); };
+  mainImageEl.src = images[0] || ''; // Set to empty if no image is found in data
+  mainImageEl.onerror = () => {
+    // On error, hide the broken image and show the placeholder
+    mainImageEl.classList.add('hidden');
+    imageErrorPlaceholder.classList.add('visible');
+  };
+  // If there's no image source to begin with, trigger the error handler immediately
+  if (!mainImageEl.src) mainImageEl.onerror();
 
   thumbnailsContainerEl.innerHTML = '';
   // FIX: Always create thumbnails if there are multiple images, for all screen sizes.
@@ -103,11 +116,11 @@ function displayItemDetails(item, scaleRef) {
     thumbnailsContainerEl.style.display = 'flex'; // Ensure container is visible
     images.forEach((imgFile, index) => {
       const thumb = document.createElement('img');
-      thumb.src = getFullImagePath(imgFile);
-      thumb.alt = `Thumbnail for ${item.name}`;
+      thumb.src = imgFile;
+      thumb.alt = `Thumbnail for ${item.info.name}`;
       thumb.className = 'thumbnail-img';
       thumb.onclick = () => {
-        mainImageEl.src = getFullImagePath(imgFile);
+        mainImageEl.src = imgFile;
         updateThumbnailHighlight(index);
       };
       thumbnailsContainerEl.appendChild(thumb);
@@ -146,7 +159,7 @@ function displayItemDetails(item, scaleRef) {
 
     const updateImageAndDots = (newIndex) => {
       currentImageIndex = (newIndex + images.length) % images.length;
-      mainImageEl.src = getFullImagePath(images[currentImageIndex]);
+      mainImageEl.src = images[currentImageIndex];
       // Update active dot
       document.querySelectorAll('.dot').forEach((dot, index) => {
         dot.classList.toggle('active', index === currentImageIndex);
@@ -186,20 +199,69 @@ function displayItemDetails(item, scaleRef) {
   }
 
   // --- Basic Info ---
-  document.getElementById('item-title').textContent = item.name;
+  document.getElementById('item-title').textContent = item.info.name;
   document.getElementById('item-price').textContent = item.pricing?.sellingPrice || 'N/A';
-  document.getElementById('item-unit-label').textContent = `/ ${item.inventory?.unit || 'item'}`;
-  document.getElementById('item-description-text').textContent = item.descriptions?.description || '';
+  document.getElementById('item-unit-label').textContent = `/ ${item.meta.unitId || 'item'}`;
+  document.getElementById('item-description-text').textContent = item.info.description || '';
+  
+  // --- Rating Stars ---
+  const ratingEl = document.getElementById('item-rating');
+  if (ratingEl) {
+    const ratingValue = item.analytics?.rating || 0;
+    const numReviews = item.analytics?.numReviews || 0;
 
-  // --- Stock Status ---
+    // Determine rating class for color-coding
+    let ratingClass;
+    if (ratingValue < 3) { // 1-2.9 stars -> Red
+        ratingClass = 'low-rating';
+    } else if (ratingValue < 4) { // 3-3.9 stars -> Green
+        ratingClass = 'high-rating';
+    } else { // 4-5 stars -> Yellow
+        ratingClass = 'medium-rating';
+    }
+
+    // Clear old rating classes and add the new one
+    ratingEl.classList.remove('low-rating', 'medium-rating', 'high-rating');
+    ratingEl.classList.add(ratingClass);
+
+    ratingEl.innerHTML = `
+      <div class="stars">${generateStarsHtml(ratingValue)}</div>
+      ${ratingValue > 0 ? `<span class="rating-value">(${ratingValue.toFixed(1)})</span>` : ''}
+      <span class="review-count">${numReviews} reviews</span>
+    `;
+
+  }
+
+  // --- Stock Status with Icon ---
   const stockStatusEl = document.getElementById('item-stock-status');
-  // Correctly evaluate the stock status string to a boolean
-  // FIX: Use 'available' boolean for both products and services
-  const inStock = item.status?.isAvailable === true;
-  stockStatusEl.textContent = isService
-    ? (inStock ? "Available" : "Unavailable")
-    : (inStock ? "In Stock" : "Out of Stock");
-  stockStatusEl.classList.add(inStock ? 'in' : 'out');
+  let stockStatusText, stockStatusClass, stockIconClass;
+
+  if (isService) {
+      if (item.meta.flags.isActive) {
+          stockStatusText = 'Available';
+          stockStatusClass = 'in';
+          stockIconClass = 'fas fa-check-circle';
+      } else {
+          stockStatusText = 'Unavailable';
+          stockStatusClass = 'out';
+          stockIconClass = 'fas fa-times-circle';
+      }
+  } else { // product
+      if (item.inventory?.stockQty > 0) {
+          stockStatusText = 'In Stock';
+          stockStatusClass = 'in';
+          stockIconClass = 'fas fa-check-circle';
+      } else {
+          stockStatusText = 'Out of Stock';
+          stockStatusClass = 'out';
+          stockIconClass = 'fas fa-exclamation-circle';
+      }
+  }
+
+  if (stockStatusEl) {
+    stockStatusEl.className = `stock-status ${stockStatusClass}`;
+    stockStatusEl.innerHTML = `<i class="${stockIconClass}"></i> <span>${stockStatusText}</span>`;
+  }
 }
 
 /**
@@ -208,8 +270,8 @@ function displayItemDetails(item, scaleRef) {
  * @param {object} item The item object for which to set up actions.
  */
 function setupActionButtons(item) {
-  const isService = item.type === 'service';
-  const inStock = item.status?.isAvailable === true;
+  const isService = item.meta.type === 'service';
+  const inStock = item.inventory?.stockQty > 0 || (isService && item.meta.flags.isActive);
 
   // --- Add to Cart Button ---
   const addToCartBtn = replaceElement('add-to-cart-btn');
@@ -231,23 +293,23 @@ function setupActionButtons(item) {
       }
     };
 
-    updateNotifyButtonState(isNotified); // Set initial state
+    updateNotifyButtonState(notificationList.some(notifyItem => String(notifyItem.itemId) === String(item.meta.itemId))); // Set initial state
 
     addToCartBtn.addEventListener('click', () => {
       let notifications = JSON.parse(sessionStorage.getItem('notificationList') || '[]');
-      const existingIndex = notifications.findIndex(notifyItem => String(notifyItem.itemId) === String(item.itemId));
+      const existingIndex = notifications.findIndex(notifyItem => String(notifyItem.itemId) === String(item.meta.itemId));
       let message = '';
       let nowNotified = false;
 
       if (existingIndex > -1) {
         notifications.splice(existingIndex, 1);
-        message = `Removed from notification list for "${item.name}"`;
+        message = `Removed from notification list for "${item.info.name}"`;
         nowNotified = false;
         // TODO: Replace with a more sophisticated UI element in the new component
         alert(message);
       } else {
-        notifications.push({ itemId: item.itemId, name: item.name });
-        message = `We'll notify you when "${item.name}" is back in stock!`;
+        notifications.push({ itemId: item.meta.itemId, name: item.info.name });
+        message = `We'll notify you when "${item.info.name}" is back in stock!`;
         nowNotified = true;
         // TODO: Replace with a more sophisticated UI element in the new component
         alert(message);
@@ -259,22 +321,18 @@ function setupActionButtons(item) {
   } else {
     // --- "Add to Cart" logic for in-stock items (existing logic) ---
     addToCartBtn.disabled = false;
-    const initialCart = JSON.parse(sessionStorage.getItem('cart') || '[]');
-    const isInCart = initialCart.some(cartItem => String(cartItem.itemId) === String(item.itemId));
+    const isInCart = isItemInCart(item.meta.itemId);
     addToCartBtn.innerHTML = isInCart ? '<i class="fas fa-check"></i> Added to Cart' : '<i class="fas fa-shopping-cart"></i> Add to Cart';
 
     addToCartBtn.addEventListener('click', () => {
-      let cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
-      const existingItemIndex = cart.findIndex(cartItem => String(cartItem.itemId) === String(item.itemId));
-      if (existingItemIndex > -1) {
-        cart.splice(existingItemIndex, 1);
-        addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
-      } else {
-        cart.push({ ...item, quantity: 1 });
-        addToCartBtn.innerHTML = '<i class="fas fa-check"></i> Added to Cart';
-      }
-      sessionStorage.setItem('cart', JSON.stringify(cart));
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      // Get the current state *before* toggling
+      const wasInCart = isItemInCart(item.meta.itemId);
+      
+      // Update the UI instantly for immediate feedback
+      addToCartBtn.innerHTML = !wasInCart ? '<i class="fas fa-check"></i> Added to Cart' : '<i class="fas fa-shopping-cart"></i> Add to Cart';
+
+      // Call the centralized manager to update the state and notify other parts of the app
+      toggleCartItem(item); // Use the centralized cart manager function
     });
   }
 
@@ -282,24 +340,14 @@ function setupActionButtons(item) {
   const saveItemBtn = replaceElement('save-item-btn');
   if (!saveItemBtn) return;
 
-  const initialSaved = JSON.parse(sessionStorage.getItem('savedItems') || '[]');
-  const isItemSaved = initialSaved.some(savedItem => String(savedItem.itemId) === String(item.itemId));
-  updateSaveButtonState(isItemSaved);
+  updateSaveButtonState(isItemSaved(item.meta.itemId));
 
   saveItemBtn.addEventListener('click', () => {
-    let savedItems = JSON.parse(sessionStorage.getItem('savedItems') || '[]');
-    const existingItemIndex = savedItems.findIndex(savedItem => String(savedItem.itemId) === String(item.itemId));
-    let isNowSaved;
-    if (existingItemIndex > -1) {
-      savedItems.splice(existingItemIndex, 1);
-      isNowSaved = false;
-    } else {
-      savedItems.push(item);
-      isNowSaved = true;
-    }
-    sessionStorage.setItem('savedItems', JSON.stringify(savedItems));
+    // Toggle the state and update UI instantly
+    const isNowSaved = !isItemSaved(item.meta.itemId);
     updateSaveButtonState(isNowSaved);
-    window.dispatchEvent(new CustomEvent('savedItemsUpdated'));
+    // Call the centralized manager
+    toggleSavedItem(item.meta.itemId); // Use the centralized saved items manager
   });
 }
 
@@ -311,60 +359,48 @@ export async function displayRelatedItems(currentItem) {
   let items = [];
   try {
     items = JSON.parse(sessionStorage.getItem('allItems') || '[]');
-    if (!items.length) {
-      const res = await fetch('../../../localstore/jsons/items.json');
-      items = await res.json();
-    }
-  } catch {
-    const res = await fetch('../../../localstore/jsons/items.json');
-    items = await res.json();
+  } catch (e) {
+    console.error("Could not parse allItems from sessionStorage", e);
+    items = [];
   }
 
-  const isService = currentItem.type === 'service';
+  const isService = currentItem.meta.type === 'service';
   let related = [];
 
-  // Helper to get category, handling both 'categoryId' or 'category' keys
-  // and also converting '"null"' string to null value
-  const fixNullCategory = (cat) => cat === "null" ? null : cat;
-
-  const getItemCategory = (it) => it.categoryId || it.category;
-  const currentItemCategory = getItemCategory(currentItem);
-  const currentitemId = currentItem.itemId;
+  const currentItemCategory = currentItem.meta.links.categoryId;
+  const currentitemId = currentItem.meta.itemId;
 
   // --- Find related items based on type (product/service) ---
   if (isService) {
     // For a service, first try to find other services in the same category.
     related = items.filter(item =>
       item && // FIX: Robustly compare IDs as strings to avoid type mismatches.
-      String(item.itemId) !== String(currentitemId) &&
-      item.type === 'service' &&
-      fixNullCategory(getItemCategory(item)) === fixNullCategory(currentItemCategory) &&
-      item.status?.isAvailable === true &&
-      item.status?.isActive !== false
+      String(item.meta.itemId) !== String(currentitemId) &&
+      item.meta.type === 'service' &&
+      item.meta.links.categoryId === currentItemCategory &&
+      item.meta.flags.isActive === true
     );
 
     // Fallback: If no related services in the same category, find ANY other available service.
     if (related.length < 1) {
-      // FIX: The previous fallback was too restrictive. This now finds ANY other available service, regardless of category.
       related = items.filter(item =>
-        item && item.itemId !== currentitemId && item.type === 'service' && item.status?.isAvailable === true && item.status?.isActive !== false
+        item && String(item.meta.itemId) !== String(currentitemId) && item.meta.type === 'service' && item.meta.flags.isActive === true
       );
     }
   } else { // It's a product
     // For a product, first try to find other products in the same category.
     related = items.filter(item =>
       item && // FIX: Robustly compare IDs as strings to avoid type mismatches.
-      String(item.itemId) !== String(currentitemId) &&
-      item.type === 'product' &&
-      fixNullCategory(getItemCategory(item)) === fixNullCategory(currentItemCategory) &&
-      item.status?.isAvailable === true &&
-      item.status?.isActive !== false
+      String(item.meta.itemId) !== String(currentitemId) &&
+      item.meta.type === 'product' &&
+      item.meta.links.categoryId === currentItemCategory &&
+      item.meta.flags.isActive === true
     );
 
     // Fallback: If no related products in the same category, find ANY other available product.
     if (related.length < 1) {
       related = items.filter(item => 
-        item && item.itemId !== currentitemId && item.type === 'product' && item.status?.isAvailable === true && item.status?.isActive !== false
+        item && String(item.meta.itemId) !== String(currentitemId) && item.meta.type === 'product' && item.meta.flags.isActive === true
       );
     }
   }
@@ -385,7 +421,10 @@ export async function displayRelatedItems(currentItem) {
   }
 
   for (const item of related.slice(0, 8)) {
-    const card = await createItemCard(item);
+    const card = createCardFromTemplate({
+      ...item,
+      isSaved: isItemSaved(item.meta.itemId)
+    });
     relatedList.appendChild(card);
   }
 }
@@ -411,9 +450,11 @@ function shareItem() {
 }
 
 /**
- * Initializes the Item Details page. It should be called after the DOM is ready.
+ * Initializes the Item Details page. This is the main entry point for the view.
+ * @param {boolean} force - If true, re-initializes the view even if already initialized.
  */
-export function initializeItemDetailsPage() {
+export async function init(force = false) { // Make the function async
+  console.log('🚀 Initializing Item Details View...');
   // Clean up any existing zoom listeners from a previously viewed item on the same page load.
   // This is crucial for when a user clicks a "related item".
   if (cleanupImageZoom) {
@@ -424,37 +465,55 @@ export function initializeItemDetailsPage() {
   }
 
   // Scroll to the top of the page on load. This is crucial for when a user clicks a
-  // related item, ensuring they see the main details of the new item, not the bottom of the page.
-  window.scrollTo(0, 0);
+  // related item, ensuring they see the main details of the new item.
+  const viewContent = document.querySelector('.page-view-area.view-active');
+  if (viewContent) viewContent.scrollTop = 0;
 
   // Initialize search functionality for the header's search bar.
   initializeSearch();
   
   // Shared state for mobile swipe and zoom logic, passed by reference.
   const scaleRef = { scale: 1 };
+  
+  // --- NEW: Get item ID from route parameters ---
+  const routeParams = window.routeManager.routeParams;
+  const itemId = routeParams ? routeParams.id : null;
+  let item = null;
 
+  if (!itemId) {
+    console.error("Item ID not found in route parameters.");
+    // Fallback to selectedItem if no ID in URL, though this is less likely
+    const itemDataString = sessionStorage.getItem('selectedItem');
+    if (itemDataString) item = JSON.parse(itemDataString);
+  } else {
+    // Priority 1: Check if the item is the 'selectedItem' in sessionStorage
+    const selectedItemStr = sessionStorage.getItem('selectedItem');
+    if (selectedItemStr) {
+        const selectedItem = JSON.parse(selectedItemStr);
+        if (String(selectedItem.meta.itemId) === String(itemId)) {
+            item = selectedItem;
+        }
+    }
 
-  // --- Fix: Always load correct item from URL if present ---
-  const urlParams = new URLSearchParams(window.location.search);
-  const itemId = urlParams.get('id');
-  let itemDataString = sessionStorage.getItem('selectedItem');
-
-  if (itemId) {
-    // Try to find the item from allItems (unified)
+    // Priority 2: If not, check the 'allItems' cache in sessionStorage
+    if (!item) {
     const allItems = JSON.parse(sessionStorage.getItem('allItems') || '[]');
-    const foundItem = allItems.find(i => String(i.itemId) === String(itemId));
-    if (foundItem) {
-      itemDataString = JSON.stringify(foundItem);
-      sessionStorage.setItem('selectedItem', itemDataString);
+      item = allItems.find(i => String(i.meta.itemId) === String(itemId));
+    }
+
+    // Priority 3: If still not found, fetch from the data source (Firebase/local)
+    if (!item) {
+      console.log(`Item ${itemId} not in sessionStorage, fetching from data source...`);
+      item = await fetchItemById(itemId);
     }
   }
 
-  if (!itemDataString) {
+  if (!item) {
     console.error("No item data found. User may have landed here directly.");
     const container = document.getElementById('item-details-container');
     container.innerHTML = `
       <div class="placeholder-view" style="text-align: center; padding: 40px;">
-        <h2><i class="fas fa-exclamation-triangle"></i> Item Not Found</h2>
+        <h2><i class="fas fa-exclamation-triangle"></i> Item Not Found in SPA</h2>
         <p>We couldn't find the item you're looking for.</p>
         <p>Please go back to the <a href="/#home" style="color: var(--primary-color); text-decoration: underline;">Home page</a> to select an item.</p>
       </div>
@@ -464,8 +523,11 @@ export function initializeItemDetailsPage() {
     return;
   }
 
+  // Store the current item's ID on the container for easy access by managers
+  const container = document.getElementById('item-details-container');
+  container.dataset.itemId = item.meta.itemId;
+
   try {
-    const item = JSON.parse(itemDataString);
     displayItemDetails(item, scaleRef);
     setupActionButtons(item);
     // Set initial highlight on the first thumbnail after everything is rendered.
@@ -512,6 +574,9 @@ export function initializeItemDetailsPage() {
     console.error("Failed to parse item data from sessionStorage:", error);
   }
 
+  // 🪵 LOG: Log the item data to confirm it's loaded correctly.
+  console.log('[item-details] Item data loaded:', item);
+
   // Share button
   const shareBtn = document.getElementById('item-share-btn');
   if (shareBtn) {
@@ -519,53 +584,25 @@ export function initializeItemDetailsPage() {
   }
 
   // --- Professional Feedback Modal Implementation ---
-  const feedbackBtn = document.getElementById('item-feedback-btn');
-  const modalContainer = document.getElementById('feedback-modal-container');
+  const feedbackBtn = replaceElement('item-feedback-btn');
 
-  if (feedbackBtn && modalContainer) {
-    let isModalInitialized = false;
-
+  if (feedbackBtn) {
     feedbackBtn.addEventListener('click', async () => {
-      // Lazy load and initialize the modal only on the first click
-      if (!isModalInitialized) {
-        try {
-          // 1. Fetch and inject the modal's HTML
-          const response = await fetch('./source/partials/feedback-modal/feedback-modal.html');
-          if (!response.ok) throw new Error(`Failed to load modal HTML: ${response.status}`);
-          modalContainer.innerHTML = await response.text();
-
-          // 2. Import the modal's JavaScript module
-          const modalModule = await import('../../partials/feedback-modal/feedback-modal.js');
-          
-          // 3. Initialize the modal's internal logic after DOM update
-          setTimeout(() => {
-            modalModule.initFeedbackModal();
-            isModalInitialized = true;
-            
-            // 4. Show the modal
-            const modalElement = document.getElementById('feedback-modal');
-            if (modalElement) modalElement.style.display = 'flex';
-          }, 0);
-
-        } catch (error) {
-          console.error("❌ Failed to initialize feedback modal:", error);
-          // TODO: Replace with a more sophisticated UI element in the new component
-          alert("Could not open feedback form.");
-          modalContainer.innerHTML = ''; // Clean up on failure
-        }
-      } else {
-        // If already initialized, just show it
-        const modalElement = document.getElementById('feedback-modal');
-        if (modalElement) modalElement.style.display = 'flex';
-      }
+      // Pass context to the feedback modal
+      const context = {
+        itemId: item.meta.itemId,
+        itemName: item.info.name
+      };
+      // The showFeedbackModal function now handles loading, initialization, and display.
+      showFeedbackModal(context);
     });
   }
 }
 
-// --- Migration Note ---
-// Data is now loaded from firebase/data/items.json (not from Mock/mock-products.json or mock-services.json) from firebase/data/items.json (not from Mock/mock-products.json or mock-services.json)
-// Make sure to update all data loading logic in the app to use the unified items.json.
-
-// --- Migration Note ---
-// Data is now loaded from firebase/data/items.json (not from Mock/mock-products.json or mock-services.json) from firebase/data/items.json (not from Mock/mock-products.json or mock-services.json)
-// Make sure to update all data loading logic in the app to use the unified items.json.
+export function cleanup() {
+    console.log('🧹 Cleaning up Item Details View...');
+    // Clean up any existing zoom listeners.
+    if (cleanupImageZoom) cleanupImageZoom();
+    if (cleanupDesktopZoom) cleanupDesktopZoom();
+    // भविष्य में यदि आवश्यक हो तो यहां और इवेंट लिसनर्स हटा दें
+}

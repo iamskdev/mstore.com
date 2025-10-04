@@ -7,6 +7,13 @@ import { firestore } from '../../firebase/firebase-config.js';
 import { generateId } from '../../utils/idGenerator.js';
 import { AuthService } from '../../firebase/auth/auth.js';
 
+let modalElement = null;
+let isInitialized = false;
+// --- FIX: Centralize the context at the module level ---
+// This ensures that the context is always available and consistent across function calls,
+// preventing state loss during the initial setup.
+let currentContext = {};
+
 /**
  * Fetches the feedback modal HTML and inserts it into the DOM.
  * This function should be called first to ensure the modal HTML is present in the document.
@@ -22,14 +29,17 @@ export async function loadFeedbackModal() {
     const htmlContent = await response.text();
 
     // Create a temporary div to parse the HTML content
-    const tempDiv = document.createElement('div');
+    const tempDiv = document.createElement('div'); // This is a local variable
     tempDiv.innerHTML = htmlContent;
 
     // Extract the modal element
-    const modalElement = tempDiv.querySelector('#feedback-modal');
-    if (!modalElement) {
+    const loadedModal = tempDiv.querySelector('#feedback-modal');
+    if (!loadedModal) {
       throw new Error('Feedback modal element not found in feedback.html');
     }
+
+    // FIX: Assign the loaded element to the module-level variable.
+    modalElement = loadedModal;
 
     // Extract and append styles if they are embedded in the HTML
     // It's generally better to have styles in a separate CSS file,
@@ -40,9 +50,9 @@ export async function loadFeedbackModal() {
     }
 
     // Append the modal to the body or a specific container
-    document.body.appendChild(modalElement);
+    document.body.appendChild(loadedModal);
 
-    return modalElement;
+    return loadedModal;
 
   } catch (error) {
     console.error('Error loading feedback modal:', error);
@@ -50,14 +60,39 @@ export async function loadFeedbackModal() {
   }
 }
 
+/**
+ * Shows the feedback modal, loading and initializing it if necessary.
+ * This is the main entry point for opening the modal.
+ * @param {object} [context={}] - Optional context, e.g., { itemId, itemName }.
+ */
+export async function showFeedbackModal(context = {}) {
+  // --- DEBUG LOG ---
+  console.log('[feedback.js] showFeedbackModal called with context:', context);
 
-export function initFeedbackModal(modal) {
-  // The controller (item-details.js) is responsible for showing the modal.
-  // This script only handles what happens *inside* it. If the modal doesn't exist, we exit gracefully.
-  if (!modal) {
-    console.error("Feedback modal element not found in the DOM. Ensure loadFeedbackModal() was called.");
-    return;
+  try {
+    if (!modalElement) {
+      modalElement = await loadFeedbackModal();
+    }
+    
+    // Always re-initialize to reset state, but internal logic prevents re-attaching listeners.
+    initFeedbackModal(modalElement, context);
+
+    // Show the modal
+    modalElement.style.display = 'flex';
+
+  } catch (error) {
+    console.error("❌ Failed to show feedback modal:", error);
+    showToast('error', "Could not open feedback form.");
   }
+}
+
+/**
+ * Initializes the internal logic and event listeners for the feedback modal.
+ */
+function initFeedbackModal(modal, initialContext = {}) {
+  // --- DEFINITIVE FIX: Always update the context first. ---
+
+  const alreadyInitialized = modal.dataset.initialized === 'true';
 
   // FIX: The backdrop is now inside the modal, so we query it from there.
   // This removes the need to add it to index.html.
@@ -69,6 +104,20 @@ export function initFeedbackModal(modal) {
   const countrySelectWrapper = modal.querySelector('#country-code-select');
   const typeSelectWrapper = modal.querySelector('#type-select');
 
+  // The controller (item-details.js) is responsible for showing the modal.
+  // This script only handles what happens *inside* it. If the modal doesn't exist, we exit gracefully.
+  if (!modal) {
+    console.error("Feedback modal element not found in the DOM. Ensure loadFeedbackModal() was called.");
+    return;
+  }
+
+  // If listeners are already attached, we are done with setup.
+  if (alreadyInitialized) {
+    // --- FIX: On subsequent opens, just update the context. ---
+    // The dropdown is already initialized, so we can safely update its state.
+    updateModalContext(initialContext);
+    return; // The context is already updated, so we can exit.
+  }
   // --- NEW: Get elements for conditional display ---
   const phoneGroup = modal.querySelector('.phone-group');
   const attachmentGroup = modal.querySelector('.attachment-group');
@@ -223,7 +272,11 @@ export function initFeedbackModal(modal) {
   });
 
 
-  const closeModal = () => modal.style.display = 'none';
+  const closeModal = () => {
+    modal.style.display = 'none';
+    // Reset context-specific fields when closing
+    updateModalContext({}); // Reset to default state by passing an empty context
+  };
 
   closeBtn.addEventListener('click', closeModal);
   cancelBtn.addEventListener('click', closeModal);
@@ -245,6 +298,12 @@ export function initFeedbackModal(modal) {
       // Instead of relying on a pre-existing <span>, we create and manage a text node.
       // This makes the HTML cleaner.
       const arrowDiv = trigger.querySelector('.arrow');
+      // FIX: Remove any pre-existing text nodes to prevent duplication on re-initialization.
+      Array.from(trigger.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.remove();
+        }
+      });
       const textNode = document.createTextNode('');
       trigger.insertBefore(textNode, arrowDiv);
       // Backdrop is now defined outside and passed or accessed globally
@@ -303,10 +362,13 @@ export function initFeedbackModal(modal) {
       options.addEventListener('click', (e) => {
           const option = e.target.closest('.custom-option');
           if (option) {
+              // FIX: Directly set the textContent of the textNode to replace the old text,
+              // instead of replacing the whole trigger's content which might cause issues.
               if (isCountrySelect) {
                 textNode.textContent = option.dataset.value;
               } else {
-                textNode.textContent = option.textContent;
+                // FIX: Target the first child node (the text node) directly to ensure replacement.
+                trigger.childNodes[0].textContent = option.textContent;
               }
               trigger.dataset.value = option.dataset.value;
 
@@ -321,9 +383,14 @@ export function initFeedbackModal(modal) {
       if(initialSelected) {
           trigger.dataset.value = initialSelected.dataset.value;
           if (isCountrySelect) {
-            textNode.textContent = initialSelected.dataset.value;
+            if (textNode) {
+              textNode.textContent = initialSelected.dataset.value;
+            }
           } else {
-            textNode.textContent = initialSelected.textContent;
+            if (textNode) {
+              // FIX: Ensure textNode is not null before setting textContent
+              textNode.textContent = initialSelected.textContent;
+            }
           }
       }
 
@@ -346,6 +413,11 @@ export function initFeedbackModal(modal) {
 
   setupCustomSelect('country-code-select');
   setupCustomSelect('type-select');
+
+  // --- FIX: Update context AFTER setup on first initialization. ---
+  // This ensures setupCustomSelect has run and created the necessary text nodes
+  // before updateModalContext tries to modify them.
+  updateModalContext(initialContext);
 
   // --- NEW: Add listener to backdrop to close the select ---
   // This listener should only close the country-code-select if it's open.
@@ -379,21 +451,11 @@ export function initFeedbackModal(modal) {
   submitBtn.addEventListener('click', async () => { // Make the function async
     const typeTrigger = document.querySelector('#type-select .custom-select-trigger');
     const feedbackType = typeTrigger ? typeTrigger.dataset.value : 'other';
+    const feedbackSubject = document.getElementById('feedback-subject').value.trim();
     const feedbackMessage = document.getElementById('feedback-message-textarea').value.trim();
 
     const countryCodeTrigger = document.querySelector('#country-code-select .custom-select-trigger');
     let fullPhoneNumber = "Not Provided";
-
-    // Only get phone number if the user is a guest
-    if (!AuthService.isLoggedIn()) {
-      const countryCode = countryCodeTrigger ? countryCodeTrigger.dataset.value : '+91';
-      const phoneInput = document.getElementById('feedback-contact-number').value.trim();
-      if (phoneInput) {
-        fullPhoneNumber = `${countryCode}${phoneInput}`;
-      }
-    }
-    const urlParams = new URLSearchParams(window.location.search);
-    const itemName = decodeURIComponent(urlParams.get('name'));
 
     // 1. Validation
     if (!feedbackMessage) {
@@ -404,6 +466,21 @@ export function initFeedbackModal(modal) {
       });
       return;
     }
+
+    // Only get phone number if the user is a guest
+    if (!AuthService.isLoggedIn()) {
+      const countryCode = countryCodeTrigger ? countryCodeTrigger.dataset.value : '+91';
+      const phoneInput = document.getElementById('feedback-contact-number').value.trim();
+      if (phoneInput) {
+        // Basic phone number validation (e.g., check if it contains only digits and is of a reasonable length)
+        if (!/^\d{7,15}$/.test(phoneInput)) {
+            window.showCustomAlert({ title: 'Invalid Phone Number', message: 'Please enter a valid phone number.' });
+            return;
+        }
+        fullPhoneNumber = `${countryCode}${phoneInput}`;
+      }
+    }
+
 
     // 2. Set loading state on the button
     submitBtn.disabled = true;
@@ -418,9 +495,10 @@ export function initFeedbackModal(modal) {
       const feedbackRef = firestore.collection('feedbacks').doc(feedbackId);
 
       const isLoggedIn = AuthService.isLoggedIn();
-      const userId = isLoggedIn ? localStorage.getItem('currentUserId') : null;
+      const userId = isLoggedIn ? AuthService.getCurrentUserId() : null;
       const role = isLoggedIn ? localStorage.getItem('currentUserType') : 'guest';
       const merchantId = (role === 'merchant') ? localStorage.getItem('currentMerchantId') : null;
+      const itemId = currentContext.itemId || null; // Get itemId from the stored context
 
       // 3. Build the feedback document based on your schema
       const newFeedbackDoc = {
@@ -429,10 +507,10 @@ export function initFeedbackModal(modal) {
           type: "feedback",
           version: 1.0,
           flags: { reviewed: false, resolved: false, archived: false, guest: !isLoggedIn },
-          // NEW: Add links object for consistency with rating schema
           links: {
             userId: userId,
-            merchantId: merchantId
+            merchantId: merchantId,
+            itemId: itemId // Add the linked item ID
           }
         },
         // NEW: Updated submitter object to match new schema
@@ -442,7 +520,7 @@ export function initFeedbackModal(modal) {
           submittedAt: new Date().toISOString()
         },
         details: {
-          subject: itemName || "General Feedback",
+          subject: feedbackSubject || "General Feedback", // Use the value from the subject input
           message: feedbackMessage,
           category: feedbackType,
           sentiment: "neutral",
@@ -474,11 +552,81 @@ export function initFeedbackModal(modal) {
       // 5. Reset button state
       submitBtn.disabled = false;
       submitBtn.innerHTML = 'Submit';
-      // --- NEW: Reset form fields after submission ---
+      // Reset form fields after submission
       document.getElementById('feedback-message-textarea').value = '';
       document.getElementById('feedback-contact-number').value = '';
       attachedFiles = []; // Clear the managed files array
       renderAttachedFiles(); // Clear the UI
     }
   });
+  modal.dataset.initialized = 'true'; // Mark as initialized
+
+  /**
+   * Updates the modal's UI based on the provided context.
+   * @param {object} context - The context object { itemId, itemName }.
+   */
+  function updateModalContext(newContext) {
+    // --- DEBUG LOG ---
+    console.log('[feedback.js] updateModalContext running. Context:', newContext);
+
+    currentContext = newContext || {}; // Update the module-level context
+    // FIX: Use the module-level modalElement to ensure we're always targeting the correct modal instance.
+    const modalContent = modalElement.querySelector('.modal-content');
+    const subjectInput = modalElement.querySelector('#feedback-subject');
+    const typeTrigger = modalElement.querySelector('#type-select .custom-select-trigger');
+    const typeTextNode = typeTrigger ? typeTrigger.childNodes[0] : null; // This is the text node we need to update
+    const optionsContainer = modalElement.querySelector('#type-select .custom-options'); // The container for all options
+    
+    if (modalContent && subjectInput && typeTextNode && optionsContainer) {
+      // --- DEBUG LOG ---
+      console.log('[feedback.js] Context check. Has itemName:', !!currentContext.itemName);
+
+      if (currentContext.itemName) {
+        // Context is active (item-specific feedback)
+        modalContent.classList.add('context-active');
+        subjectInput.value = currentContext.itemName;
+        subjectInput.readOnly = true;
+        subjectInput.classList.add('readonly');
+
+        // --- DEBUG LOG ---
+        console.log('[feedback.js] Item context ACTIVE. Added "context-active" class.');
+
+        // FIX: Deselect any currently selected general option
+        const currentSelected = optionsContainer.querySelector('.custom-option.selected');
+        if (currentSelected) {
+          currentSelected.classList.remove('selected');
+        }
+        // Change default dropdown text
+        typeTextNode.textContent = 'Select a reason';
+        typeTrigger.dataset.value = ''; // Clear default value
+
+      } else {
+        // Context is not active (general feedback)
+        modalContent.classList.remove('context-active');
+        subjectInput.value = '';
+        subjectInput.readOnly = false;
+        subjectInput.classList.remove('readonly');
+        // Restore default dropdown text
+
+        // --- DEBUG LOG ---
+        console.log('[feedback.js] General context. Removed "context-active" class.');
+
+        // FIX: When resetting, ensure any selected item-specific option is deselected
+        // and the correct general default option is re-selected.
+        const anySelected = optionsContainer.querySelector('.custom-option.selected');
+        if (anySelected) anySelected.classList.remove('selected');
+        const defaultOption = optionsContainer.querySelector('.custom-option[data-value="app_name_suggestion"]');
+        // FIX: Ensure defaultOption exists before adding class
+        if (defaultOption) {
+            defaultOption.classList.add('selected');
+        }
+
+        // FIX: Ensure textNode and defaultOption exist before setting text
+        if (defaultOption) {
+          typeTextNode.textContent = defaultOption.textContent;
+          typeTrigger.dataset.value = defaultOption.dataset.value;
+        }
+      }
+    }
+  }
 }

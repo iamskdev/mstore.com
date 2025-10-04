@@ -31,6 +31,8 @@ const APP_SHELL_URLS = [
   './source/templates/banner.js',
   './source/utils/search-handler.js',
   './source/utils/cart-manager.js',
+  './source/utils/cursor-zoom.js',
+  './source/utils/image-zoom.js',
 
   // Firebase Modules
   './source/firebase/auth/auth.js',
@@ -75,6 +77,11 @@ const APP_SHELL_URLS = [
   './source/common/styles/notification.css',
   './source/common/scripts/notification.js',
   './source/modules/admin/pages/admin-home.html',
+
+  // Item Details View
+  './source/common/pages/item-details.html',
+  './source/common/styles/item-details.css',
+  './source/common/scripts/item-details.js',
 
   // Updates View
   './source/common/pages/updates.html',

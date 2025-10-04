@@ -109,6 +109,15 @@ const routeConfig = {
       dataDependencies: ['items'],
       isMainTab: false // It's a sub-view of Account, not a main tab itself
     },
+    'item-details/:id': {
+      id: 'item-details-view',
+      path: './source/common/pages/item-details.html',
+      cssPath: './source/common/styles/item-details.css',
+      jsPath: './source/common/scripts/item-details.js',
+      title: 'Item Details',
+      fullscreen: false, // यह सुनिश्चित करता है कि यह मुख्य लेआउट में खुले
+      dataDependencies: ['items'] // सुनिश्चित करें कि सभी आइटम पहले से लोड हों
+    },
     updates: {
       id: 'updates-view',
       path: './source/common/pages/updates.html',

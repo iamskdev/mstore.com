@@ -411,6 +411,18 @@ export function createCardFromTemplate(item, isSkeleton = false) {
         }
     }
     
+    // Determine rating class for color-coding
+    const ratingValue = item.analytics?.rating || 0;
+    let ratingClass;
+    if (ratingValue < 3) { // 1-2.9 stars -> Red
+        ratingClass = 'low-rating';
+    } else if (ratingValue < 4) { // 3-3.9 stars -> Green
+        ratingClass = 'high-rating';
+    } else { // 4-5 stars -> Yellow
+        ratingClass = 'medium-rating';
+    }
+
+
     const templateData = {
         HREF: 'javascript:void(0);', // Disabled navigation to item-details
         ITEM_ID: item.meta.itemId,
@@ -423,8 +435,9 @@ export function createCardFromTemplate(item, isSkeleton = false) {
         STOCK_ICON_CLASS: stockIconClass,
         STOCK_STATUS_TEXT: stockStatusText,
         STARS_HTML: generateStarsHtml(item.analytics?.rating || 0),
+        RATING_CLASS: ratingClass, // Pass the class to the template
         NUM_REVIEWS: item.analytics?.numReviews || 0,
-        RATING_VALUE: item.analytics?.rating || 0,
+        RATING_VALUE: ratingValue.toFixed(1),
         
         ADD_TO_CART_DISABLED: addToCartDisabled,
         ADD_TO_CART_ICON_CLASS: addToCartIconClass,
@@ -439,10 +452,16 @@ export function createCardFromTemplate(item, isSkeleton = false) {
     const cardElement = cardWrapper.querySelector('.card');
     if (cardElement) {
         cardElement.addEventListener('click', (e) => {
-            // Only navigate if the click is not on the add-to-cart button
-            if (!e.target.closest('.add-to-cart')) {
+            // Only navigate if the click is not on an interactive button (cart or wishlist)
+            if (!e.target.closest('.add-to-cart') && !e.target.closest('.wishlist-btn')) {
+                // sessionStorage में आइटम सेव करना अभी भी उपयोगी है
                 sessionStorage.setItem('selectedItem', JSON.stringify(item));
-                window.dispatchEvent(new CustomEvent('navigateToItem', { detail: item }));
+
+                // सीधे RouteManager को व्यू बदलने के लिए कहें
+                const viewId = `item-details/${item.meta.itemId}`;
+                window.dispatchEvent(new CustomEvent('requestViewChange', {
+                    detail: { role: 'guest', view: viewId } // 'guest' या current role का उपयोग करें
+                }));
             }
         });
     }

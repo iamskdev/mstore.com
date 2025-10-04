@@ -130,19 +130,35 @@ export function updateSavedItemDate(itemId, date) {
  * @param {string} itemId - The ID of the item associated with the button.
  */
 function updateWishlistButtonUI(button, itemId) {
-  const isSavedStatus = isItemSaved(itemId);
-  let icon = button.querySelector('i');
-  if (!icon) {
-    icon = document.createElement('i');
-    button.prepend(icon);
+  // Handle card buttons
+  if (button && itemId) {
+    const isSavedStatus = isItemSaved(itemId);
+    let icon = button.querySelector('i');
+    if (!icon) {
+      icon = document.createElement('i');
+      button.prepend(icon);
+    }
+    if (isSavedStatus) {
+      button.classList.add('active');
+      icon.className = 'fa-solid fa-heart';
+    } else {
+      button.classList.remove('active');
+      icon.className = 'far fa-heart';
+    }
   }
 
-  if (isSavedStatus) {
-    button.classList.add('active');
-    icon.className = 'fa-solid fa-heart';
-  } else {
-    button.classList.remove('active');
-    icon.className = 'far fa-heart';
+  // Special handling for the item details page button
+  const detailsPageBtn = document.getElementById('save-item-btn');
+  if (detailsPageBtn && detailsPageBtn.closest('.item-details-view')) {
+    // Only proceed if the button is actually visible in the current view
+    if (detailsPageBtn.offsetParent !== null) {
+      const detailsContainer = document.getElementById('item-details-container');
+      const currentDetailsItemId = detailsContainer?.dataset.itemId;
+      if (currentDetailsItemId && currentDetailsItemId === itemId) {
+        const isSavedStatus = isItemSaved(itemId);
+        updateSaveButtonState(isSavedStatus); // Use the local helper from item-details.js
+      }
+    }
   }
 }
 
@@ -179,7 +195,10 @@ export function initWishlistHandler() {
   });
 
   // Listen for saved items changes to update UI dynamically across the application
-  window.addEventListener('savedItemsChanged', () => {
+  window.addEventListener('savedItemsChanged', (event) => {
+    const detail = event.detail || {};
+    const changedItemId = detail.itemId;
+
     document.querySelectorAll('.wishlist-btn').forEach(button => {
       const card = button.closest('.card');
       const itemId = card?.dataset.itemId;
@@ -187,6 +206,9 @@ export function initWishlistHandler() {
         updateWishlistButtonUI(button, itemId);
       }
     });
+    // Trigger a check for the details page button if an item ID was part of the change
+    if (changedItemId) {
+      updateWishlistButtonUI(null, changedItemId);
+    }
   });
 }
-

@@ -23,7 +23,7 @@
     <div class="stock-status {{STOCK_STATUS_CLASS}}">
       <i class="{{STOCK_ICON_CLASS}}"></i> {{STOCK_STATUS_TEXT}}
     </div>
-    <div class="rating">
+    <div class="rating {{RATING_CLASS}}">
       <div class="stars">{{STARS_HTML}}</div>
       <span class="rating-count">({{RATING_VALUE}})</span>
     </div>
@@ -169,11 +169,6 @@
     margin-bottom: var(--info-vertical-spacing);
   }
 
-  .stars {
-    color: var(--accent-warning);
-    font-size: 0.8rem;
-  }
-
   .rating-count {
     font-size: 0.75rem;
     color: var(--text-secondary);
@@ -183,22 +178,32 @@
   .stars {
     display: inline-block;
     font-size: 14px;
+    color: #ccc; /* empty star color */
     line-height: 1;
   }
   .stars span {
-    color: #ccc; /* empty star */
     display: inline-block;
     position: relative;
   }
-  .stars .filled {
-    color: #ffb400; /* full star */
+
+  /* Color coding for ratings */
+  .rating.low-rating .stars .filled,
+  .rating.low-rating .stars .half {
+    color: var(--accent-danger); /* Red for 1-2 stars */
   }
-  .stars .half {
-    color: #ccc;
+  .rating.medium-rating .stars .filled,
+  .rating.medium-rating .stars .half {
+    color: var(--accent-warning); /* Yellow for 4-5 stars */
   }
+  .rating.high-rating .stars .filled,
+  .rating.high-rating .stars .half {
+    color: var(--accent-success); /* Green for 3 stars */
+  }
+
+  /* Half star is implemented by clipping the character */
   .stars .half::before {
     content: "★";
-    color: #ffb400;
+    color: inherit; /* Inherit the color (red/yellow/green) from the .half span */
     position: absolute;
     left: 0;
     width: 50%;

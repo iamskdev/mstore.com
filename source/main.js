@@ -62,12 +62,29 @@ class RouteManager {
   _notifySubscribers() {
     console.log("routeManager: Notifying subscribers about state change.");
     // --- FIX: Correctly resolve config from role-specific OR common views ---
-    // This ensures that subscribers (like top-nav) always get the correct title and config.
+    // This ensures that subscribers (like top-nav) always get the correct title and config,
+    // even for parameterized routes like 'item-details/:id'.
     let config = this.routeConfig[this.currentRole]?.[this.currentView];
-    // FIX: If not found in role-specific config, check commonViews for an *exact* match first.
-    // This correctly distinguishes 'account' from 'account/authentication'.
+
     if (!config) {
-        config = this.routeConfig.commonViews?.[this.currentView];
+      // Try an exact match in commonViews first.
+      config = this.routeConfig.commonViews?.[this.currentView];
+      
+      // If still not found, it might be a parameterized route.
+      if (!config) {
+        const viewParts = this.currentView.split('/');
+        const commonViewMatch = Object.keys(this.routeConfig.commonViews).find(key => {
+          const keyParts = key.split('/');
+          if (keyParts.length !== viewParts.length) return false;
+          // Check if the static parts of the path match.
+          // e.g., 'item-details' in 'item-details/:id' matches 'item-details' in 'item-details/some-id'
+          return keyParts.every((part, i) => part.startsWith(':') || part === viewParts[i]);
+        });
+
+        if (commonViewMatch) {
+          config = this.routeConfig.commonViews[commonViewMatch];
+        }
+      }
     }
     config = config || {}; // Ensure config is at least an empty object
     const state = { role: this.currentRole, view: this.currentView, config: config };
@@ -80,11 +97,27 @@ class RouteManager {
    * @returns {{role: string, view: string, config: object}} The current state object.
    */
   getCurrentState() {
-    // This logic mirrors _notifySubscribers to ensure consistent state objects.
+    // This logic MUST mirror _notifySubscribers to ensure consistent state objects.
     let config = this.routeConfig[this.currentRole]?.[this.currentView];
-    // If not found in role-specific config, check commonViews.
+
     if (!config) {
-        config = this.routeConfig.commonViews?.[this.currentView];
+      // Try an exact match in commonViews first.
+      config = this.routeConfig.commonViews?.[this.currentView];
+
+      // If still not found, it might be a parameterized route.
+      if (!config) {
+        const viewParts = this.currentView.split('/');
+        const commonViewMatch = Object.keys(this.routeConfig.commonViews).find(key => {
+          const keyParts = key.split('/');
+          if (keyParts.length !== viewParts.length) return false;
+          // Check if the static parts of the path match.
+          return keyParts.every((part, i) => part.startsWith(':') || part === viewParts[i]);
+        });
+
+        if (commonViewMatch) {
+          config = this.routeConfig.commonViews[commonViewMatch];
+        }
+      }
     }
     config = config || {}; // Ensure config is at least an empty object.
     const state = { role: this.currentRole, view: this.currentView, config: config };
@@ -773,13 +806,9 @@ window.hideCustomAlert = function() {
 
 // Listen for navigation requests from dynamically loaded views
 window.addEventListener('requestViewChange', (e) => {
-  const { role, view } = e.detail;
-  // Check if the view exists in the role-specific config OR in the commonViews
-  if (routeManager.routeConfig[role]?.[view] || routeManager.routeConfig.commonViews?.[view]) {
+    const { role, view } = e.detail;
+    // Pass the request directly to switchView. It has the logic to handle parameterized routes.
     routeManager.switchView(role, view);
-  } else {
-    console.warn(`View change request for a non-existent view was ignored: ${role}/${view}`);
-  }
 });
 
 // Main application initialization function

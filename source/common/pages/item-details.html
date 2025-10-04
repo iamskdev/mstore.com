@@ -9,7 +9,15 @@
         <div class="main-image-with-btns">
           <div class="main-image-container" id="image-zoom-container">
             <img id="item-main-image" src="" alt="Item Image" />
+            <!-- Heart/Wishlist button moved on top of the image -->
+            <button class="action-btn icon-btn wishlist-btn-details" id="save-item-btn" title="Save for later">
+              <i class="far fa-heart"></i>
+            </button>
             <!-- Lens for desktop hover zoom -->
+          <div class="image-error-placeholder hidden">
+            <i class="fas fa-image"></i>
+            <span>Image not found</span>
+          </div>
             <div id="image-zoom-lens"></div>
           </div>
         </div>
@@ -23,12 +31,16 @@
 
     <div id="item-info" data-item-id="">  <!-- Add data attribute here -->
       <h2 id="item-title">Item Name</h2>
+      <!-- NEW: Container for rating stars and review count -->
+      <div id="item-rating" class="item-rating">
+        <!-- Content will be populated by JS -->
+      </div>
       <p class="price-unit">
         ₹<span id="item-price">0</span>
         <span id="item-unit-label"></span>
       </p>
       <p id="item-discount-text" style="color:#d32f2f; font-weight: bold;"></p>
-      <p class="stock" id="item-stock-status">Stock</p>
+      <p class="stock-status" id="item-stock-status">Stock</p>
       <p class="description-label">Description:</p>
       <p class="description" id="item-description-text">Item description goes here.</p>
 
@@ -37,8 +49,8 @@
         <button class="action-btn add-to-cart-btn" id="add-to-cart-btn">
           <i class="fas fa-shopping-cart"></i> Add to Cart
         </button>
-        <button class="action-btn icon-btn save-item-btn" id="save-item-btn" title="Save for later">
-          <i class="far fa-heart"></i><span class="save-btn-text"></span>
+        <button class="action-btn buy-now-btn" id="buy-now-btn">
+          <i class="fas fa-bolt"></i> Request
         </button>
       </div>
 
@@ -53,7 +65,7 @@
 
 <div class="related-section">
   <h3>🔥You may also like</h3>
-  <div class="items-grid" id="related-items-list"></div>
+  <div class="grid-container" id="related-items-list"></div>
 </div>
 
 <!-- Placeholder for the dynamically loaded feedback modal -->

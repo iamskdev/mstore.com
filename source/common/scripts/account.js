@@ -1,5 +1,6 @@
 import { fetchUserById, fetchAccountById, fetchMerchantById } from '../../utils/data-manager.js';
 import { routeManager } from '../../main.js';
+import { showFeedbackModal } from '../../partials/modals/feedback.js';
 
 /**
  * Renders the user's profile data onto the account page.
@@ -326,10 +327,8 @@ export function init() {
     if (feedbackMenuItem) {
         feedbackMenuItem.addEventListener('click', (e) => {
             e.preventDefault();
-            const feedbackModal = document.getElementById('feedback-modal');
-            if (feedbackModal) {
-                feedbackModal.style.display = 'flex'; // Show the modal
-            }
+            // Use the centralized function to show the modal for general feedback
+            showFeedbackModal();
         });
     }
 

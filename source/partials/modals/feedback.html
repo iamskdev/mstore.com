@@ -13,16 +13,28 @@
         <div class="arrow"></div>
       </div>
       <div class="custom-options">
-        <div class="custom-option selected" data-value="app_name_suggestion">App Name Suggestion</div>
-        <div class="custom-option" data-value="bug_report">Bug Report</div>
-        <div class="custom-option" data-value="feature_request">New Feature Request</div>
-        <div class="custom-option" data-value="general_improvement">General Improvement</div>
-        <div class="custom-option" data-value="ui_ux_feedback">UI/UX Feedback</div>
-        <div class="custom-option" data-value="performance_issue">Performance Issue</div>
-        <div class="custom-option" data-value="login_signup_issue">Login/Signup Issue</div>
-        <div class="custom-option" data-value="general_feedback">General Feedback</div>
+        <!-- Item-specific options, hidden by default -->
+        <div class="custom-option item-specific-option" data-value="item_info_incorrect">Incorrect Information</div>
+        <div class="custom-option item-specific-option" data-value="item_image_issue">Image Issue</div>
+        <div class="custom-option item-specific-option" data-value="item_pricing_issue">Pricing Concern</div>
+        <div class="custom-option item-specific-option" data-value="report_inappropriate">Inappropriate Content</div>
+        <div class="custom-option item-specific-option" data-value="report_fraud">Suspected Fraud</div>
+        <div class="custom-option item-specific-option" data-value="report_copyright">Copyright/Trademark Issue</div>
+        <!-- General options -->
+        <div class="custom-option general-option selected" data-value="app_name_suggestion">App Name Suggestion</div>
+        <div class="custom-option general-option" data-value="bug_report">Bug Report</div>
+        <div class="custom-option general-option" data-value="feature_request">New Feature Request</div>
+        <div class="custom-option general-option" data-value="general_improvement">General Improvement</div>
+        <div class="custom-option general-option" data-value="ui_ux_feedback">UI/UX Feedback</div>
+        <div class="custom-option general-option" data-value="performance_issue">Performance Issue</div>
+        <div class="custom-option general-option" data-value="login_signup_issue">Login/Signup Issue</div>
+        <div class="custom-option general-option" data-value="general_feedback">General Feedback</div>
       </div>
     </div>
+
+    <!-- NEW: Subject field -->
+    <label for="feedback-subject">Subject:</label>
+    <input type="text" id="feedback-subject" placeholder="e.g., Issue with an item, App suggestion">
 
     <label for="feedback-message-textarea">Message:</label>
     <textarea id="feedback-message-textarea" rows="3" placeholder="Write your feedback..."></textarea>
@@ -163,6 +175,30 @@
   font-size: 1rem;
   box-sizing: border-box;
   resize: none; /* Prevent textarea from being resized by the user */
+}
+.modal-content input[type="text"].readonly {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+/* Style for item-specific options in the dropdown */
+.item-specific-option {
+  display: none; /* Hide by default */
+}
+
+/* --- FIX: Explicitly hide when context is NOT active --- */
+.modal-content:not(.context-active) .item-specific-option {
+  display: none;
+}
+
+.modal-content.context-active .item-specific-option {
+  display: flex; /* Show when context is active */
+}
+
+/* --- NEW: Hide general options when context IS active --- */
+.modal-content.context-active .general-option {
+  display: none;
 }
 .modal-content input[type="text"] {
   width: 100%;
@@ -329,6 +365,17 @@
 }
 .custom-options-body::-webkit-scrollbar-track {
   background: var(--bg-secondary);
+}
+
+.custom-option-divider {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  padding: 10px 16px 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  pointer-events: none; /* Make it non-clickable */
+  /* The 'display' property will be controlled by the .item-specific-option class logic */
 }
 
 .custom-option {

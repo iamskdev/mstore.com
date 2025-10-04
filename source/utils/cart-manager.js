@@ -190,22 +190,35 @@ export function toggleCartItem(item) {
  * @param {string} itemId - The ID of the item associated with the button.
  */
 function updateAddToCartButtonUI(button, itemId) {
-  const inCart = isItemInCart(itemId);
-  // Ensure the icon element exists or create a placeholder
-  let icon = button.querySelector('i');
-  if (!icon) {
-    icon = document.createElement('i');
-    button.prepend(icon); // Add icon before text
+  // Handle card buttons
+  if (button && itemId) {
+    const inCart = isItemInCart(itemId);
+    let icon = button.querySelector('i');
+    if (!icon) {
+      icon = document.createElement('i');
+      button.prepend(icon);
+    }
+    if (inCart) {
+      button.classList.add('added');
+      button.innerHTML = `<i class="fas fa-check"></i> Added to Cart`;
+    } else {
+      button.classList.remove('added');
+      button.innerHTML = `<i class="fas fa-shopping-cart"></i> Add to Cart`;
+    }
   }
 
-  if (inCart) {
-    button.classList.add('added');
-    icon.className = 'fas fa-check'; // Check icon
-    button.innerHTML = `<i class="${icon.className}"></i> Added to Cart`;
-  } else {
-    button.classList.remove('added');
-    icon.className = 'fas fa-shopping-cart'; // Cart icon
-    button.innerHTML = `<i class="${icon.className}"></i> Add to Cart`;
+  // Special handling for the item details page button which is not a '.add-to-cart' class
+  const detailsPageBtn = document.getElementById('add-to-cart-btn');
+  if (detailsPageBtn && detailsPageBtn.closest('.item-details-view')) {
+    // Only proceed if the button is actually visible in the current view
+    if (detailsPageBtn.offsetParent !== null) {
+      const detailsContainer = document.getElementById('item-details-container');
+      const currentDetailsItemId = detailsContainer?.dataset.itemId;
+      if (currentDetailsItemId && currentDetailsItemId === itemId) {
+        const inCart = isItemInCart(itemId);
+        detailsPageBtn.innerHTML = inCart ? '<i class="fas fa-check"></i> Added to Cart' : '<i class="fas fa-shopping-cart"></i> Add to Cart';
+      }
+    }
   }
 }
 
@@ -254,7 +267,10 @@ export function initAddToCartHandler(allItemsData) {
   });
 
   // Listen for cart changes to update UI dynamically
-  window.addEventListener('cartItemsChanged', () => {
+  window.addEventListener('cartItemsChanged', (event) => {
+    const detail = event.detail || {};
+    const changedItemId = detail.itemId || detail.item?.meta?.itemId;
+
     document.querySelectorAll('.add-to-cart').forEach(button => {
       const card = button.closest('.card');
       const itemId = card?.dataset.itemId;
@@ -262,5 +278,9 @@ export function initAddToCartHandler(allItemsData) {
         updateAddToCartButtonUI(button, itemId);
       }
     });
+    // Trigger a check for the details page button if an item ID was part of the change
+    if (changedItemId) {
+      updateAddToCartButtonUI(null, changedItemId);
+    }
   });
 }

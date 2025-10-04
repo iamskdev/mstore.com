@@ -6,7 +6,7 @@ import { AuthService } from '../../firebase/auth/auth.js';
 import { routeManager } from '../../main.js';
 import { getDeferredPrompt, initializePwaInstall } from '../../utils/pwa-manager.js';
 import { getAppConfig } from '../../settings/main-config.js';
-import { loadFeedbackModal, initFeedbackModal } from '../modals/feedback.js';
+import { loadFeedbackModal, showFeedbackModal } from '../modals/feedback.js';
 import { loadRatingModal, initRatingModal } from '../../modals/rating/rating-modal.js';
 
 export function initializeDrawer() {
@@ -306,10 +306,8 @@ export function initializeDrawer() {
     button.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const feedbackModal = document.getElementById('feedback-modal');
-      if (feedbackModal) {
-        feedbackModal.style.display = 'flex'; // Show the modal
-      }
+      // Use the new centralized function to show the modal. It handles everything.
+      showFeedbackModal(); // No context is needed for general feedback.
       closeDrawer(); // Close the drawer when feedback modal is opened
     });
   });
@@ -361,13 +359,13 @@ export async function loadDrawer() {
     drawerPlaceholder.replaceWith(...tempContainer.childNodes);
 
     console.log('Drawer HTML loaded and replaced placeholder.');
-
-    // --- Load and Initialize Feedback Modal --- <-- Added this section
-    const feedbackModalElement = await loadFeedbackModal(); // Load the HTML and get the element
     
     // FIX: Isolate the feedback modal initialization in its own try-catch block.
     // This ensures that if the feedback modal fails to initialize, it does not
     // prevent the main drawer from rendering and functioning.
+    // --- Load Modals ---
+    // Load modal HTML. The JS logic (showFeedbackModal, etc.) will handle initialization on first use.
+    await loadFeedbackModal();
     const ratingModalElement = await loadRatingModal();
     setTimeout(() => {
       try {
@@ -376,18 +374,6 @@ export async function loadDrawer() {
         console.error("Drawer Warning: Failed to initialize rating modal logic.", e);
       }
     }, 0);
-
-
-    setTimeout(() => {
-      try {
-        // Pass the loaded modal element directly to the initializer.
-        // This avoids race conditions by not relying on document.getElementById.
-        initFeedbackModal(feedbackModalElement);
-      } catch (e) {
-        console.error("Drawer Warning: Failed to initialize feedback modal logic, but drawer will continue.", e);
-      }
-    }, 0); // Use setTimeout to prevent race conditions.
-
 
     initializeDrawer(); // Initialize the drawer's own logic
 

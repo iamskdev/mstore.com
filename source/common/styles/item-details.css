@@ -38,7 +38,7 @@
   /* Use flexbox for consistent spacing on mobile too */
   border-top: 1px;
   flex-direction: column;
-  gap: 0.4rem; /* Consistent gap between all direct children */
+  gap: 0.3rem; /* Tighter gap between all direct children */
   text-align: left;
   align-self: auto;
   padding-top: 0rem; /* Add padding to maintain space */
@@ -106,7 +106,7 @@
 
 .price-unit {
   font-size: 1.3rem;
-  line-height: 0.5;
+  line-height: 1.2; /* Adjusted for better vertical spacing balance */
   color: var(--text-primary); /* Use primary text color for emphasis, similar to card palette */
   font-weight: 600; /* Slightly less bold than default h2 bold */
 }
@@ -121,12 +121,50 @@
   font-size: 1rem;
   font-weight: bold;
 }
-#item-stock-status.in { color: var(--accent-secondary); }
-#item-stock-status.out { color: var(--error-color); }
+#item-stock-status.in { color: var(--accent-success); } /* FIX: Use consistent success color */
+#item-stock-status.out { color: var(--accent-danger); } /* FIX: Use consistent danger color */
+
+/* Rating Stars */
+.item-rating {
+  display: flex; /* Use flexbox for alignment */
+  align-items: baseline; /* Align items along their text baseline for a clean look */
+  gap: 0.5rem;
+  flex-wrap: wrap; /* Wraps to next line on small screens if needed */
+}
+
+.item-rating .stars {
+  color: var(--text-tertiary); /* Color for empty stars */
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.item-rating.low-rating .stars .filled,
+.item-rating.low-rating .stars .half {
+  color: var(--accent-danger); /* Red for 1-2 stars */
+}
+
+.item-rating.medium-rating .stars .filled,
+.item-rating.medium-rating .stars .half {
+  color: var(--accent-warning); /* Yellow/Orange for 4-5 stars */
+}
+
+.item-rating.high-rating .stars .filled,
+.item-rating.high-rating .stars .half {
+  color: var(--accent-success); /* Green for 3 stars */
+}
+
+.item-rating .stars .half { position: relative; display: inline-block; }
+
+.item-rating .rating-value,
+.item-rating .review-count {
+  font-size: 0.85rem; /* Slightly smaller font for better balance */
+  color: var(--text-secondary);
+  font-weight: 500;
+}
 
 .description-label {
   font-weight: bold;
-  margin-top: 0.8rem; /* Add a bit more space before the description section */
+  /* margin-top is now handled by the parent's gap property */
   font-size: 1rem;
 }
 
@@ -138,7 +176,7 @@
   overflow-y: auto; /* Enables vertical scrolling */
   border-top: 1px solid var(--border-color); /* Visual separator */
   padding-top: 0.5rem; /* Tighter spacing */
-  margin-top: 0.5rem;  /* Tighter spacing */
+  /* margin-top is now handled by the parent's gap property */
   padding-right: 5px; /* Space for scrollbar */
   scrollbar-width: thin;
   scrollbar-color: #ccc transparent;
@@ -179,7 +217,7 @@
 
 /* Primary "Add to Cart" button */
 .add-to-cart-btn {
-  flex-grow: 1; /* Take up most of the space */
+  flex-grow: 2; /* Take up more space than the buy now button */
   background-color: var(--accent-primary);
   color: var(--accent-text);
 }
@@ -187,6 +225,16 @@
   background-color: var(--accent-primary-hover);
 }
 
+/* "Buy Now" or "Request" button */
+.buy-now-btn {
+  flex-grow: 1; /* Take up less space */
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-primary);
+}
+.buy-now-btn:hover {
+  background-color: var(--border-color);
+}
 /* Style for the "Notify Me" button when a notification is active */
 .add-to-cart-btn.notifying {
   background-color: var(--accent-secondary);
@@ -196,35 +244,37 @@
   background-color: var(--accent-secondary-hover);
 }
 
-/* Secondary icon-only button (Save) */
-.icon-btn {
-  flex-grow: 0;
-  flex-shrink: 0;
-  padding: 0.8rem;
-  width: 50px; /* Square button */
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
+/* Wishlist button positioned over the image */
+.wishlist-btn-details {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px; /* Reduced size to match grid card button */
+  height: 32px;
+  border: none;
+  background: transparent; /* Removed background to match grid card */
   color: var(--text-secondary);
+  z-index: 10;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0; /* Override default button padding */
 }
-.icon-btn:hover {
-  background-color: var(--border-color);
+.wishlist-btn-details:hover {
+  transform: scale(1.1);
+  color: var(--accent-danger); /* FIX: Use consistent danger color for hover */
 }
-.icon-btn i {
-  font-size: 1.2rem;
-}
-
-/* Add a span for the text inside the save button */
-.save-btn-text {
-  display: none; /* Hide text by default, only show icon */
+.wishlist-btn-details i {
+  font-size: 1.1rem; /* Reduced icon size */
 }
 
 /* Style for the saved state */
-.save-item-btn.saved {
-  background-color: #ffe0e6; /* Light pink */
-  border-color: var(--error-color);
-  color: var(--error-color);
+.wishlist-btn-details.saved {
+  color: var(--accent-danger); /* FIX: Use consistent danger color for saved state */
 }
-.save-item-btn.saved i {
+.wishlist-btn-details.saved i {
   font-weight: 900; /* Makes the heart solid (fas) */
 }
 
@@ -291,9 +341,8 @@
   color: var(--text-secondary); /* Matches card description color */
 }
 
-.dark-mode .save-item-btn.saved {
-    background-color: #4d1a24;
-    border-color: var(--error-color);
+.dark-mode .wishlist-btn-details {
+  background: transparent; /* Ensure it's transparent in dark mode too */
 }
 
 /* Landscape or Tablet View */
@@ -545,3 +594,26 @@
   }
 }
 /* ======================== */
+
+/* --- Image Error Placeholder --- */
+.image-error-placeholder {
+  display: none; /* Hidden by default */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-secondary);
+  color: var(--text-tertiary);
+  font-size: 1rem;
+  text-align: center;
+  position: absolute; /* To overlay on the container */
+}
+
+.image-error-placeholder.visible {
+  display: flex;
+}
+.image-error-placeholder i {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}

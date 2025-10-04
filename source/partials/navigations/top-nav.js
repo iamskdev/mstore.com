@@ -112,7 +112,11 @@ export function initializeTopNavigation() {
         viewBackBtn.classList.add('hidden');
       } else {
         // --- Secondary View (e.g., Notifications, Login, Conversation) ---
+        // 🪵 LOG: Log the config object for secondary views to debug title issues.
+        console.log(`[top-nav] Secondary View Detected. View: '${view}'. Config Title: '${config?.title}'`);
         nameEl.textContent = config?.title || defaultName; // Use view-specific title
+        // 🪵 LOG: Log the final title being set.
+        console.log(`[top-nav] Header title set to: "${nameEl.textContent}"`);
 
         // Show the universal back button
         viewBackBtn.classList.remove('hidden');
@@ -293,6 +297,8 @@ export function initializeTopNavigation() {
             // --- Revert to Default State ---
             // Re-run the standard UI update logic based on the actual current route.
             // This correctly restores the header for the main 'updates' tab.
+            // DEFINITIVE FIX: Always re-run the header UI update when reverting.
+            // This correctly handles all cases, including navigating back from a merchant's page.
             updateHeaderUI(routeManager.getCurrentState());
         }
     });

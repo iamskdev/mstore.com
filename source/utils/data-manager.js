@@ -96,13 +96,20 @@ const createDataFetcher = (collectionName, idKey) => {
                 throw new Error(`Firestore is not initialized for fetchById on ${collectionName}!`);
             }
             try {
-                const doc = await firestore.collection(collectionName).doc(id).get();
-                if (doc.exists) {
-                    // FIX: Return only doc.data() to maintain consistency with the
-                    // structure of local JSON files and the fetchAll function. The ID
-                    // is already present within the document's `meta` object.
+                // Query based on the specific ID key within the 'meta' object
+                const snapshot = await firestore.collection(collectionName)
+                                                .where(`meta.${idKey}`, '==', id)
+                                                .limit(1)
+                                                .get();
+
+                if (!snapshot.empty) {
+                    const doc = snapshot.docs[0];
+                    // Return doc.data() to maintain consistency with local JSON structure
                     return doc.data();
                 } else {
+                    // If not found by custom ID, try fetching by document ID as a fallback
+                    const docById = await firestore.collection(collectionName).doc(id).get();
+                    if (docById.exists) return docById.data();
                     return null;
                 }
             } catch (error) {
