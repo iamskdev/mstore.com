@@ -109,6 +109,14 @@ const routeConfig = {
       dataDependencies: ['items'],
       isMainTab: false // It's a sub-view of Account, not a main tab itself
     },
+    'account/profile-update': {
+      id: 'profile-edit-view',
+      path: './source/common/pages/profile-update.html',
+      cssPath: './source/common/styles/profile-update.css',
+      jsPath: './source/common/scripts/profile-update.js',
+      title: 'Edit Profile',
+      isMainTab: false // It's a sub-view of Account
+    },
     'item-details/:id': {
       id: 'item-details-view',
       path: './source/common/pages/item-details.html',

@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const cloudinary = require("cloudinary").v2;
 
 admin.initializeApp();
 
@@ -30,6 +31,52 @@ exports.checkIfPhoneExists = functions.https.onCall(async (data, context) => {
       "An error occurred while checking the phone number."
     );
   }
+});
+
+/**
+ * A callable function to generate a secure signature for direct uploads to Cloudinary.
+ * This prevents exposing the API secret on the client-side.
+ */
+exports.generateCloudinarySignature = functions.https.onCall((data, context) => {
+  // --- Security Check (Optional but Recommended) ---
+  // Uncomment this block to ensure only authenticated users can get a signature.
+  // if (!context.auth) {
+  //   throw new functions.https.HttpsError(
+  //     "unauthenticated",
+  //     "The function must be called while authenticated."
+  //   );
+  // }
+
+  // Get Cloudinary credentials from Firebase environment configuration.
+  const cloudinaryConfig = functions.config().cloudinary;
+  if (!cloudinaryConfig || !cloudinaryConfig.api_secret || !cloudinaryConfig.api_key || !cloudinaryConfig.cloud_name) {
+    console.error("Cloudinary configuration is missing in Firebase Functions environment.");
+    throw new functions.https.HttpsError(
+      "internal",
+      "Server configuration error. Unable to process upload signature."
+    );
+  }
+
+  // The frontend will send any additional parameters for signing (e.g., folder).
+  const paramsToSign = data.params || {};
+  const timestamp = Math.round(new Date().getTime() / 1000);
+
+  // Generate the signature using the Cloudinary Node.js SDK.
+  const signature = cloudinary.utils.api_sign_request(
+    {
+      timestamp: timestamp,
+      ...paramsToSign,
+    },
+    cloudinaryConfig.api_secret
+  );
+
+  // Return the necessary data to the client for the direct upload.
+  return {
+    signature: signature,
+    timestamp: timestamp,
+    api_key: cloudinaryConfig.api_key,
+    cloud_name: cloudinaryConfig.cloud_name,
+  };
 });
 
 /**

@@ -86,6 +86,7 @@
 -   **`info`**: उपयोगकर्ता की व्यक्तिगत जानकारी।
     -   `fullName`, `nickName`, `gender`, `dob`, `avatar`, `tagline`, `bio`, `email`, `phone`।
     -   **`username` (string): एक अद्वितीय, सार्वजनिक `@username` जो उपयोगकर्ता की पहचान करता है।**
+    -   **`usernameUpdatedAt` (string - ISO DateTime | null): वह तारीख जब उपयोगकर्ता नाम पिछली बार बदला गया था। यह 90-दिन की परिवर्तन नीति को लागू करने के लिए उपयोग किया जाता है।**
 -   **`address`** (array): उपयोगकर्ता के पतों की सूची।
     -   प्रत्येक ऑब्जेक्ट में `label`, `isPrimary`, `street`, `city`, `state`, `zipCode`, `geoLocation` होता है।
 -   **`auth`**: प्रमाणीकरण से संबंधित विस्तृत विवरण।

@@ -22,6 +22,7 @@ const APP_SHELL_URLS = [
 
   // Core Utility Modules
   './source/utils/data-manager.js',
+  './source/api/cloudinary.js',
   './source/partials/filter/filter-bar.js',
   './source/partials/filter/filter-modal.js',
   './source/utils/formatters.js',
@@ -82,6 +83,11 @@ const APP_SHELL_URLS = [
   './source/common/pages/item-details.html',
   './source/common/styles/item-details.css',
   './source/common/scripts/item-details.js',
+
+  // Profile Edit View
+  './source/common/pages/profile-update.html',
+  './source/common/styles/profile-update.css',
+  './source/common/scripts/profile-update.js',
 
   // Updates View
   './source/common/pages/updates.html',

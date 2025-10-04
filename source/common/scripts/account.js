@@ -375,14 +375,19 @@ export function init() {
     const scrollableButtonsContainer = document.querySelector('.scrollable-buttons');
     if (scrollableButtonsContainer) {
         scrollableButtonsContainer.addEventListener('click', function (e) {
-            const btn = e.target.closest('.action-btn:not(#switch-account-btn)');
-            if (btn) {
-                const btnText = btn.textContent.trim();
-                // FIX: Use custom alert for placeholder actions.
-                window.showCustomAlert({
-                    title: 'Feature Coming Soon',
-                    message: `The "${btnText}" feature is currently under development and will be available soon.`
-                });
+            const btn = e.target.closest('.action-btn');
+            if (btn) { // If a button was clicked
+                if (btn.id === 'update-profile-btn') {
+                    // If it's the update profile button, navigate
+                    const role = localStorage.getItem('currentUserType') || 'guest';
+                    routeManager.switchView(role, 'account/profile-update');
+                } else if (btn.id !== 'switch-account-btn') { // For any other button except "Switch Account"
+                    // Handle other placeholder buttons
+                    window.showCustomAlert({
+                        title: 'Feature Coming Soon',
+                        message: `The "${btnText}" feature is currently under development.`
+                    });
+                }
             }
         });
     }

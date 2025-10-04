@@ -131,6 +131,32 @@ const createDataFetcher = (collectionName, idKey) => {
 };
 
 /**
+ * Updates a user document in Firestore.
+ * @param {string} userId - The ID of the user to update.
+ * @param {object} updateData - An object with fields to update, using dot notation for nested fields.
+ * @returns {Promise<void>} A promise that resolves when the update is complete.
+ */
+export async function updateUser(userId, updateData) {
+    const dataSource = getAppConfig().source.data || 'firebase';
+    if (dataSource !== 'firebase' && dataSource !== 'emulator') {
+        console.warn('Data source is not Firestore. Skipping user update.');
+        // Simulate a successful update for localstore
+        return Promise.resolve();
+    }
+
+    if (!firestore) {
+        throw new Error('Firestore is not initialized! Cannot update user.');
+    }
+    if (!userId || !updateData) {
+        throw new Error('User ID and update data are required.');
+    }
+
+    console.log(`Firestore: Updating 'users/${userId}' with:`, updateData);
+    const userRef = firestore.collection('users').doc(userId);
+    await userRef.update(updateData);
+}
+
+/**
  * A utility to wait for one or more data caches to be populated.
  * This is useful for views that are accessed immediately after login,
  * before the initial data fetch might be complete.
