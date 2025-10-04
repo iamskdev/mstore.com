@@ -87,8 +87,8 @@ const APP_SHELL_URLS = [
   './source/common/pages/updates.html',
   './source/common/styles/updates.css',
   './source/common/scripts/updates.js',
-  './source/modules/admin/pages/admin-home.css',
-  './source/modules/admin/pages/admin-home.js',
+  './source/modules/admin/styles/admin-home.css',
+  './source/modules/admin/scripts/admin-home.js',
 
   //Modals
   './source/modals/account-switcher.html',

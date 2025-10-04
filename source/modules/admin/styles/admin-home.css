@@ -56,7 +56,7 @@
   /* CARDS (Adapted from demo) */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     margin-bottom: 20px;
   }
@@ -65,20 +65,31 @@
     padding: 15px;
     border-radius: 12px; /* Changed from 8px */
     box-shadow: 0 4px 12px var(--shadow-color); /* Adjusted shadow */
-    text-align: center;
     border: 1px solid var(--border-color); /* Added border */
     transition: all 0.3s ease; /* Added transition */
+    display: flex;
+    align-items: center;
+  }
+  .card-icon {
+    font-size: 24px;
+    margin-right: 15px;
+    color: var(--accent-primary);
+    flex-shrink: 0;
   }
   .card h3 {
-    margin: 0 0 8px;
-    font-size: 0.95rem;
+    margin: 0;
+    font-size: 1.1rem; /* Increased size for better balance */
     color: var(--text-primary);
+    font-weight: 500;
+    flex-grow: 1; /* Allow title to take up available space */
   }
   .card p {
-    font-size: 1.4rem;
+    font-size: 1.1rem; /* Matched font size with the title */
     font-weight: bold;
     margin: 0;
     color: var(--text-primary);
+    margin-left: auto; /* Pushes the count to the far right */
+    padding-left: 15px; /* Increased space between title and count */
   }
 
   /* ADMIN HEADER */
@@ -128,31 +139,40 @@
     margin: 0 0 10px;
     font-size: 1rem;
     color: var(--text-primary); /* Ensure heading color is theme-aware */
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
   }
   .activity-item {
-    padding: 10px 0; /* Increased padding */
-    border-bottom: 1px solid var(--border-color);
+    padding: 12px 5px; /* Increased padding */
     font-size: 0.9rem;
     color: var(--text-primary);
-    display: flex; /* For better layout of time and details */
-    justify-content: space-between;
+    display: flex;
     align-items: center;
     transition: background-color 0.2s ease; /* Hover effect */
+    border-radius: 6px;
+  }
+  .activity-item.placeholder {
+    justify-content: center;
+    color: var(--text-secondary);
   }
   .activity-item:last-child {
     border-bottom: none;
   }
   .activity-item:hover {
-    background-color: var(--bg-tertiary); /* Subtle hover effect */
+    background-color: var(--bg-secondary); /* Subtle hover effect */
+  }
+  .activity-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
   }
   .activity-time {
     font-size: 0.8rem;
     color: var(--text-secondary);
-    flex-shrink: 0; /* Prevent shrinking */
-    margin-right: 10px;
   }
   .activity-details {
     flex-grow: 1; /* Allow details to take available space */
+    font-size: 0.95rem; /* Adjust text size */
   }
 
   /* POWER ACTION LINKS */

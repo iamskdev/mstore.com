@@ -46,6 +46,13 @@ const createDataFetcher = (collectionName, idKey) => {
                     }
                     return data;
                 } catch (err) {
+                    // FIX: For localstore, if a file doesn't exist (like feedbacks.json or logs.json),
+                    // it should not break the entire app. Log a warning and return an empty array.
+                    if (err.message.includes('404')) { // Check if it's a file not found error
+                        console.warn(`Local data file not found: ${collectionName}.json. Returning empty array.`);
+                    } else {
+                        console.error(`Error reading local data for ${collectionName}:`, err);
+                    }
                     cachePromise = null; // Reset cache on error
                     return [];
                 }
@@ -157,6 +164,8 @@ export const { fetchAll: fetchAllLogs, fetchById: fetchLogById } = createDataFet
 export const { fetchAll: fetchAllAccounts, fetchById: fetchAccountById } = createDataFetcher('accounts', 'accountId');
 export const { fetchAll: fetchAllPromotions, fetchById: fetchPromotionById } = createDataFetcher('promotions', 'promoId');
 export const { fetchAll: fetchAllStories, fetchById: fetchStoryById } = createDataFetcher('stories', 'meta.links.merchantId');
+export const { fetchAll: fetchAllFeedbacks, fetchById: fetchFeedbackById } = createDataFetcher('feedbacks', 'feedbackId');
+export const { fetchAll: fetchAllRatings, fetchById: fetchRatingById } = createDataFetcher('ratings', 'ratingId');
 
 /**
  * Simulates writing data to a local JSON file.

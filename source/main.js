@@ -660,7 +660,9 @@ import {
   fetchAllLogs,
   fetchAllAccounts,
   fetchAllPromotions,
-  fetchActivePromotion // Added this line
+  fetchActivePromotion, // Added this line
+  fetchAllFeedbacks,
+  fetchAllRatings
 } from './utils/data-manager.js';
 import { showToast } from './utils/toast.js';
 
@@ -678,6 +680,8 @@ const dataFetchers = {
   logs: fetchAllLogs,
   accounts: fetchAllAccounts,
   promotions: fetchAllPromotions,
+  feedbacks: fetchAllFeedbacks,
+  ratings: fetchAllRatings
 };
 
 let originalBodyPaddingRight = '';

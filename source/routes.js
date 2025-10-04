@@ -39,7 +39,7 @@ const routeConfig = {
       embedFooter: true,
       isMainTab: true,
       title: 'Home',
-      dataDependencies: ['items', 'promotions', 'users', 'merchants', 'categories', 'brands', 'alerts', 'orders', 'logs', 'accounts', 'campaigns']
+      dataDependencies: ['items', 'promotions', 'users', 'merchants', 'categories', 'brands', 'logs', 'accounts', 'campaigns', 'feedbacks', 'ratings']
     },
     users: { id: 'admin-users-view', path: null, isMainTab: true, title: 'User Data', dataDependencies: ['users', 'accounts'] },
     analytics: { id: 'admin-analytics-view', path: null, isMainTab: true, title: 'Analytics', dataDependencies: ['orders', 'price-logs', 'items', 'merchants', 'users', 'logs'] },
@@ -72,7 +72,7 @@ const routeConfig = {
       jsPath: './source/common/scripts/account.js',
       isMainTab: true,
       title: 'Account',
-      dataDependencies: ['users', 'accounts', 'merchants']
+      dataDependencies: [] // FIX: Removed dependencies to prevent permission errors. The view fetches its own data.
     },
     cart: {
       id: 'cart-view',

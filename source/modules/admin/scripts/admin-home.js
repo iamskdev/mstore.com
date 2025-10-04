@@ -1,32 +1,20 @@
 import { showToast } from '../../../utils/toast.js';
-import { fetchAllUsers, fetchAllOrders, fetchAllLogs, fetchAllAlerts, fetchAllMerchants } from '../../../utils/data-manager.js';
-import { formatCurrency, formatRelativeTime } from '../../../utils/formatters.js';
+import { fetchAllUsers, fetchAllLogs, fetchAllMerchants, fetchAllFeedbacks, fetchAllRatings } from '../../../utils/data-manager.js';
+import { formatCurrency, formatRelativeTime, formatDateForIndia } from '../../../utils/formatters.js';
 
-/** Renders statistical cards with real data. */
-function renderStats(users = [], orders = [], merchants = []) {
+/** Renders statistical cards with real data. */function renderStats(users = [], merchants = [], feedbacks = [], ratings = []) {
   const usersEl = document.getElementById('admin-stat-users');
-  const merchantsEl = document.getElementById('admin-stat-merchants');
-  const orders30dEl = document.getElementById('admin-stat-orders-30d');
   const pendingTasksEl = document.getElementById('admin-stat-pending-tasks');
 
   if (usersEl) {
     usersEl.textContent = users.length;
   }
-  if (merchantsEl) {
-    merchantsEl.textContent = merchants.length;
-  }
-  if (orders30dEl) {
-    // Placeholder for now, ideally filter orders by last 30 days
-    orders30dEl.textContent = orders.filter(order => {
-      const orderDate = new Date(order.meta?.timestamp);
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      return orderDate >= thirtyDaysAgo;
-    }).length;
-  }
   if (pendingTasksEl) {
-    // Placeholder for now
-    pendingTasksEl.textContent = '18'; 
+    // Count pending feedbacks and ratings as they require admin review.
+    const pendingFeedbacks = feedbacks.filter(f => f.lifecycle?.status === 'pending').length;
+    const pendingRatings = ratings.filter(r => r.lifecycle?.status === 'pending').length;
+    
+    pendingTasksEl.textContent = pendingFeedbacks + pendingRatings;
   }
 }
 
@@ -173,47 +161,38 @@ function renderCategoriesChart() {
     }
   });
 }
-/** Renders critical alerts. */
-function renderAlerts(alerts = []) {
-  const container = document.getElementById('admin-alerts-container');
-  if (!container) return;
-
-  // Filter for active, critical alerts
-  const criticalAlerts = alerts.filter(alert => alert.meta?.status?.isActive && alert.meta?.priority === 'high');
-  
-  if (criticalAlerts.length === 0) {
-    container.innerHTML = ''; // Clear if no alerts
-    return;
-  }
-
-  container.innerHTML = criticalAlerts.map(alert => `
-    <div class="alert alert-critical">
-      <i class="fas fa-skull-crossbones"></i> 
-      <strong>${alert.content?.title || 'Alert'}:</strong> ${alert.content?.message || 'No details provided.'}
-      <button class="btn-sm feature-not-implemented">Resolve</button>
-    </div>
-  `).join('');
-}
 
 /** Renders the most recent activity logs. */
-function renderActivityLog(logs = []) {
+function renderActivityLog(logs = [], users = []) {
   const container = document.getElementById('admin-activity-items'); // Corrected ID
   if (!container) return;
 
+  // Create a map for efficient user lookup
+  const userMap = new Map(users.map(user => [user.meta.userId, user]));
+
   // Get the 5 most recent logs
-  const recentLogs = logs.sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp)).slice(0, 5);
+  const recentLogs = logs.sort((a, b) => new Date(b.event?.timestamp) - new Date(a.event?.timestamp)).slice(0, 5);
 
   if (recentLogs.length === 0) {
-    container.innerHTML = '<div class="activity-item">No recent activity found.</div>'; // Changed to div
+    container.innerHTML = '<div class="activity-item placeholder">No recent activity found.</div>'; // Changed to div
     return;
   }
 
-  container.innerHTML = recentLogs.map(log => `
-    <div class="activity-item">
-      <span class="activity-time">${formatRelativeTime(new Date(log.meta?.timestamp))}</span>
-      <span class="activity-details">${log.details?.email || log.meta?.userId?.slice(0, 8) + '...' || 'Unknown User'} - ${(log.action || 'unknown_action').replace(/_/g, ' ')}</span>
-    </div>
-  `).join('');
+  container.innerHTML = recentLogs.map(log => {
+    const userId = log.meta?.links?.userId; // Correct path for userId
+    const user = userId ? userMap.get(userId) : null;
+    const userName = user?.info?.nickName || user?.info?.username || 'Unknown User';
+    const actionText = (log.meta?.action || 'unknown_action').replace(/_/g, ' '); // Correct path for action
+
+    return `
+      <div class="activity-item">
+        <div class="activity-content">
+          <span class="activity-details"><strong>${userName}</strong> ${actionText}</span>
+          <span class="activity-time">${formatDateForIndia(log.event?.timestamp)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 export function init() {
@@ -232,36 +211,35 @@ export function init() {
       // This prevents the entire dashboard from failing if one data source is inaccessible.
       const results = await Promise.allSettled([
         fetchAllUsers(true),
-        fetchAllOrders(true),
         fetchAllLogs(true),
-        fetchAllAlerts(true),
-        fetchAllMerchants(true)
+        fetchAllMerchants(true),
+        fetchAllFeedbacks(true),
+        fetchAllRatings(true)
       ]);
 
       // Helper to safely extract data or return an empty array on failure
       const getData = (result, name) => {
         if (result.status === 'fulfilled') {
           return result.value || [];
-        } else {
-          console.warn(`Partial Load Warning: Could not fetch ${name}. Reason:`, result.reason.message);
-          return []; // Return empty array on failure
         }
+        // Log a clear warning for the specific collection that failed.
+        console.warn(`⚠️ Partial Load Warning: Could not fetch '${name}'. Reason: ${result.reason.message}`);
+        return []; // Return empty array on failure so other components don't break.
       };
 
       const users = getData(results[0], 'users');
-      const orders = getData(results[1], 'orders');
-      const logs = getData(results[2], 'logs');
-      const alerts = getData(results[3], 'alerts');
-      const merchants = getData(results[4], 'merchants');
+      const logs = getData(results[1], 'logs');
+      const merchants = getData(results[2], 'merchants');
+      const feedbacks = getData(results[3], 'feedbacks');
+      const ratings = getData(results[4], 'ratings');
 
       // Render all components with the fetched data
-      renderStats(users, orders, merchants);
-      renderAlerts(alerts);
+      renderStats(users, merchants, feedbacks, ratings);
       renderUserRolesChart(users);
-      renderOrderStatusChart(orders);
+      // renderOrderStatusChart(orders); // This chart is already commented out in HTML
       renderSignupsChart();
       renderCategoriesChart();
-      renderActivityLog(logs);
+      renderActivityLog(logs, users);
 
     } catch (error) {
       console.error("❌ Failed to load admin dashboard data:", error);

@@ -12,9 +12,6 @@
     </div>
   </div>
 
-  <!-- 2. CRITICAL SYSTEM ALERTS -->
-  <div class="alerts-section" id="admin-alerts-container"></div>
-
   <!-- 3. RECENT ACTIVITIES (Moved to top as requested) -->
   <div class="recent-activities">
     <h2>Recent Activities</h2>
@@ -25,10 +22,17 @@
 
   <!-- 4. CARDS (Adapted from demo) -->
   <section class="cards">
-    <div class="card"><h3>Total Users</h3><p id="admin-stat-users">--</p></div>
-    <div class="card"><h3>Merchants</h3><p id="admin-stat-merchants">--</p></div>
+    <div class="card">
+      <div class="card-icon"><i class="fas fa-users"></i></div>
+      <h3>Total Users</h3>
+      <p id="admin-stat-users">--</p>
+    </div>
     <!-- <div class="card"><h3>Orders (30d)</h3><p id="admin-stat-orders-30d">--</p></div> -->
-    <div class="card"><h3>Pending Tasks</h3><p id="admin-stat-pending-tasks">--</p></div>
+    <div class="card">
+      <div class="card-icon"><i class="fas fa-clock"></i></div>
+      <h3>Pending Tasks</h3>
+      <p id="admin-stat-pending-tasks">--</p>
+    </div>
   </section>
 
   <!-- 5. CHARTS (Adapted from demo, using existing chart IDs) -->

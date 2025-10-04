@@ -3,43 +3,58 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // --- Helper Functions ---
-    // These functions make the rules cleaner and easier to read.
+    // ===================================================================
+    // --- HELPER FUNCTIONS (सहायक फ़ंक्शंस) ---
+    // In functions ka istemal rules ko saaf aur padhne me aasan banane ke liye kiya gaya hai.
+    // ===================================================================
 
-    // Checks if the requesting user is a Admin.
-    // This relies on a custom claim set on the user's auth token.
-    // Custom claims are the most secure and efficient way to handle roles.
+    /**
+     * Check karta hai ki user ek Admin hai ya nahi.
+     * Yeh user ke Firebase Auth token me `isAdmin: true` custom claim par nirbhar karta hai.
+     * Custom claims roles ko handle karne ka sabse surakshit aur prabhavi tareeka hai.
+     */
     function isAdmin() {
       return request.auth != null && request.auth.token.isAdmin == true;
     }
 
-    // Checks if the requesting user's UID matches the UID provided.
+    /**
+     * Check karta hai ki request karne wale user ki UID (Firebase Auth UID) di gayi UID se match karti hai ya nahi.
+     */
     function isRequestingUser(uid) {
       return request.auth != null && request.auth.uid == uid;
     }
 
-    // Checks if the user owns the document they are trying to access.
-    // It compares the requester's UID with the UID stored inside the document.
+    /**
+     * Check karta hai ki user us document ka malik hai jise woh access kar raha hai.
+     * Yeh requester ki UID ko document ke andar store ki gayi UID se compare karta hai.
+     * Yeh `users` collection ke liye upyogi hai.
+     */
     function isOwnerOfDoc() {
       return isRequestingUser(resource.data.auth.provider.uid);
     }
 
-    // Checks if the user is creating a document for themselves.
+    /**
+     * Check karta hai ki user apne liye hi document bana raha hai ya nahi.
+     */
     function isCreatingOwnDoc() {
         return isRequestingUser(request.resource.data.auth.provider.uid);
     }
 
-    // Checks if the user owns a document that is linked via a custom user ID.
-    // This performs a cross-document read to get the user's auth UID for comparison.
-    // It's used for collections like 'accounts', 'logs', and 'orders'.
+    /**
+     * Check karta hai ki user us document ka malik hai jo ek custom user ID (e.g., USR-...) ke through link hai.
+     * Yeh `users` collection se user ka auth UID nikal kar tulna karta hai.
+     * Yeh 'accounts', 'logs', 'orders' jaise collections ke liye istemal hota hai.
+     */
     function isOwnerOfLinkedDoc(customUserId) {
       return isRequestingUser(get(/databases/$(database)/documents/users/$(customUserId)).data.auth.provider.uid);
     }
 
-    // --- PUBLIC COLLECTIONS ---
-    // These collections are readable by anyone, even unauthenticated guests.
-    // This is crucial for the app to load initial data like categories and items for all users.
-    // Writes are restricted to Admins to prevent unauthorized changes.
+    // ===================================================================
+    // --- PUBLIC COLLECTIONS (सार्वजनिक संग्रह) ---
+    // In collections ko koi bhi (bina login kiye user bhi) padh sakta hai.
+    // Yeh app ko shuruaati data (jaise items, categories) dikhane ke liye zaroori hai.
+    // Inme likhne (write) ki anumati sirf Admins ko hai.
+    // ===================================================================
     match /items/{itemId} {
       allow read: if true;
       allow write: if isAdmin();
@@ -60,128 +75,113 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
-
-    // --- USER-SPECIFIC COLLECTIONS ---
-
-    match /users/{userId} {
-      // READ: A user can read their own profile, or a Admin can read any profile.
-      // DEV-ONLY RULE: The 'list' permission is temporarily opened to allow two things for testing:
-      // 1. Authenticated users can check if a phone number exists during registration.
-      // 2. Authenticated users can find their user document by UID after login (self-healing).
-      // WARNING: This rule is for development. It allows any logged-in user to query the users collection.
-      // For production, this should be restricted to Admins only. Phone number uniqueness should be handled by a Cloud Function.
-      allow list: if request.auth != null || isAdmin();
-
-      // READ (GET): A user can always get their own document.
-      // For the development 'impersonation' feature to work, we temporarily allow any
-      // authenticated user to read any user profile. This relies on the app's UI to restrict access.
-      // PRODUCTION FIX: Tighten this rule to prevent data leaks.
-      allow get: if request.auth != null || isAdmin();
-      // UPDATE: A user can update their own profile, or a Admin can update any profile.
-      allow update: if isOwnerOfDoc() || isAdmin();
-      // CREATE: A new user can create their own profile. This rule matches your `createUserDocument` logic.
-      allow create: if isCreatingOwnDoc() || isAdmin();
-      // DELETE: Only a Admin can delete a user profile.
-      allow delete: if isAdmin();
-    }
-
-    // --- MERCHANT-SPECIFIC COLLECTIONS ---
     match /merchants/{merchantId} {
-      // Public storefronts can be read by anyone.
-      allow read: if true; // Allow public read for storefronts
-      // UPDATE: Only the linked owner (via custom userId) or an Admin can update a merchant profile.
-      // This uses the same ownership check as accounts, logs, etc. for consistency.
+      allow read: if true; // Merchant profile sabhi ko dikhega
       allow update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
-      // CREATE: A user can create a merchant document linked to their own userId.
       allow create: if isOwnerOfLinkedDoc(request.resource.data.meta.links.userId) || isAdmin();
-      // DELETE: Only an Admin can delete a merchant profile.
       allow delete: if isAdmin();
     }
-
-    // --- NEW: Story-specific rules ---
     match /stories/{merchantId} {
-      // Anyone can read stories.
-      allow read: if true;
-      // Only the linked owner or an Admin can create stories.
+      allow read: if true; // Stories sabhi ko dikhengi
       allow create: if isOwnerOfLinkedDoc(request.resource.data.meta.links.userId) || isAdmin();
-      // Only the linked owner or an Admin can update/delete stories.
       allow update, delete: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
     }
 
-    // --- NEW: Feedback Collection Rules ---
-    match /feedbacks/{feedbackId} {
-      // Anyone (logged-in user or guest) can create a new feedback document.
-      // We verify it's a guest submission by checking the flag in the document itself.
-      allow create: if request.auth != null || request.resource.data.meta.flags.guest == true;
-      // Only admins can read, update, or delete feedback.
-      allow read, update, delete: if isAdmin();
-    }
+    // ===================================================================
+    // --- USER-CENTRIC COLLECTIONS (उपयोगकर्ता-केंद्रित संग्रह) ---
+    // In collections ke rules user ke ownership par aadharit hain.
+    // ===================================================================
 
-    // --- NEW: Rating Collection Rules ---
-    match /ratings/{ratingId} {
-      // Anyone (logged-in user or guest) can create a new rating document.
-      allow create: if request.auth != null || request.resource.data.meta.flags.guest == true;
-      // Only admins can read, update, or delete ratings.
-      allow read, update, delete: if isAdmin();
-    }
+    match /users/{userId} {
+      // GET: Ek user apna document padh sakta hai. Admin kisi ka bhi.
+      // DEV-NOTE: `request.auth != null` rule development ke liye hai taaki impersonation feature kaam kare.
+      // PRODUCTION me ise `isOwnerOfDoc()` se badalna chahiye.
+      allow get: if isOwnerOfDoc() || isAdmin() || request.auth != null;
 
-    // Alerts are linked to users and should only be accessible by them or an Admin.
-    match /alerts/{alertId} {
-      allow read, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
-      allow create: if isOwnerOfLinkedDoc(request.resource.data.meta.links.userId) || isAdmin();
+      // LIST: Sirf logged-in user hi users collection ko query kar sakte hain (e.g., phone number check ke liye).
+      // WARNING: Yeh development ke liye hai. Production me, ise sirf Admins tak seemit hona chahiye.
+      allow list: if request.auth != null || isAdmin();
+
+      // UPDATE: User apna profile update kar sakta hai, ya Admin kisi ka bhi.
+      allow update: if isOwnerOfDoc() || isAdmin();
+      // CREATE: Naya user apna profile bana sakta hai.
+      allow create: if isCreatingOwnDoc() || isAdmin();
+      // DELETE: Sirf Admin hi user profile delete kar sakta hai.
       allow delete: if isAdmin();
     }
 
-    // --- CRITICAL USER DATA (e.g., accounts) ---
-    // This rule is separate for clarity, as the account is created with the user.
-    // The security logic is identical to other user-owned data but kept separate for readability.
     match /accounts/{accountId} {
-      allow read, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
-      // Use a direct UID check on create to avoid the get() race condition.
-      // The `ownerUID` is added to the document temporarily during creation by the client.
-
-      allow create: if request.auth !=null;
-      allow delete: if isAdmin();
-    }
-
-    // --- OTHER USER-OWNED COLLECTIONS ---
-    // These rules use a 'get()' call to check ownership via the linked user document.
-    match /logs/{logId} {
-      // Read/Update rules can safely use get() as the document already exists.
-      allow read, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
-      // GET: A user can read their own log, or an admin can read any log.
+      // GET/UPDATE: User can get/update their own account, or an admin can.
       allow get, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
-      // LIST: Only an admin can list all logs (e.g., for the admin dashboard).
+      // LIST: Only an admin can list all accounts.
       allow list: if isAdmin();
-      // Create rule must use a direct UID check to avoid race conditions during signup.
-      // The client must pass the auth UID in the document being created.
-      allow create: if isRequestingUser(request.resource.data.meta.ownerUID) || isAdmin();
+      // Naya account banate samay, user logged-in hona chahiye.
+      allow create: if request.auth != null;
       allow delete: if isAdmin();
-      allow create: if request.auth !=null;
     }
+
     match /orders/{orderId} {
-      allow read, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
+      // GET/UPDATE: User can get/update their own order, or an admin can.
+      allow get, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
+      // LIST: Only an admin can list all orders.
+      allow list: if isAdmin();
       allow create: if isOwnerOfLinkedDoc(request.resource.data.meta.links.userId) || isAdmin();
       allow delete: if isAdmin();
     }
 
-    // --- SYSTEM COLLECTIONS ---
-    // The counters collection is used to generate sequential IDs atomically.
-    // It should only be updated by authenticated users during creation flows
-    // (e.g., creating a user, account, log, etc.).
+    match /alerts/{alertId} {
+      // GET/UPDATE: User can get/update their own alert, or an admin can.
+      allow get, update: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
+      // LIST: Only an admin can list all alerts.
+      allow list: if isAdmin();
+      allow create: if isOwnerOfLinkedDoc(request.resource.data.meta.links.userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ===================================================================
+    // --- FEEDBACK & RATING COLLECTIONS ---
+    // In collections me koi bhi (guest bhi) data likh sakta hai, lekin padh sirf Admin sakte hain.
+    // ===================================================================
+
+    match /feedbacks/{feedbackId} {
+      // Koi bhi (logged-in user ya guest) naya feedback bana sakta hai.
+      allow create: if request.auth != null || request.resource.data.meta.flags.guest == true;
+      // Sirf admins hi feedback padh, update, ya delete kar sakte hain.
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /ratings/{ratingId} {
+      // Koi bhi (logged-in user ya guest) nayi rating de sakta hai.
+      allow create: if request.auth != null || request.resource.data.meta.flags.guest == true;
+      // Sirf admins hi ratings padh, update, ya delete kar sakte hain.
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ===================================================================
+    // --- ADMIN & SYSTEM COLLECTIONS (एडमिन और सिस्टम संग्रह) ---
+    // In collections ko sirf Admins ya system hi access kar sakte hain.
+    // ===================================================================
+
+    match /logs/{logId} {
+      // GET: User apna log dekh sakta hai, Admin kisi ka bhi.
+      allow get: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
+      // LIST: Sirf Admin hi sabhi logs ki list dekh sakta hai (admin dashboard ke liye).
+      allow list: if isAdmin();
+      // CREATE: Log banate samay user logged-in hona chahiye.
+      allow create: if request.auth != null;
+      allow delete: if isAdmin();
+    }
+
+    // `counters` collection ka istemal atomic रूप से IDs generate karne ke liye hota hai.
     match /counters/{counterId} {
       allow read, write: if request.auth != null || isAdmin();
     }
 
-    // --- ADMIN-ONLY & SYSTEM COLLECTIONS ---
-    // These collections can only be written to or read by Admins.
-    // Note: The wildcard name (e.g., priceLogId) should be descriptive.
     match /price-logs/{priceLogId} {
         allow read, write: if isAdmin();
     }
 
-    // Campaigns are definitions for mass-messaging, only Admins can create/manage them.
-    // The actual delivery to users is handled by a trusted backend (Cloud Function).
+    // `campaigns` ka istemal mass-messaging ke liye hota hai, jise sirf Admins manage kar sakte hain.
     match /campaigns/{campaignId} {
       allow read, write: if isAdmin();
     }
