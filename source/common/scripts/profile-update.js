@@ -1,5 +1,5 @@
 import { fetchUserById, updateUser } from '../../utils/data-manager.js';
-import { uploadToCloudinary, buildCloudinaryUrl } from '../../api/cloudinary.js';
+import { uploadToCloudinary, buildCloudinaryUrl, deleteFromCloudinary } from '../../api/cloudinary.js';
 import { showToast } from '../../utils/toast.js';
 import { routeManager } from '../../main.js';
 
@@ -29,9 +29,26 @@ function populateForm(user) {
     document.getElementById('display-nickName').innerText = user.info.nickName || user.info.fullName;
     document.getElementById('display-username').innerText = `@${user.info.username || 'username'}`;
     // Use buildCloudinaryUrl to correctly display the avatar
-    const avatarUrl = user.info.avatar?.includes('cloudinary') ? buildCloudinaryUrl(user.info.avatar.split('/').pop()) : (user.info.avatar || './localstore/images/users/dev.png');
-    document.getElementById('avatar-preview').src = avatarUrl;
+    // --- FIX: Use the full public_id from the database, don't split it. ---
+    // The database stores the full public_id like 'assets/users/avatars/username_profile_pic'.
+    // buildCloudinaryUrl needs this full ID to construct the correct URL.
+    const publicId = user.info.avatar;
+    const avatarPreview = document.getElementById('avatar-preview');
+    const iconPlaceholder = document.getElementById('avatar-icon-placeholder');
 
+    if (publicId) {
+        const avatarUrl = buildCloudinaryUrl(publicId);
+        avatarPreview.src = avatarUrl;
+        avatarPreview.style.display = 'block';
+        iconPlaceholder.style.display = 'none';
+        avatarPreview.onerror = () => {
+            avatarPreview.style.display = 'none';
+            iconPlaceholder.style.display = 'block';
+        };
+    } else {
+        avatarPreview.style.display = 'none';
+        iconPlaceholder.style.display = 'block';
+    }
     // Personal Info
     document.getElementById('fullName').value = user.info.fullName || '';
     document.getElementById('username').value = user.info.username || '';
@@ -79,21 +96,58 @@ function checkUsernameEligibility(user) {
 }
 
 function setupEventListeners() {
+    const avatarModal = document.getElementById('avatar-modal');
+    const avatarModalContent = document.getElementById('avatar-modal-content');
+    const optionsView = document.getElementById('avatar-options-view');
+    const cropperView = document.getElementById('avatar-cropper-view');
+
+    // --- MODIFIED: Click on avatar opens the unified modal in "options" state ---
     document.getElementById('avatar-container').addEventListener('click', () => {
-        document.getElementById('avatar-upload').click();
+        const mainAvatarPreview = document.getElementById('avatar-preview');
+        const modalAvatarPreview = document.getElementById('avatar-modal-preview');
+        const modalIconPlaceholder = document.getElementById('avatar-modal-icon-placeholder');
+
+        // --- FIX: Show icon in modal if main avatar is not visible ---
+        if (mainAvatarPreview.style.display === 'none' || !mainAvatarPreview.src) {
+            modalAvatarPreview.style.display = 'none';
+            modalIconPlaceholder.style.display = 'block';
+        } else {
+            modalAvatarPreview.src = mainAvatarPreview.src;
+            modalAvatarPreview.style.display = 'block';
+            modalIconPlaceholder.style.display = 'none';
+        }
+
+        // Reset to options view
+        optionsView.style.display = 'block';
+        cropperView.style.display = 'none';
+        avatarModal.style.display = 'flex';
     });
 
-    // --- MODIFIED: Handle file selection for cropping ---
-    document.getElementById('avatar-upload').addEventListener('change', (event) => {
+    // --- MODIFIED: "Remove" button handles avatar removal and closes modal ---
+    document.getElementById('remove-avatar-btn').addEventListener('click', () => {
+        // --- MODIFIED: Show icon instead of app logo on remove ---
+        document.getElementById('avatar-preview').style.display = 'none';
+        document.getElementById('avatar-icon-placeholder').style.display = 'block';
+        document.getElementById('avatar-preview').src = ''; // Clear src
+        newAvatarFile = 'DELETE';
+        showToast('info', 'Avatar will be removed on save.');
+        avatarModal.style.display = 'none'; // Hide modal
+    });
+
+
+    // --- MODIFIED: When a file is selected, switch to the cropper view inside the SAME modal ---
+    document.getElementById('avatar-upload').addEventListener('change', (e) => {
         const file = event.target.files[0];
         if (file) {
-            const cropModal = document.getElementById('crop-modal');
+            // Switch views inside the modal
+            optionsView.style.display = 'none';
+            cropperView.style.display = 'block';
+
             const imageToCrop = document.getElementById('image-to-crop');
 
             const reader = new FileReader();
             reader.onload = (e) => {
                 imageToCrop.src = e.target.result;
-                cropModal.style.display = 'flex';
 
                 if (cropper) {
                     cropper.destroy();
@@ -109,26 +163,38 @@ function setupEventListeners() {
             reader.readAsDataURL(file);
         }
         // Reset input value to allow re-selecting the same file
-        event.target.value = '';
+        e.target.value = '';
     });
 
-    // --- NEW: Event listeners for the crop modal ---
-    const cropModal = document.getElementById('crop-modal');
-    document.getElementById('close-crop-modal-btn').addEventListener('click', () => {
-        cropModal.style.display = 'none';
+    // --- MODIFIED: Close buttons for the unified modal ---
+    const closeModal = () => {
+        avatarModal.style.display = 'none';
         if (cropper) cropper.destroy();
-    });
+    };
 
+    document.getElementById('close-avatar-modal-btn').addEventListener('click', closeModal);
+    document.getElementById('close-cropper-view-btn').addEventListener('click', closeModal);
+
+    // Close modal if clicking outside the content
+    avatarModal.addEventListener('click', (e) => {
+        if (e.target === avatarModal) {
+            closeModal();
+        }
+    });
+    // --- MODIFIED: Crop & Save button updates preview and closes modal ---
     document.getElementById('crop-and-save-btn').addEventListener('click', () => {
         if (cropper) {
             const canvas = cropper.getCroppedCanvas({ width: 512, height: 512 });
+            // --- MODIFIED: Show image and hide icon after cropping ---
+            document.getElementById('avatar-preview').style.display = 'block';
+            document.getElementById('avatar-icon-placeholder').style.display = 'none';
             document.getElementById('avatar-preview').src = canvas.toDataURL();
 
             canvas.toBlob((blob) => {
                 newAvatarFile = new File([blob], 'avatar.png', { type: 'image/png' });
             }, 'image/png');
 
-            cropModal.style.display = 'none';
+            closeModal(); // Close the unified modal
         }
     });
 
@@ -157,9 +223,33 @@ async function saveProfile() {
 
     try {
         let newAvatarUrl = currentUser.info.avatar;
-        if (newAvatarFile) {
+
+        if (newAvatarFile === 'DELETE') {
+            // --- AVATAR DELETION LOGIC ---
+            const oldPublicId = currentUser.info.avatar;
+            if (oldPublicId) {
+                showToast('info', 'Deleting old profile picture...');
+                await deleteFromCloudinary(oldPublicId);
+            }
+            newAvatarUrl = ''; // Set avatar to empty string in Firestore
+
+        } else if (newAvatarFile) {
+            // --- AVATAR UPLOAD LOGIC (existing) ---
             showToast('info', 'Uploading new profile picture...');
-            const uploadResult = await uploadToCloudinary(newAvatarFile, { folder: `mstore/users/${currentUser.meta.userId}` }, 'image');
+
+            // --- NEW FOLDER STRUCTURE ---
+            // Use the username for a more descriptive public_id.
+            // The public_id will be clean, without a timestamp.
+            // Format: assets/users/avatars/USERNAME_profile_pic
+            const username = currentUser.info.username || currentUser.meta.userId;
+            const customPublicId = `assets/users/avatars/${username}_profile_pic`;
+
+            const uploadOptions = {
+                public_id: customPublicId,
+                overwrite: true, // This will replace the old image with the new one.
+                invalidate: true // This tells the CDN to fetch the new version immediately.
+            };
+            const uploadResult = await uploadToCloudinary(newAvatarFile, uploadOptions, 'image');
             // FIX: Store only the public_id, not the full URL.
             // This allows us to use buildCloudinaryUrl for transformations later.
             if (uploadResult && uploadResult.public_id) {
@@ -221,9 +311,29 @@ export function init() {
 }
 
 export function cleanup() {
-    // TODO: Remove event listeners to prevent memory leaks
+    // --- FIX: Reset avatar preview on cleanup to avoid showing stale changes ---
+    // If the user navigates away without saving, this ensures the avatar
+    // reverts to its original state for the next time the view is loaded.
+    if (currentUser) {
+        const publicId = currentUser.info.avatar;
+        const avatarPreview = document.getElementById('avatar-preview');
+        const iconPlaceholder = document.getElementById('avatar-icon-placeholder');
+
+        if (avatarPreview && iconPlaceholder) {
+            if (publicId) {
+                avatarPreview.src = buildCloudinaryUrl(publicId);
+                avatarPreview.style.display = 'block';
+                iconPlaceholder.style.display = 'none';
+            } else {
+                avatarPreview.style.display = 'none';
+                iconPlaceholder.style.display = 'block';
+            }
+        }
+    }
+
     currentUser = null;
     newAvatarFile = null;
     if (cropper) cropper.destroy();
     cropper = null;
+    // TODO: A more robust cleanup would remove all event listeners set in this module.
 }

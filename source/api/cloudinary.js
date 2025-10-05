@@ -19,8 +19,8 @@ export async function uploadToCloudinary(file, params = {}, resource_type = 'ima
     const getSignature = functions.httpsCallable('generateCloudinarySignature');
     const response = await getSignature({ params }); // Pass params directly
 
-    // The httpsCallable result object is the data itself.
-    const { signature, timestamp, api_key, cloud_name } = response;
+    // The httpsCallable result object contains the data in a `data` property.
+    const { signature, timestamp, api_key, cloud_name } = response.data;
 
     console.log("✅ Signature received.");
 
@@ -65,6 +65,31 @@ export async function uploadToCloudinary(file, params = {}, resource_type = 'ima
   }
 }
 
+/**
+ * Cloudinary se ek resource ko uske public_id ka upyog karke delete karta hai.
+ * @param {string} publicId - Delete kiye jaane wale resource ka public_id.
+ * @returns {Promise<boolean>} Success par true, fail par false.
+ */
+export async function deleteFromCloudinary(publicId) {
+  if (!publicId) {
+    console.warn("deleteFromCloudinary called with no publicId. Skipping.");
+    return true; // Nothing to delete, so it's a "success".
+  }
+
+  console.log(`Requesting deletion of Cloudinary resource: ${publicId}`);
+
+  try {
+    const deleteResource = functions.httpsCallable('deleteCloudinaryResource');
+    const response = await deleteResource({ publicId });
+
+    console.log("✅ Resource deleted successfully from Cloudinary:", response.data);
+    return true;
+  } catch (error) {
+    console.error("❌ Error in deleteFromCloudinary process:", error);
+    showToast('error', 'Failed to delete old avatar. Please contact support.');
+    return false;
+  }
+}
 /**
  * Diye gaye public_id aur options se ek Cloudinary media URL banata hai.
  * @param {string} publicId - Cloudinary mein image ka public_id.

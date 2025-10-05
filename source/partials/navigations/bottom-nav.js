@@ -1,4 +1,5 @@
 import { fetchUserById } from '../../utils/data-manager.js';
+import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 
 /**
  * Initializes the dynamic behavior of the bottom navigation bar.
@@ -57,8 +58,13 @@ export function initializeBottomNavigationLogic() {
         }
         try {
           const userData = await fetchUserById(userId);
-          const avatarUrl = userData?.info?.avatar;
-          if (avatarUrl && defaultIcon && accountIconImg) {
+          // --- FIX: Use buildCloudinaryUrl to construct the correct URL from the public_id ---
+          const publicId = userData?.info?.avatar;
+          if (publicId && defaultIcon && accountIconImg) {
+            // Build a small, optimized URL for the avatar icon.
+            const avatarUrl = buildCloudinaryUrl(publicId, {
+              width: 40, height: 40, crop: 'fill', quality: 'auto'
+            });
             accountIconImg.src = avatarUrl;
             accountIconImg.style.display = 'inline-block';
             if (defaultIcon) defaultIcon.style.display = 'none';

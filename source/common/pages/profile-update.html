@@ -1,10 +1,10 @@
 <div class="profile-container">
     <div class="profile-header">
-        <div class="avatar-container" id="avatar-container">
-            <img src="./localstore/images/users/dev.png" alt="User Avatar" class="profile-avatar" id="avatar-preview">
-            <div class="avatar-add-btn" id="avatar-add-btn">
-                <i class="fas fa-plus"></i>
-            </div>
+        <!-- MODIFIED: Container is now just a simple clickable wrapper -->
+        <div class="avatar-container" id="avatar-container" title="Change Avatar">
+            <!-- MODIFIED: Image is hidden by default, JS will show it if an avatar exists -->
+            <img src="" alt="User Avatar" class="profile-avatar" id="avatar-preview" style="display: none;">
+            <i class="fas fa-user-circle" id="avatar-icon-placeholder"></i>
             <input type="file" id="avatar-upload" accept="image/*">
         </div>
         <div class="profile-header-info">
@@ -102,18 +102,39 @@
         </div>
     </div>
 
-    <!-- Cropper Modal -->
-    <div id="crop-modal" class="crop-modal">
-        <div class="crop-modal-content">
-            <div class="crop-modal-header">
-                <h3>Crop Your New Avatar</h3>
-                <button id="close-crop-modal-btn" class="close-btn">&times;</button>
+    <!-- NEW: Unified Avatar Modal for Options and Cropping -->
+    <div id="avatar-modal" class="common-modal">
+        <div class="crop-modal-content" id="avatar-modal-content">
+            <!-- State 1: Options View -->
+            <div class="avatar-modal-view" id="avatar-options-view">
+                <div class="crop-modal-header">
+                    <h3>Profile Picture</h3>
+                    <button id="close-avatar-modal-btn" class="close-btn">&times;</button>
+                </div>
+                <div class="avatar-options-body">
+                    <!-- MODIFIED: Add icon placeholder for when there is no avatar -->
+                    <img src="" alt="Current Avatar" class="profile-avatar" id="avatar-modal-preview" style="display: none;">
+                    <i class="fas fa-user-circle" id="avatar-modal-icon-placeholder"></i>
+                </div>
+                <div class="avatar-options-actions">
+                    <button id="remove-avatar-btn" class="action-btn danger"><i class="fas fa-trash"></i> Remove</button>
+                    <!-- MODIFIED: Use a <label> instead of a <button> to reliably trigger the file input on all devices, especially mobile. -->
+                    <label for="avatar-upload" id="change-avatar-btn" class="action-btn"><i class="fas fa-edit"></i> Change</label>
+                </div>
             </div>
-            <div class="crop-image-container">
-                <img id="image-to-crop" src="" alt="Image to crop">
-            </div>
-            <div class="crop-actions">
-                <button id="crop-and-save-btn" class="save-btn">Crop & Apply</button>
+
+            <!-- State 2: Cropper View (initially hidden) -->
+            <div class="avatar-modal-view" id="avatar-cropper-view" style="display: none;">
+                <div class="crop-modal-header">
+                    <h3>Crop Your New Avatar</h3>
+                    <button id="close-cropper-view-btn" class="close-btn">&times;</button>
+                </div>
+                <div class="crop-image-container">
+                    <img id="image-to-crop" src="" alt="Image to crop">
+                </div>
+                <div class="crop-actions">
+                    <button id="crop-and-save-btn" class="save-btn">Crop & Apply</button>
+                </div>
             </div>
         </div>
     </div>

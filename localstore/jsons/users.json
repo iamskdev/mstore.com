@@ -6,7 +6,7 @@
       "username": "iamskdev",
       "gender": "male",
       "dob": "2000-04-15",
-      "avatar": "./localstore/images/users/dev.png",
+      "avatar": null,
       "tags": ["Top Contributor"],
       "bio": "Passionate developer & tech enthusiast",
       "email": "dev@apnastore.io",

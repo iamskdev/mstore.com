@@ -1,5 +1,6 @@
 import { setTheme, getCurrentTheme } from '../../utils/theme-switcher.js';
 import { fetchUserById } from '../../utils/data-manager.js';
+import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 import { formatPhoneNumberWithSpace } from '../../utils/formatters.js';
 import { showToast } from '../../utils/toast.js';
 import { AuthService } from '../../firebase/auth/auth.js';
@@ -94,8 +95,12 @@ export function initializeDrawer() {
 
         // Updated to use the new user schema
         if (avatarEl) {
-          if (userData?.info?.avatar) {
-            avatarEl.style.backgroundImage = `url('${userData.info.avatar}')`;
+          // --- FIX: Use buildCloudinaryUrl to construct the correct URL from the public_id ---
+          const publicId = userData?.info?.avatar;
+          if (publicId) {
+            const avatarUrl = buildCloudinaryUrl(publicId, {
+              width: 50, height: 50, crop: 'fill', quality: 'auto' });
+            avatarEl.style.backgroundImage = `url('${avatarUrl}')`;
             avatarEl.classList.remove('fallback-icon');
           } else {
             avatarEl.style.backgroundImage = 'none'; // Ensure no background image

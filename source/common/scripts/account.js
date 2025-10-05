@@ -1,4 +1,5 @@
 import { fetchUserById, fetchAccountById, fetchMerchantById } from '../../utils/data-manager.js';
+import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 import { routeManager } from '../../main.js';
 import { showFeedbackModal } from '../../partials/modals/feedback.js';
 
@@ -104,7 +105,11 @@ async function renderProfileData() {
                 console.error('Failed to load user avatar image.');
                 // Keep the default icon visible if the image fails to load.
             };
-            avatarImg.src = user.info.avatar;
+
+            // FIX: Check if the avatar is a Cloudinary public_id or a local path
+            const isCloudinaryId = user.info.avatar && !user.info.avatar.startsWith('./');
+            const avatarUrl = isCloudinaryId ? buildCloudinaryUrl(user.info.avatar) : user.info.avatar;
+            avatarImg.src = avatarUrl;
         }
     } catch (error) {
         console.error('Failed to render profile data:', error);
