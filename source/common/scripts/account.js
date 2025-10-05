@@ -40,12 +40,28 @@ async function renderProfileData() {
     }
 
     try {
-        const user = await fetchUserById(userId);
-        if (!user) throw new Error('User not found');
+        // --- FIX: Use Promise.allSettled for resilient data fetching ---
+        // This ensures that even if fetching account or merchant data fails (e.g., due to missing
+        // data sources), the primary user data will still be rendered, preventing a "Could not load" error.
+        const [userResult, accountResult, merchantResult] = await Promise.allSettled([
+            fetchUserById(userId),
+            fetchAccountById(localStorage.getItem('currentAccountId')), // Fetch account if ID exists
+            fetchMerchantById(localStorage.getItem('currentMerchantId')) // Fetch merchant if ID exists
+        ]);
 
-        // Fetch related data for the user
-        const account = user.meta.links.accountId ? await fetchAccountById(user.meta.links.accountId) : null;
-        const merchant = user.meta.links.merchantId ? await fetchMerchantById(user.meta.links.merchantId) : null;
+        // Extract the data from the settled promises.
+        const user = userResult.status === 'fulfilled' ? userResult.value : null;
+        const account = accountResult.status === 'fulfilled' ? accountResult.value : null;
+        const merchant = merchantResult.status === 'fulfilled' ? merchantResult.value : null;
+
+        // If the essential user data could not be fetched, throw an error.
+        if (!user) {
+            // If the user fetch failed, log the reason and throw an error to show the failure UI.
+            if (userResult.status === 'rejected') {
+                console.error("Primary user fetch failed:", userResult.reason);
+            }
+            throw new Error('User not found');
+        }
         console.log('DEBUG: Fetched data in account.js:', { user, account, merchant });
 
         // --- NEW: Ensure buttons and divider are visible for logged-in users ---

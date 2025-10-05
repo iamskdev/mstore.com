@@ -818,88 +818,96 @@ window.addEventListener('requestViewChange', (e) => {
 // Main application initialization function
 export async function initializeApp() {
   console.log("🚀 🚀 Initializing App...");
-  // Load application configuration
-  let loadedConfig = {};
-  try {
-    const response = await fetch('./source/settings/config.json');
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    loadedConfig = await response.json();
-  } catch (error) {
-    console.error("Error loading config.json:", error);
-    // Provide a default or fallback configuration in case of error
-    loadedConfig = {
-      app: {},
-      urls: {
-        customDomain: "",
-        pageUrl: window.location.origin + window.location.pathname // Fallback to current origin and path
-      }
-    };
-  }
-  setAppConfig(loadedConfig);
-  initializeFirebase(loadedConfig);
-
-  // Detect standalone mode for PWA and apply no-zoom styles
-  if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
-    document.documentElement.classList.add('standalone-no-zoom');
-
-    // Dynamically update viewport meta tag to disable zoom in PWA mode
-    const viewportMeta = document.getElementById('viewport-meta');
-    if (viewportMeta) {
-      viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-    }
-  }
-
-  // Ensure getAppConfig().urls exists
-  if (!getAppConfig().urls) {
-    getAppConfig().urls = {}; // Initialize if it doesn't exist
-  }
-
-  // Determine the base URL based on the environment
-    if (window.location.hostname === '127.0.0.1') {
-    getAppConfig().urls.pageUrl = loadedConfig.urls.localIp;
-  } else if (window.location.hostname === 'localhost') {
-    getAppConfig().urls.pageUrl = loadedConfig.urls.localHost;
-  } else if (loadedConfig.urls.customDomain && loadedConfig.urls.customDomain !== "" && window.location.hostname === new URL(loadedConfig.urls.customDomain).hostname) {
-    getAppConfig().urls.pageUrl = loadedConfig.urls.customDomain;
-  } else if (window.location.hostname.endsWith('github.io') && window.location.pathname.length > 1) {
-    // This is a GitHub Pages deployment in a subdirectory (e.g., https://username.github.io/repo-name/)
-    // The base URL should include the repository name.
-    const repoName = window.location.pathname.split('/')[1]; // Get the first part of the path after the leading slash
-    getAppConfig().urls.pageUrl = `${window.location.origin}/${repoName}`;
-  }
-  else if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !loadedConfig.urls.customDomain) {
-    // If it's not localhost, not 127.0.0.1, and not a custom domain, assume it's a local IP or root domain GitHub Pages
-    getAppConfig().urls.pageUrl = window.location.origin;
-  }
-  else {
-    // Default to the pageUrl specified in config.json (e.g., GitHub Pages URL for root domain or other custom setups)
-    getAppConfig().urls.pageUrl = loadedConfig.urls.pageUrl;
-  }
-
-  // Handle fallback URL for old links/domains
-  if (loadedConfig.urls.fallbackUrl && loadedConfig.urls.fallbackUrl !== "" && window.location.href.startsWith(loadedConfig.urls.fallbackUrl) && getAppConfig().urls.pageUrl !== loadedConfig.urls.fallbackUrl) {
-    console.warn(`Redirecting from old URL: ${window.location.href} to ${getAppConfig().urls.pageUrl}`);
-    window.location.replace(getAppConfig().urls.pageUrl);
-    return; // Stop further initialization as we are redirecting
-  }
-
   setupPwaRefreshBlockers();
 
+  // --- FIX: Smart Splash Screen & App Initialization Logic ---
+  const splashScreen = document.getElementById('splashScreen');
   const splashEnabled = getAppConfig().ui?.splashEnabled;
+  const isWarmStart = sessionStorage.getItem('isWarmStart') === 'true';
 
-  if (splashEnabled) {
-    // --- Run with Splash Screen ---
-    const splashScreen = document.getElementById('splashScreen');
+  // Show splash screen only on cold start (first visit), not on simple refreshes.
+  if (splashEnabled && !isWarmStart) {
     if (splashScreen) {
         splashScreen.style.display = 'flex'; // Make it visible
     }
-    await simulateProgress(60);
-    await simulateProgress(100);
+  }
 
+  // --- STEP 1: Load config and initialize critical services ---
+  const configResponse = await fetch('./source/settings/config.json');
+  const loadedConfig = await configResponse.json();
+  setAppConfig(loadedConfig);
+  initializeFirebase(loadedConfig);
+
+  // --- FIX: Restore dynamic base URL detection ---
+  // This logic correctly sets the app's base URL based on the environment (local, production, etc.),
+  // preventing the cross-origin 'pushState' error.
+  const appConfig = getAppConfig();
+  if (!appConfig.urls) {
+    appConfig.urls = {}; // Initialize if it doesn't exist
+  }
+
+  const currentHostname = window.location.hostname;
+  const configUrls = loadedConfig.urls;
+
+  if (currentHostname === '127.0.0.1' && configUrls.localIp) {
+    appConfig.urls.pageUrl = configUrls.localIp;
+  } else if (currentHostname === 'localhost' && configUrls.localHost) {
+    appConfig.urls.pageUrl = configUrls.localHost;
+  } else if (configUrls.customDomain && currentHostname === new URL(configUrls.customDomain).hostname) {
+    appConfig.urls.pageUrl = configUrls.customDomain;
+  } else if (currentHostname.endsWith('github.io')) {
+    // Handle GitHub Pages deployments (both root and subdirectory)
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    if (pathSegments.length > 0) {
+      // Subdirectory deployment (e.g., username.github.io/repo-name/)
+      appConfig.urls.pageUrl = `${window.location.origin}/${pathSegments[0]}`;
+    } else {
+      // Root domain deployment (e.g., username.github.io/)
+      appConfig.urls.pageUrl = window.location.origin;
+    }
+  } else {
+    // Fallback to the URL specified in config.json or the current origin
+    appConfig.urls.pageUrl = configUrls.pageUrl || window.location.origin;
+  }
+  console.log(`[main.js] Base URL determined: ${appConfig.urls.pageUrl}`);
+  // --- END FIX ---
+
+  if (splashEnabled && !isWarmStart) await simulateProgress(20);
+
+  // --- STEP 2: Initialize the router to determine the correct state FIRST ---
+  await routeManager.init();
+  if (splashEnabled && !isWarmStart) await simulateProgress(50);
+
+  // --- STEP 3: Load core UI shells now that the state is known ---
+  await Promise.all([
+    loadTopNavigation(),
+    loadBottomNavigation(),
+    loadDrawer()
+  ]);
+  setupSearchToggle();
+  if (splashEnabled && !isWarmStart) await simulateProgress(80);
+
+  // --- STEP 4: Initialize secondary handlers and fetch primary data ---
+  initWishlistHandler();
+  initAddToCartHandler();
+  
+  try {
+    const allItems = await fetchAllItems();
+    sessionStorage.setItem('allItems', JSON.stringify(allItems));
+    initializeSearch(allItems);
+    const promotionData = await fetchActivePromotion();
+    if (promotionData) {
+      window.dispatchEvent(new CustomEvent('promotionActivated', { detail: promotionData }));
+    }
+  } catch (error) {
+    console.error("❌ Failed to load initial item/promotion data:", error);
+    showToast('error', 'Failed to load app data. Please refresh.', 5000);
+  }
+  if (splashEnabled && !isWarmStart) await simulateProgress(100);
+
+  // --- STEP 5: Hide splash screen and finalize ---
+  if (splashEnabled && !isWarmStart) {
     if (splashScreen) {
-        // Wait for the splash screen to fully hide before proceeding with routeManager.init()
         await new Promise(resolve => {
             setTimeout(() => {
                 splashScreen.classList.add('hidden'); // Start fade out
@@ -911,16 +919,7 @@ export async function initializeApp() {
         });
     }
   }
-
-  // --- Common Initialization Steps (run after splash or immediately if no splash) ---
-  await loadTopNavigation();
-  setupSearchToggle(); // Initialize search toggle after top navigation is loaded
-  await loadBottomNavigation();
-  await routeManager.init(); // This ensures routeManager is always initialized
-  initWishlistHandler();
-  initAddToCartHandler(); // Added this line
-  await loadDrawer();
-  // --- End Common Initialization Steps ---
+  sessionStorage.setItem('isWarmStart', 'true'); // Mark that the app has started once.
 
   // Load role-switcher directly if enabled in config (outside splashEnabled check)
   const roleSwitcherEnabled = getAppConfig().flags?.roleSwitcher;
@@ -953,7 +952,6 @@ export async function initializeApp() {
     }
   }
 
-
   // Set --top-height immediately after core components are loaded
   const headerContainer = document.querySelector('.app-header');
   if (headerContainer) {
@@ -971,40 +969,11 @@ export async function initializeApp() {
   console.log(`%c🎨 Header Style: ${getAppConfig().ui.headerStyle.toUpperCase()}`, 'color: #9c27b0; font-weight: bold; font-size: 12px;');
 
   // Show maintenance mode toast if enabled
-  const appConfig = getAppConfig();
   if (appConfig.flags.maintenanceMode) {
     const { showToast } = await import('./utils/toast.js');
     showToast('warning', 'Application is currently in maintenance mode. Some features may be unavailable.', 0);
   }
-
-  try {
-    console.log("initializeApp: Attempting to fetch all items...");
-    const allItems = await fetchAllItems();
-    console.log("initializeApp: Fetched items count:", allItems ? allItems.length : 0);
-    sessionStorage.setItem('allItems', JSON.stringify(allItems));
-    console.log("initializeApp: Items stored in sessionStorage. Initializing search...");
-          initializeSearch(allItems); // Initialize search with fetched items
-      console.log("initializeApp: Search initialized."); // Initialize search with fetched items
-
-    // Fetch and dispatch active promotion regardless of appMode
-    try {
-      const promotionData = await fetchActivePromotion();
-      if (promotionData) {
-        console.log('🎉 Promotion Activated:', promotionData);
-        window.dispatchEvent(new CustomEvent('promotionActivated', { detail: promotionData }));
-      }
-    } catch (error) {
-        console.error("Failed to fetch active promotion:", error);
-    }
-  } catch (error) {
-    console.error("❌ Failed to load item data:", error);
-    showToast('error', 'Failed to load app data. Please refresh.', 5000);
-    window.dispatchEvent(new CustomEvent('itemDataLoadError', {
-      detail: { message: "Failed to load items. Please try again later." }
-    }));
-  } finally {
-    initializePullToRefresh();
-  }
+  initializePullToRefresh();
 
   if (!sessionStorage.getItem('cart')) {
     sessionStorage.setItem('cart', '[]');

@@ -54,13 +54,13 @@
   }
 
   /* CARDS (Adapted from demo) */
-  .cards {
+  .admin-stat-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     margin-bottom: 20px;
   }
-  .card {
+  .admin-stat-card {
     background: var(--bg-primary);
     padding: 15px;
     border-radius: 12px; /* Changed from 8px */
@@ -76,14 +76,23 @@
     color: var(--accent-primary);
     flex-shrink: 0;
   }
-  .card h3 {
+  /* --- FIX: Add distinct colors for each stat card icon --- */
+  .admin-card-icon-users {
+    /* A distinct blue for user-related stats, using theme variable */
+    color: var(--accent-primary); 
+  }
+  .admin-card-icon-tasks {
+    /* A distinct orange/yellow for pending tasks, using theme variable */
+    color: var(--accent-warning);
+  }
+  .admin-stat-card h3 {
     margin: 0;
     font-size: 1.1rem; /* Increased size for better balance */
     color: var(--text-primary);
     font-weight: 500;
     flex-grow: 1; /* Allow title to take up available space */
   }
-  .card p {
+  .admin-stat-card p {
     font-size: 1.1rem; /* Matched font size with the title */
     font-weight: bold;
     margin: 0;

@@ -21,10 +21,6 @@ export function initializeTopNavigation() {
     // NEW: Universal Back Button for secondary views
     const viewBackBtn = document.getElementById('view-back-btn');
 
-    const notificationHeaderContent = document.querySelector('.notification-header-content');
-    const notificationBackBtn = document.getElementById('notification-back-btn');
-    const notificationTitle = document.getElementById('notification-title');
-
     // --- Functions ---
     function initializeHeaderStyle() {
       // NEW: Handles 'logo', 'menu', and 'both' styles.
