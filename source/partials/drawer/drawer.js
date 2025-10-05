@@ -99,7 +99,7 @@ export function initializeDrawer() {
           const publicId = userData?.info?.avatar;
           if (publicId) {
             const avatarUrl = buildCloudinaryUrl(publicId, {
-              width: 50, height: 50, crop: 'fill', quality: 'auto' });
+              width: 128, height: 128, crop: 'fill', quality: 'auto' });
             avatarEl.style.backgroundImage = `url('${avatarUrl}')`;
             avatarEl.classList.remove('fallback-icon');
           } else {
