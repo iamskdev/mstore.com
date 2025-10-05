@@ -5,6 +5,7 @@ import { routeManager } from '../../main.js';
 
 let currentUser = null;
 let newAvatarFile = null;
+let cropper = null;
 
 async function loadUserData() {
     const userId = localStorage.getItem('currentUserId');
@@ -82,15 +83,52 @@ function setupEventListeners() {
         document.getElementById('avatar-upload').click();
     });
 
+    // --- MODIFIED: Handle file selection for cropping ---
     document.getElementById('avatar-upload').addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
-            newAvatarFile = file;
+            const cropModal = document.getElementById('crop-modal');
+            const imageToCrop = document.getElementById('image-to-crop');
+
             const reader = new FileReader();
             reader.onload = (e) => {
-                document.getElementById('avatar-preview').src = e.target.result;
+                imageToCrop.src = e.target.result;
+                cropModal.style.display = 'flex';
+
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                cropper = new Cropper(imageToCrop, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    background: false,
+                    autoCropArea: 0.8,
+                });
             };
             reader.readAsDataURL(file);
+        }
+        // Reset input value to allow re-selecting the same file
+        event.target.value = '';
+    });
+
+    // --- NEW: Event listeners for the crop modal ---
+    const cropModal = document.getElementById('crop-modal');
+    document.getElementById('close-crop-modal-btn').addEventListener('click', () => {
+        cropModal.style.display = 'none';
+        if (cropper) cropper.destroy();
+    });
+
+    document.getElementById('crop-and-save-btn').addEventListener('click', () => {
+        if (cropper) {
+            const canvas = cropper.getCroppedCanvas({ width: 512, height: 512 });
+            document.getElementById('avatar-preview').src = canvas.toDataURL();
+
+            canvas.toBlob((blob) => {
+                newAvatarFile = new File([blob], 'avatar.png', { type: 'image/png' });
+            }, 'image/png');
+
+            cropModal.style.display = 'none';
         }
     });
 
@@ -186,4 +224,6 @@ export function cleanup() {
     // TODO: Remove event listeners to prevent memory leaks
     currentUser = null;
     newAvatarFile = null;
+    if (cropper) cropper.destroy();
+    cropper = null;
 }

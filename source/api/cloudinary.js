@@ -17,9 +17,11 @@ export async function uploadToCloudinary(file, params = {}, resource_type = 'ima
   try {
     // 1. Backend (Cloud Function) se signature generate karwayein.
     const getSignature = functions.httpsCallable('generateCloudinarySignature');
-    const response = await getSignature({ params, resource_type });
+    const response = await getSignature({ params }); // Pass params directly
 
-    const { signature, timestamp, api_key, cloud_name } = response.data;
+    // The httpsCallable result object is the data itself.
+    const { signature, timestamp, api_key, cloud_name } = response;
+
     console.log("✅ Signature received.");
 
     // 2. FormData object banayein jise Cloudinary ko bhejna hai.
@@ -42,12 +44,12 @@ export async function uploadToCloudinary(file, params = {}, resource_type = 'ima
       method: 'POST',
       body: formData,
     });
-
+    
     if (!uploadResponse.ok) {
       const errorData = await uploadResponse.json();
       throw new Error(`Cloudinary upload failed: ${errorData.error.message}`);
     }
-
+    
     const uploadResult = await uploadResponse.json();
     console.log("✅ File uploaded successfully:", uploadResult);
 
@@ -56,7 +58,6 @@ export async function uploadToCloudinary(file, params = {}, resource_type = 'ima
       public_id: uploadResult.public_id,
       secure_url: uploadResult.secure_url,
     };
-
   } catch (error) {
     console.error("❌ Error in uploadToCloudinary process:", error);
     showToast('error', 'Image upload failed. Please try again.');

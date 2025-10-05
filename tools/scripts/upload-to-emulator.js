@@ -20,7 +20,9 @@ const INPUT_DIR_PATH = '../../localstore/jsons';
 // Firestore batch write limit
 const BATCH_LIMIT = 500;
 // Emulator host and port
-const FIRESTORE_EMULATOR_HOST = "localhost:8080"; // Correct port for Firestore Emulator service
+const FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080"; // Use 127.0.0.1 for better compatibility
+const AUTH_EMULATOR_HOST = "127.0.0.1:9099"; // Default Firebase Auth Emulator host
+
 
 /**
  * Safely retrieves a nested property from an object.
@@ -56,15 +58,76 @@ async function deleteCollection(db, collectionPath, batchSize) {
 }
 
 /**
+ * Imports user records into the Firebase Auth emulator from a JSON file.
+ * @param {admin.auth.Auth} auth The Firebase Auth instance.
+ * @param {string} usersFilePath The file path to the users.json file.
+ * @param {FirebaseFirestore.Firestore} db The Firestore database instance for UID syncing.
+ */
+async function createAuthUsersInEmulator(auth, usersFilePath, db) {
+    console.log(`\n   - 🔑 Importing auth users from: ${path.basename(usersFilePath)}`);
+    try {
+        const fileContent = await fs.readFile(usersFilePath, 'utf8');
+        const mockUsers = JSON.parse(fileContent);
+
+        if (!Array.isArray(mockUsers) || mockUsers.length === 0) {
+            console.log("     - No users found in users.json to import into Auth. Skipping.");
+            return;
+        }
+
+        let successCount = 0;
+        for (const mockUser of mockUsers) {
+            const email = mockUser.info?.email;
+            const customUserId = mockUser.meta?.userId;
+            const fullName = mockUser.info?.fullName;
+
+            if (!email || !customUserId) {
+                console.warn(`     - ⚠️ Skipping user due to missing email or userId:`, JSON.stringify(mockUser).substring(0, 100));
+                continue;
+            }
+
+            try {
+                // Create user in Auth Emulator
+                const userRecord = await auth.createUser({
+                    uid: customUserId,
+                    email: email,
+                    emailVerified: true,
+                    password: 'password123',
+                    displayName: fullName,
+                    disabled: false,
+                });
+
+                // Sync UID back to Firestore document (important for consistency)
+                await db.collection('users').doc(customUserId).update({
+                    'auth.provider.uid': userRecord.uid
+                });
+                successCount++;
+            } catch (error) {
+                if (error.code !== 'auth/uid-already-exists' && error.code !== 'auth/email-already-exists') {
+                    console.error(`     - ❌ Failed to create auth user for ${email}:`, error.message);
+                } else {
+                    // If user already exists, we can consider it a success for this script's purpose.
+                    successCount++;
+                }
+            }
+        }
+        console.log(`   - ✅ Successfully created/verified ${successCount} users in Auth emulator.`);
+    } catch (error) {
+        console.error(`   - ❌ Error importing auth users:`, error.code === 'ENOENT' ? 'users.json not found.' : error.message);
+    }
+}
+/**
  * Main function to upload data to the Firestore Emulator.
  */
 async function uploadDataToEmulator() {
     try {
         // --- IMPORTANT: Set Emulator Host Environment Variable ---
-        // This line tells the Firebase Admin SDK to connect to the local emulator
-        // instead of the live Firestore database.
+        // These lines tell the Firebase Admin SDK to connect to the local emulators
+        // instead of the live Firebase services.
         process.env.FIRESTORE_EMULATOR_HOST = FIRESTORE_EMULATOR_HOST;
+        process.env.FIREBASE_AUTH_EMULATOR_HOST = AUTH_EMULATOR_HOST;
+
         console.log(`🔌 Targeting Firestore Emulator at: ${FIRESTORE_EMULATOR_HOST}`);
+        console.log(`🔌 Targeting Auth Emulator at: ${AUTH_EMULATOR_HOST}`);
 
         // --- Initialize Firebase Admin SDK ---
         const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -80,21 +143,18 @@ async function uploadDataToEmulator() {
             projectId: serviceAccount.project_id
         });
 
-        const db = admin.firestore();
-        console.log(`✅ Firebase Admin SDK initialized for EMULATOR. Project: ${serviceAccount.project_id}`);
-
         // --- Upload Data ---
         const inputDirPath = path.resolve(__dirname, INPUT_DIR_PATH);
         console.log(`\n🔥 Starting data synchronization with emulator from: ${inputDirPath}`);
         
-        const files = await fs.readdir(inputDirPath);
-        const jsonFiles = files.filter(file => file.endsWith('.json'));
+        const files = await fs.readdir(inputDirPath);        const jsonFiles = files.filter(file => file.endsWith('.json') && file !== 'versioner.json' && file !== 'versions.json');
 
         if (jsonFiles.length === 0) {
             console.log(`📂 No JSON files found to upload in: ${inputDirPath}`);
             return;
         }
 
+        // --- Clear All Collections First ---
         const idFieldMap = {
                 "items": "meta.itemId",
                 "users": "meta.userId",
@@ -108,26 +168,43 @@ async function uploadDataToEmulator() {
                 "categories": "meta.categoryId",
                 "alerts": "meta.alertId",
                 "accounts": "meta.accountId",
-                "campaigns": "meta.campaignId"
+                "campaigns": "meta.campaignId",
+                "stories": "meta.links.merchantId",
+                "feedbacks": "meta.feedbackId",
+                "ratings": "meta.ratingId",
+          
         };
 
+        const db = admin.firestore();
+        console.log(`✅ Firebase Admin SDK initialized for EMULATOR. Project: ${serviceAccount.project_id}`);
+
+        console.log(`\n--- Step 1: Clearing All Collections in Emulator ---`);
+        for (const file of jsonFiles) {
+            const collectionId = path.basename(file, '.json');
+            console.log(`   - 🗑️  Clearing collection: '${collectionId}'...`);
+            await deleteCollection(db, collectionId, BATCH_LIMIT);
+        }
+        console.log(`   - ✅ All specified collections cleared.`);
+
+        console.log(`\n--- Step 2: Uploading Data to Firestore Emulator ---`);
         for (const file of jsonFiles) {
             const collectionId = path.basename(file, '.json');
             const filePath = path.join(inputDirPath, file);
-
-            // --- Step 1: Clear existing data in the emulator's collection ---
-            console.log(`\n   - 🗑️  Clearing collection: '${collectionId}' in emulator...`);
-            await deleteCollection(db, collectionId, BATCH_LIMIT);
-            console.log(`   - ✅ Collection '${collectionId}' cleared.`);
-
             console.log(`\n   - Processing collection: ${collectionId}`);
 
             const fileContent = await fs.readFile(filePath, 'utf8');
             const documents = JSON.parse(fileContent);
 
-            if (!Array.isArray(documents) || documents.length === 0) {
-                console.warn(`     ⚠️ ${file} does not contain a non-empty array. Skipping.`);
+            // --- FIX: Handle both array of documents and single object documents (like stories.json) ---
+            const docsToProcess = Array.isArray(documents) ? documents : [documents];
+
+            if (docsToProcess.length === 0) {
+                console.warn(`     ⚠️ ${file} is empty or invalid. Skipping.`);
                 continue;
+            }
+
+            if (!Array.isArray(documents)) {
+                console.log(`     ℹ️ Detected single object file. Processing as one document.`);
             }
 
             const idFieldPath = idFieldMap[collectionId];
@@ -136,7 +213,7 @@ async function uploadDataToEmulator() {
             let docCountInBatch = 0;
             let totalDocsUploaded = 0;
 
-            for (const doc of documents) {
+            for (const doc of docsToProcess) {
                 const docId = String(getNestedValue(doc, idFieldPath) || doc.id);
 
                 if (!docId || docId === 'undefined') {
@@ -151,7 +228,7 @@ async function uploadDataToEmulator() {
                 if (docCountInBatch === BATCH_LIMIT) {
                     await batch.commit();
                     totalDocsUploaded += docCountInBatch;
-                    console.log(`     - Committed a batch of ${docCountInBatch} documents to emulator.`);
+                    // console.log(`     - Committed a batch of ${docCountInBatch} documents to emulator.`); // Reduced verbosity
                     batch = db.batch();
                     docCountInBatch = 0;
                 }
@@ -163,6 +240,12 @@ async function uploadDataToEmulator() {
             }
             console.log(`   - 📤 Successfully uploaded ${totalDocsUploaded} documents to the '${collectionId}' collection in the emulator.`);
         }
+
+        // --- Step 3: Create Auth Users ---
+        console.log(`\n--- Step 3: Creating Authentication Users in Emulator ---`);
+        const auth = admin.auth();
+        const usersJsonPath = path.join(inputDirPath, 'users.json');
+        await createAuthUsersInEmulator(auth, usersJsonPath, db);
 
         console.log(`\n🎉 Success! All data has been uploaded to the Firestore Emulator.`);
 

@@ -75,7 +75,7 @@ async function uploadDataToFirestore() {
         } else {
             console.log(`🔥 Preparing to upload all JSON files from ${inputDirPath}...`);
             const allFiles = await fs.readdir(inputDirPath);
-            filesToProcess = allFiles.filter(file => file.endsWith('.json'));
+            filesToProcess = allFiles.filter(file => file.endsWith('.json') && file !== 'versioner.json' && file !== 'versions.json');
         }
 
         console.warn('⚠️  This script will OVERWRITE existing documents in Firestore with matching IDs.');

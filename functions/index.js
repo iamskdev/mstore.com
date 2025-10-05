@@ -37,9 +37,9 @@ exports.checkIfPhoneExists = functions.https.onCall(async (data, context) => {
  * A callable function to generate a secure signature for direct uploads to Cloudinary.
  * This prevents exposing the API secret on the client-side.
  */
-exports.generateCloudinarySignature = functions.https.onCall((data, context) => {
-  // --- Security Check (Optional but Recommended) ---
-  // Uncomment this block to ensure only authenticated users can get a signature.
+exports.generateCloudinarySignature = functions.https.onCall(async (data, context) => {
+  // --- Security Check (Recommended) ---
+  // For onCall functions, you can check if the user is authenticated.
   // if (!context.auth) {
   //   throw new functions.https.HttpsError(
   //     "unauthenticated",
@@ -47,36 +47,39 @@ exports.generateCloudinarySignature = functions.https.onCall((data, context) => 
   //   );
   // }
 
-  // Get Cloudinary credentials from Firebase environment configuration.
-  const cloudinaryConfig = functions.config().cloudinary;
-  if (!cloudinaryConfig || !cloudinaryConfig.api_secret || !cloudinaryConfig.api_key || !cloudinaryConfig.cloud_name) {
-    console.error("Cloudinary configuration is missing in Firebase Functions environment.");
-    throw new functions.https.HttpsError(
-      "internal",
-      "Server configuration error. Unable to process upload signature."
+  try {
+    // Get Cloudinary credentials from Firebase environment configuration.
+    const cloudinaryConfig = functions.config().cloudinary;
+    if (!cloudinaryConfig || !cloudinaryConfig.api_secret || !cloudinaryConfig.api_key || !cloudinaryConfig.cloud_name) {
+      console.error("Cloudinary configuration is missing in Firebase Functions environment.");
+      throw new functions.https.HttpsError(
+        "internal",
+        "Server configuration error. Unable to process upload signature."
+      );
+    }
+
+    // For onCall, the data passed from the client is directly in the 'data' object.
+    const paramsToSign = data.params || {};
+    const timestamp = Math.round(new Date().getTime() / 1000);
+
+    // Generate the signature using the Cloudinary Node.js SDK.
+    const signature = cloudinary.utils.api_sign_request(
+      { timestamp, ...paramsToSign },
+      cloudinaryConfig.api_secret
     );
+
+    // Return the necessary data to the client. The SDK will wrap this in a 'data' property.
+    return {
+      signature,
+      timestamp,
+      api_key: cloudinaryConfig.api_key,
+      cloud_name: cloudinaryConfig.cloud_name,
+    };
+  } catch (error) {
+    console.error("Error generating Cloudinary signature:", error);
+    // Re-throw HttpsError or wrap other errors.
+    throw new functions.https.HttpsError("internal", error.message || "An error occurred while generating the signature.");
   }
-
-  // The frontend will send any additional parameters for signing (e.g., folder).
-  const paramsToSign = data.params || {};
-  const timestamp = Math.round(new Date().getTime() / 1000);
-
-  // Generate the signature using the Cloudinary Node.js SDK.
-  const signature = cloudinary.utils.api_sign_request(
-    {
-      timestamp: timestamp,
-      ...paramsToSign,
-    },
-    cloudinaryConfig.api_secret
-  );
-
-  // Return the necessary data to the client for the direct upload.
-  return {
-    signature: signature,
-    timestamp: timestamp,
-    api_key: cloudinaryConfig.api_key,
-    cloud_name: cloudinaryConfig.cloud_name,
-  };
 });
 
 /**

@@ -47,26 +47,30 @@ export function initializeFirebase(appConfig) {
       if (appConfig.source.data === 'emulator') {
         console.warn("🔌 App is configured to use EMULATOR data source. Connecting to local Firebase Emulators...");
         // Note: The host for firestore is just 'localhost', not a full URL.
-        firestore.useEmulator('localhost', 8080); 
-        auth.useEmulator('http://localhost:9099');
-        functions.useEmulator('localhost', 5001);
+        firestore.useEmulator('127.0.0.1', 8080); 
+        auth.useEmulator('http://127.0.0.1:9099');
+        functions.useEmulator('127.0.0.1', 5001);
         console.log("✅ Connected to local Firestore, Auth, and Functions emulators.");
-        showToast('info', '⚡️ Emulator Mode: Connected to local Firebase.', 6000);    
-
-        // --- Hide Emulator UI Bar (Aggressive Polling Method) ---
-        // This method repeatedly checks for the emulator bar and hides it.
-        // It's a robust solution for the race condition where the bar is injected unpredictably.
+        
+        // Show a clear toast notification indicating the app is running in emulator mode.
+        showToast('success', '⚡️Running in emulator mode.', 3000);    
+        
+        // --- Hide Emulator Warning Banner (Aggressive Polling Method) ---
+        // This method repeatedly checks for the emulator warning banner and hides it.
+        // It's a robust solution for the race condition where the banner is injected unpredictably.
         if (typeof document !== 'undefined') {
           let attempts = 0;
           const maxAttempts = 100; // Try for 5 seconds (100 * 50ms)
+          let emulatorBar; // Declare variable outside the loop to avoid redeclaration error.
           const hideInterval = setInterval(() => {
-              const emulatorBar = document.getElementById('firebase-emulator-container');
+              // The emulator injects a <p> tag with this specific class.
+              emulatorBar = document.querySelector('.firebase-emulator-warning');
               if (emulatorBar) {
                   emulatorBar.style.setProperty('display', 'none', 'important');
-                  console.log(`✅ Firebase Emulator UI bar hidden after ${attempts + 1} attempts.`);
+                  console.log(`✅ Firebase Emulator warning banner hidden after ${attempts + 1} attempts.`);
                   clearInterval(hideInterval);
-              } else if (attempts++ > maxAttempts) {
-                  console.warn('Could not find emulator bar to hide after 5 seconds.');
+              } else if (attempts++ >= maxAttempts) {
+                  console.warn('Could not find emulator warning banner to hide after 5 seconds.');
                   clearInterval(hideInterval);
               }
           }, 50); // Check every 50ms
