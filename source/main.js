@@ -14,6 +14,8 @@ import { routeConfig, defaultViews } from './routes.js';
 import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.js';
 import { initializeFirebase } from './firebase/firebase-config.js';
 import { setAppConfig, getAppConfig } from './settings/main-config.js';
+import { initMediaEditor } from './modals/media-editor/media-editor.js';
+import { initOtpVerificationModal } from './modals/otp-verification-modal.js';
 import { initWishlistHandler } from './utils/saved-manager.js';
 import { initAddToCartHandler } from './utils/cart-manager.js'; // Added this line
 import { loadTopNavigation } from './partials/navigations/top-nav.js';
@@ -837,6 +839,37 @@ export async function initializeApp() {
   const loadedConfig = await configResponse.json();
   setAppConfig(loadedConfig);
   initializeFirebase(loadedConfig);
+
+  // --- NEW: Load OTP Verification Modal HTML ---
+  try {
+    const response = await fetch('./source/modals/otp-verification-modal.html');
+    if (response.ok) {
+        const otpModalHtml = await response.text();
+        document.body.insertAdjacentHTML('beforeend', otpModalHtml);
+        // Initialize its JS now that the HTML is in the DOM
+        initOtpVerificationModal();
+    } else {
+        console.error('Failed to load otp-verification-modal.html');
+    }
+  } catch (error) {
+      console.error('Error loading OTP modal:', error);
+  }
+
+  // --- NEW: Load Media Editor HTML into the body ---
+  // This is done early to ensure the `window.openPhotoEditor` function is available globally.
+  try {
+    const response = await fetch('./source/modals/media-editor/media-editor.html');
+    if (response.ok) {
+        const editorHtml = await response.text();
+        document.body.insertAdjacentHTML('beforeend', editorHtml);
+        // Now that the HTML is in the DOM, initialize its JavaScript
+        initMediaEditor();
+    } else {
+        console.error('Failed to load media-editor.html');
+    }
+  } catch (error) {
+      console.error('Error loading media editor:', error);
+  }
 
   // --- FIX: Restore dynamic base URL detection ---
   // This logic correctly sets the app's base URL based on the environment (local, production, etc.),

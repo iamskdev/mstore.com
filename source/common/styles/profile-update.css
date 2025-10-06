@@ -59,6 +59,28 @@
     margin: 0;
     font-size: 1.8rem;
 }
+.username-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+.username-wrapper p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.username-wrapper .edit-username-btn.disabled {
+    cursor: not-allowed;
+    color: var(--text-tertiary);
+    opacity: 0.6;
+}
+.username-wrapper #username-input {
+    font-size: 1rem;
+    padding: 4px 8px;
+}
 
 .profile-header-info p {
     margin: 5px 0 0;
@@ -69,18 +91,29 @@
     padding: 0;
 }
 
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
 .profile-section {
     margin-bottom: 2rem;
     background: var(--bg-secondary);
     padding: 1rem;
     border-radius: var(--border-radius);
+    transition: box-shadow 0.3s ease;
+}
+
+.profile-section.editing {
+    box-shadow: 0 0 0 2px var(--accent-primary);
 }
 
 .profile-section h3 {
-    margin-top: 0;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
+    margin: 0;
     color: var(--primary-color);
 }
 
@@ -99,7 +132,6 @@
 .form-group input,
 .form-group textarea,
 .form-group select {
-    margin: 0;
     padding: 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: 5px;
@@ -108,6 +140,22 @@
     width: 100%;
     background: var(--bg-primary);
     color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+/* Styles for disabled fields to look like plain text */
+.form-group input:disabled,
+.form-group textarea:disabled,
+.form-group select:disabled {
+    background: transparent;
+    border-color: transparent;
+    padding-left: 0;
+    padding-right: 0;
+    color: var(--text-primary);
+    cursor: default;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .form-grid {
@@ -122,10 +170,17 @@
     }
 }
 
-input[readonly] {
-    background-color: var(--bg-primary);
+.edit-section-btn {
+    cursor: pointer;
     color: var(--text-secondary);
-    cursor: not-allowed;
+    font-size: 16px;
+    padding: 5px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.edit-section-btn:hover {
+    color: var(--accent-primary);
+    transform: scale(1.1);
 }
 
 .input-with-icon {
@@ -138,13 +193,60 @@ input[readonly] {
     padding-right: 35px;
 }
 
-.info-icon {
+.input-with-icon .info-icon {
     position: absolute;
     right: 12px;
     color: var(--text-secondary);
     cursor: pointer;
 }
 
+/* NEW: Style for individual field edit buttons */
+.edit-field-btn {
+    position: absolute;
+    right: 0; /* Align to the right of the input group */
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.75rem; /* Make the clickable area larger */
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+.edit-field-btn:hover {
+    color: var(--accent-primary);
+}
+.edit-field-btn.send-otp {
+    color: var(--accent-success); /* Green color for send icon */
+}
+
+/* NEW: Styles for phone input with country code */
+.phone-input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background: var(--bg-primary);
+    position: relative; /* For positioning the edit icon */
+}
+.phone-input-group .country-code {
+    padding: 0.75rem 0 0.75rem 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.phone-input-group input {
+    border: none !important; /* Override default input border */
+    padding-right: 35px; /* Make space for the icon */
+}
+
+/* NEW: When the input inside is disabled, make the group look like plain text */
+.phone-input-group.disabled {
+    border-color: transparent;
+    background: transparent;
+}
+.phone-input-group.disabled input {
+    background: transparent;
+}
+.phone-input-group.disabled .country-code {
+    padding-right: 2px;
+    padding-left: 0; /* FIX: Remove left padding when disabled to align with labels */
+}
 input[type="date"] {
     position: relative;
     color-scheme: dark;
@@ -154,7 +256,7 @@ input[type="date"] {
     position: relative;
 }
 
-.select-wrapper::after {
+.select-wrapper.editable::after {
     content: '\f078';
     font-family: "Font Awesome 6 Free";
     font-weight: 900;
@@ -166,15 +268,11 @@ input[type="date"] {
     color: var(--text-secondary);
 }
 
-select {
+select:not(:disabled) {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     padding-right: 35px;
-}
-
-.profile-form {
-    display: block;
 }
 
 .form-actions {
@@ -194,7 +292,7 @@ select {
 }
 
 .save-btn {
-    background-color: var(--success-color);
+    background-color: var(--accent-success);
     color: white;
     display: flex;
     align-items: center;
@@ -230,11 +328,11 @@ select {
     }
 }
 
-/* --- MODIFIED: Renamed to .common-modal for reusability across the app --- */
+/* --- NEW: Styles for the simple avatar actions modal --- */
 .common-modal {
     display: none;
     position: fixed;
-    z-index: 10001; /* FIX: Increased z-index to appear above other elements */
+    z-index: 10001;
     left: 0;
     top: 0;
     width: 100%;
@@ -245,20 +343,19 @@ select {
     align-items: center;
 }
 
-.crop-modal-content {
-    background-color: var(--bg-secondary); /* FIX: Use a more solid background */
+.modal-content-small {
+    background-color: var(--bg-secondary);
     margin: auto;
     padding: 20px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     width: 90%;
-    max-width: 500px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
+    max-width: 320px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
 }
 
-.crop-modal-header {
+.modal-content-small .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -267,71 +364,29 @@ select {
     margin-bottom: 15px;
 }
 
-.crop-modal-header h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: var(--text-primary); /* FIX: Ensure text color matches theme */
-}
+.modal-content-small .modal-header h3 { margin: 0; }
+.modal-content-small .close-btn { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-secondary); }
 
-.crop-modal-header .close-btn {
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: var(--text-secondary); /* FIX: Use correct variable for text color */
-}
-
-.crop-image-container {
-    width: 100%;
-    height: 300px; /* Adjust as needed */
-    margin-bottom: 20px;
-}
-
-.crop-image-container img {
-    max-width: 100%;
-}
-
-.crop-actions {
-    display: flex;
-    justify-content: flex-end;
-}
-
-/* --- NEW: Styles for unified modal views --- */
-.avatar-modal-view {
-    width: 100%;
-}
-
-/* --- NEW: Styles for Avatar Options Modal --- */
+/* REVERTED: Styles for the better avatar actions modal */
 .avatar-options-body {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 20px 0;
 }
-
 .avatar-options-body .profile-avatar {
-    width: 150px; /* Larger preview in modal */
+    width: 150px;
     height: 150px;
     border-width: 4px;
 }
-
-/* NEW: Styles for the icon placeholder inside the modal */
-#avatar-modal-icon-placeholder {
-    font-size: 150px; /* Match the larger avatar preview size */
+.avatar-options-body #avatar-modal-icon-placeholder {
+    font-size: 150px;
     color: var(--text-secondary);
     line-height: 1;
-    /* No position absolute needed as the parent is a flex container */
 }
+.avatar-options-actions { display: flex; justify-content: center; gap: 1rem; padding-top: 15px; border-top: 1px solid var(--border-color); }
 
-.avatar-options-actions {
-    display: flex;
-    justify-content: center; /* Center the buttons */
-    gap: 1rem;
-    padding-top: 15px;
-    border-top: 1px solid var(--border-color);
-}
-
-.avatar-options-actions .action-btn {
+.modal-action-btn {
     padding: 0.75rem 1.5rem;
     border: 1px solid var(--border-color);
     border-radius: 5px;
@@ -342,13 +397,24 @@ select {
     color: var(--text-primary);
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
 }
+.modal-action-btn.danger { background-color: var(--accent-danger); color: var(--accent-text); border-color: var(--accent-danger); }
+.modal-action-btn:hover { background-color: var(--bg-hover); }
 
-.avatar-options-actions .action-btn.danger {
-    color: var(--danger-color);
-    /* MODIFIED: Remove border and set a background color for a more solid look */
-    border: none;
-    background-color: var(--accent-danger);
-    color: var(--accent-text); /* Use white text on red background */
+/* Styles for the new username modal */
+.modal-content-small .modal-footer {
+    display: flex;
+    justify-content: center; /* FIX: Center the button(s) in the footer */
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.eligibility-message {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    text-align: center;
 }

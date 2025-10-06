@@ -8,40 +8,39 @@
             <input type="file" id="avatar-upload" accept="image/*">
         </div>
         <div class="profile-header-info">
-            <h2 id="display-nickName"></h2>
-            <p id="display-username"></p>
+            <h2 id="display-nickName">Loading...</h2>
+            <div class="username-wrapper">
+                <p id="display-username">@username</p>
+                <i class="fas fa-edit edit-section-btn" id="edit-username-btn" title="Edit Username"></i>
+            </div>
         </div>
     </div>
 
     <div class="profile-body">
         <!-- Profile Edit Form -->
-        <div id="profile-form" class="profile-form">
-            <div class="profile-section">
-                <h3>Personal Information</h3>
+        <form id="profile-form" class="profile-form">
+            <div class="profile-section" data-section-name="personal">
+                <div class="section-header">
+                    <h3>Personal Information</h3>
+                    <i class="fas fa-edit edit-section-btn" data-section-name="personal" title="Edit Personal Info"></i>
+                </div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName">
-                    </div>
-                    <div class="form-group" id="username-group">
-                        <label for="username">Username</label>
-                        <div class="input-with-icon">
-                            <input type="text" id="username" readonly>
-                            <i class="fas fa-info-circle info-icon" id="username-info-icon"></i>
-                        </div>
+                        <input type="text" id="fullName" disabled>
                     </div>
                     <div class="form-group">
                         <label for="nickName">Nickname</label>
-                        <input type="text" id="nickName">
+                        <input type="text" id="nickName" disabled>
                     </div>
                     <div class="form-group">
                         <label for="dob">Date of Birth</label>
-                        <input type="date" id="dob">
+                        <input type="date" id="dob" disabled>
                     </div>
                     <div class="form-group">
                         <label for="gender">Gender</label>
                         <div class="select-wrapper">
-                            <select id="gender">
+                            <select id="gender" disabled>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                                 <option value="other">Other</option>
@@ -51,48 +50,61 @@
                     </div>
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label for="bio">Bio</label>
-                        <textarea id="bio" rows="3" style="resize: vertical;"></textarea>
+                        <textarea id="bio" rows="3" style="resize: vertical;" disabled></textarea>
                     </div>
                 </div>
             </div>
 
-            <div class="profile-section">
-                <h3>Address</h3>
+            <div class="profile-section" data-section-name="address">
+                <div class="section-header">
+                    <h3>Address</h3>
+                    <i class="fas fa-edit edit-section-btn" data-section-name="address" title="Edit Address"></i>
+                </div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="street">Street</label>
-                        <input type="text" id="street">
+                        <input type="text" id="street" disabled>
                     </div>
                     <div class="form-group">
                         <label for="city">City</label>
-                        <input type="text" id="city">
+                        <input type="text" id="city" disabled>
                     </div>
                     <div class="form-group">
                         <label for="state">State</label>
-                        <input type="text" id="state">
+                        <input type="text" id="state" disabled>
                     </div>
                     <div class="form-group">
                         <label for="zipCode">Zip Code</label>
-                        <input type="text" id="zipCode">
+                        <input type="text" id="zipCode" disabled>
                     </div>
                 </div>
             </div>
 
-            <div class="profile-section">
-                <h3>Contact (Read-only)</h3>
+            <div class="profile-section" data-section-name="contact">
+                <div class="section-header">
+                    <h3>Contact (Read-only)</h3>
+                    <!-- The main edit button is removed. Individual fields will have their own. -->
+                </div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" readonly>
+                        <div class="input-with-icon">
+                            <input type="email" id="email" disabled autocomplete="off">
+                            <i class="fas fa-edit edit-field-btn" id="edit-email-btn" data-field="email" title="Change Email"></i>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone</label>
-                        <input type="tel" id="phone" readonly>
+                        <div class="phone-input-group disabled" id="phone-group">
+                            <span class="country-code" id="phone-country-code"></span>
+                            <input type="tel" id="phone" disabled>
+                            <i class="fas fa-edit edit-field-btn" id="edit-phone-btn" data-field="phone" title="Change Phone Number"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-actions">
+            <div class="form-actions" style="display: none;"> <!-- Initially hidden, shown when a section is edited -->
                 <button class="cancel-btn" id="cancel-btn">Cancel</button>
                 <button class="save-btn" id="save-btn">
                     <span class="spinner"></span>
@@ -102,39 +114,43 @@
         </div>
     </div>
 
-    <!-- NEW: Unified Avatar Modal for Options and Cropping -->
-    <div id="avatar-modal" class="common-modal">
-        <div class="crop-modal-content" id="avatar-modal-content">
-            <!-- State 1: Options View -->
-            <div class="avatar-modal-view" id="avatar-options-view">
-                <div class="crop-modal-header">
-                    <h3>Profile Picture</h3>
-                    <button id="close-avatar-modal-btn" class="close-btn">&times;</button>
-                </div>
-                <div class="avatar-options-body">
-                    <!-- MODIFIED: Add icon placeholder for when there is no avatar -->
-                    <img src="" alt="Current Avatar" class="profile-avatar" id="avatar-modal-preview" style="display: none;">
-                    <i class="fas fa-user-circle" id="avatar-modal-icon-placeholder"></i>
-                </div>
-                <div class="avatar-options-actions">
-                    <button id="remove-avatar-btn" class="action-btn danger"><i class="fas fa-trash"></i> Remove</button>
-                    <!-- MODIFIED: Use a <label> instead of a <button> to reliably trigger the file input on all devices, especially mobile. -->
-                    <label for="avatar-upload" id="change-avatar-btn" class="action-btn"><i class="fas fa-edit"></i> Change</label>
-                </div>
+    <!-- REVERTED: Back to the better avatar actions modal with preview -->
+    <div id="avatar-actions-modal" class="common-modal">
+        <div class="modal-content-small">
+            <div class="modal-header">
+                <h3>Profile Picture</h3>
+                <button class="close-btn" id="close-avatar-actions-modal">&times;</button>
             </div>
+            <div class="avatar-options-body">
+                <img src="" alt="Current Avatar" class="profile-avatar" id="avatar-modal-preview" style="display: none;">
+                <i class="fas fa-user-circle" id="avatar-modal-icon-placeholder"></i>
+            </div>
+            <div class="avatar-options-actions">
+                <button class="modal-action-btn danger" id="remove-picture-btn"><i class="fas fa-trash"></i> Remove</button>
+                <label for="avatar-upload" class="modal-action-btn" id="change-picture-btn"><i class="fas fa-edit"></i> Change</label>
+            </div>
+        </div>
+    </div>
 
-            <!-- State 2: Cropper View (initially hidden) -->
-            <div class="avatar-modal-view" id="avatar-cropper-view" style="display: none;">
-                <div class="crop-modal-header">
-                    <h3>Crop Your New Avatar</h3>
-                    <button id="close-cropper-view-btn" class="close-btn">&times;</button>
+    <!-- NEW: Modal for editing username -->
+    <div id="username-edit-modal" class="common-modal">
+        <div class="modal-content-small">
+            <div class="modal-header">
+                <h3>Edit Username</h3>
+                <button class="close-btn" id="close-username-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="username-modal-input">Username</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="username-modal-input" placeholder="Enter new username">
+                        <i class="fas fa-info-circle info-icon" id="username-info-icon"></i>
+                    </div>
                 </div>
-                <div class="crop-image-container">
-                    <img id="image-to-crop" src="" alt="Image to crop">
-                </div>
-                <div class="crop-actions">
-                    <button id="crop-and-save-btn" class="save-btn">Crop & Apply</button>
-                </div>
+                <p id="username-eligibility-message" class="eligibility-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="save-btn" id="save-username-btn">Save</button>
             </div>
         </div>
     </div>

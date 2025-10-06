@@ -1,0 +1,101 @@
+<!-- 
+  Reusable OTP Verification Modal Component
+  Contains the HTML structure and CSS for the OTP modal.
+-->
+<div id="otp-verification-modal" class="common-modal" style="display: none;">
+    <div class="modal-content-small">
+        <div class="modal-header">
+            <h3 id="otp-modal-title">Verify Your Identity</h3>
+            <button class="close-btn" id="close-otp-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="otp-message">Enter the 6-digit code sent to <strong id="otp-destination"></strong>.</p>
+            <div class="otp-input-container">
+                <input type="text" id="otp-input" maxlength="6" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code">
+            </div>
+            <div class="resend-container">
+                <span>Didn't receive the code?</span>
+                <a href="#" id="resend-otp-link" class="clickable-link">Resend OTP</a>
+                <span id="resend-timer" class="hidden">Resend in 30s</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="save-btn" id="verify-otp-btn">Verify</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    #otp-verification-modal .modal-body {
+        text-align: center;
+    }
+
+    #otp-verification-modal #otp-message {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+
+    #otp-verification-modal #otp-destination {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    #otp-verification-modal .otp-input-container {
+        display: flex;
+        justify-content: center;
+        margin: 25px 0;
+    }
+
+    #otp-verification-modal #otp-input {
+        font-size: 1.8rem;
+        text-align: center;
+        justify-items: center;
+        letter-spacing: 0.5em;
+        text-indent: 0.5em; /* FIX: Adjusts the initial character to be centered within its space */
+        width: 100%;
+        max-width: 240px;
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        caret-color: var(--accent-primary);
+    }
+
+    #otp-verification-modal #otp-input:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px var(--shadow-focus-primary);
+    }
+
+    #otp-verification-modal .resend-container {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    #otp-verification-modal .resend-container .clickable-link {
+        font-weight: 600;
+    }
+
+    #otp-verification-modal .resend-container .hidden {
+        display: none;
+    }
+
+    #otp-verification-modal #resend-timer {
+        color: var(--text-tertiary);
+    }
+
+    #otp-verification-modal .modal-footer .save-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        background-color: var(--accent-success); /* FIX: Apply correct background color */
+        color: var(--accent-text); /* FIX: Apply correct text color */
+    }
+
+    #otp-verification-modal .modal-footer .save-btn:disabled {
+        background-color: var(--button-disabled-bg);
+        cursor: not-allowed;
+    }
+</style>

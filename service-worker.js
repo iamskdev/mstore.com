@@ -110,6 +110,12 @@ const APP_SHELL_URLS = [
   './source/common/pages/conversation.html',
   './source/common/styles/conversation.css',
   './source/common/scripts/conversation.js',
+  // Media Editor
+  './source/modals/media-editor/media-editor.html',
+  './source/modals/media-editor/media-editor.js',
+  // OTP Modal
+  './source/modals/otp-verification-modal.html',
+  './source/modals/otp-verification-modal.js',
 
   // Third-party Libraries
   'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.esm.js',

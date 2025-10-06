@@ -5,7 +5,6 @@ import { routeManager } from '../../main.js';
 
 let currentUser = null;
 let newAvatarFile = null;
-let cropper = null;
 
 async function loadUserData() {
     const userId = localStorage.getItem('currentUserId');
@@ -51,7 +50,6 @@ function populateForm(user) {
     }
     // Personal Info
     document.getElementById('fullName').value = user.info.fullName || '';
-    document.getElementById('username').value = user.info.username || '';
     document.getElementById('nickName').value = user.info.nickName || '';
     document.getElementById('dob').value = user.info.dob || '';
     document.getElementById('gender').value = user.info.gender || 'prefer_not_to_say';
@@ -66,48 +64,209 @@ function populateForm(user) {
 
     // Contact
     document.getElementById('email').value = user.info.email || '';
-    document.getElementById('phone').value = user.info.phone || '';
+    // --- FIX: Split phone number into country code and number ---
+    const fullPhoneNumber = user.info.phone || '';
+    const phoneCountryCodeEl = document.getElementById('phone-country-code');
+    const phoneNumberInput = document.getElementById('phone');
+    
+    if (fullPhoneNumber.startsWith('+91')) {
+        phoneCountryCodeEl.textContent = '+91';
+        phoneNumberInput.value = fullPhoneNumber.replace('+91', '').trim();
+    } else {
+        phoneCountryCodeEl.textContent = ''; // Or a default if needed
+        phoneNumberInput.value = fullPhoneNumber;
+    }
 
     // Check username edit eligibility
     checkUsernameEligibility(user);
 }
 
 function checkUsernameEligibility(user) {
-    const usernameInput = document.getElementById('username');
+    const editBtn = document.getElementById('edit-username-btn');
     const usernameUpdatedAt = user.info.usernameUpdatedAt;
+    const usernameModalInput = document.getElementById('username-modal-input');
+    const saveUsernameBtn = document.getElementById('save-username-btn');
+    const eligibilityMessage = document.getElementById('username-eligibility-message');
+
+    if (!editBtn || !usernameModalInput || !saveUsernameBtn || !eligibilityMessage) return { isEligible: false };
 
     if (!usernameUpdatedAt) {
         // First time change is allowed
-        usernameInput.readOnly = false;
-        return;
+        usernameModalInput.disabled = false;
+        saveUsernameBtn.disabled = false;
+        eligibilityMessage.textContent = 'You can change your username. This can be done once every 90 days.';
+        return { isEligible: true };
     }
 
     const lastUpdateDate = new Date(usernameUpdatedAt);
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+    
+    const isEligible = lastUpdateDate <= ninetyDaysAgo;
+    usernameModalInput.disabled = !isEligible;
+    saveUsernameBtn.disabled = !isEligible;
 
-    if (lastUpdateDate > ninetyDaysAgo) {
-        // Not eligible to change yet
-        usernameInput.readOnly = true;
+    if (isEligible) {
+        eligibilityMessage.textContent = 'You are eligible to change your username.';
     } else {
-        // Eligible to change
-        usernameInput.readOnly = false;
+        const nextEligibleDate = new Date(lastUpdateDate.setDate(lastUpdateDate.getDate() + 90));
+        eligibilityMessage.textContent = `You can change your username again after ${nextEligibleDate.toLocaleDateString()}.`;
+    }
+    return { isEligible };
+}
+
+function setSectionEditable(sectionName, editable) {
+    const section = document.querySelector(`.profile-section[data-section-name="${sectionName}"]`);
+    if (!section) return;
+
+    const fields = section.querySelectorAll('input, textarea, select');
+    const editBtn = section.querySelector('.edit-section-btn');
+    const formActions = document.querySelector('.form-actions');
+
+    // Don't enable/disable contact fields with this function anymore
+    if (sectionName !== 'contact' && fields.length > 0) {
+        fields.forEach(field => { field.disabled = !editable; });
+    }
+
+    section.classList.toggle('editing', editable);
+    if (editBtn) {
+        editBtn.classList.toggle('fa-edit', !editable);
+        editBtn.classList.toggle('fa-times', editable); // Change to 'times' (X) icon
+        editBtn.title = editable ? 'Cancel Editing' : `Edit ${sectionName} Info`;
+    }
+    
+    const selectWrapper = section.querySelector('.select-wrapper');
+    if(selectWrapper) selectWrapper.classList.toggle('editable', editable);
+
+    // Handle phone group specifically
+    const phoneGroup = document.getElementById('phone-group');
+    if (phoneGroup) {
+        phoneGroup.classList.toggle('disabled', !editable);
     }
 }
 
 function setupEventListeners() {
-    const avatarModal = document.getElementById('avatar-modal');
-    const avatarModalContent = document.getElementById('avatar-modal-content');
-    const optionsView = document.getElementById('avatar-options-view');
-    const cropperView = document.getElementById('avatar-cropper-view');
+    const avatarModal = document.getElementById('avatar-actions-modal');
+    const closeAvatarModalBtn = document.getElementById('close-avatar-actions-modal');
+    const changePictureBtn = document.getElementById('change-picture-btn');
+    const removePictureBtn = document.getElementById('remove-picture-btn');
+    const avatarUploadInput = document.getElementById('avatar-upload');
+    const formActions = document.querySelector('.form-actions');
+    // Username Modal Elements
+    const editUsernameBtn = document.getElementById('edit-username-btn');
+    const usernameModal = document.getElementById('username-edit-modal');
+    const closeUsernameModalBtn = document.getElementById('close-username-modal');
 
-    // --- MODIFIED: Click on avatar opens the unified modal in "options" state ---
+    // --- NEW: Section editing logic ---
+    document.querySelectorAll('.edit-section-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Exclude the username edit button which has its own modal logic
+            if (btn.id === 'edit-username-btn') {
+                return;
+            }
+            const sectionToEdit = btn.dataset.sectionName;
+            const isCurrentlyEditing = btn.classList.contains('fa-times');
+
+            // First, disable all sections
+            document.querySelectorAll('.profile-section').forEach(sec => {
+                setSectionEditable(sec.dataset.sectionName, false);
+            });
+
+            // If we are not canceling, enable the target section
+            if (!isCurrentlyEditing) {
+                setSectionEditable(sectionToEdit, true);
+            }
+            // Show/hide save/cancel buttons based on if any section is being edited
+            formActions.style.display = isCurrentlyEditing ? 'none' : 'flex';
+        });
+    });
+
+    // --- REFACTORED: Username editing logic moved to a modal ---
+    editUsernameBtn.addEventListener('click', () => {
+        const usernameModalInput = document.getElementById('username-modal-input');
+        usernameModalInput.value = currentUser.info.username || '';
+        checkUsernameEligibility(currentUser); // Update modal state based on eligibility
+        usernameModal.style.display = 'flex';
+    });
+
+    const closeUsernameModal = () => { if(usernameModal) usernameModal.style.display = 'none'; };
+    closeUsernameModalBtn.addEventListener('click', closeUsernameModal);
+    usernameModal.addEventListener('click', (e) => { if (e.target === usernameModal) closeUsernameModal(); });
+
+    // --- REFACTORED: Advanced logic for contact field edits ---
+    document.querySelectorAll('.edit-field-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const fieldName = this.dataset.field;
+            const input = document.getElementById(fieldName);
+            const isEditing = !input.disabled;
+
+            if (isEditing) {
+                if (this.classList.contains('send-otp')) {
+                    // --- NEW: Open the actual OTP modal ---
+                    window.showOtpModal({
+                        destination: input.value,
+                        onVerify: (otp) => {
+                            console.log(`Verifying ${fieldName} with OTP: ${otp}`);
+                            // TODO: Add actual OTP verification logic here
+                        },
+                        onResend: () => console.log(`Resending OTP for ${fieldName} to ${input.value}`)
+                    });
+                } else {
+                    // State: Cancel
+                    input.disabled = true;
+                    input.value = (fieldName === 'email') ? currentUser.info.email : currentUser.info.phone.replace('+91', '').trim();
+                    this.className = 'fas fa-edit edit-field-btn'; // Revert to edit icon
+                    this.title = `Change ${fieldName}`;
+                    if (fieldName === 'phone') document.getElementById('phone-group').classList.remove('editing'); // Remove editing class from phone group
+                }
+            } else {
+                // State: Start Editing
+                input.disabled = false;
+                input.focus();
+                this.className = 'fas fa-times edit-field-btn'; // Change to cancel icon
+                this.title = 'Cancel';
+                if (fieldName === 'phone') document.getElementById('phone-group').classList.add('editing');
+            }
+        });
+    });
+
+    // Add input listeners to check for validity and change the icon
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const editEmailBtn = document.getElementById('edit-email-btn');
+    const editPhoneBtn = document.getElementById('edit-phone-btn');
+
+    emailInput.addEventListener('input', () => {
+        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
+        if (isValid && emailInput.value !== currentUser.info.email) {
+            editEmailBtn.className = 'fas fa-paper-plane edit-field-btn send-otp';
+            editEmailBtn.title = 'Send Verification OTP';
+        } else {
+            editEmailBtn.className = 'fas fa-times edit-field-btn';
+            editEmailBtn.title = 'Cancel';
+        }
+    });
+
+    phoneInput.addEventListener('input', () => {
+        const isValid = /^\d{10}$/.test(phoneInput.value);
+        const currentPhoneNumber = currentUser.info.phone.replace('+91', '').trim();
+        if (isValid && phoneInput.value !== currentPhoneNumber) {
+            editPhoneBtn.className = 'fas fa-paper-plane edit-field-btn send-otp';
+            editPhoneBtn.title = 'Send Verification OTP';
+        } else {
+            editPhoneBtn.className = 'fas fa-times edit-field-btn';
+            editPhoneBtn.title = 'Cancel';
+        }
+    });
+
+
+    // Open the new actions modal when avatar is clicked
     document.getElementById('avatar-container').addEventListener('click', () => {
+        // --- NEW: Populate modal with current avatar before showing ---
         const mainAvatarPreview = document.getElementById('avatar-preview');
         const modalAvatarPreview = document.getElementById('avatar-modal-preview');
         const modalIconPlaceholder = document.getElementById('avatar-modal-icon-placeholder');
 
-        // --- FIX: Show icon in modal if main avatar is not visible ---
         if (mainAvatarPreview.style.display === 'none' || !mainAvatarPreview.src) {
             modalAvatarPreview.style.display = 'none';
             modalIconPlaceholder.style.display = 'block';
@@ -116,86 +275,49 @@ function setupEventListeners() {
             modalAvatarPreview.style.display = 'block';
             modalIconPlaceholder.style.display = 'none';
         }
-
-        // Reset to options view
-        optionsView.style.display = 'block';
-        cropperView.style.display = 'none';
-        avatarModal.style.display = 'flex';
+        if (avatarModal) avatarModal.style.display = 'flex';
     });
 
-    // --- MODIFIED: "Remove" button handles avatar removal and closes modal ---
-    document.getElementById('remove-avatar-btn').addEventListener('click', () => {
-        // --- MODIFIED: Show icon instead of app logo on remove ---
-        document.getElementById('avatar-preview').style.display = 'none';
-        document.getElementById('avatar-icon-placeholder').style.display = 'block';
-        document.getElementById('avatar-preview').src = ''; // Clear src
-        newAvatarFile = 'DELETE';
-        showToast('info', 'Avatar will be removed on save.');
-        avatarModal.style.display = 'none'; // Hide modal
+    // Close modal logic
+    const closeModal = () => { if (avatarModal) avatarModal.style.display = 'none'; };
+    closeAvatarModalBtn.addEventListener('click', closeModal);
+    avatarModal.addEventListener('click', (e) => { if (e.target === avatarModal) closeModal(); });
+
+    // "Change Picture" button is a label that triggers the hidden file input.
+    // FIX: Prevent the default label behavior and handle it manually to ensure modal closes first.
+    changePictureBtn.addEventListener('click', function(e) {
+        e.preventDefault(); // Stop the label from immediately triggering the input
+        closeModal();
+        avatarUploadInput.click(); // Manually trigger the file input after closing the modal
     });
 
+    // Listen for changes on the actual file input
+    avatarUploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-    // --- MODIFIED: When a file is selected, switch to the cropper view inside the SAME modal ---
-    document.getElementById('avatar-upload').addEventListener('change', (e) => {
-        const file = event.target.files[0];
-        if (file) {
-            // Switch views inside the modal
-            optionsView.style.display = 'none';
-            cropperView.style.display = 'block';
-
-            const imageToCrop = document.getElementById('image-to-crop');
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imageToCrop.src = e.target.result;
-
-                if (cropper) {
-                    cropper.destroy();
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            window.openPhotoEditor(event.target.result, {
+                title: 'Update Avatar',
+                subtitle: 'Select the best part of your photo',
+                controls: [ { zoom: true, rotate: true, flip: true, final: true } ],
+                initialAspectRatio: 1,
+                isCircle: true,
+                compression: { targetSizeKB: 50, minQuality: 0.1, format: 'image/jpeg' },
+                onSave: (blob) => {
+                    newAvatarFile = blob;
+                    const avatarPreview = document.getElementById('avatar-preview');
+                    avatarPreview.src = URL.createObjectURL(blob);
+                    avatarPreview.style.display = 'block';
+                    document.getElementById('avatar-icon-placeholder').style.display = 'none';
+                    // FIX: Explicitly close the avatar actions modal after a successful edit.
+                    closeModal();
                 }
-
-                cropper = new Cropper(imageToCrop, {
-                    aspectRatio: 1,
-                    viewMode: 1,
-                    background: false,
-                    autoCropArea: 0.8,
-                });
-            };
-            reader.readAsDataURL(file);
-        }
-        // Reset input value to allow re-selecting the same file
-        e.target.value = '';
-    });
-
-    // --- MODIFIED: Close buttons for the unified modal ---
-    const closeModal = () => {
-        avatarModal.style.display = 'none';
-        if (cropper) cropper.destroy();
-    };
-
-    document.getElementById('close-avatar-modal-btn').addEventListener('click', closeModal);
-    document.getElementById('close-cropper-view-btn').addEventListener('click', closeModal);
-
-    // Close modal if clicking outside the content
-    avatarModal.addEventListener('click', (e) => {
-        if (e.target === avatarModal) {
-            closeModal();
-        }
-    });
-    // --- MODIFIED: Crop & Save button updates preview and closes modal ---
-    document.getElementById('crop-and-save-btn').addEventListener('click', () => {
-        if (cropper) {
-            const canvas = cropper.getCroppedCanvas({ width: 512, height: 512 });
-            // --- MODIFIED: Show image and hide icon after cropping ---
-            document.getElementById('avatar-preview').style.display = 'block';
-            document.getElementById('avatar-icon-placeholder').style.display = 'none';
-            document.getElementById('avatar-preview').src = canvas.toDataURL();
-
-            canvas.toBlob((blob) => {
-                newAvatarFile = new File([blob], 'avatar.png', { type: 'image/png' });
-            }, 'image/png');
-
-            closeModal(); // Close the unified modal
-        }
+            });
+        };
+        reader.readAsDataURL(file);
+        e.target.value = ''; // Reset input to allow re-selecting the same file
     });
 
     document.getElementById('username-info-icon').addEventListener('click', () => {
@@ -205,7 +327,22 @@ function setupEventListeners() {
         });
     });
 
+    // "Remove Picture" button logic
+    removePictureBtn.addEventListener('click', () => {
+        newAvatarFile = 'DELETE'; // Flag for deletion on save
+        document.getElementById('avatar-preview').style.display = 'none';
+        document.getElementById('avatar-icon-placeholder').style.display = 'block';
+        document.getElementById('avatar-preview').src = '';
+        showToast('info', 'Avatar will be removed on save.');
+        closeModal();
+    });
+
     document.getElementById('cancel-btn').addEventListener('click', () => {
+        formActions.style.display = 'none';
+        // Reset any open editing sections
+        document.querySelectorAll('.profile-section.editing').forEach(sec => {
+            setSectionEditable(sec.dataset.sectionName, false);
+        });
         routeManager.switchView(localStorage.getItem('currentUserType'), 'account');
     });
 
@@ -273,11 +410,15 @@ async function saveProfile() {
             'address.0.state': document.getElementById('state').value,
             'address.0.zipCode': document.getElementById('zipCode').value,
         };
+        
+        // --- FIX: Re-assemble the full phone number before saving ---
+        const countryCode = document.getElementById('phone-country-code').textContent;
+        updatedData['info.phone'] = `${countryCode}${document.getElementById('phone').value.trim()}`;
 
         // Handle username update separately due to its special rules
-        const newUsername = document.getElementById('username').value;
-        const usernameInput = document.getElementById('username');
-        if (newUsername !== currentUser.info.username && !usernameInput.readOnly) {
+        const newUsername = document.getElementById('username-modal-input').value.trim();
+        const { isEligible } = checkUsernameEligibility(currentUser);
+        if (newUsername && newUsername !== currentUser.info.username && isEligible) {
             // In a real app, you MUST check for username uniqueness on the backend here.
             // For now, we'll assume it's unique.
             updatedData['info.username'] = newUsername;
@@ -333,7 +474,5 @@ export function cleanup() {
 
     currentUser = null;
     newAvatarFile = null;
-    if (cropper) cropper.destroy();
-    cropper = null;
     // TODO: A more robust cleanup would remove all event listeners set in this module.
 }

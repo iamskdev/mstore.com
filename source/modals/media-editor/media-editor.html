@@ -1,0 +1,297 @@
+<!-- 
+  Reusable Photo Editor Component
+  Contains the HTML structure and all necessary CSS for the editor.
+  This file should be fetched and injected into the main document's body once.
+-->
+
+<!-- The actual modal component -->
+<div id="photo-editor-modal" class="photo-editor-modal">
+    <div class="photo-editor-card">
+        <div class="me-header">
+            <h1>Photo Editor</h1>
+            <p>Crop, adjust, and export your image</p>
+        </div>
+
+        <div class="me-body" id="mediaEditorPreviewContainer">
+            <div class="me-preview-area">
+                <div class="me-image-crop-wrapper">
+                    <img class="me-preview-image" id="previewImage" src="" alt="Preview">
+                    <div class="me-crop-frame" id="cropFrame"></div>
+                </div>
+            </div>
+        </div>
+        <div class="me-footer">
+            <!-- Rows and buttons will be dynamically injected here by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Hidden container for all possible buttons. JS will clone/move these into the footer as needed. -->
+<div id="photo-editor-controls-template" style="display: none;">
+    <button class="me-action-btn" id="zoomInBtn" title="Zoom In">
+        <i class="fas fa-magnifying-glass-plus"></i>
+    </button>
+    <button class="me-action-btn" id="zoomOutBtn" title="Zoom Out">
+        <i class="fas fa-magnifying-glass-minus"></i>
+    </button>
+    <button class="me-action-btn" id="fullscreenBtn" title="Toggle Fullscreen">
+        <i class="fas fa-expand"></i>
+    </button>
+    <button class="me-action-btn" id="rotateLeftBtn" title="Rotate Left">
+        <i class="fas fa-rotate-left"></i>
+    </button>
+    <button class="me-action-btn" id="rotateRightBtn" title="Rotate Right">
+        <i class="fas fa-rotate-right"></i>
+    </button>
+    <button class="me-action-btn" id="flipHorizontalBtn" title="Flip Horizontal"><i class="fas fa-right-left"></i></button>
+    <button class="me-action-btn" id="flipVerticalBtn" title="Flip Vertical"><i class="fas fa-up-down"></i></button>
+    <button class="me-action-btn" id="circleCropBtn" title="Toggle Circle Crop">
+        <i class="far fa-circle"></i>
+    </button>
+    <button class="me-action-btn" id="closeBtn" title="Close"><i class="fas fa-times"></i></button>
+    <button class="me-action-btn success" id="saveBtn" title="Done"><i class="fas fa-check"></i></button>
+</div>
+
+<style>
+    .photo-editor-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        display: none; /* Hidden by default */
+        align-items: center;
+        justify-content: center;
+        z-index: 10010; /* FIX: Increased z-index to be on top of other modals */
+    }
+    .photo-editor-card:fullscreen {
+        max-width: none;
+        height: 100%;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .photo-editor-card {
+        background: rgba(var(--bg-secondary-rgb), 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 0;
+        box-shadow: 
+            0 25px 50px rgba(0, 0, 0, 0.15),
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        width: 100%;
+        max-width: 420px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        animation: cardAppear 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .photo-editor-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+        animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes cardAppear {
+        from { opacity: 0; transform: translateY(30px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes shimmer {
+        0%, 100% { left: -100%; }
+        50% { left: 100%; }
+    }
+
+    .me-header {
+        color: var(--text-primary);
+        padding: 20px 25px 15px;
+        text-align: center;
+    }
+
+    .me-header h1 {
+        font-size: 24px;
+        margin-bottom: 8px;
+        font-weight: 800;
+    }
+
+    .me-header p {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+    .me-body {
+        flex-grow: 1;
+        position: relative;
+        min-height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .me-preview-area {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    .me-footer {
+        padding: 15px 15px 10px;
+        background: var(--bg-tertiary);
+        border-top: 1px solid var(--border-color, #e0e0e0);
+        flex-shrink: 0;
+    }
+
+    .me-image-crop-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    .me-image-crop-wrapper .me-preview-image {
+        display: block;
+    }
+    
+    .me-preview-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .me-crop-frame {
+        position: absolute;
+        border: 2px solid var(--accent-primary);
+        background: rgba(var(--accent-primary-rgb), 0.1);
+        cursor: move;
+    }
+
+    .me-image-crop-wrapper:empty {
+        display: none;
+    }
+    .me-image-crop-wrapper:not(:empty) {
+        display: inline-block;
+    }
+
+    .me-circle-overlay {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px dotted var(--accent-primary);
+        display: none;
+        pointer-events: none;
+    }
+    
+    .me-crop-frame.circle .me-circle-overlay {
+        display: block;
+    }
+
+    .me-crop-handle {
+        position: absolute;
+        background: rgba(var(--accent-primary-rgb), 0.5);
+        border: 1px solid var(--accent-text);
+    }
+    .me-crop-handle.top-left, .me-crop-handle.top-right, .me-crop-handle.bottom-left, .me-crop-handle.bottom-right {
+        width: 12px;
+        height: 12px;
+        z-index: 2;
+    }
+    .me-crop-handle.top, .me-crop-handle.bottom { width: 40%; height: 6px; left: 30%; z-index: 1; cursor: ns-resize; }
+    .me-crop-handle.left, .me-crop-handle.right { width: 6px; height: 40%; top: 30%; z-index: 1; cursor: ew-resize; }
+
+    .me-crop-handle.top-left { top: -6px; left: -6px; cursor: nwse-resize; }
+    .me-crop-handle.top-right { top: -6px; right: -6px; cursor: nesw-resize; }
+    .me-crop-handle.bottom-left { bottom: -6px; left: -6px; cursor: nesw-resize; }
+    .me-crop-handle.bottom-right { bottom: -6px; right: -6px; cursor: nwse-resize; }
+    .me-crop-handle.top { top: -3px; }
+    .me-crop-handle.bottom { bottom: -3px; }
+    .me-crop-handle.left { left: -3px; }
+    .me-crop-handle.right { right: -3px; }
+
+    .me-crop-handle:hover {
+        background: var(--accent-primary);
+    }
+
+    .me-ratio-selector {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
+
+    .me-ratio-btn {
+        padding: 6px 12px;
+        border: 1.5px solid transparent;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: var(--bg-tertiary);
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 12px;
+    }
+
+    .me-ratio-btn:hover {
+        border-color: var(--accent-primary);
+        color: var(--accent-primary);
+    }
+
+    .me-ratio-btn.active {
+        border-color: var(--accent-primary);
+        background: var(--accent-primary);
+        color: var(--accent-text);
+    }
+
+    .me-action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .me-action-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 22px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .me-action-btn:hover {
+        background: var(--bg-hover);
+        color: var(--accent-primary);
+    }
+
+    .me-action-btn.active {
+        background: rgba(var(--accent-primary-rgb), 0.1);
+        color: var(--accent-primary);
+    }
+
+    .me-action-btn.success {
+        color: var(--accent-success);
+    }
+    .me-action-btn.success:hover {
+        background: rgba(var(--accent-success-rgb), 0.15);
+        color: var(--accent-success);
+    }
+
+    /* Remove margin from the last row of buttons */
+    .me-footer .me-action-buttons:last-child {
+        margin-bottom: 0;
+    }
+</style>

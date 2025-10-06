@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en" class="light-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Editor Demo</title>
+    <!-- Link to Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FIX: Link to theme.css to apply color variables and make buttons visible -->
+    <link rel="stylesheet" href="../source/common/styles/theme.css" />
+</head>
+<body>
+    <!-- Button to trigger the modal for demo purposes -->
+    <div class="demo-container">
+        <!-- A single output area to display the result -->
+        <div class="dp-wrapper">
+            <h4>Output Preview</h4>
+            <div class="upload-box" id="outputUploadBox">
+                <i class="fas fa-user-circle dp-placeholder-icon"></i>
+                <img src="" alt="Final Image" class="final-image-preview hidden">
+                <div class="upload-overlay"></div>
+            </div>
+            <div class="download-info hidden">
+                <a class="download-btn"><i class="fas fa-download"></i> Download</a>
+                <span class="file-size-display"></span>
+                <button class="remove-dp-btn" title="Remove Picture"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+
+        <!-- Buttons to trigger the editor with different configurations -->
+        <div class="config-triggers">
+            <h3>Trigger Editor with different configs:</h3>
+            <p>Click a button to open the editor with a specific setup.</p>
+            <button class="demo-trigger-btn" id="triggerAvatar">Edit as Avatar (&lt; 50KB, 1:1, Circle)</button>
+            <button class="demo-trigger-btn" id="triggerGeneral">Edit General Image (100-200KB)</button>
+            <button class="demo-trigger-btn" id="triggerMinimal">My Favorite Footer (+, -, ○, ×, ✓)</button>
+            <button class="demo-trigger-btn" id="triggerForcedCircle">Forced Circle (No Toggle)</button>
+            <button class="demo-trigger-btn" id="triggerSpecificRatio">Specific Ratios (16:9 Only)</button>
+        </div>
+
+    </div>
+
+    <!-- The actual modal component -->
+    <div id="photo-editor-modal" class="photo-editor-modal">
+        <div class="photo-editor-card">
+            <div class="maker-header">
+                <h1>Photo Editor</h1>
+                <p>Crop, adjust, and export your image</p>
+            </div>
+    
+            <!-- FIX: Renamed main-container to editor-body to take up flexible space -->
+            <div class="editor-body" id="previewContainer">
+                <!-- FIX: Added a dedicated preview-area for overflow control -->
+                <div class="preview-area">
+                    <div class="image-crop-wrapper">
+                        <img class="preview-image" id="previewImage" src="" alt="Preview">
+                        <div class="crop-frame" id="cropFrame"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIX: Moved all controls to a new editor-footer section -->
+            <div class="editor-footer">
+                <!-- Rows and buttons will be dynamically injected here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FIX: Hidden container for all possible buttons. JS will clone/move these into the footer as needed. -->
+    <div id="photo-editor-controls-template" style="display: none;">
+        <button class="action-btn" id="zoomInBtn" title="Zoom In">
+            <i class="fas fa-magnifying-glass-plus"></i>
+        </button>
+        <button class="action-btn" id="zoomOutBtn" title="Zoom Out">
+            <i class="fas fa-magnifying-glass-minus"></i>
+        </button>
+        <button class="action-btn" id="fullscreenBtn" title="Toggle Fullscreen">
+            <i class="fas fa-expand"></i>
+        </button>
+        <button class="action-btn" id="rotateLeftBtn" title="Rotate Left">
+            <i class="fas fa-rotate-left"></i>
+        </button>
+        <button class="action-btn" id="rotateRightBtn" title="Rotate Right">
+            <i class="fas fa-rotate-right"></i>
+        </button>
+        <button class="action-btn" id="flipHorizontalBtn" title="Flip Horizontal"><i class="fas fa-right-left"></i></button>
+        <button class="action-btn" id="flipVerticalBtn" title="Flip Vertical"><i class="fas fa-up-down"></i></button>
+        <button class="action-btn" id="circleCropBtn" title="Toggle Circle Crop">
+            <i class="far fa-circle"></i>
+        </button>
+        <button class="action-btn" id="closeBtn" title="Close"><i class="fas fa-times"></i></button>
+        <button class="action-btn success" id="saveBtn" title="Done"><i class="fas fa-check"></i></button>
+    </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+ 
+        body {
+            /* FIX: Remove flex properties from body to prevent it from interfering with the modal's display logic. */
+            background: var(--page-bg-gradient);
+            min-height: 100vh;
+        }
+
+        /* FIX: Wrapper for each DP example */
+        .dp-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        /* FIX: Styles for the new DP preview/upload box */
+        .upload-box {
+            width: 150px;
+            height: 150px;
+            border: 3px dashed var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--bg-secondary);
+            opacity: 1;
+        }
+        .dp-placeholder-icon {
+            font-size: 80px;
+            color: var(--text-tertiary);
+            transition: opacity 0.3s ease;
+        }
+        .final-image-preview {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%; /* FIX: Ensure the image itself is rounded */
+        }
+        .upload-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+
+        .demo-container {
+            padding: 50px 20px;
+            text-align: center;
+            display: flex; /* Changed to flex */
+            flex-direction: column; /* Stack items vertically */
+            justify-content: center;
+            align-items: center; /* Center items horizontally */
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .config-triggers {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 400px;
+        }
+        .config-triggers h3 { color: var(--text-primary); }
+        .config-triggers p { font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
+        .demo-trigger-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            cursor: pointer;
+            text-align: left; /* Align text to the left for better readability */
+            transition: all 0.2s ease;
+        }
+        /* FIX: New styles for download info container */
+        .download-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .file-size-display {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 4px 8px;
+            border-radius: 10px;
+        }
+
+        .remove-dp-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .remove-dp-btn:hover {
+            background: var(--bg-hover);
+            color: var(--accent-danger);
+        }
+        .download-btn {
+            background: var(--accent-success);
+            color: var(--accent-text);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+            opacity: 0.8;
+        }
+
+        .photo-editor-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 1010;
+        }
+        /* FIX: When the card is in fullscreen, ensure it and its parent modal take up the full screen space. */
+        .photo-editor-card:fullscreen {
+            max-width: none;
+            height: 100%;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .photo-editor-card {
+            /* Styles adapted from your professional rating-modal.html */
+            background: rgba(var(--bg-secondary-rgb), 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 0; /* FIX: Removed border radius for sharp corners */
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+            position: relative;
+            display: flex; /* Use flexbox for vertical layout */
+            flex-direction: column; /* Stack header, body, footer */
+            animation: cardAppear 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .photo-editor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes shimmer {
+            0%, 100% { left: -100%; }
+            50% { left: 100%; }
+        }
+
+        .maker-header {
+            color: var(--text-primary);
+            padding: 20px 25px 15px;
+            text-align: center;
+        }
+
+        .maker-header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .maker-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* FIX: New layout structure */
+        .editor-body {
+            flex-grow: 1; /* Allow body to take up all available vertical space */
+            position: relative;
+            min-height: 300px; /* Ensure it has a minimum height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px; /* FIX: Apply equal padding on all sides */
+            /* overflow: hidden; */ /* FIX: Overflow control moved to the inner preview-area */
+        }
+        /* FIX: New inner container to handle overflow and respect parent's padding */
+        .preview-area {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .editor-footer {
+            padding: 15px 15px 10px; /* Compact padding */
+            background: rgba(var(--bg-primary-rgb, 249, 249, 249), 0.5); /* Slight background to distinguish */
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0; /* Prevent footer from shrinking */
+        }
+
+        .upload-text h3 {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .upload-text p {
+            color: var(--text-tertiary);
+            font-size: 14px;
+        }
+
+        /* FIX: New wrapper to contain both image and cropper, ensuring they are perfectly aligned. */
+        .image-crop-wrapper {
+            position: relative;
+            display: inline-block; /* Shrink-to-fit the image */
+            /* margin: 0 25px; */ /* FIX: Margin is no longer needed, padding is on .editor-body */
+        }
+        .image-crop-wrapper .preview-image {
+            display: block; /* Remove bottom space from image */
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .crop-frame {
+            position: absolute;
+            border: 2px solid var(--accent-primary);
+            background: rgba(var(--accent-primary-rgb), 0.1);
+            cursor: move;
+            /* FIX: Top and left are now set by JS relative to the image wrapper */
+            /* Add handles dynamically via JS */
+        }
+
+        /* FIX: Add this to ensure the wrapper is not empty before image loads */
+        .image-crop-wrapper:empty {
+            display: none;
+        }
+        .image-crop-wrapper:not(:empty) {
+            display: inline-block;
+        }
+
+        /* FIX: New styles for the circle overlay inside the crop frame */
+        .circle-overlay {
+            position: absolute;
+            inset: 0; /* Take up the full space of the parent crop frame */
+            border-radius: 50%;
+            /* FIX: Replaced shadow with a simple dotted border as requested */
+            border: 2px dotted var(--accent-primary);
+            display: none; /* Hidden by default */
+            pointer-events: none; /* Allows clicks to pass through to the frame */
+        }
+        
+        /* When .circle is active on the parent, show the overlay */
+        .crop-frame.circle .circle-overlay {
+            display: block;
+        }
+
+
+        /* NEW: Styles for multiple resize handles */
+        .crop-handle {
+            position: absolute;
+            background: rgba(var(--accent-primary-rgb), 0.5);
+            border: 1px solid var(--accent-text);
+        }
+        .crop-handle.top-left, .crop-handle.top-right, .crop-handle.bottom-left, .crop-handle.bottom-right {
+            width: 12px;
+            height: 12px;
+            z-index: 2;
+        }
+        .crop-handle.top, .crop-handle.bottom { width: 40%; height: 6px; left: 30%; z-index: 1; cursor: ns-resize; }
+        .crop-handle.left, .crop-handle.right { width: 6px; height: 40%; top: 30%; z-index: 1; cursor: ew-resize; }
+
+        .crop-handle.top-left { top: -6px; left: -6px; cursor: nwse-resize; }
+        .crop-handle.top-right { top: -6px; right: -6px; cursor: nesw-resize; }
+        .crop-handle.bottom-left { bottom: -6px; left: -6px; cursor: nesw-resize; }
+        .crop-handle.bottom-right { bottom: -6px; right: -6px; cursor: nwse-resize; }
+        .crop-handle.top { top: -3px; }
+        .crop-handle.bottom { bottom: -3px; }
+        .crop-handle.left { left: -3px; }
+        .crop-handle.right { right: -3px; }
+
+        .crop-handle:hover {
+            background: var(--accent-primary);
+        }
+
+        .ratio-selector {
+            display: flex;
+            justify-content: center;
+            gap: 8px; /* Tighter gap */
+            margin-bottom: 10px; /* Reduced margin */
+            flex-wrap: wrap;
+        }
+
+        .ratio-btn {
+            padding: 6px 12px;
+            border: 1.5px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .ratio-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .ratio-btn.active {
+            border-color: var(--accent-primary);
+            background: var(--accent-primary);
+            color: var(--accent-text);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px; /* Tighter gap */
+            margin-bottom: 10px; /* Reduced margin */
+        }
+
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 22px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-hover);
+            color: var(--accent-primary);
+        }
+
+        .action-btn.active {
+            background: rgba(var(--accent-primary-rgb), 0.1);
+            color: var(--accent-primary);
+        }
+
+        /* Special color for success/apply button */
+        .action-btn.success {
+            color: var(--accent-success);
+        }
+        .action-btn.success:hover {
+            background: rgba(var(--accent-success-rgb), 0.15);
+            color: var(--accent-success);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Remove margin from the last row of buttons */
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const previewContainer = document.getElementById('previewContainer');
+            const previewImage = document.getElementById('previewImage');
+            const cropFrame = document.getElementById('cropFrame');
+            const ratioBtns = document.querySelectorAll('.ratio-btn');
+            const circleCropBtn = document.getElementById('circleCropBtn');
+            const rotateLeftBtn = document.getElementById('rotateLeftBtn');
+            const rotateRightBtn = document.getElementById('rotateRightBtn');
+            const zoomInBtn = document.getElementById('zoomInBtn');
+            const zoomOutBtn = document.getElementById('zoomOutBtn');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const flipHorizontalBtn = document.getElementById('flipHorizontalBtn');
+            const flipVerticalBtn = document.getElementById('flipVerticalBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const modal = document.getElementById('photo-editor-modal');
+            
+            // --- NEW: State for zoom functionality ---
+            let imageScale = 1;
+            let imagePosX = 0;
+            let imagePosY = 0;
+            let isPanning = false;
+            let panStartX, panStartY;
+            // --- NEW: State for pinch-to-zoom ---
+            let initialPinchDistance = 0;
+            let lastScale = 1;
+
+            // --- REFACTOR: Get all controls from the hidden template ---
+            const controls = {
+                zoomInBtn: document.getElementById('zoomInBtn'), zoomOutBtn: document.getElementById('zoomOutBtn'),
+                fullscreenBtn: document.getElementById('fullscreenBtn'), rotateLeftBtn: document.getElementById('rotateLeftBtn'),
+                rotateRightBtn: document.getElementById('rotateRightBtn'), flipHorizontalBtn: document.getElementById('flipHorizontalBtn'),
+                flipVerticalBtn: document.getElementById('flipVerticalBtn'), circleCropBtn: document.getElementById('circleCropBtn'),
+                closeBtn: document.getElementById('closeBtn'), saveBtn: document.getElementById('saveBtn')
+            };
+
+            // --- REFACTORED: Upload Workflow ---
+            // Set the single output box as the active trigger
+            activeTrigger = document.getElementById('outputUploadBox');
+
+            document.getElementById('triggerAvatar').addEventListener('click', () => {
+                const editorOptions = {
+                    title: 'Update Avatar',
+                    subtitle: 'Select the best part of your photo',
+                    controls: [
+                        { zoom: true, fullscreen: true, rotate: true, flip: true }
+                    ],
+                    initialAspectRatio: 1,
+                    isCircle: true,
+                    compression: { targetSizeKB: 50, minQuality: 0.1, format: 'image/jpeg' }
+                };
+                openFileInput(editorOptions);
+            });
+
+            document.getElementById('triggerSpecificRatio').addEventListener('click', () => {
+                const editorOptions = {
+                    title: 'Specific Ratio',
+                    subtitle: 'Only the 16:9 aspect ratio is available.',
+                    controls: [
+                        { ratios: true }, // Show the ratio row
+                        { zoom: true, rotate: true, flip: true }
+                    ],
+                    // This is the key part: provide only the ratios you want to show.
+                    aspectRatios: [{label: '16:9', value: 1.777}],
+                    initialAspectRatio: 1.777, // Start with 16:9 active
+                    compression: { targetSizeKB: 150, minQuality: 0.7, format: 'image/jpeg' }
+                };
+                openFileInput(editorOptions);
+            });
+            document.getElementById('triggerForcedCircle').addEventListener('click', () => {
+                const editorOptions = {
+                    title: 'Forced Circle Crop',
+                    subtitle: 'Circle mode is active, but the toggle button is hidden.',
+                    controls: [
+                        { zoom: true, rotate: true, flip: true, final: true }
+                    ],
+                    initialAspectRatio: 1,
+                    isCircle: true, // This is the key part: forces circle mode
+                    compression: { targetSizeKB: 80, minQuality: 0.4, format: 'image/jpeg' }
+                };
+                openFileInput(editorOptions);
+            });
+
+            document.getElementById('triggerGeneral').addEventListener('click', () => {
+                const editorOptions = {
+                    title: 'Edit Image',
+                    subtitle: 'Adjust your image with full controls',
+                    // Multi-row controls example
+                    controls: [
+                        { ratios: true }, // Row 1: Aspect Ratios
+                        { zoom: true, rotate: true, flip: true, circle: true, fullscreen: true } // Row 2: Tools
+                    ],
+                    aspectRatios: [{label: '1:1', value: 1}, {label: '16:9', value: 1.777}, {label: '4:3', value: 1.333}, {label: 'Free', value: null}],
+                    initialAspectRatio: 1.777,
+                    // Use the new general compressor
+                    compression: { 
+                        type: 'general', // Selects the new compressor
+                        minSizeKB: 100, 
+                        maxSizeKB: 200, 
+                        minQuality: 0.6, 
+                        format: 'image/jpeg' }
+                };
+                openFileInput(editorOptions);
+            });
+
+            document.getElementById('triggerMinimal').addEventListener('click', () => {
+                // User request: Only 5 buttons (+, -, fullscreen, x, tick)
+                const editorOptions = {
+                    title: 'Quick Crop',
+                    subtitle: 'Crop your image with minimal tools',
+                    // User's favorite footer: 5 buttons in one row
+                    controls: [
+                        { zoom: true, circle: true, final: true }
+                    ],
+                    initialAspectRatio: 1,
+                    compression: { targetSizeKB: 100, minQuality: 0.5, format: 'image/jpeg' }
+                };
+                openFileInput(editorOptions);
+            });
+
+
+
+
+
+            // --- FIX: Add functionality for the new "Remove DP" buttons ---
+            document.querySelectorAll('.remove-dp-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const wrapper = this.closest('.dp-wrapper');
+                    if (wrapper) {
+                        const finalImagePreview = wrapper.querySelector('.final-image-preview');
+                        const dpPlaceholderIcon = wrapper.querySelector('.dp-placeholder-icon');
+                        finalImagePreview.src = '';
+                        finalImagePreview.classList.add('hidden');
+                        dpPlaceholderIcon.classList.remove('hidden');
+                        this.parentElement.classList.add('hidden'); // Hide the .download-info div
+                    }
+                });
+            });
+
+            function openFileInput(editorOptions) {
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            // Define what happens when the user clicks "Save"
+                            editorOptions.onSave = (compressedBlob) => {
+                                const dataUrl = URL.createObjectURL(compressedBlob);
+                                const fileSizeKB = (compressedBlob.size / 1024).toFixed(1);
+                                const outputFormat = editorOptions.isCircle ? 'image/png' : editorOptions.compression.format;
+
+                                if (activeTrigger) {
+                                    const finalImagePreview = activeTrigger.querySelector('.final-image-preview');
+                                    const dpPlaceholderIcon = activeTrigger.querySelector('.dp-placeholder-icon');
+                                    const downloadInfo = activeTrigger.parentElement.querySelector('.download-info');
+                                    const downloadBtn = downloadInfo.querySelector('a.download-btn');
+                                    const fileSizeDisplay = downloadInfo.querySelector('.file-size-display');
+
+                                    finalImagePreview.src = dataUrl;
+                                    finalImagePreview.classList.remove('hidden');
+                                    dpPlaceholderIcon.classList.add('hidden');
+
+                                    downloadBtn.href = dataUrl;
+                                    downloadBtn.download = outputFormat === 'image/png' ? 'avatar.png' : 'image.jpg';
+                                    fileSizeDisplay.textContent = `${fileSizeKB} KB`;
+                                    downloadInfo.classList.remove('hidden');
+                                }
+                            };
+                            // Now, open the editor with the chosen image and options
+                            openPhotoEditor(event.target.result, editorOptions);
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+                fileInput.click();
+            }
+
+            /**
+             * Opens the photo editor with a specified image and configuration.
+             * @param {string} imageSrc - The Data URL or object URL of the image to edit.
+             * @param {object} options - Configuration for the editor.
+             * @param {Array} [options.aspectRatios] - e.g., [{label: '1:1', value: 1}]
+             * @param {number} [options.initialAspectRatio=1] - The starting aspect ratio.
+             * @param {boolean} [options.isCircle=false] - If true, starts in circle crop mode.
+             * @param {Array<object>} [options.controls] - Array of row objects, e.g., [{ zoom: true }, { rotate: true }]
+             * @param {string} [options.compression.type] - 'target' (default) or 'general' to select compressor.
+             * @param {object} options.compression - e.g., { targetSizeKB: 150, minQuality: 0.7, format: 'image/jpeg' }
+             * @param {string} [options.title] - The main title of the editor modal.
+             * @param {string} [options.subtitle] - The subtitle text below the main title.
+             * @param {function} options.onSave - Callback function that receives the final blob.
+             */
+            function openPhotoEditor(imageSrc, options) {
+                applyEditorConfiguration(options);
+                modal.style.display = 'flex';
+                loadImage(imageSrc);
+            }
+            
+            // Save image
+            saveBtn.addEventListener('click', function() {
+                // FIX: Implement actual cropping and display the result
+                applyAndSaveCrop();
+            });
+            
+            // New controls
+            circleCropBtn.addEventListener('click', () => {
+                cropFrame.classList.toggle('circle');
+                circleCropBtn.classList.toggle('active');
+
+                // If circle crop is now active, force 1:1 aspect ratio
+                if (cropFrame.classList.contains('circle')) {
+                    // Deactivate all ratio buttons
+                    ratioBtns.forEach(b => b.classList.remove('active'));
+                    // Find and activate the 1:1 button
+                    const oneToOneBtn = document.querySelector('.ratio-btn[data-ratio="1"]');
+                    if (oneToOneBtn) {
+                        oneToOneBtn.classList.add('active');
+                    }
+                    currentAspectRatio = 1;
+                    updateCropFrameAspectRatio();
+                }
+            });
+
+            // --- FIX: Functional Rotate and Flip Buttons ---
+            rotateLeftBtn.addEventListener('click', () => applyTransform('rotate', -90));
+            rotateRightBtn.addEventListener('click', () => applyTransform('rotate', 90));
+            flipHorizontalBtn.addEventListener('click', () => applyTransform('flip', 'horizontal'));
+            flipVerticalBtn.addEventListener('click', () => applyTransform('flip', 'vertical'));
+
+            // --- FIX: Implemented Manual Zoom In/Out ---
+            zoomInBtn.addEventListener('click', () => {
+                imageScale += 0.1;
+                updateImageZoomAndPan();
+            });
+
+            zoomOutBtn.addEventListener('click', () => {
+                imageScale = Math.max(1, imageScale - 0.1); // Prevent zooming out beyond original size
+                if (imageScale === 1) {
+                    imagePosX = 0;
+                    imagePosY = 0;
+                }
+                updateImageZoomAndPan();
+            });
+
+            // --- FIX: Implemented Fullscreen Feature ---
+            fullscreenBtn.addEventListener('click', () => {
+                // FIX: Target the entire editor card for fullscreen mode, not just the preview area.
+                const editorCard = modal.querySelector('.photo-editor-card');
+                if (!document.fullscreenElement) {
+                    if (editorCard) {
+                        editorCard.requestFullscreen().catch(err => {
+                            alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                        });
+                    }
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
+            document.addEventListener('fullscreenchange', () => {
+                const icon = fullscreenBtn.querySelector('i');
+                const isFullscreen = !!document.fullscreenElement;
+                icon.className = isFullscreen ? 'fas fa-compress' : 'fas fa-expand';
+            });
+
+            closeBtn.addEventListener('click', () => {
+                closeModal();
+            });
+
+            function closeModal() {
+                if (modal) {
+                    modal.style.display = 'none';
+                    onSaveCallback = null; // Clear the callback
+                }
+            }
+            
+            // --- NEW Cropper Drag and Resize Logic ---
+            cropFrame.addEventListener('mousedown', onMouseDown);
+            // --- NEW: Event listeners for panning the zoomed image ---
+            previewImage.addEventListener('mousedown', onPanStart);
+            // --- FIX: Add touch listeners for pinch-zoom and pan ---
+            previewContainer.addEventListener('touchstart', onTouchStart, { passive: false });
+            previewContainer.addEventListener('touchmove', onTouchMove, { passive: false });
+            document.addEventListener('mousemove', onPanMove);
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+
+            function onMouseDown(e) {
+                e.preventDefault();
+                e.stopPropagation(); // FIX: Prevent click from bubbling up to uploadBox
+                startX = e.clientX;
+                startY = e.clientY;
+                startLeft = cropFrame.offsetLeft;
+                startTop = cropFrame.offsetTop;
+                startWidth = cropFrame.offsetWidth;
+                startHeight = cropFrame.offsetHeight;
+
+                if (e.target.classList.contains('crop-handle')) {
+                    isResizing = true;
+                    resizeHandle = Array.from(e.target.classList).find(c => c !== 'crop-handle');
+                } else {
+                    isDragging = true;
+                }
+            }
+
+            function onMouseMove(e) {
+                if (!isDragging && !isResizing) return;
+                
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                
+                // FIX: The boundary should be the image-crop-wrapper, not the whole previewContainer.
+                const wrapper = previewContainer.querySelector('.image-crop-wrapper');
+                if (!wrapper) return;
+                const parentRect = wrapper.getBoundingClientRect();
+
+                if (isDragging) {
+                    let newLeft = Math.max(0, Math.min(startLeft + dx, parentRect.width - startWidth));
+                    let newTop = Math.max(0, Math.min(startTop + dy, parentRect.height - startHeight));
+                    cropFrame.style.left = `${newLeft}px`;
+                    cropFrame.style.top = `${newTop}px`;
+                } else if (isResizing) {
+                    let newWidth = startWidth, newHeight = startHeight, newLeft = startLeft, newTop = startTop;
+
+                    if (resizeHandle.includes('right')) newWidth = Math.max(50, Math.min(startWidth + dx, parentRect.width - startLeft));
+                    if (resizeHandle.includes('bottom')) newHeight = Math.max(50, Math.min(startHeight + dy, parentRect.height - startTop));
+                    
+                    if (resizeHandle.includes('left')) {
+                        newWidth = Math.max(50, startWidth - dx);
+                        newLeft = Math.min(startLeft + startWidth - 50, Math.max(0, startLeft + dx));
+                    }
+                    if (resizeHandle.includes('top')) {
+                        newHeight = Math.max(50, startHeight - dy);
+                        newTop = Math.min(startTop + startHeight - 50, Math.max(0, startTop + dy));
+                    }
+
+                    // Maintain aspect ratio
+                    if (currentAspectRatio) {
+                        if (resizeHandle.includes('left') || resizeHandle.includes('right')) {
+                            newHeight = newWidth / currentAspectRatio;
+                        } else {
+                            newWidth = newHeight * currentAspectRatio;
+                        }
+                    }
+
+                    // Boundary checks after aspect ratio adjustment
+                    if (newLeft + newWidth > parentRect.width) {
+                        newWidth = parentRect.width - newLeft;
+                        if(currentAspectRatio) newHeight = newWidth / currentAspectRatio;
+                    }
+                    if (newTop + newHeight > parentRect.height) {
+                        newHeight = parentRect.height - newTop;
+                        if(currentAspectRatio) newWidth = newHeight * currentAspectRatio;
+                    }
+
+                    cropFrame.style.width = `${newWidth}px`;
+                    cropFrame.style.height = `${newHeight}px`;
+                    cropFrame.style.left = `${newLeft}px`;
+                    cropFrame.style.top = `${newTop}px`;
+                }
+            }
+
+            function onMouseUp() {
+                isDragging = false;
+                isResizing = false;
+                isPanning = false; // Stop panning
+                previewImage.style.cursor = 'default';
+            }
+
+            // --- NEW: Functions for panning the zoomed image ---
+            function onPanStart(e) {
+                if (imageScale <= 1) return; // Only pan if zoomed
+                e.preventDefault();
+                e.stopPropagation();
+                isPanning = true;
+                panStartX = e.clientX - imagePosX;
+                panStartY = e.clientY - imagePosY;
+                previewImage.style.cursor = 'grabbing';
+            }
+
+            function onPanMove(e) {
+                if (!isPanning) return;
+                imagePosX = e.clientX - panStartX;
+                imagePosY = e.clientY - panStartY;
+                updateImageZoomAndPan(true); // Pass true to constrain the panning
+            }
+
+            function onTouchMove(e) {
+                if (e.touches.length === 2) { // Pinch-to-zoom
+                    e.preventDefault();
+                    const newPinchDistance = getPinchDistance(e.touches);
+                    const scaleRatio = newPinchDistance / initialPinchDistance;
+                    imageScale = Math.max(1, lastScale * scaleRatio); // Prevent de-zooming beyond 1
+                    updateImageZoomAndPan(true); // Constrain on zoom change
+                } else if (e.touches.length === 1 && isPanning) { // Pan
+                    e.preventDefault();
+                    imagePosX = e.touches[0].clientX - panStartX;
+                    imagePosY = e.touches[0].clientY - panStartY;
+                    updateImageZoomAndPan(true); // Constrain on pan change
+                }
+            }
+
+            // --- FIX: New functions for mobile touch gestures (pinch-zoom & pan) ---
+            function onTouchStart(e) {
+                if (e.touches.length === 2) { // Pinch-to-zoom
+                    e.preventDefault();
+                    initialPinchDistance = getPinchDistance(e.touches);
+                    lastScale = imageScale;
+                } else if (e.touches.length === 1 && imageScale > 1) { // Pan
+                    e.preventDefault();
+                    isPanning = true;
+                    panStartX = e.touches[0].clientX - imagePosX;
+                    panStartY = e.touches[0].clientY - imagePosY;
+                    previewImage.style.cursor = 'grabbing';
+                }
+            }
+
+            function getPinchDistance(touches) {
+                const dx = touches[0].clientX - touches[1].clientX;
+                const dy = touches[0].clientY - touches[1].clientY;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            function updateImageZoomAndPan(constrain = false) {
+                // FIX: Constrain panning within the visible area of the wrapper, not just the image itself.
+                // This correctly respects the padding of the parent container (.editor-body).
+                // Use the previewContainer's clientWidth/Height which includes padding.
+                if (constrain && imageScale > 1) {
+                    // FIX: Calculate the actual pannable area by subtracting the container's padding.
+                    // This prevents the zoomed image from moving into the padded space.
+                    // The preview area is now the direct child of the padded container.
+                    const pannableContainer = previewContainer.querySelector('.preview-area');
+                    if (!pannableContainer) return; // Safety check
+
+                    const scaledImageWidth = previewImage.naturalWidth * imageScale;
+                    const extraWidth = Math.max(0, (scaledImageWidth - pannableContainer.clientWidth) / 2) / imageScale;
+                    const extraHeight = Math.max(0, (previewImage.naturalHeight * imageScale - previewContainer.clientHeight) / 2) / imageScale;
+                    imagePosX = Math.max(-extraWidth, Math.min(extraWidth, imagePosX));
+                    imagePosY = Math.max(-extraHeight, Math.min(extraHeight, imagePosY));
+                }
+
+                const currentTransform = previewImage.style.transform.replace(/scale\([\d.]+\)/, '').replace(/translate\([^\)]+\)/, '').trim();
+                previewImage.style.transform = `${currentTransform} scale(${imageScale}) translate(${imagePosX}px, ${imagePosY}px)`;
+            }
+            
+            // --- FIX: New function to perform the crop and display the result ---
+            async function applyAndSaveCrop(compressionOptions) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                const image = previewImage;
+                const cropRect = cropFrame.getBoundingClientRect();
+                const wrapperRect = previewContainer.querySelector('.image-crop-wrapper').getBoundingClientRect();
+
+                // Calculate crop position relative to the image
+                const cropX = cropRect.left - wrapperRect.left;
+                const cropY = cropRect.top - wrapperRect.top;
+                const cropWidth = cropRect.width;
+                const cropHeight = cropRect.height;
+
+                // Set canvas size to the crop size
+                canvas.width = cropWidth;
+                canvas.height = cropHeight;
+
+                // Handle image transformations (rotation, flip, zoom, pan)
+                const currentTransform = image.style.transform;
+                const rotateMatch = currentTransform.match(/rotate\((-?\d+\.?\d*)deg\)/);
+                const scaleXMatch = currentTransform.match(/scaleX\((-?\d+)\)/);
+                const scaleYMatch = currentTransform.match(/scaleY\((-?\d+)\)/);
+                
+                const rotation = rotateMatch ? parseFloat(rotateMatch[1]) : 0;
+                const scaleX = scaleXMatch ? parseInt(scaleXMatch[1]) : 1;
+                const scaleY = scaleYMatch ? parseInt(scaleYMatch[1]) : 1;
+
+                // FIX: Temporarily remove rotation/flip from the image element itself
+                // before getting its bounding box. This ensures that the crop calculations
+                // are based on the un-rotated, un-flipped state, which is what the canvas expects.
+                // The rotation/flip is applied to the canvas context later.
+                const originalTransform = image.style.transform;
+                image.style.transform = `scale(${imageScale}) translate(${imagePosX}px, ${imagePosY}px)`;
+                const unrotatedWrapperRect = previewContainer.querySelector('.image-crop-wrapper').getBoundingClientRect();
+
+                // Move canvas context to the center to apply transformations
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(rotation * Math.PI / 180);
+                ctx.scale(scaleX, scaleY);
+                ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
+                // FIX: Define source variables *before* they are used in the if/else block.
+                // This was causing a ReferenceError and breaking the "Done" button.
+                // FIX: The calculation must also account for the image's own panning (imagePosX/Y).
+                // This ensures the correct part of the panned/zoomed image is cropped. 
+                // FIX: The calculation for sourceX/Y was incorrect. It needs to account for the image's natural dimensions vs its displayed dimensions.
+                const displayToNaturalRatio = image.naturalWidth / image.width;
+                const sourceX = (cropX - imagePosX) * displayToNaturalRatio;
+                const sourceY = (cropY - imagePosY) * displayToNaturalRatio;
+                const sourceWidth = cropWidth * displayToNaturalRatio;
+                const sourceHeight = cropHeight * displayToNaturalRatio;
+
+                // The circle is now just a visual guide. The actual crop is always rectangular
+                // based on the crop frame's dimensions (which is 1:1 square in circle mode).
+                drawImageToCanvas(ctx, image, sourceX, sourceY, sourceWidth, sourceHeight, cropWidth, cropHeight);
+
+                // Restore the original transform to the image element
+                image.style.transform = originalTransform;
+
+                // --- FIX: Start compression ---
+                // The output is always rectangular, so we can rely on the configured format.
+                const finalFormat = compressionOptions.format || 'image/jpeg';
+
+                let compressedBlob;
+                // --- NEW: Choose compressor based on type ---
+                if (compressionOptions.type === 'general') {
+                    console.log(`Using general compressor for range: ${compressionOptions.minSizeKB}-${compressionOptions.maxSizeKB} KB`);
+                    compressedBlob = await compressImageGeneral(canvas, compressionOptions.minSizeKB, compressionOptions.maxSizeKB, compressionOptions.minQuality, finalFormat);
+                } else {
+                    console.log(`Using target compressor for target: ${compressionOptions.targetSizeKB} KB`);
+                    compressedBlob = await compressImage(canvas, compressionOptions.targetSizeKB, compressionOptions.minQuality, finalFormat);
+                }
+
+                if (onSaveCallback) onSaveCallback(compressedBlob);
+                
+                // --- FIX: Update the correct DP preview based on activeTrigger ---
+                if (activeTrigger) {
+                    const finalImagePreview = activeTrigger.querySelector('.final-image-preview');
+                    const dpPlaceholderIcon = activeTrigger.querySelector('.dp-placeholder-icon');
+                    const downloadInfo = activeTrigger.parentElement.querySelector('.download-info');
+                    const downloadBtn = downloadInfo.querySelector('a.download-btn');
+                    const fileSizeDisplay = downloadInfo.querySelector('.file-size-display');
+
+                }
+
+                closeModal();
+            }
+
+            // Helper function to draw the image on the canvas
+            function drawImageToCanvas(ctx, image, sx, sy, sWidth, sHeight, dWidth, dHeight) {
+                ctx.drawImage(
+                    image,
+                    sx, sy,           // Source x, y
+                    sWidth, sHeight,  // Source width, height
+                    0, 0,             // Destination x, y
+                    dWidth, dHeight   // Destination width, height
+                );
+            }
+
+
+            // --- FIX: New image compression function ---
+            async function compressImage(sourceCanvas, targetSizeKB, minQuality, format) {
+                const targetSizeBytes = targetSizeKB * 1024;
+                let quality = 0.9;
+                let compressedBlob = null;
+
+                // Use a temporary canvas to avoid re-drawing on the source
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = sourceCanvas.width;
+                tempCanvas.height = sourceCanvas.height;
+                tempCtx.drawImage(sourceCanvas, 0, 0);
+
+                // Iteratively reduce quality to meet the target size
+                for (let i = 0; i < 10; i++) { // Limit iterations to prevent infinite loops
+                    compressedBlob = await new Promise(resolve => 
+                        tempCanvas.toBlob(resolve, format, quality)
+                    );
+
+                    if (compressedBlob.size <= targetSizeBytes || quality <= minQuality) {
+                        break; // Stop if target size is met or quality is too low
+                    }
+                    quality -= 0.1; // Reduce quality for the next attempt
+                }
+                console.log(`Final compressed size: ${(compressedBlob.size / 1024).toFixed(1)} KB with quality ${quality.toFixed(1)}`);
+                return compressedBlob;
+            }
+
+            // --- NEW: General purpose compressor for a size range ---
+            async function compressImageGeneral(sourceCanvas, minSizeKB, maxSizeKB, minQuality, format) {
+                // --- REFACTORED: Smarter binary-search-like approach for better results ---
+                const minBytes = minSizeKB * 1024;
+                const maxBytes = maxSizeKB * 1024;
+                let lowerBound = minQuality;
+                let upperBound = 1.0;
+                let currentQuality = 0.9; // Start with a reasonable quality
+                let bestBlob = null;
+
+                // Create a single blob at max quality to check initial size
+                const initialBlob = await new Promise(resolve => sourceCanvas.toBlob(resolve, format, 1.0));
+                if (initialBlob.size < minBytes) {
+                    console.log(`Initial size (${(initialBlob.size/1024).toFixed(1)} KB) is already below min target. Returning highest quality.`);
+                    return initialBlob;
+                }
+
+                // Iterate to find the best quality within the size range
+                for (let i = 0; i < 7; i++) { // 7 iterations are enough for a binary search
+                    const blob = await new Promise(resolve => sourceCanvas.toBlob(resolve, format, currentQuality));
+                    
+                    if (blob.size > maxBytes) {
+                        // Too big, reduce quality
+                        upperBound = currentQuality;
+                        currentQuality = (lowerBound + upperBound) / 2;
+                    } else if (blob.size < minBytes) {
+                        // Too small, increase quality
+                        bestBlob = blob; // This is a valid (though small) candidate
+                        lowerBound = currentQuality;
+                        currentQuality = (lowerBound + upperBound) / 2;
+                    } else {
+                        // Perfect fit!
+                        bestBlob = blob;
+                        break;
+                    }
+                }
+                console.log(`Final compressed size: ${(bestBlob.size / 1024).toFixed(1)} KB with quality ${currentQuality.toFixed(2)}`);
+                return bestBlob;
+            }
+            // Functions
+            function loadImage(src) {
+                const img = new Image();
+                img.src = src;
+                img.onload = function() {
+                    currentImage = img;
+                    previewImage.src = src;
+                    
+                    // Ensure the wrapper exists
+                    let wrapper = previewContainer.querySelector('.image-crop-wrapper');
+                    let area = previewContainer.querySelector('.preview-area');
+                    if (!wrapper || !area) {
+                        // This should not happen if HTML is correct, but as a fallback
+                        wrapper = document.createElement('div');
+                        wrapper.className = 'image-crop-wrapper';
+                        wrapper.appendChild(previewImage);
+                        wrapper.appendChild(cropFrame);
+                        area.appendChild(wrapper);
+                    }
+
+                    // Dynamically add handles to the crop frame
+                    cropFrame.innerHTML = `
+                        <div class="crop-handle top-left"></div>
+                        <div class="circle-overlay"></div>
+                        <div class="crop-handle top-right"></div>
+                        <div class="crop-handle bottom-left"></div>
+                        <div class="crop-handle bottom-right"></div>
+                        <div class="crop-handle top"></div>
+                        <div class="crop-handle bottom"></div>
+                        <div class="crop-handle left"></div>
+                        <div class="crop-handle right"></div>
+                    `;
+                    
+                    // Initialize crop frame
+                    const parentRect = wrapper.getBoundingClientRect();
+                    const size = Math.min(parentRect.width, parentRect.height) * 0.8;
+                    
+                    cropFrame.style.width = size + 'px';
+                    cropFrame.style.height = size + 'px';
+                    cropFrame.style.left = (parentRect.width - size) / 2 + 'px';
+                    cropFrame.style.top = (parentRect.height - size) / 2 + 'px';
+                    
+                    // Reset any previous transforms
+                    imageScale = 1;
+                    imagePosX = 0;
+                    imagePosY = 0;
+                    previewImage.style.transform = 'rotate(0deg) scaleX(1) scaleY(1) scale(1) translate(0px, 0px)';
+
+
+                    updateCropFrameAspectRatio();
+                };
+            }
+            function updateCropFrameAspectRatio() {
+                const currentWidth = parseInt(cropFrame.style.width);
+                let newHeight = currentWidth / currentAspectRatio;
+                
+                // FIX: Check if new height exceeds parent boundary and adjust width instead if it does.
+                const wrapper = previewContainer.querySelector('.image-crop-wrapper');
+                if (wrapper && newHeight > wrapper.offsetHeight) {
+                    newHeight = wrapper.offsetHeight;
+                    const newWidth = newHeight * currentAspectRatio;
+                    cropFrame.style.width = newWidth + 'px';
+                }
+
+                cropFrame.style.height = newHeight + 'px';
+            }
+
+            // --- FIX: New function to handle image transformations ---
+            function applyTransform(type, value) {
+                if (!previewImage.src) return;
+                const currentTransform = previewImage.style.transform || 'rotate(0deg) scaleX(1) scaleY(1) scale(1) translate(0px, 0px)';
+                let [_, currentRotation] = currentTransform.match(/rotate\((-?\d+)deg\)/) || [0, 0];
+                let [__, currentScaleX] = currentTransform.match(/scaleX\((-?\d+)\)/) || [0, 1];
+                let [___, currentScaleY] = currentTransform.match(/scaleY\((-?\d+)\)/) || [0, 1];
+
+                currentRotation = parseInt(currentRotation);
+                currentScaleX = parseInt(currentScaleX);
+                currentScaleY = parseInt(currentScaleY);
+
+                if (type === 'rotate') {
+                    currentRotation += value;
+                } else if (type === 'flip') {
+                    if (value === 'horizontal') {
+                        currentScaleX *= -1;
+                    } else {
+                        currentScaleY *= -1;
+                    }
+                }
+
+                // Preserve zoom and pan state
+                previewImage.style.transform = `rotate(${currentRotation}deg) scaleX(${currentScaleX}) scaleY(${currentScaleY}) scale(${imageScale}) translate(${imagePosX}px, ${imagePosY}px)`;
+            }
+
+            // --- NEW: Function to configure the editor UI based on options ---
+            function applyEditorConfiguration(options) {
+                // Configure Title and Subtitle
+                const editorTitle = modal.querySelector('.maker-header h1');
+                const editorSubtitle = modal.querySelector('.maker-header p');
+                editorTitle.textContent = options.title || 'Photo Editor';
+                editorSubtitle.textContent = options.subtitle || 'Crop, adjust, and export your image';
+
+                const editorFooter = modal.querySelector('.editor-footer');
+                editorFooter.innerHTML = ''; // Clear previous controls
+                let finalButtonsAdded = false; // Flag to track if final buttons are manually placed
+                
+                // --- REFACTORED: Build controls based on a multi-row array ---
+                if (options.controls && Array.isArray(options.controls)) {
+                    options.controls.forEach(rowConfig => {
+                        const rowElement = document.createElement('div');
+                        
+                        // Handle special 'ratios' row
+                        if (rowConfig.ratios && options.aspectRatios && options.aspectRatios.length > 0) {
+                            rowElement.className = 'ratio-selector';
+                            options.aspectRatios.forEach(ratio => {
+                                const btn = document.createElement('button');
+                                btn.className = 'ratio-btn';
+                                btn.dataset.ratio = String(ratio.value); // Ensure it's a string
+                                btn.textContent = ratio.label;
+                                btn.addEventListener('click', function() {
+                                    rowElement.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('active'));
+                                    this.classList.add('active');
+                                    currentAspectRatio = this.dataset.ratio === 'null' ? null : parseFloat(this.dataset.ratio);
+                                    updateCropFrameAspectRatio();
+                                });
+                                rowElement.appendChild(btn);
+                            });
+                        } else {
+                            rowElement.className = 'action-buttons';
+                            // Handle standard action buttons
+                            if (rowConfig.zoom) {
+                                rowElement.appendChild(controls.zoomInBtn);
+                                rowElement.appendChild(controls.zoomOutBtn);
+                            }
+                            if (rowConfig.rotate) {
+                                rowElement.appendChild(controls.rotateLeftBtn);
+                                rowElement.appendChild(controls.rotateRightBtn);
+                            }
+                            if (rowConfig.flip) {
+                                rowElement.appendChild(controls.flipHorizontalBtn);
+                                rowElement.appendChild(controls.flipVerticalBtn);
+                            }
+                            if (rowConfig.circle) rowElement.appendChild(controls.circleCropBtn);
+                            if (rowConfig.fullscreen) rowElement.appendChild(controls.fullscreenBtn);
+
+                            // Check if this row should include the final action buttons
+                            if (rowConfig.final) {
+                                rowElement.appendChild(controls.closeBtn);
+                                rowElement.appendChild(controls.saveBtn);
+                                finalButtonsAdded = true;
+                            }
+                        }
+                        editorFooter.appendChild(rowElement);
+                    });
+                }
+
+                // If final buttons were not manually placed, add them in their own row at the end.
+                if (!finalButtonsAdded) {
+                    const finalActionsRow = document.createElement('div');
+                    finalActionsRow.className = 'action-buttons';
+                    finalActionsRow.appendChild(controls.closeBtn);
+                    finalActionsRow.appendChild(controls.saveBtn);
+                    editorFooter.appendChild(finalActionsRow);
+                }
+
+                // Set initial state
+                currentAspectRatio = options.initialAspectRatio === null ? null : (options.initialAspectRatio || 1);
+                const initialRatioBtn = editorFooter.querySelector(`.ratio-btn[data-ratio="${currentAspectRatio}"]`);
+                if (initialRatioBtn) {
+                    // Deactivate others first
+                    editorFooter.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('active'));
+                    initialRatioBtn.classList.add('active');
+                }
+
+                cropFrame.classList.toggle('circle', !!options.isCircle);
+                circleCropBtn.classList.toggle('active', !!options.isCircle);
+
+                onSaveCallback = options.onSave;
+                saveBtn.onclick = () => applyAndSaveCrop(options.compression);
+            }
+        });
+    </script>
