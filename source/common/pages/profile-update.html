@@ -1,8 +1,6 @@
 <div class="profile-container">
     <div class="profile-header">
-        <!-- MODIFIED: Container is now just a simple clickable wrapper -->
         <div class="avatar-container" id="avatar-container" title="Change Avatar">
-            <!-- MODIFIED: Image is hidden by default, JS will show it if an avatar exists -->
             <img src="" alt="User Avatar" class="profile-avatar" id="avatar-preview" style="display: none;">
             <i class="fas fa-user-circle" id="avatar-icon-placeholder"></i>
             <input type="file" id="avatar-upload" accept="image/*">
@@ -19,6 +17,18 @@
     <div class="profile-body">
         <!-- Profile Edit Form -->
         <form id="profile-form" class="profile-form">
+            <!-- NEW: Bio section moved here for better structure and alignment -->
+            <div class="profile-section" data-section-name="bio">
+                <div class="section-header">
+                    <h3>About Me</h3> <!-- MODIFIED: Changed title for clarity -->
+                    <i class="fas fa-edit edit-section-btn" id="edit-bio-btn" data-section-name="bio" title="Edit Bio"></i>
+                </div>
+                <!-- REFACTORED: Use a standard form-group for consistency -->
+                <div class="form-group no-label"> <!-- MODIFIED: Removed redundant label -->
+                    <textarea id="bio" rows="4" disabled placeholder="No bio available. Click the edit icon to add one."></textarea>
+                </div>
+            </div>
+
             <div class="profile-section" data-section-name="personal">
                 <div class="section-header">
                     <h3>Personal Information</h3>
@@ -35,7 +45,9 @@
                     </div>
                     <div class="form-group">
                         <label for="dob">Date of Birth</label>
-                        <input type="date" id="dob" disabled>
+                        <div class="date-input-wrapper"> <!-- NEW: Wrapper for custom icon -->
+                            <input type="date" id="dob" disabled>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="gender">Gender</label>
@@ -47,10 +59,6 @@
                                 <option value="prefer_not_to_say">Prefer not to say</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label for="bio">Bio</label>
-                        <textarea id="bio" rows="3" style="resize: vertical;" disabled></textarea>
                     </div>
                 </div>
             </div>
@@ -104,9 +112,9 @@
                 </div>
             </div>
 
-            <div class="form-actions" style="display: none;"> <!-- Initially hidden, shown when a section is edited -->
+            <div class="form-actions"> <!-- Initially hidden, shown when a section is edited -->
                 <button class="cancel-btn" id="cancel-btn">Cancel</button>
-                <button class="save-btn" id="save-btn">
+                <button class="save-btn" id="save-btn" disabled> <!-- NEW: Disabled by default -->
                     <span class="spinner"></span>
                     <span class="btn-text">Save Changes</span>
                 </button>

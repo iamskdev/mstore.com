@@ -1,229 +1,259 @@
 .admin-home-view {
   padding: 0.5rem;
   padding-bottom: 1rem;
-  /* Add padding to the main container */
 }
 
-  /* ADMIN HEADER */
-  .admin-header {
-    display: flex;
-    max-width: 480px;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
+/* ADMIN HEADER */
+.admin-header {
+  display: flex;
+  max-width: 480px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  /* Add gap below header */
+}
 
-  }
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  height: 30px;
+  overflow: hidden;
+  padding: 0.25 0.25;
+  white-space: nowrap;
+}
 
+/* Generic button styles - can be moved to a global CSS if needed */
+.btn-danger {
+  background-color: var(--accent-danger);
+  color: var(--accent-text);
+}
 
-  .admin-actions {
-    display: flex;
-    gap: 10px;
-    height: 30px;
-    overflow: hidden;
-    padding: 0.25 0.25;
-    white-space: nowrap;
+.btn-dark {
+  background-color: var(--text-secondary);
+  color: var(--accent-text);
+  /* Use primary background color for text for better contrast */
+}
 
-  }
+/* CRITICAL ALERTS */
+.alert-critical {
+  background: rgba(var(--accent-danger-rgb), 0.1);
+  color: var(--accent-danger);
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  /* Generic button styles - can be moved to a global CSS if needed */
-  .btn-danger {
-    background-color: var(--accent-danger);
-    color: var(--accent-text);
-  }
+.alert-critical .btn-sm {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
 
-  .btn-dark {
-    background-color: var(--text-secondary);
-    color: var(--accent-text); /* Use primary background color for text for better contrast */
-  }
+/* CARDS (Adapted from demo) */
+.admin-stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
 
-  /* CRITICAL ALERTS */
-  .alert-critical {
-    background: rgba(var(--accent-danger-rgb), 0.1);
-    color: var(--accent-danger);
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.admin-stat-card {
+  background: var(--bg-primary);
+  padding: 15px;
+  border-radius: 12px;
+  /* Changed from 8px */
+  box-shadow: 0 4px 12px var(--shadow-color);
+  /* Adjusted shadow */
+  border: 1px solid var(--border-color);
+  /* Added border */
+  transition: all 0.3s ease;
+  /* Added transition */
+  display: flex;
+  align-items: center;
+}
 
-  .alert-critical .btn-sm {
-    padding: 4px 8px;
-    font-size: 0.8rem;
-  }
+.card-icon {
+  font-size: 24px;
+  margin-right: 15px;
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
 
-  /* CARDS (Adapted from demo) */
-  .admin-stat-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-  .admin-stat-card {
-    background: var(--bg-primary);
-    padding: 15px;
-    border-radius: 12px; /* Changed from 8px */
-    box-shadow: 0 4px 12px var(--shadow-color); /* Adjusted shadow */
-    border: 1px solid var(--border-color); /* Added border */
-    transition: all 0.3s ease; /* Added transition */
-    display: flex;
-    align-items: center;
-  }
-  .card-icon {
-    font-size: 24px;
-    margin-right: 15px;
-    color: var(--accent-primary);
-    flex-shrink: 0;
-  }
-  /* --- FIX: Add distinct colors for each stat card icon --- */
-  .admin-card-icon-users {
-    /* A distinct blue for user-related stats, using theme variable */
-    color: var(--accent-primary); 
-  }
-  .admin-card-icon-tasks {
-    /* A distinct orange/yellow for pending tasks, using theme variable */
-    color: var(--accent-warning);
-  }
-  .admin-stat-card h3 {
-    margin: 0;
-    font-size: 1.1rem; /* Increased size for better balance */
-    color: var(--text-primary);
-    font-weight: 500;
-    flex-grow: 1; /* Allow title to take up available space */
-  }
-  .admin-stat-card p {
-    font-size: 1.1rem; /* Matched font size with the title */
-    font-weight: bold;
-    margin: 0;
-    color: var(--text-primary);
-    margin-left: auto; /* Pushes the count to the far right */
-    padding-left: 15px; /* Increased space between title and count */
-  }
+/* --- FIX: Add distinct colors for each stat card icon --- */
+.admin-card-icon-users {
+  /* A distinct blue for user-related stats, using theme variable */
+  color: var(--accent-primary);
+}
 
-  /* ADMIN HEADER */
-  .admin-header {
-    display: flex;
-    max-width: 480px;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem; /* Add gap below header */
-  }
+.admin-card-icon-tasks {
+  /* A distinct orange/yellow for pending tasks, using theme variable */
+  color: var(--accent-warning);
+}
 
-  /* CHARTS (Adapted from demo) */
+.admin-stat-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  /* Increased size for better balance */
+  color: var(--text-primary);
+  font-weight: 500;
+  flex-grow: 1;
+  /* Allow title to take up available space */
+}
+
+.admin-stat-card p {
+  font-size: 1.1rem;
+  /* Matched font size with the title */
+  font-weight: bold;
+  margin: 0;
+  color: var(--text-primary);
+  margin-left: auto;
+  /* Pushes the count to the far right */
+  padding-left: 15px;
+  /* Increased space between title and count */
+}
+
+/* CHARTS (Adapted from demo) */
+.charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.chart-container {
+  background: var(--bg-primary);
+  padding: 15px;
+  border-radius: 12px;
+  /* Changed from 8px */
+  box-shadow: 0 4px 12px var(--shadow-color);
+  /* Adjusted shadow */
+  border: 1px solid var(--border-color);
+  /* Added border */
+  transition: all 0.3s ease;
+  /* Added transition */
+}
+
+.chart-container h2 {
+  color: var(--text-primary);
+  /* Ensure chart titles are visible */
+  margin: 0 0 10px;
+  /* Add some margin below the title */
+  font-size: 1.1rem;
+  /* Adjust font size if needed */
+}
+
+/* RECENT ACTIVITIES (Adapted from demo) */
+.recent-activities {
+  background: var(--bg-primary);
+  padding: 15px;
+  border-radius: 12px;
+  /* Consistent with cards */
+  box-shadow: 0 4px 12px var(--shadow-color);
+  /* Consistent with cards */
+  border: 1px solid var(--border-color);
+  /* Consistent with cards */
+  transition: all 0.3s ease;
+  /* Consistent with cards */
+  margin-bottom: 20px;
+}
+
+.recent-activities h2 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: var(--text-primary);
+  /* Ensure heading color is theme-aware */
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.activity-item {
+  padding: 12px 5px;
+  /* Increased padding */
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+  /* Hover effect */
+  border-radius: 6px;
+}
+
+.activity-item.placeholder {
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-item:hover {
+  background-color: var(--bg-secondary);
+  /* Subtle hover effect */
+}
+
+.activity-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-time {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.activity-details {
+  flex-grow: 1;
+  /* Allow details to take available space */
+  font-size: 0.95rem;
+  /* Adjust text size */
+}
+
+/* POWER ACTION LINKS */
+.admin-quick-links h3 {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.link-card {
+  background: var(--bg-secondary);
+  padding: 15px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  transition: transform 0.2s;
+  color: var(--text-primary);
+}
+
+.link-card:hover {
+  transform: translateY(-3px);
+  background: var(--bg-tertiary);
+}
+
+.link-card i {
+  display: block;
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+/* ACTIVITY LOG TABLE (Removed, replaced by .recent-activities) */
+/* The old .log-table and related styles are removed as the activity log is now a simple list */
+@media (min-width: 768px) {
   .charts {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(2, 1fr);
   }
-  .chart-container {
-    background: var(--bg-primary);
-    padding: 15px;
-    border-radius: 12px; /* Changed from 8px */
-    box-shadow: 0 4px 12px var(--shadow-color); /* Adjusted shadow */
-    border: 1px solid var(--border-color); /* Added border */
-    transition: all 0.3s ease; /* Added transition */
-  }
-  .chart-container h2 {
-    color: var(--text-primary); /* Ensure chart titles are visible */
-    margin: 0 0 10px; /* Add some margin below the title */
-    font-size: 1.1rem; /* Adjust font size if needed */
-  }
-
-  /* RECENT ACTIVITIES (Adapted from demo) */
-  .recent-activities {
-    background: var(--bg-primary);
-    padding: 15px;
-    border-radius: 12px; /* Consistent with cards */
-    box-shadow: 0 4px 12px var(--shadow-color); /* Consistent with cards */
-    border: 1px solid var(--border-color); /* Consistent with cards */
-    transition: all 0.3s ease; /* Consistent with cards */
-    max-height: 350px;
-    overflow-y: auto;
-    margin-bottom: 20px;
-  }
-  .recent-activities h2 {
-    margin: 0 0 10px;
-    font-size: 1rem;
-    color: var(--text-primary); /* Ensure heading color is theme-aware */
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-  }
-  .activity-item {
-    padding: 12px 5px; /* Increased padding */
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    transition: background-color 0.2s ease; /* Hover effect */
-    border-radius: 6px;
-  }
-  .activity-item.placeholder {
-    justify-content: center;
-    color: var(--text-secondary);
-  }
-  .activity-item:last-child {
-    border-bottom: none;
-  }
-  .activity-item:hover {
-    background-color: var(--bg-secondary); /* Subtle hover effect */
-  }
-  .activity-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  .activity-time {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-  }
-  .activity-details {
-    flex-grow: 1; /* Allow details to take available space */
-    font-size: 0.95rem; /* Adjust text size */
-  }
-
-  /* POWER ACTION LINKS */
-  .admin-quick-links h3 {
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-    color: var(--text-primary);
-  }
-
-  .links-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
-  }
-  .link-card {
-    background: var(--bg-secondary);
-    padding: 15px;
-    text-align: center;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px var(--shadow-color);
-    transition: transform 0.2s;
-    color: var(--text-primary);
-  }
-  .link-card:hover {
-    transform: translateY(-3px);
-    background: var(--bg-tertiary);
-  }
-
-  .link-card i {
-    display: block;
-    font-size: 1.5rem;
-    margin-bottom: 8px;
-    color: var(--text-primary);
-  }
-
-  /* ACTIVITY LOG TABLE (Removed, replaced by .recent-activities) */
-  /* The old .log-table and related styles are removed as the activity log is now a simple list */
-
-  @media (min-width: 768px) {
-    .charts {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    /* The .bottom-section media query is not directly applicable as the structure changed */
-  }
+  /* The .bottom-section media query is not directly applicable as the structure changed */
+}

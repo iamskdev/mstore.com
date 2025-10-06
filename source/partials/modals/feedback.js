@@ -495,7 +495,7 @@ function initFeedbackModal(modal, initialContext = {}) {
       const feedbackRef = firestore.collection('feedbacks').doc(feedbackId);
 
       const isLoggedIn = AuthService.isLoggedIn();
-      const userId = isLoggedIn ? AuthService.getCurrentUserId() : null;
+      const userId = isLoggedIn ? localStorage.getItem('currentUserId') : null;
       const role = isLoggedIn ? localStorage.getItem('currentUserType') : 'guest';
       const merchantId = (role === 'merchant') ? localStorage.getItem('currentMerchantId') : null;
       const itemId = currentContext.itemId || null; // Get itemId from the stored context
@@ -542,21 +542,22 @@ function initFeedbackModal(modal, initialContext = {}) {
       await feedbackRef.set(newFeedbackDoc);
 
       console.log(`✅ Feedback submitted successfully with ID: ${feedbackId}`);
-      closeModal();
-      showToast('success', 'Thank you! Your feedback has been submitted.');
+      showToast('success', 'Your feedback has been submitted.');
 
-    } catch (error) {
-      console.error("❌ Error submitting feedback:", error);
-      showToast('error', 'Could not submit feedback. Please try again.');
-    } finally {
-      // 5. Reset button state
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Submit';
-      // Reset form fields after submission
+      // Reset form fields only on successful submission
       document.getElementById('feedback-message-textarea').value = '';
       document.getElementById('feedback-contact-number').value = '';
       attachedFiles = []; // Clear the managed files array
       renderAttachedFiles(); // Clear the UI
+      closeModal(); // Close modal after everything is done
+
+    } catch (error) {
+      console.error("❌ Error submitting feedback:", error);
+      showToast('error', 'feedback submission failed. Try again.');
+    } finally {
+      // 5. Reset button state regardless of success or failure
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Submit';
     }
   });
   modal.dataset.initialized = 'true'; // Mark as initialized

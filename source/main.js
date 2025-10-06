@@ -778,6 +778,10 @@ function simulateProgress(targetPercentage) {
  * @param {Array<object>} [options.buttons] - Array of button objects { text, class, onClick }.
  */
 window.showCustomAlert = function({ title, message, buttons = [] }) {
+    // --- FIX: z-index issue with other modals ---
+    // Temporarily increase the z-index to ensure the alert is on top of any other
+    // open modals (like the username edit modal which has a z-index of 10001).
+    // The z-index is reset in hideCustomAlert.
     const alertOverlay = document.getElementById('custom-alert-popup');
     if (!alertOverlay) return;
 
@@ -789,9 +793,11 @@ window.showCustomAlert = function({ title, message, buttons = [] }) {
     messageEl.textContent = message;
     actionsEl.innerHTML = ''; // Clear old buttons
 
+    const defaultClickHandler = () => window.hideCustomAlert();
+
     if (buttons.length === 0) {
         // Default button if none are provided
-        buttons.push({ text: 'OK', class: 'primary', onClick: () => window.hideCustomAlert() });
+        buttons.push({ text: 'OK', class: 'primary', onClick: defaultClickHandler });
     }
 
     buttons.forEach(btnData => {
@@ -802,12 +808,17 @@ window.showCustomAlert = function({ title, message, buttons = [] }) {
         actionsEl.appendChild(button);
     });
 
+    alertOverlay.style.zIndex = '10011'; // Set z-index higher than other modals
     alertOverlay.classList.add('visible');
 }
 
 window.hideCustomAlert = function() {
     const alertOverlay = document.getElementById('custom-alert-popup');
-    if (alertOverlay) alertOverlay.classList.remove('visible');
+    if (alertOverlay) {
+        alertOverlay.classList.remove('visible');
+        // Reset z-index after hiding
+        alertOverlay.style.zIndex = '';
+    }
 }
 
 // Listen for navigation requests from dynamically loaded views
@@ -882,7 +893,11 @@ export async function initializeApp() {
   const currentHostname = window.location.hostname;
   const configUrls = loadedConfig.urls;
 
-  if (currentHostname === '127.0.0.1' && configUrls.localIp) {
+  // --- FIX: Handle local network IP addresses (like 192.168.x.x or 10.x.x.x) ---
+  // This prevents the cross-origin 'pushState' error when testing on a mobile device.
+  if (currentHostname.startsWith('192.168.') || currentHostname.startsWith('10.')) {
+    appConfig.urls.pageUrl = `${window.location.protocol}//${window.location.host}`;
+  } else if (currentHostname === '127.0.0.1' && configUrls.localIp) {
     appConfig.urls.pageUrl = configUrls.localIp;
   } else if (currentHostname === 'localhost' && configUrls.localHost) {
     appConfig.urls.pageUrl = configUrls.localHost;

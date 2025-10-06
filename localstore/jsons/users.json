@@ -1,34 +1,6 @@
 [
   {
-    "info": {
-      "fullName": "Santosh Kumar",
-      "nickName": "Mr. Santosh",
-      "username": "iamskdev",
-      "gender": "male",
-      "dob": "2000-04-15",
-      "avatar": null,
-      "tags": ["Top Contributor"],
-      "bio": "Passionate developer & tech enthusiast",
-      "email": "dev@apnastore.io",
-      "phone": "+91 9634557007",
-      "usernameUpdatedAt": "2024-01-01T10:00:00Z"
-    },
-    "address": [
-      {
-        "label": "Home",
-        "isPrimary": true,
-        "street": "Durgapur",
-        "city": "Chas",
-        "district": "Bokaro",
-        "state": "Jharkhand",
-        "country": "India",
-        "zipCode": "827013",
-        "geoLocation": {
-          "lat": 23.6345,
-          "lng": 86.1679
-        }
-      }
-    ],"meta": {
+    "meta": {
       "userId": "USR-20251002-170601-101-ABCD",
       "version": 1,
       "primaryRole": "admin",
@@ -52,6 +24,29 @@
         "admin"
       ]
     },
+    "address": {
+      "0": {
+        "zipCode": "827013",
+        "city": "Chas",
+        "street": "Durgapur",
+        "state": "Jharkhand"
+      }
+    },
+    "info": {
+      "fullName": "Santosh Kumar",
+      "gender": "male",
+      "dob": "2000-04-15",
+      "tags": [
+        "Top Contributor"
+      ],
+      "email": "iamsantosh@outlook.in",
+      "username": "iamskdev.io",
+      "usernameUpdatedAt": "2025-10-04T20:47:31.401Z",
+      "bio": "Crafting code with creativity 💻 | Building ideas into reality 🚀 | Passionate developer & lifelong learner 🌱",
+      "nickName": "Mr. Santosh",
+      "phone": "+91 9608547007",
+      "avatar": "assets/users/avatars/iamskdev.io_profile_pic"
+    },
     "auth": {
       "login": {
         "attempts": 1,
@@ -70,7 +65,7 @@
       },
       "recovery": {
         "email": "recovery@example.com",
-        "phone": "+91 9876543210",
+        "phone": "+91 9608547007",
         "securityQuestions": [
           {
             "question": "Your first pet's name?",
@@ -81,7 +76,7 @@
       "provider": {
         "name": "firebase",
         "lastUpdated": "2025-08-07T14:23:00Z",
-        "uid": "YdeQseJVzYgYw7GpZMYgDsMVVMf1"
+        "uid": "GicJvLLgsMZlYq8AogB3snrIeEo2"
       }
     }
   },
@@ -109,31 +104,28 @@
         "isStaff": false
       }
     },
+    "address": {
+      "0": {
+        "zipCode": "827013",
+        "city": "Chas",
+        "street": "Durgapur",
+        "state": "Jharkhand"
+      }
+    },
     "info": {
       "fullName": "Rohit Kumar",
       "nickName": "Rohit Kumar",
-      "username": "mycafe",
       "gender": "male",
-      "dob": null,
       "avatar": "./localstore/images/users/rohit.jpg",
       "tagline": "Premium seller",
-      "bio": null,
       "email": "mycafe@outlook.in",
-      "phone": "+91 1234567890"
+      "phone": "+91 1234567890",
+      "dob": "2000-04-15",
+      "bio": "",
+      "username": "internetcafe",
+      "usernameUpdatedAt": "2025-10-04T20:44:17.718Z"
     },
-    "address": [
-      {
-        "label": "Home",
-        "isPrimary": true,
-        "street": "Durgapur",
-        "city": "Chas",
-        "district": "Bokaro",
-        "state": "Jharkhand",
-        "country": "India",
-        "zipCode": "827013",
-        "geoLocation": null
-      }
-    ],"auth": {
+    "auth": {
       "login": {
         "attempts": 0,
         "method": null,
@@ -155,9 +147,9 @@
         "securityQuestions": []
       },
       "provider": {
-        "name": null,
         "lastUpdated": null,
-        "uid": "ehouEQmUnZdTBFYK2FrgXKlmqPA2"
+        "name": "firebase",
+        "uid": "USR-20251002-170602-102-BCDE"
       }
     }
   },
@@ -183,30 +175,6 @@
         "isStaff": false
       }
     },
-    "address": [
-      {
-        "label": "Home",
-        "isPrimary": true,
-        "street": "Durgapur",
-        "city": "Chas",
-        "district": "Bokaro",
-        "state": "Jharkhand",
-        "country": "India",
-        "zipCode": "827013",
-        "geoLocation": null
-      }
-    ],"info": {
-      "fullName": "Vivek Kumar",
-      "nickName": "Vivek Kumar",
-      "username": "vivekkumar",
-      "gender": null,
-      "dob": null,
-      "avatar": "./localstore/images/users/vivek.jpg",
-      "tags": ["Top Contributor"],
-      "bio": null,
-      "email": "vivekkumar@outlook.in",
-      "phone": "+919876543210"
-    },
     "auth": {
       "login": {
         "attempts": 0,
@@ -229,10 +197,33 @@
         "securityQuestions": []
       },
       "provider": {
-        "name": null,
         "lastUpdated": null,
-        "uid": "B7hyN6kUebVmAEQHKW6ix9OlqXz2"
+        "uid": "J7nVsborLegTRbVTbQopd3ZlBIA2",
+        "name": "firebase"
       }
+    },
+    "address": {
+      "0": {
+        "zipCode": "827013",
+        "city": "Chas",
+        "street": "Durgapur",
+        "state": "Jharkhand"
+      }
+    },
+    "info": {
+      "tags": [
+        "Top Contributor"
+      ],
+      "email": "vivekkumar@outlook.in",
+      "phone": "+919876543210",
+      "gender": "male",
+      "dob": "2020-04-15",
+      "bio": "hi",
+      "fullName": "Vansh Kumar",
+      "username": "vanshkkumar",
+      "usernameUpdatedAt": "2025-10-04T18:17:36.605Z",
+      "nickName": "Hey Vansh",
+      "avatar": "assets/users/avatars/vanshkkumar_profile_pic"
     }
   },
   {
@@ -283,7 +274,8 @@
         "zipCode": "208001",
         "geoLocation": null
       }
-    ],"auth": {
+    ],
+    "auth": {
       "login": {
         "attempts": 0,
         "method": null,
@@ -305,10 +297,75 @@
         "securityQuestions": []
       },
       "provider": {
-        "name": null,
         "lastUpdated": null,
-        "uid": "jA7uyYv7xnOsU4KmX1QqUdrpLUe2"
+        "name": "firebase",
+        "uid": "USR-20251002-170604-104-DEFG"
       }
     }
+  },
+  {
+    "meta": {
+      "userId": "USR-20251003-155439-124-TE82",
+      "version": 1,
+      "primaryRole": "consumer",
+      "roles": [
+        "consumer"
+      ],
+      "registeredOn": "2025-10-03T15:54:39.125Z",
+      "links": {
+        "accountId": "ACC-20251003-155439-125-G1U2"
+      },
+      "flags": {
+        "isActive": true,
+        "isSuspended": false,
+        "isVerified": true,
+        "isConsumer": true,
+        "isAdmin": false,
+        "isMerchant": false,
+        "isAgent": false,
+        "isStaff": false
+      },
+      "lastUpdated": "2025-10-03T15:54:39.125Z"
+    },
+    "info": {
+      "fullName": "Chittaranjan Mahato",
+      "nickName": "",
+      "username": "chittaranjanm754",
+      "gender": "",
+      "dob": "",
+      "avatar": "https://lh3.googleusercontent.com/a/ACg8ocLgout8iDQu3q0D0IjI_1B7MQbNBkNbGN6v9-QXZ0J-DB61VDMk=s96-c",
+      "tagline": "",
+      "bio": "",
+      "email": "chittaranjanm754@gmail.com",
+      "phone": ""
+    },
+    "auth": {
+      "login": {
+        "attempts": 0,
+        "method": "google",
+        "password": {
+          "hash": "",
+          "updatedAt": "2025-10-03T15:54:39.126Z"
+        }
+      },
+      "provider": {
+        "name": "google.com",
+        "uid": "QovXdUTDIWMf90ANQvp4l0z4zXn2",
+        "lastUpdated": "2025-10-03T15:54:39.126Z"
+      },
+      "flags": {
+        "twoFactorEnabled": false,
+        "emailVerified": true,
+        "phoneVerified": false,
+        "accountLocked": false,
+        "tempPasswordUsed": false
+      },
+      "recovery": {
+        "email": "",
+        "phone": "",
+        "securityQuestions": []
+      }
+    },
+    "address": []
   }
 ]

@@ -5,6 +5,7 @@ import { routeManager } from '../../main.js';
 
 let currentUser = null;
 let newAvatarFile = null;
+let initialFormData = {}; // NEW: To store initial form state for change detection
 
 async function loadUserData() {
     const userId = localStorage.getItem('currentUserId');
@@ -79,6 +80,9 @@ function populateForm(user) {
 
     // Check username edit eligibility
     checkUsernameEligibility(user);
+
+    // NEW: Store initial state and set save button state
+    storeInitialFormData();
 }
 
 function checkUsernameEligibility(user) {
@@ -178,6 +182,7 @@ function setupEventListeners() {
             }
             // Show/hide save/cancel buttons based on if any section is being edited
             formActions.style.display = isCurrentlyEditing ? 'none' : 'flex';
+            if (isCurrentlyEditing) updateSaveButtonState(); // Re-check changes when cancelling a section edit
         });
     });
 
@@ -259,7 +264,6 @@ function setupEventListeners() {
         }
     });
 
-
     // Open the new actions modal when avatar is clicked
     document.getElementById('avatar-container').addEventListener('click', () => {
         // --- NEW: Populate modal with current avatar before showing ---
@@ -312,6 +316,8 @@ function setupEventListeners() {
                     avatarPreview.style.display = 'block';
                     document.getElementById('avatar-icon-placeholder').style.display = 'none';
                     // FIX: Explicitly close the avatar actions modal after a successful edit.
+                    // NEW: Check for changes to enable save button
+                    updateSaveButtonState();
                     closeModal();
                 }
             });
@@ -334,6 +340,8 @@ function setupEventListeners() {
         document.getElementById('avatar-icon-placeholder').style.display = 'block';
         document.getElementById('avatar-preview').src = '';
         showToast('info', 'Avatar will be removed on save.');
+        // NEW: Check for changes to enable save button
+        updateSaveButtonState();
         closeModal();
     });
 
@@ -343,10 +351,58 @@ function setupEventListeners() {
         document.querySelectorAll('.profile-section.editing').forEach(sec => {
             setSectionEditable(sec.dataset.sectionName, false);
         });
+        // NEW: Reset form to initial state on cancel
+        populateForm(currentUser);
         routeManager.switchView(localStorage.getItem('currentUserType'), 'account');
     });
 
     document.getElementById('save-btn').addEventListener('click', saveProfile);
+
+    // NEW: Add input listeners to all fields for change detection
+    const fieldsToWatch = [
+        'fullName', 'nickName', 'dob', 'gender', 'bio', // Keep bio here for change detection
+        'street', 'city', 'state', 'zipCode'
+    ];
+    fieldsToWatch.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('input', updateSaveButtonState);
+        }
+    });
+}
+
+// NEW: Function to store the initial state of the form
+function storeInitialFormData() {
+    initialFormData = {
+        fullName: document.getElementById('fullName').value,
+        nickName: document.getElementById('nickName').value,
+        dob: document.getElementById('dob').value,
+        gender: document.getElementById('gender').value,
+        bio: document.getElementById('bio').value,
+        street: document.getElementById('street').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        zipCode: document.getElementById('zipCode').value,
+        avatar: currentUser.info.avatar, // Store initial avatar public_id
+        username: currentUser.info.username || '',
+    };
+    updateSaveButtonState(); // Initial check
+}
+
+// NEW: Function to check for changes and update the save button
+function updateSaveButtonState() {
+    const saveBtn = document.getElementById('save-btn');
+    if (!saveBtn) return;
+
+    let hasChanged = newAvatarFile !== null; // Change if a new avatar is staged or marked for deletion
+
+    for (const key in initialFormData) {
+        if (key === 'avatar' || key === 'username') continue; // Skip special fields
+        const currentVal = document.getElementById(key).value;
+        if (currentVal !== initialFormData[key]) hasChanged = true;
+    }
+
+    saveBtn.disabled = !hasChanged;
 }
 
 async function saveProfile() {
@@ -354,6 +410,11 @@ async function saveProfile() {
     const btnText = saveBtn.querySelector('.btn-text');
     const spinner = saveBtn.querySelector('.spinner');
 
+    // Final check to prevent saving if nothing changed (e.g., if button was enabled via dev tools)
+    if (saveBtn.disabled) {
+        showToast('info', 'No changes to save.');
+        return;
+    }
     saveBtn.disabled = true;
     btnText.textContent = 'Saving...';
     spinner.style.display = 'inline-block';
@@ -432,6 +493,7 @@ async function saveProfile() {
         // Force a refresh of the cached user data so changes are reflected immediately
         await fetchUserById(currentUser.meta.userId, true);
 
+        newAvatarFile = null; // Reset staged avatar file after successful save
         showToast('success', 'Profile updated successfully!');
         
         routeManager.switchView(localStorage.getItem('currentUserType'), 'account');
