@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 02/10/2025, 00:44
+📅 Last Updated: 08/10/2025, 23:36
 
 ├── .firebaserc
 ├── .gitignore
@@ -38,15 +38,20 @@
 ├── 📁 archive\
 │   ├── card-old.html
 │   ├── error-page.html
+│   ├── merchant-profile-demo.html
+│   ├── photo-editor-demo.html
+│   ├── rating-demo.html
+│   ├── rating-modal.html
+│   ├── rating-modal.js
 │   ├── story-viewer-demo.html
 │   └── updates-demo.html
 ├── 📁 docs\
 │   ├── CHANGELOG.md
-│   ├── Id-generation.md
 │   ├── brands_list.md
 │   ├── commit-guide.md
 │   ├── commit_message.txt
 │   ├── firebase-emulator.md
+│   ├── id-generation.md
 │   ├── implementing-new-views.md
 │   ├── instruction.md
 │   ├── media-queries.md
@@ -58,7 +63,9 @@
 │   ├── versions-guide.md
 │   └── workflow.md
 ├── 📁 functions\
+│   ├── firebase-debug.log
 │   ├── index.js
+│   ├── package-lock.json
 │   └── package.json
 ├── 📁 localstore\
 │   ├── 📁 images\
@@ -112,18 +119,17 @@
 │       ├── brands.json
 │       ├── campaigns.json
 │       ├── categories.json
-│       ├── conversations.json
-│       ├── counters.json
+│       ├── comments.json
 │       ├── feedbacks.json
 │       ├── items.json
 │       ├── logs.json
 │       ├── merchants.json
 │       ├── orders.json
+│       ├── posts.json
 │       ├── price-logs.json
 │       ├── promotions.json
-│       ├── stories-schema.json
+│       ├── ratings.json
 │       ├── stories.json
-│       ├── temp-chats.json
 │       ├── units.json
 │       ├── users.json
 │       └── versions.json
@@ -135,6 +141,9 @@
 │   ├── zip_creator.py
 │   └── zip_creator_manual.py
 ├── 📁 source\
+│   ├── 📁 api\
+│   │   ├── 📁 auth\
+│   │   └── cloudinary.js
 │   ├── 📁 assets\
 │   │   ├── 📁 icons\
 │   │   │   ├── 📁 action\
@@ -260,8 +269,10 @@
 │   │   │   ├── conversation.html
 │   │   │   ├── home.html
 │   │   │   ├── item-details.html
+│   │   │   ├── merchant-profile.html
 │   │   │   ├── notification.html
 │   │   │   ├── offline.html
+│   │   │   ├── profile-update.html
 │   │   │   ├── updates.html
 │   │   │   └── wishlist.html
 │   │   ├── 📁 scripts\
@@ -272,7 +283,9 @@
 │   │   │   ├── conversation.js
 │   │   │   ├── home.js
 │   │   │   ├── item-details.js
+│   │   │   ├── merchant-profile.js
 │   │   │   ├── notification.js
+│   │   │   ├── profile-update.js
 │   │   │   ├── updates.js
 │   │   │   └── wishlist.js
 │   │   └── 📁 styles\
@@ -283,7 +296,9 @@
 │   │       ├── conversation.css
 │   │       ├── home.css
 │   │       ├── item-details.css
+│   │       ├── merchant-profile.css
 │   │       ├── notification.css
+│   │       ├── profile-update.css
 │   │       ├── theme.css
 │   │       ├── updates.css
 │   │       └── wishlist.css
@@ -291,19 +306,25 @@
 │   │   ├── 📁 auth\
 │   │   │   └── auth.js
 │   │   ├── 📁 firestore\
-│   │   │   ├── account-collection.js
-│   │   │   ├── logs-collection.js
-│   │   │   └── user-collection.js
+│   │   │   └── logs-collection.js
 │   │   ├── 📁 rules\
 │   │   │   └── firestore.rules
 │   │   ├── firebase-config.js
 │   │   ├── firebase-credentials.js
 │   │   └── serviceAccountKey.json
 │   ├── 📁 modals\
+│   │   ├── 📁 media-editor\
+│   │   │   ├── media-editor.html
+│   │   │   └── media-editor.js
+│   │   ├── 📁 rating\
+│   │   │   ├── rating-modal.html
+│   │   │   └── rating-modal.js
 │   │   ├── 📁 story-viewer\
 │   │   │   ├── story-viewer.html
 │   │   │   └── story-viewer.js
-│   │   └── account-switcher.html
+│   │   ├── account-switcher.html
+│   │   ├── otp-verification-modal.html
+│   │   └── otp-verification-modal.js
 │   ├── 📁 modules\
 │   │   ├── 📁 admin\
 │   │   │   ├── 📁 logs\
@@ -316,21 +337,23 @@
 │   │   │   │   ├── 📁 imports\
 │   │   │   │   │   ├── stock-import.csv
 │   │   │   │   │   └── stock-import.xlsx
+│   │   │   │   ├── 📁 scripts\
 │   │   │   │   ├── activity.log
 │   │   │   │   ├── daily-report.log
 │   │   │   │   ├── error.log
 │   │   │   │   ├── logs.json
 │   │   │   │   └── price-change-logs.html
 │   │   │   ├── 📁 pages\
-│   │   │   │   ├── admin-home.css
-│   │   │   │   ├── admin-home.html
-│   │   │   │   └── admin-home.js
-│   │   │   └── 📁 scripts\
-│   │   │       ├── dev-tools.js
-│   │   │       ├── log-reader.js
-│   │   │       ├── mock-inject.js
-│   │   │       └── mode-switcher.js
-│   │   ├── 📁 client\
+│   │   │   │   └── admin-home.html
+│   │   │   ├── 📁 scripts\
+│   │   │   │   ├── admin-home.js
+│   │   │   │   ├── dev-tools.js
+│   │   │   │   ├── log-reader.js
+│   │   │   │   ├── mock-inject.js
+│   │   │   │   └── mode-switcher.js
+│   │   │   └── 📁 styles\
+│   │   │       └── admin-home.css
+│   │   ├── 📁 consumer\
 │   │   └── 📁 merchant\
 │   │       ├── 📁 pages\
 │   │       ├── analytics.html
@@ -356,6 +379,10 @@
 │   │   │   ├── top-nav.html
 │   │   │   └── top-nav.js
 │   │   └── role-switcher.html
+│   ├── 📁 schemas\
+│   │   ├── feedback-schema.json
+│   │   ├── rating-schema.json
+│   │   └── stories-schema.json
 │   ├── 📁 settings\
 │   │   ├── config.json
 │   │   └── main-config.js
@@ -373,6 +400,7 @@
 │   │   ├── cursor-zoom.js
 │   │   ├── data-manager.js
 │   │   ├── formatters.js
+│   │   ├── idGenerator.js
 │   │   ├── image-zoom.js
 │   │   ├── lang-helper.js
 │   │   ├── pwa-manager.js

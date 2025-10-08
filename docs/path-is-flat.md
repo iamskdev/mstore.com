@@ -1,5 +1,5 @@
 # 📁 Project Path Tree (Gemini-friendly)
-📅 Last Updated: 02/10/2025, 00:44
+📅 Last Updated: 08/10/2025, 23:36
 
 S:\My Projects\Apna Store\mStore\.firebaserc
 S:\My Projects\Apna Store\mStore\.github\workflows\release.yml
@@ -26,14 +26,19 @@ S:\My Projects\Apna Store\mStore\.husky\pre-commit
 S:\My Projects\Apna Store\mStore\.husky\pre-push
 S:\My Projects\Apna Store\mStore\archive\card-old.html
 S:\My Projects\Apna Store\mStore\archive\error-page.html
+S:\My Projects\Apna Store\mStore\archive\merchant-profile-demo.html
+S:\My Projects\Apna Store\mStore\archive\photo-editor-demo.html
+S:\My Projects\Apna Store\mStore\archive\rating-demo.html
+S:\My Projects\Apna Store\mStore\archive\rating-modal.html
+S:\My Projects\Apna Store\mStore\archive\rating-modal.js
 S:\My Projects\Apna Store\mStore\archive\story-viewer-demo.html
 S:\My Projects\Apna Store\mStore\archive\updates-demo.html
 S:\My Projects\Apna Store\mStore\docs\CHANGELOG.md
-S:\My Projects\Apna Store\mStore\docs\Id-generation.md
 S:\My Projects\Apna Store\mStore\docs\brands_list.md
 S:\My Projects\Apna Store\mStore\docs\commit-guide.md
 S:\My Projects\Apna Store\mStore\docs\commit_message.txt
 S:\My Projects\Apna Store\mStore\docs\firebase-emulator.md
+S:\My Projects\Apna Store\mStore\docs\id-generation.md
 S:\My Projects\Apna Store\mStore\docs\implementing-new-views.md
 S:\My Projects\Apna Store\mStore\docs\instruction.md
 S:\My Projects\Apna Store\mStore\docs\media-queries.md
@@ -45,7 +50,9 @@ S:\My Projects\Apna Store\mStore\docs\shortcuts.md
 S:\My Projects\Apna Store\mStore\docs\versions-guide.md
 S:\My Projects\Apna Store\mStore\docs\workflow.md
 S:\My Projects\Apna Store\mStore\firebase.json
+S:\My Projects\Apna Store\mStore\functions\firebase-debug.log
 S:\My Projects\Apna Store\mStore\functions\index.js
+S:\My Projects\Apna Store\mStore\functions\package-lock.json
 S:\My Projects\Apna Store\mStore\functions\package.json
 S:\My Projects\Apna Store\mStore\index.html
 S:\My Projects\Apna Store\mStore\localstore\images\default-product.jpg
@@ -94,18 +101,17 @@ S:\My Projects\Apna Store\mStore\localstore\jsons\alerts.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\brands.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\campaigns.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\categories.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\conversations.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\counters.json
+S:\My Projects\Apna Store\mStore\localstore\jsons\comments.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\feedbacks.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\items.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\logs.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\merchants.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\orders.json
+S:\My Projects\Apna Store\mStore\localstore\jsons\posts.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\price-logs.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\promotions.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\stories-schema.json
+S:\My Projects\Apna Store\mStore\localstore\jsons\ratings.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\stories.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\temp-chats.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\units.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\users.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\versions.json
@@ -120,6 +126,7 @@ S:\My Projects\Apna Store\mStore\python\zip_creator.py
 S:\My Projects\Apna Store\mStore\python\zip_creator_manual.py
 S:\My Projects\Apna Store\mStore\readme.md
 S:\My Projects\Apna Store\mStore\service-worker.js
+S:\My Projects\Apna Store\mStore\source\api\cloudinary.js
 S:\My Projects\Apna Store\mStore\source\assets\icon-use.md
 S:\My Projects\Apna Store\mStore\source\assets\icons\action\add.svg
 S:\My Projects\Apna Store\mStore\source\assets\icons\action\delete.svg
@@ -224,8 +231,10 @@ S:\My Projects\Apna Store\mStore\source\common\pages\chat.html
 S:\My Projects\Apna Store\mStore\source\common\pages\conversation.html
 S:\My Projects\Apna Store\mStore\source\common\pages\home.html
 S:\My Projects\Apna Store\mStore\source\common\pages\item-details.html
+S:\My Projects\Apna Store\mStore\source\common\pages\merchant-profile.html
 S:\My Projects\Apna Store\mStore\source\common\pages\notification.html
 S:\My Projects\Apna Store\mStore\source\common\pages\offline.html
+S:\My Projects\Apna Store\mStore\source\common\pages\profile-update.html
 S:\My Projects\Apna Store\mStore\source\common\pages\updates.html
 S:\My Projects\Apna Store\mStore\source\common\pages\wishlist.html
 S:\My Projects\Apna Store\mStore\source\common\scripts\account.js
@@ -235,7 +244,9 @@ S:\My Projects\Apna Store\mStore\source\common\scripts\chat.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\conversation.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\home.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\item-details.js
+S:\My Projects\Apna Store\mStore\source\common\scripts\merchant-profile.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\notification.js
+S:\My Projects\Apna Store\mStore\source\common\scripts\profile-update.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\updates.js
 S:\My Projects\Apna Store\mStore\source\common\scripts\wishlist.js
 S:\My Projects\Apna Store\mStore\source\common\styles\account.css
@@ -245,21 +256,27 @@ S:\My Projects\Apna Store\mStore\source\common\styles\chat.css
 S:\My Projects\Apna Store\mStore\source\common\styles\conversation.css
 S:\My Projects\Apna Store\mStore\source\common\styles\home.css
 S:\My Projects\Apna Store\mStore\source\common\styles\item-details.css
+S:\My Projects\Apna Store\mStore\source\common\styles\merchant-profile.css
 S:\My Projects\Apna Store\mStore\source\common\styles\notification.css
+S:\My Projects\Apna Store\mStore\source\common\styles\profile-update.css
 S:\My Projects\Apna Store\mStore\source\common\styles\theme.css
 S:\My Projects\Apna Store\mStore\source\common\styles\updates.css
 S:\My Projects\Apna Store\mStore\source\common\styles\wishlist.css
 S:\My Projects\Apna Store\mStore\source\firebase\auth\auth.js
 S:\My Projects\Apna Store\mStore\source\firebase\firebase-config.js
 S:\My Projects\Apna Store\mStore\source\firebase\firebase-credentials.js
-S:\My Projects\Apna Store\mStore\source\firebase\firestore\account-collection.js
 S:\My Projects\Apna Store\mStore\source\firebase\firestore\logs-collection.js
-S:\My Projects\Apna Store\mStore\source\firebase\firestore\user-collection.js
 S:\My Projects\Apna Store\mStore\source\firebase\rules\firestore.rules
 S:\My Projects\Apna Store\mStore\source\firebase\serviceAccountKey.json
 S:\My Projects\Apna Store\mStore\source\main.css
 S:\My Projects\Apna Store\mStore\source\main.js
 S:\My Projects\Apna Store\mStore\source\modals\account-switcher.html
+S:\My Projects\Apna Store\mStore\source\modals\media-editor\media-editor.html
+S:\My Projects\Apna Store\mStore\source\modals\media-editor\media-editor.js
+S:\My Projects\Apna Store\mStore\source\modals\otp-verification-modal.html
+S:\My Projects\Apna Store\mStore\source\modals\otp-verification-modal.js
+S:\My Projects\Apna Store\mStore\source\modals\rating\rating-modal.html
+S:\My Projects\Apna Store\mStore\source\modals\rating\rating-modal.js
 S:\My Projects\Apna Store\mStore\source\modals\story-viewer\story-viewer.html
 S:\My Projects\Apna Store\mStore\source\modals\story-viewer\story-viewer.js
 S:\My Projects\Apna Store\mStore\source\modules\admin\logs\activity.log
@@ -274,13 +291,13 @@ S:\My Projects\Apna Store\mStore\source\modules\admin\logs\imports\stock-import.
 S:\My Projects\Apna Store\mStore\source\modules\admin\logs\imports\stock-import.xlsx
 S:\My Projects\Apna Store\mStore\source\modules\admin\logs\logs.json
 S:\My Projects\Apna Store\mStore\source\modules\admin\logs\price-change-logs.html
-S:\My Projects\Apna Store\mStore\source\modules\admin\pages\admin-home.css
 S:\My Projects\Apna Store\mStore\source\modules\admin\pages\admin-home.html
-S:\My Projects\Apna Store\mStore\source\modules\admin\pages\admin-home.js
+S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\admin-home.js
 S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\dev-tools.js
 S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\log-reader.js
 S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\mock-inject.js
 S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\mode-switcher.js
+S:\My Projects\Apna Store\mStore\source\modules\admin\styles\admin-home.css
 S:\My Projects\Apna Store\mStore\source\modules\merchant\analytics.html
 S:\My Projects\Apna Store\mStore\source\modules\merchant\merchant-home.html
 S:\My Projects\Apna Store\mStore\source\partials\drawer\drawer.html
@@ -299,6 +316,9 @@ S:\My Projects\Apna Store\mStore\source\partials\navigations\top-nav.html
 S:\My Projects\Apna Store\mStore\source\partials\navigations\top-nav.js
 S:\My Projects\Apna Store\mStore\source\partials\role-switcher.html
 S:\My Projects\Apna Store\mStore\source\routes.js
+S:\My Projects\Apna Store\mStore\source\schemas\feedback-schema.json
+S:\My Projects\Apna Store\mStore\source\schemas\rating-schema.json
+S:\My Projects\Apna Store\mStore\source\schemas\stories-schema.json
 S:\My Projects\Apna Store\mStore\source\settings\config.json
 S:\My Projects\Apna Store\mStore\source\settings\main-config.js
 S:\My Projects\Apna Store\mStore\source\styles\main.css
@@ -311,6 +331,7 @@ S:\My Projects\Apna Store\mStore\source\utils\cart-manager.js
 S:\My Projects\Apna Store\mStore\source\utils\cursor-zoom.js
 S:\My Projects\Apna Store\mStore\source\utils\data-manager.js
 S:\My Projects\Apna Store\mStore\source\utils\formatters.js
+S:\My Projects\Apna Store\mStore\source\utils\idGenerator.js
 S:\My Projects\Apna Store\mStore\source\utils\image-zoom.js
 S:\My Projects\Apna Store\mStore\source\utils\lang-helper.js
 S:\My Projects\Apna Store\mStore\source\utils\pwa-manager.js
