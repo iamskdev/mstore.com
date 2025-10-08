@@ -49,6 +49,7 @@ TYPE-YYYYMMDD-HHMMSS-SSS-RRRR
 - **MSG** → Message (in a conversation)
 - **ORD** → Order
 - **PLG** → Price Log
+- **POL** → Poll
 - **PRM** → Promotion
 - **SHM** → Shipment
 - **STY** → Story

@@ -172,6 +172,8 @@ async function uploadDataToEmulator() {
                 "stories": "meta.links.merchantId",
                 "feedbacks": "meta.feedbackId",
                 "ratings": "meta.ratingId",
+                "posts": "meta.postId",
+                "comments": "meta.commentId"
           
         };
 

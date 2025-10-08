@@ -37,6 +37,7 @@
   font-size: 12px;
   gap: 6px;
   cursor: pointer;
+  position: relative; /* Needed for the new popup positioning */
 }
 
 .avatar-wrap {
@@ -255,4 +256,40 @@
     width: 62px;
     height: 62px;
   }
+}
+
+/* --- FIX: Profile Action Row Styles (was a popup) --- */
+.profile-action-row {
+  display: flex;
+  justify-content: flex-start; /* FIX: Align buttons to the left */
+  gap: 6px;
+  padding: 8px 4px; /* FIX: Add horizontal padding for alignment */
+  background-color: var(--bg-primary); /* Match the container background */
+  white-space: nowrap;
+  /* No absolute positioning needed, it's now part of the document flow */
+}
+
+.profile-action-row button {
+  border: none;
+  border-radius: 15px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile-action-row .popup-btn-profile {
+  background-color: var(--accent-primary);
+  color: var(--accent-text);
+}
+
+.profile-action-row .popup-btn-story {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.profile-action-row .popup-btn-dismiss {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
 }

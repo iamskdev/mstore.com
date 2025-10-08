@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Profile | mStore Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent-primary: #4361ee;            --primary-light: #ffedd5;
+            --accent-primary-rgb: 67, 97, 238; /* NEW: RGB version for use with rgba() */
+            --background-color: #f0f2f5;
+            --card-background: #ffffff;
+            --text-primary: #1c1e21;
+            --text-secondary: #65676b;
+            --border-color: #dddfe2;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --top-nav-height: 60px;
+            --profile-v-spacing: 0px; /* New variable for vertical spacing, set to 0 */
+        }
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            color: var(--text-primary);
+            padding-top: var(--top-nav-height); /* Space for top nav */
+            padding-bottom: 70px; /* Space for bottom nav */
+            -webkit-tap-highlight-color: transparent; /* Chrome, Safari, Android */
+        }
+        /* NEW: Bell shake animation for profile notification button */
+        @keyframes bellShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(15deg); }
+            50% { transform: rotate(-15deg); }
+            75% { transform: rotate(5deg); }
+        }
+        .bell-shake { animation: bellShake 0.5s ease-in-out; }
+
+        .merchant-profile-page {
+            background-color: var(--card-background);
+            min-height: 100vh;
+        }
+        .profile-header {
+            position: relative;
+            margin-bottom: 60px; /* Increased space for the overlapping DP and details */
+        }
+        /* NEW: Responsive cover photo height */
+        @media screen and (min-width: 600px) {
+            .cover-photo-container {
+                height: 120px !important; /* Taller cover on desktop */
+            }
+        }
+        .cover-photo-container {
+            /* --- Cover Photo Rules --- */
+            /* This container sets the height for the cover photo area. */
+            /* It's shorter on mobile and taller on desktop. */
+            height: 90px; /* Mobile height */
+            background-color: var(--border-color);
+            position: relative;
+            overflow: hidden; /* Ensures the image doesn't spill out */
+        }
+        /* This is the core logic for the responsive cover photo. */
+        .cover-photo-container img {
+            width: 100%;
+            height: 100%;
+            /* 'object-fit: cover' scales the image to fill the container,
+               maintaining its aspect ratio and cropping any excess. */
+            object-fit: cover;
+            /* 'object-position: center' ensures that the image is cropped
+               from the top and bottom, keeping the center visible. */
+            object-position: center;
+        }
+        .profile-info {
+            /* This class is repurposed for the new layout */
+            display: flex;
+            align-items: flex-end; /* Align items to the bottom */
+            position: absolute;
+            bottom: -40px; /* FIX: Moved up by 10px to be closer to the banner */
+            left: 16px;
+            right: 16px;
+            gap: 12px;
+        }
+        .profile-picture {
+            width: 70px; /* New size */
+            height: 70px; /* New size */
+            border-radius: 50%;
+            margin-left: -5px;
+            margin-bottom: 5px;            
+            border: 2px solid var(--card-background);
+            background-color: var(--card-background);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            flex-shrink: 0;
+        }
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* NEW: Placeholder icon for when the profile picture fails to load */
+        .profile-picture-placeholder {
+            font-size: 70px; /* Slightly smaller than the container */
+            color: var(--text-secondary);
+            display: none; /* Hidden by default */
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-secondary); /* A light background for the icon */
+            border-radius: 50%;
+        }
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 0 16px; /* Add horizontal padding */
+        }
+        /* New wrapper for name and handle for tighter grouping */
+        .profile-identity {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px; /* A very small gap between name and handle for readability */
+        }
+        /* Definitive fix for h1/p default margins inside the identity block */
+        .profile-identity > * {
+            margin: 0;
+        }
+        .profile-name {
+            font-size: 20px; /* Reduced size */
+            font-weight: 700;
+        }
+        .profile-handle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            /* margin-top is now handled by parent's 'gap' property */
+        }
+        .profile-bio {
+            /* This will now be a single line and truncate with ellipsis */
+            white-space: nowrap;
+            padding: 2px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            /* It's an inline element to sit next to the 'more' link */
+            display: inline;
+        }
+        .bio-wrapper {
+            /* This wrapper ensures the bio and 'more' link are on one line */
+            display: flex;
+            align-items: baseline;
+            line-height: 1;
+            margin-top: -5px;
+            font-size: 12px;
+            color: var(--text-primary);
+            width: 100%;
+        }
+        /* NEW: "Read more" link styles */
+        .read-more-bio {
+            color: var(--accent-primary); /* Link color */
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 0; /* FIX: Remove left margin to eliminate space between '...' and 'more' */
+        }
+        .profile-stats {
+            display: flex;
+            gap: 10px;
+        }
+        .profile-stat {
+            text-align: center;
+        }
+        .profile-stat-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .profile-stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .profile-actions {
+            /* This is now a wrapper for social icons and buttons */
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            align-items: flex-start; /* Align items to the left */
+            flex-grow: 1; /* Take up remaining space */
+            justify-content: flex-end; /* This pushes the content to the bottom of the flex container */
+        }
+        .action-buttons-container {
+            display: flex;
+            margin-left: -10px;
+            align-items: center;
+            gap: 8px; /* Add space between the buttons */
+            margin-bottom: 10px; /* Symmetrical spacing below the banner line */
+        }
+        /* Smaller buttons for the profile header actions */
+        .action-buttons-container .action-btn {
+            padding: 6px 10px;
+            font-size: 10px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .action-btn.primary {
+            background-color: var(--accent-primary);
+            color: white;
+        }
+        .action-btn.secondary {
+            background-color: #e4e6eb;
+            color: var(--text-primary);
+        }
+        .action-btn.icon-only {
+            padding: 10px;
+            width: 40px;
+            height: 40px;
+            justify-content: center;
+        }
+
+        .mrc-social-icons {
+            position: absolute;
+            bottom: 40px; /* Position it just above the banner's bottom edge */
+            left: 75px; /* Position it to the right of the DP */
+            display: flex;
+            gap: 15px;
+        }
+        .mrc-social-icons a {
+            color: white; /* White icons for visibility on cover photo */
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+            font-size: 18px;
+            transition: var(--transition);
+        }
+        .profile-content {
+            padding-top: 0; /* Space between header and main content removed */
+        }
+        .tabs-container {
+            position: sticky;
+            top: var(--top-nav-height); /* Stick below the top nav */
+            background: var(--card-background);
+            z-index: 10;
+            border-bottom: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+        }
+        .tab-nav {
+            display: flex;
+            overflow-x: auto;
+            cursor: grab; /* Indicate that it's draggable */
+            user-select: none; /* Prevent text selection while dragging */
+            scrollbar-width: none; /* Firefox */
+        }
+        .tab-nav.grabbing {
+            cursor: grabbing; /* Change cursor while actively dragging */
+        }
+        .tab-nav::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        .tab-nav button {
+            flex-shrink: 0;
+            padding: 12px 15px; /* Reduced vertical padding */
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+        }
+        .tab-nav button.active {
+            color: var(--accent-primary);
+        }
+        .tab-nav button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10px; /* Extend the line slightly beyond the text */
+            right: 10px; /* Extend the line slightly beyond the text */
+            height: 3px;
+            background-color: var(--accent-primary);
+        }
+        .tab-content {
+            display: none;
+            /* NEW: Reduced vertical padding to remove extra space */
+            padding: 10px 20px;
+            width: 100%; /* Ensure full width */
+            box-sizing: border-box;
+        }
+        /* NEW: Remove padding for the posts tab to make them full-width */
+        #posts.tab-content {
+            padding: 0;
+        }
+        /* NEW: Remove all padding for the community tab to allow full-width borders */
+        #community.tab-content {
+            padding: 0;
+        }
+        /* NEW: Remove all padding for the about tab */
+        #about.tab-content {
+            padding: 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 16px;
+        }
+        .product-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background: var(--card-background);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow);
+        }
+        .product-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+        .product-card-info {
+            padding: 12px;
+        }
+        .product-card-info h3 {
+            font-size: 14px;
+            margin: 0 0 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .product-card-info p {
+            font-size: 14px;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin: 0;
+        }
+        .about-section, .posts-section {
+            display: flex;
+            flex-direction: column;
+            /* NEW: Removed gap to make sections flow together */
+            gap: 0;
+        }
+        .about-card {
+            /* NEW: Advanced, borderless card style */
+            background: transparent;
+            /* FIX: Remove horizontal padding to allow full-width title border */
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color); /* Separator line */
+        }
+        .about-section .about-card:last-child {
+            border-bottom: none; /* No line after the last card */
+        }
+        /* FIX: Create a single, full-width title style for all sections */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            /* FIX: Use inline-block and padding to make underline slightly wider than text */
+            margin: 0 0 16px 16px; /* Align with content padding */
+            padding: 0 16px 8px 0; /* Extend underline to the right */
+            border-bottom: 1px solid var(--border-color);
+            display: inline-block; /* Make it wrap the content */
+        }
+        .about-card p {
+            /* FIX: Add horizontal padding as it was removed from parent */
+            padding: 0 16px;
+            line-height: 1.6;
+            color: var(--text-primary); /* Slightly darker text for readability */
+            margin: 0;
+        }
+        /* FIX: Ensure info items inside the card also have no extra margin */
+        .about-card .info-item { margin-left: 0; }
+        .info-item {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .info-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--accent-primary);
+            font-size: 16px;
+        }
+
+        /* NEW: Style for social media links to look like other info items */
+        /* FIX: Apply truncation directly to the link element */
+        #social-links-list a {
+            color: var(--accent-primary); /* FIX: Use a consistent blue color for all social links */
+            text-decoration: none;
+            font-weight: 500; /* Make link text slightly bolder */
+            transition: color 0.3s ease;
+            /* These properties ensure the link itself truncates */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #social-links-list a:hover { text-decoration: underline; }
+        /* FIX: Add padding to info list containers as parent padding was removed */
+        #contact-info-list,
+        #social-links-list,
+        #payment-delivery-info,
+        #legal-info-list,
+        #more-info-list {
+            padding: 0 16px;
+        }
+
+        /* --- NEW: Modern Post Card Design --- */
+        .posts-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0; /* Remove gap, use border for separation */
+        }
+        .post-card {
+            background: var(--card-background);
+            /* NEW: Remove border and radius for full-width look */
+            border-bottom: 8px solid var(--background-color); /* Separator between posts */
+            overflow: hidden;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+        }
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .post-author-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .post-author-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .post-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        /* NEW: Container for post image to hold product tags */
+        .post-image-container {
+            position: relative;
+            background-color: var(--border-color); /* Shows a bg color if image fails */
+        }
+        .post-image {
+            width: 100%;
+            /* NEW: Let height be determined by aspect ratio for a more natural look */
+            height: auto;
+            aspect-ratio: 16 / 9; /* NEW: Set aspect ratio to 16:9 */
+            object-fit: cover;
+            display: block; /* Remove bottom space */
+        }
+        .post-content {
+            padding: 12px 16px;
+        }
+        .post-description {
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+        }
+        .post-actions {
+            display: flex;
+            /* NEW: Justify content to space-between to push save icon to the right */
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            justify-content: center;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+        /* NEW: Wrapper for left-aligned actions */
+        .post-main-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .post-main-actions .post-action {
+            flex-grow: 1;
+        }
+        /* NEW: Styles for the product tag on the image */
+        .post-product-tag {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .post-product-tag:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .post-action:hover {
+            background-color: #f0f2f5;
+        }
+        .post-action i {
+            font-size: 18px;
+        }
+        .post-action .fa-heart.liked {
+            color: #e74c3c; /* Use a fixed color for liked heart */
+        }
+        /* NEW: Style for saved/bookmarked icon */
+        .post-action .fa-bookmark.saved {
+            color: var(--accent-primary);
+        }
+        /* Read more for post description */
+        /* NEW: Wrapper to keep text and link on one line */
+        .post-description-wrapper {
+            display: flex;
+            align-items: baseline;
+        }
+        .post-description-truncated {
+            /* NEW: Single line truncation */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            /* display: inline;  No longer needed with flex wrapper */
+        }
+        .post-read-more {
+            /* NEW: Style to look like a link */
+            color: var(--accent-primary);
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 4px; /* Space between text and link */
+            flex-shrink: 0; /* Prevent the link from wrapping */
+            font-size: 14px; /* Reduced font size */
+        }
+
+        /* --- NEW: Poll Feature Styles --- */
+        .post-poll-container {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        .poll-question {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+        .poll-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .poll-option {
+            position: relative;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+            overflow: hidden;
+        }
+        .poll-option:not(.voted-on):hover {
+            background-color: #f0f2f5;
+        }
+        .poll-option.voted-on {
+            cursor: default;
+        }
+        .poll-option-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        .poll-option-text { font-size: 14px; }
+        .poll-option-percent { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: var(--text-secondary); 
+            transition: color 0.3s ease;
+        }
+        .poll-option.user-choice .poll-option-text { font-weight: 700; }
+        .poll-progress-bar {
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%;
+            background-color: rgba(var(--accent-primary-rgb), 0.15);
+            border-radius: 6px;
+            z-index: 1;
+            transition: background-color 0.3s ease;
+        }
+        /* NEW: Highlight the progress bar of the user's chosen option */
+        .poll-option.user-choice .poll-progress-bar {
+            background-color: rgba(var(--accent-primary-rgb), 0.4);
+        }
+        /* NEW: Change text color to white when results are shown for better contrast */
+        .poll-option.voted-on .poll-option-text,
+        .poll-option.voted-on .poll-option-percent {
+            color: var(--text-primary);
+        }
+        .poll-footer {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* --- NEW: Comments Section Styles --- */
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+        }
+        .post-engagement-stats span {
+            margin-right: 12px;
+        }
+        .post-comments-section {
+            padding: 0 16px 12px;
+        }
+        .view-all-comments {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+        .comment-add-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .comment-add-section .post-avatar { width: 32px; height: 32px; }
+        .comment-add-input {
+            flex-grow: 1;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* --- NEW: Redesigned Community Tab --- */
+        .community-section {
+            /* FIX: Changed from flex to block to let sections manage their own space */
+            display: block;
+            /* NEW: Removed gap, using padding/margin on individual sections */
+            gap: 0;
+        }
+        /* NEW: Styles for the "Rate this Merchant" button */
+        .rate-merchant-prompt {
+            padding: 16px;
+            background-color: var(--primary-light);
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .rate-merchant-btn {
+            background-color: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .rate-merchant-btn:hover {
+            background-color: #3a52c4; /* Darker shade of primary */
+        }
+        /* CHANGED: Converted from a card to a full-width section */
+        .community-rating-summary {
+            /* FIX: Remove horizontal padding to allow full-width title border */
+            padding: 16px 0;
+            /* FIX: Remove border, it creates unwanted lines between sections */
+            border-bottom: 8px solid var(--background-color);
+        }
+        /* FIX: New styles for the community description to control spacing */
+        .community-description {
+            /* FIX: Removed horizontal padding */
+            padding: 16px 0;
+            border-bottom: 8px solid var(--background-color); /* Use thick separator like posts */
+        }
+        .community-description p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .community-description p {
+            margin: 0; /* Remove default paragraph margin */
+        }
+        /* FIX: Add padding to rating summary content as parent padding was removed */
+        .rating-summary-header,
+        .rating-bars-container {
+            padding: 0 16px;
+        }
+        /* .community-rating-summary-content { padding: 0 16px; } */ /* REMOVED: Padding is now on parent */
+        .rating-summary-header .avg-rating {
+            font-size: 42px; /* Slightly smaller for a cleaner look */
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .rating-summary-header .total-reviews {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .rating-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .rating-bar-row .star-label { white-space: nowrap; }
+        .rating-bar-bg {
+            flex-grow: 1;
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .rating-bar {
+            height: 100%;
+            background-color: #facc15; /* Yellow for stars */
+            border-radius: 3px;
+        }
+        /* FIX: Add top margin to the activity feed to create space */
+        .community-activity-feed {
+            margin-top: 16px;
+        }
+        /* CHANGED: From grid to flex column for a full-width feed */
+        .activity-feed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0; /* Use borders for separation instead of gap */
+        }
+        /* CHANGED: From a card to a border-separated list item */
+        .activity-card {
+            /* FIX: Add horizontal padding */
+            padding: 16px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .activity-feed-list .activity-card:last-child {
+            border-bottom: none; /* No line on the last item */
+        }
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+        .activity-avatar {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+        }
+        .activity-user-info .user-name { font-weight: 600; font-size: 14px; }
+        .activity-user-info .activity-date { font-size: 12px; color: var(--text-secondary); }
+        /* NEW: Styles for the star rating within the activity card */
+        .activity-rating {
+            margin-bottom: 8px;
+            color: #facc15; /* Yellow for stars */
+            font-size: 13px;
+        }
+        /* NEW: Styles for inline rating in activity header */
+        .activity-header .activity-rating {
+            margin-bottom: 0; /* Remove margin when inside header */
+            margin-left: 8px; /* Space between date and stars */
+            color: #facc15; /* Yellow for stars */
+            font-size: 12px; /* FIX: Match font size with date for better alignment */
+            /* FIX: Removed font-size. The icons will inherit a proper size, fixing the rendering issue. */
+        }
+        .activity-comment {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            margin-left: 0; /* REMOVED: Remove left margin to make comment full-width */
+        }
+        /* NEW: Responsive adjustment for the grid on smaller screens */
+        @media (max-width: 480px) { /* This rule is no longer needed as we are single-column by default */
+            .activity-feed-list {
+                /* grid-template-columns: 1fr; Stack to a single column on small screens */
+            }
+        }
+
+        /* --- NEW: Active Members Section --- */
+        .community-active-members {
+            /* No margin needed as it's the first element */
+            margin-top: 0;
+            /* FIX: Remove horizontal padding to allow full-width title border */
+            padding: 16px 0;
+            border-bottom: 8px solid var(--background-color);
+        }
+        /* CHANGED: From a vertical list to a horizontal, overlapping stack of avatars */
+        .active-members-list {
+            display: flex;
+            flex-direction: row;
+            /* FIX: Add consistent horizontal padding */
+            padding: 0 16px;
+        }
+        /* CHANGED: Styles for the individual avatars in the stack */
+        .active-member-avatar {
+            width: 36px; /* Small avatars */
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--card-background); /* Border to make them pop */
+            margin-left: -10px; /* The key to the overlapping effect */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        .active-member-avatar:hover {
+            transform: translateY(-3px); /* Add a little hover effect */
+            z-index: 1;
+        }
+        /* FIX: Remove the negative margin from the first avatar to prevent it from being cut off */
+        .active-member-avatar:first-child {
+            margin-left: 15px;
+        }
+        
+        /* Fake Top Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;            
+            height: var(--top-nav-height);
+            background: var(--card-background);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 100;
+            font-weight: 600;
+        }
+        .top-nav i {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* New styles to group back button and title */
+        .nav-left-group {
+            display: flex;
+            align-items: center;
+            gap: 16px; /* Space between icon and title */
+        }
+        /* Fake Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;            
+            background: var(--card-background);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        .bottom-nav-item.active { color: var(--accent-primary); }
+        .bottom-nav-item i { font-size: 20px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<!-- Fake Top Navigation -->
+<nav class="top-nav">
+    <div class="nav-left-group">
+        <div class="nav-icon-left"><i class="fas fa-arrow-left"></i></div>
+        <div class="nav-title">Merchant Profile</div>
+    </div>
+    <div class="nav-icon-right"><i class="fas fa-ellipsis-v"></i></div>
+</nav>
+
+<div class="merchant-profile-page">
+    <header class="profile-header">
+        <div class="cover-photo-container">
+            <img id="cover-photo" src="" alt="Cover Photo" onerror="this.onerror=null; this.src='https://via.placeholder.com/800x180/f0f2f5/cccccc?text=Cover+Not+Found';">
+        </div>
+        <div class="profile-info">
+            <div class="profile-picture">
+                <i class="fas fa-user-circle profile-picture-placeholder"></i>
+                <img id="merchant-logo" src="" alt="Merchant Logo">
+            </div>
+            <div class="mrc-social-icons">
+                <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            </div>
+            <div class="profile-actions">
+                <div class="action-buttons-container">
+                    <button class="action-btn secondary" id="profile-follow-btn"><i class="fas fa-user-plus"></i> Follow Me</button>
+                    <button class="action-btn secondary"><i class="fas fa-comment-dots"></i> Message</button>
+                    <button class="action-btn secondary" id="profile-notification-btn"><i class="far fa-bell"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="profile-content">
+        <!-- Profile details are now here, below the header -->
+        <div class="profile-details">
+            <div class="profile-identity">
+                <h1 id="merchant-name" class="profile-name"></h1>
+                <p id="merchant-handle" class="profile-handle"></p>
+            </div>
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <span class="profile-stat-value" id="followers-count"></span>
+                    <span class="profile-stat-label">Followers</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="profile-stat-value" id="items-count"></span>
+                    <span class="profile-stat-label">Listings</span>
+                </div>
+            </div>
+            <div class="bio-wrapper">
+                <p id="merchant-bio" class="profile-bio"></p> <!-- JS will populate this -->
+            </div>
+        </div>
+
+        <div class="tabs-container">
+            <nav class="tab-nav">
+                <button class="tab-link active" data-tab="home">Home</button>
+                <button class="tab-link" data-tab="products">Products</button>
+                <button class="tab-link" data-tab="services">Services</button>
+                <button class="tab-link" data-tab="posts">Posts</button>
+                <button class="tab-link" data-tab="community">Community</button>
+                <button class="tab-link" data-tab="about">About</button>
+            </nav>
+        </div>
+
+        <div id="home" class="tab-content active">
+            <div class="product-grid">
+                <!-- Home content (e.g., featured products) will be injected by JS -->
+            </div>
+        </div>
+
+        <div id="products" class="tab-content">
+            <div class="product-grid">
+                <!-- Products will be injected by JS -->
+            </div>
+        </div>
+
+        <div id="services" class="tab-content">
+            <div class="product-grid">
+                <!-- Services will be injected by JS -->
+            </div>
+        </div>
+
+        <div id="posts" class="tab-content">
+            <div class="posts-section">
+                <!-- Posts will be injected by JS -->
+            </div>
+        </div>
+
+        <div id="community" class="tab-content">
+            <div class="community-section">
+                <!-- NEW: Community Description Section is now at the top -->
+                <div class="community-description">
+                    <p id="community-description-content" style="padding: 0 16px; font-size: 14px; color: var(--text-secondary);"></p>
+                </div>
+                <!-- NEW: Rate this Merchant Button -->
+                <div class="rate-merchant-prompt">
+                    <button class="rate-merchant-btn"><i class="fas fa-star"></i> Rate this Merchant</button>
+                </div>
+
+                <!-- Active Members section -->
+                <div class="community-active-members">
+                    <h4 class="section-title">Community Members</h4>
+                    <div id="active-members-list"></div>
+                </div>
+                <div class="community-rating-summary">
+                    <!-- Rating summary will be injected here -->
+                </div>
+                <div class="community-activity-feed">
+                    <h4 class="section-title">Recent Activity</h4>
+                    <div class="activity-feed-list" id="activity-feed-list">
+                        <!-- Activity feed will be injected here --></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="about" class="tab-content">
+            <div class="about-section">
+                <div class="about-card">
+                    <h3 class="section-title">Description</h3>
+                    <p id="about-description"></p>
+                </div>
+                <div class="about-card">
+                    <h3 class="section-title">Contact Info</h3>
+                    <div id="contact-info-list">
+                        <!-- Store info will be injected by JS -->
+                    </div>
+                </div>
+                <!-- NEW: Card for Payment & Delivery -->
+                <div class="about-card">
+                    <h3 class="section-title">Payment & Delivery</h3>
+                    <div id="payment-delivery-info">
+                        <!-- Payment & Delivery info will be injected by JS -->
+                    </div>
+                </div>
+                <div class="about-card">
+                    <h3 class="section-title">Store Policies</h3>
+                    <p id="store-policies-content">Return and refund policies will be listed here. Currently, all sales are final.</p>
+                </div>
+                <!-- NEW: Card for Social Links -->
+                <div class="about-card">
+                    <h3 class="section-title">Social Media</h3>
+                    <div id="social-links-list">
+                        <!-- Social links will be injected by JS -->
+                    </div>
+                </div>
+                <!-- NEW: Card for Legal Info -->
+                <div class="about-card">
+                    <h3 class="section-title">Legal Information</h3>
+                    <div id="legal-info-list"></div>
+                </div>
+                <!-- NEW: Card for More Info -->
+                <div class="about-card">
+                    <h3 class="section-title">More Info</h3>
+                    <div id="more-info-list">
+                        <!-- More info will be injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Fake Bottom Navigation -->
+<nav class="bottom-nav">
+    <div class="bottom-nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </div>
+    <div class="bottom-nav-item">
+        <i class="fas fa-search"></i>
+        <span>Explore</span>
+    </div>
+    <div class="bottom-nav-item active">
+        <i class="fas fa-store"></i>
+        <span>Stores</span>
+    </div>
+    <div class="bottom-nav-item">
+        <i class="fas fa-user"></i>
+        <span>Account</span>
+    </div>
+</nav>
+
+<script>
+    // --- MOCK DATA ---
+    const merchantData = {
+        meta: {
+          "merchantId": "MRC-20251002-170602-401-ASDF",
+          "joinedAt": "2025-08-01T10:30:00Z"
+        },
+        "info": {
+          "name": "Internet Cafe & Grocery",
+          "handle": "@internetcafe",
+          "logo": "../localstore/images/logos/internet-cafe-logo.jpg",
+          "description": "Your one-stop shop for groceries and internet services in Delhi. We offer a wide range of products and high-speed internet access.",
+          "coverImage": "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop",
+          "establishedAt": "2021-03-15T00:00:00Z",
+          "contact": {
+            "phone": "+919876543210",
+            "email": "contact@internetcafe.com",
+            "whatsapp": "+919876543210"
+          }
+        },
+        "openingHours": {
+          "hours": [{ "open": "08:00", "close": "13:00" }],
+          "note": "Opens late on public holidays."
+        },
+        "addresses": [{
+          "label": "Primary Store",
+          "landmark": "Near Metro Station",
+          "street": "Main Road, Sector 12",
+          "city": "Delhi",
+          "zipCode": "110012",
+          "state": "Delhi",
+          "country": "India",
+          "isPrimary": true
+        }],
+        "engagement": {
+          "followers": 1845,
+          "items": 152,
+          "rating": 4.5,
+          "reviews": 128
+        },
+        "social": {
+          "facebook": "https://facebook.com/internetcafe",
+          "instagram": "https://instagram.com/internetcafe",
+          "twitter": "https://twitter.com/internetcafe",
+          "youtube": "https://youtube.com/c/internetcafe",
+          "linkedin": "https://linkedin.com/company/internetcafe"
+        },
+        "community": {
+          "description": "Welcome to the Internet Cafe & Grocery community! Get updates on new stock, internet offers, and more. We're glad you're here."
+        },
+        paymentOptions: {
+            acceptsCod: true,
+            acceptsOnline: true,
+            acceptedGateways: ["UPI", "PayTM", "Card"]
+        },
+        deliveryInfo: {
+            isAvailable: true,
+            deliveryRadiusKm: 5,
+            minOrderValue: 150,
+            deliveryFee: 30,
+            freeDeliveryThreshold: 500
+        },
+        legalInfo: {
+            ownerName: "Rohit Kumar",
+            gstin: "09AABCU9603R1ZJ"
+        }
+    };
+
+    // --- SEPARATE MOCK DATA (simulating other collections) ---
+    // FIX: The mock item data now matches the structure of items.json
+    const homeItems = [{
+        meta: { itemId: "ITM-HOME-1", type: "product", links: { merchantId: "MRC-20251002-170604-402-FGHJ" } },
+        info: { name: 'Amul Butter 500g' },
+        pricing: { sellingPrice: 270, currency: "INR" },
+        media: { thumbnail: 'https://via.placeholder.com/200/FF5733/000000?text=Butter' }
+    }, {
+        meta: { itemId: "ITM-HOME-2", type: "product", links: { merchantId: "MRC-20251002-170604-402-FGHJ" } },
+        info: { name: 'Red Label Tea 500g' },
+        pricing: { sellingPrice: 250, currency: "INR" },
+        media: { thumbnail: 'https://via.placeholder.com/200/900C3F/000000?text=Tea' }
+    }];
+
+    const products = [{
+        meta: { itemId: "ITM-PROD-1", type: "product", links: { merchantId: "MRC-20251002-170604-402-FGHJ" } },
+        info: { name: 'Tata Salt 1KG' },
+        pricing: { sellingPrice: 28, currency: "INR" },
+        media: { thumbnail: 'https://via.placeholder.com/200/FFC300/000000?text=Salt' }
+    }, {
+        meta: { itemId: "ITM-PROD-2", type: "product", links: { merchantId: "MRC-20251002-170604-402-FGHJ" } },
+        info: { name: 'Parle-G Biscuit' },
+        pricing: { sellingPrice: 10, currency: "INR" },
+        media: { thumbnail: 'https://via.placeholder.com/200/DAF7A6/000000?text=Biscuit' }
+    }, {
+        meta: { itemId: "ITM-PROD-3", type: "product", links: { merchantId: "MRC-20251002-170604-402-FGHJ" } },
+        info: { name: 'Amul Butter 500g' },
+        pricing: { sellingPrice: 270, currency: "INR" },
+        media: { thumbnail: 'https://via.placeholder.com/200/FF5733/000000?text=Butter' }
+    }, {
+        meta: { itemId: "ITM-PROD-4", type: "product", links: { merchantId: "MRC-20251002-170604-402-FGHJ" } },
+        info: { name: 'Surf Excel 500g' },
+        pricing: { sellingPrice: 65, currency: "INR" },
+        media: { thumbnail: 'https://via.placeholder.com/200/C70039/000000?text=Detergent' }
+    }];
+
+    const services = [{
+        meta: { itemId: "ITM-SERV-1", type: "service", links: { merchantId: "MRC-20251002-170604-402-FGHJ" } },
+        info: { name: 'Home Delivery' },
+        pricing: { sellingPrice: 50, currency: "INR", note: "Starts at" },
+        media: { thumbnail: 'https://via.placeholder.com/200/2ECC71/FFFFFF?text=Delivery' }
+    }, {
+        meta: { itemId: "ITM-SERV-2", type: "service", links: { merchantId: "MRC-20251002-170604-402-FGHJ" } },
+        info: { name: 'Custom Orders' },
+        pricing: { sellingPrice: 0, currency: "INR", note: "Inquire" },
+        media: { thumbnail: 'https://via.placeholder.com/200/3498DB/FFFFFF?text=Custom' }
+    }];
+
+    // NEW: Updated mock posts to match the standard posts.json schema
+    const posts = [
+        {
+            meta: { postId: 'post1', type: 'standard', status: 'published', links: { merchantId: 'MRC-20251002-170604-402-FGHJ' } },
+            content: {
+                text: "Get ready for the wedding season! Our new bridal makeup collection is here. Featuring long-lasting foundations, vibrant lipsticks, and stunning eyeshadow palettes. Visit us to get your perfect bridal look! #BridalMakeup #WeddingSeason",
+                media: [{ type: 'image', url: 'https://images.unsplash.com/photo-1616197511363-cf6a8335a511?q=80&w=800&auto=format&fit=crop', aspectRatio: '16:9' }]
+            },
+            engagement: { likes: 128, comments: 14, shares: 5, views: 2400 },
+            poll: null,
+            taggedProducts: ['ITM-PROD-1', 'ITM-PROD-2'],
+            audit: { createdAt: "2025-10-05T11:00:00Z" },
+            // For UI demo, we'll add comments here directly
+            comments: [{ user: "Priya S.", text: "Wow, looks amazing! 😍" }]
+        },
+        {
+            meta: { postId: 'post2', type: 'standard', status: 'published', links: { merchantId: 'MRC-20251002-170604-402-FGHJ' } },
+            content: {
+                text: "Keep your skin glowing this monsoon. Explore our range of waterproof kajal, matte lipsticks, and hydrating moisturizers. Special discounts available for a limited time!",
+                media: [{ type: 'image', url: 'https://images.unsplash.com/photo-1590155943458-593c72351565?q=80&w=800&auto=format&fit=crop', aspectRatio: '16:9' }]
+            },
+            engagement: { likes: 76, comments: 5, shares: 2, views: 1800 },
+            poll: null,
+            taggedProducts: [],
+            audit: { createdAt: "2025-10-01T18:00:00Z" },
+            comments: []
+        },
+        {
+            meta: { postId: 'post3', type: 'poll', status: 'published', links: { merchantId: 'MRC-20251002-170604-402-FGHJ' } },
+            content: {
+                text: "Don't miss out! Flat 15% off on all sringar items this weekend. Offer valid for in-store purchases only. Tag a friend who needs a shopping spree! #Sale #Beauty #Patna",
+                media: []
+            },
+            engagement: { likes: 215, comments: 42, shares: 18, views: 5600 },
+            poll: {
+                question: "Which offer would you prefer next weekend?",
+                options: [
+                    { id: 'opt1', text: "Buy 1 Get 1 on Cosmetics", votes: 120 },
+                    { id: 'opt2', text: "Flat 30% off on all items", votes: 250 },
+                    { id: 'opt3', text: "Free gift on purchase > ₹500", votes: 85 }
+                ],
+                totalVotes: 455,
+                endsAt: "2025-10-12T23:59:59Z"
+            },
+            taggedProducts: [],
+            audit: { createdAt: "2025-09-20T12:00:00Z" },
+            comments: []
+        }
+    ];
+
+    const reviewsData = [
+        {
+            user: { name: "Priya Singh", avatar: "https://i.pravatar.cc/150?img=5" },
+            rating: 5,
+            comment: "Absolutely love the new bridal collection! The quality is amazing and the staff is so helpful. Highly recommended! 😍",
+            date: "3 days ago"
+        },
+        {
+            user: { name: "Rohan Sharma", avatar: "https://i.pravatar.cc/150?img=6" },
+            rating: 4,
+            comment: "Good collection of sringar items. The shop is well-maintained and easy to find.",
+            date: "1 week ago"
+        }
+    ];
+
+    const activeMembersData = [
+        { name: "Rohan S.", avatar: "https://i.pravatar.cc/150?img=5" },
+        { name: "Priya Singh", avatar: "https://i.pravatar.cc/150?img=6" },
+        { name: "Amit Kumar", avatar: "https://i.pravatar.cc/150?img=11" },
+        { name: "Sneha P.", avatar: "https://i.pravatar.cc/150?img=25" },
+        { name: "Vikas P.", avatar: "https://i.pravatar.cc/150?img=32" },
+        { name: "Anjali M.", avatar: "https://i.pravatar.cc/150?img=45" }
+    ];
+
+    // --- NEW HELPER FUNCTION ---
+    /**
+     * Formats a number into a compact string with 'K' for thousands or 'M' for millions.
+     * @param {number} num The number to format.
+     * @returns {string} The formatted string.
+     */
+    function formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        }
+        if (num >= 1000) {
+            return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        }
+        return String(num);
+    }
+
+    // --- RENDER FUNCTIONS ---
+    function renderProfile() {
+        const logoImg = document.getElementById('merchant-logo');
+        const logoPlaceholder = logoImg.previousElementSibling;
+
+        // Reset state before loading new image
+        logoImg.style.display = 'block';
+        logoPlaceholder.style.display = 'none';
+
+        logoImg.src = merchantData.info.logo;
+        logoImg.onerror = function() {
+            this.style.display = 'none'; // Hide broken image
+            logoPlaceholder.style.display = 'flex'; // Show placeholder icon
+        };
+
+        document.getElementById('cover-photo').src = merchantData.info.coverImage;
+        document.getElementById('merchant-name').textContent = merchantData.info.name;
+        document.getElementById('merchant-handle').textContent = merchantData.info.handle;
+        document.getElementById('followers-count').textContent = formatNumber(merchantData.engagement.followers);
+        document.getElementById('items-count').textContent = formatNumber(merchantData.engagement.items);
+
+        const bioElement = document.getElementById('merchant-bio');
+        const bioWrapper = document.querySelector('.bio-wrapper');
+        const fullText = merchantData.info.description;
+        bioElement.textContent = fullText;
+
+        const existingMoreLink = bioWrapper.querySelector('.read-more-bio');
+        if (existingMoreLink) {
+            existingMoreLink.remove();
+        }
+
+        // Check if the full text overflows the container.
+        if (bioElement.scrollWidth > bioElement.clientWidth) {
+            let words = fullText.split(' ');
+            let truncatedText = '';
+
+            // 1. Try to fit as many whole words as possible.
+            for (let i = 0; i < words.length; i++) {
+                // Test with the word, ellipsis, and the 'more' link for an accurate measurement.
+                let testText = truncatedText + (truncatedText ? ' ' : '') + words[i] + '...more';
+                bioElement.textContent = testText;
+
+                if (bioElement.scrollWidth > bioElement.clientWidth) {
+                    break;
+                }
+                truncatedText += (truncatedText ? ' ' : '') + words[i];
+            }
+
+            // 2. If no words fit (i.e., the first word is too long), truncate that single word.
+            if (!truncatedText && words.length > 0) {
+                let longWord = words[0];
+                while (longWord.length > 0) {
+                    bioElement.textContent = longWord + '...more';
+                    if (bioElement.scrollWidth <= bioElement.clientWidth) break;
+                    longWord = longWord.slice(0, -1); // Remove one character from the end.
+                }
+                truncatedText = longWord;
+            }
+
+            bioElement.textContent = truncatedText + '...';
+
+            const readMoreSpan = document.createElement('span');
+            readMoreSpan.textContent = 'more';
+            readMoreSpan.className = 'read-more-bio';
+            bioWrapper.appendChild(readMoreSpan);
+            readMoreSpan.onclick = (e) => {
+                    e.preventDefault();
+                    const aboutTabButton = document.querySelector('.tab-link[data-tab="about"]');
+                    if (aboutTabButton) {
+                        aboutTabButton.click();
+                    }
+                };
+        }
+        
+        // --- FINAL FIX: Dynamically show/hide header social icons based on data ---
+        const socialIconsContainer = document.querySelector('.mrc-social-icons');
+        const socialLinks = merchantData.social || {};
+        const whatsappNumber = merchantData.info.contact?.whatsapp;
+        
+        socialIconsContainer.querySelectorAll('a').forEach(icon => {
+            const socialNetwork = icon.title.toLowerCase();
+            let url = null; // Default to null
+
+            if (socialNetwork === 'whatsapp') {
+                // Only create a URL if the whatsapp number is not null or empty
+                // FIX: Use the correct variable 'whatsappNumber' instead of 'whatsapp'
+                if (whatsappNumber && whatsappNumber.trim() !== '') { 
+                    const phone = whatsappNumber.replace(/\D/g, ''); // Remove non-digit characters
+                    url = `https://wa.me/${phone}`;
+                }
+            } else {
+                // For other networks, get the link from the social object
+                url = socialLinks[socialNetwork];
+            }
+            if (url) {
+                icon.href = url;
+                icon.style.display = 'inline-block';
+            } else {
+                icon.style.display = 'none';
+            }
+        });
+    }
+
+    function renderHome() {
+        const container = document.querySelector('#home .product-grid');
+        // FIX: Use the correct data structure from the updated mock data
+        container.innerHTML = homeItems.map(item => `
+            <div class="product-card">
+                <img src="${item.media.thumbnail}" alt="${item.info.name}">
+                <div class="product-card-info">
+                    <h3>${item.info.name}</h3>
+                    <p>₹${item.pricing.sellingPrice}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderProducts() {
+        const container = document.querySelector('#products .product-grid');
+        // FIX: Use the correct data structure
+        container.innerHTML = products.map(item => `
+            <div class="product-card">
+                <img src="${item.media.thumbnail}" alt="${item.info.name}">
+                <div class="product-card-info">
+                    <h3>${item.info.name}</h3>
+                    <p>₹${item.pricing.sellingPrice}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderServices() {
+        const container = document.querySelector('#services .product-grid');
+        // FIX: Use the correct data structure and handle price notes
+        container.innerHTML = services.map(item => `
+            <div class="product-card">
+                <img src="${item.media.thumbnail}" alt="${item.info.name}">
+                <div class="product-card-info">
+                    <h3>${item.info.name}</h3>
+                    <p>${item.pricing.note || `₹${item.pricing.sellingPrice}`}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderPosts() {
+        const container = document.querySelector('#posts .posts-section');
+        container.innerHTML = posts.map(post => {
+            const postDescription = post.content.text;
+            const postImage = post.content.media.find(m => m.type === 'image');
+            // NEW: Check if description is long enough to need truncation
+            const isLong = postDescription.length > 80; // A reasonable length for one line
+            const descriptionHTML = isLong
+                ? `<div class="post-description-wrapper"><p class="post-description post-description-truncated" data-full-text="${postDescription}">${postDescription}</p><span class="post-read-more">Read more</span></div>`
+                : `<div class="post-description-wrapper"><p class="post-description">${postDescription}</p></div>`;
+
+            // NEW: Conditionally render the poll
+            let pollHTML = '';
+            if (post.poll) {
+                const pollOptionsHTML = post.poll.options.map(option => `
+                    <div class="poll-option" data-post-id="${post.meta.postId}" data-option-id="${option.id}">
+                        <span class="poll-option-text">${option.text}</span>
+                    </div>
+                `).join('');
+
+                pollHTML = `
+                <div class="post-poll-container">
+                    <p class="poll-question">${post.poll.question}</p>
+                    <div class="poll-options">${pollOptionsHTML}</div>
+                    <div class="poll-footer"><span class="poll-total-votes">${post.poll.totalVotes} votes</span></div>
+                </div>
+                `;
+            }
+
+            // NEW: Conditionally render the image tag
+            let imageHTML = '';
+            if (postImage) {
+                // NEW: Add product tag if products are tagged
+                const productTagHTML = post.taggedProducts && post.taggedProducts.length > 0
+                    ? `<div class="post-product-tag"><i class="fas fa-shopping-bag"></i> View Products</div>`
+                    : '';
+                imageHTML = `<div class="post-image-container"><img src="${postImage.url}" alt="Post image" class="post-image">${productTagHTML}</div>`;
+            }
+
+            // NEW: Conditionally render the comments section
+            let commentsHTML = '';
+            if (post.engagement && post.engagement.comments > 0) {
+                const latestComment = post.comments[0];
+                commentsHTML = `
+                    <div class="post-comments-section">
+                        <div class="view-all-comments">View all ${post.engagement.comments} comments</div>
+                        ${latestComment ? `<p class="post-description"><strong>${latestComment.user}</strong> ${latestComment.text}</p>` : ''}
+                    </div>
+                `;
+            }
+
+            // NEW: Add comment input section
+            const addCommentHTML = `
+                <div class="post-comments-section comment-add-section">
+                    <img src="${merchantData.info.logo}" alt="Your avatar" class="post-avatar">
+                    <span class="comment-add-input">Add a comment...</span>
+                </div>
+            `;
+
+            return `
+            <div class="post-card">
+                <div class="post-header">
+                    <img src="${merchantData.info.logo}" alt="${merchantData.info.name}" class="post-avatar">
+                    <div class="post-author-info">
+                        <span class="post-author-name">${merchantData.info.name}</span>
+                        <span class="post-date">${new Date(post.audit.createdAt).toLocaleDateString()}</span>
+                    </div>
+                </div>
+                ${imageHTML}
+                <div class="post-content">
+                    ${descriptionHTML}
+                </div>
+                ${pollHTML}
+                <div class="post-stats">
+                    <div class="post-engagement-stats">
+                        <span>${formatNumber(post.engagement?.likes || 0)} likes</span>
+                    </div>
+                    <span>${formatNumber(post.engagement?.views || 0)} views</span>
+                </div>
+                
+                ${commentsHTML}
+                <div class="post-actions">
+                    <div class="post-main-actions">
+                        <div class="post-action like-action" data-post-id="${post.meta.postId}"><i class="far fa-heart"></i><span>Like</span></div>
+                        <div class="post-action"><i class="far fa-comment-alt"></i><span>Comment</span></div>
+                        <div class="post-action"><i class="fas fa-share"></i><span>Share</span></div>
+                    </div>
+                    <div class="post-action save-action" data-post-id="${post.meta.postId}">
+                        <i class="far fa-bookmark"></i>
+                    </div>
+                </div>
+                ${addCommentHTML}
+            </div>`;
+        }).join('');
+        // Add event listeners for the new like buttons
+        addPostLikeListeners();
+        // NEW: Add event listeners for the read more links
+        addReadMoreListeners();
+        // NEW: Add event listeners for poll options
+        addPollListeners();
+        // NEW: Add event listeners for save buttons
+        addSavePostListeners();
+    }
+
+    function renderCommunity() {
+        const ratingSummaryContainer = document.querySelector('.community-rating-summary');
+        const activityFeedContainer = document.getElementById('activity-feed-list');
+        const rating = merchantData.engagement.rating || 4.2;
+        const reviews = merchantData.engagement.reviews || 63;
+
+        // Render Rating Summary
+        const distribution = [
+            (rating / 5) * 0.6 * reviews, (rating / 5) * 0.2 * reviews,
+            (rating / 5) * 0.1 * reviews, (rating / 5) * 0.05 * reviews,
+            (rating / 5) * 0.05 * reviews
+        ];
+        let barsHTML = '';
+        for (let i = 5; i >= 1; i--) { // Loop from 5 down to 1
+            const percentage = reviews > 0 ? (distribution[5 - i] / reviews) * 100 : 0;
+            barsHTML += `
+                <div class="rating-bar-row">
+                    <span class="star-label">${i} star</span>
+                    <div class="rating-bar-bg"><div class="rating-bar" style="width: ${percentage}%;"></div></div>
+                </div>
+            `;
+        }
+        ratingSummaryContainer.innerHTML = `
+            
+                <h4 class="section-title">Ratings & Reviews</h4>
+                <div class="rating-summary-header">
+                    <div class="avg-rating">${rating.toFixed(1)}</div>
+                    <div>
+                        <div class="stars" style="color: #facc15;">${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))}</div>
+                        <div class="total-reviews">${reviews} reviews</div>
+                    </div>
+                </div>
+                <div class="rating-bars-container">${barsHTML}</div>
+            
+        `;
+
+        // Render Activity Feed (Reviews)
+        activityFeedContainer.innerHTML = reviewsData.map(review => {
+            const rating = review.rating;
+            const starsHTML = '★'.repeat(Math.round(rating)) + '☆'.repeat(5 - Math.round(rating));
+            return `
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <img src="${review.user.avatar}" alt="${review.user.name}" class="activity-avatar" style="border-radius: 50%;">
+                        <div class="activity-user-info">
+                            <div class="user-name">${review.user.name}</div>
+                            <div style="display: flex; align-items: center; flex-wrap: wrap;"><span class="activity-date">${review.date}</span><span class="activity-rating" style="color: #facc15;">${starsHTML}</span></div>
+                        </div>
+                    </div>
+                    
+                    <p class="activity-comment">${review.comment}</p>
+                </div>
+            `;
+        }).join('');
+
+        // Render Active Members Section
+        const activeMembersContainer = document.getElementById('active-members-list');
+        activeMembersContainer.innerHTML = activeMembersData.map(member => {
+            // CHANGED: Now just rendering the image tag for the avatar stack
+            return `<img src="${member.avatar}" alt="${member.name}" class="active-member-avatar" title="${member.name}">`;
+        }).join('');
+
+        // NEW: Render Community Description
+        const communityDescContainer = document.getElementById('community-description-content');
+        communityDescContainer.textContent = merchantData.community.description || 'Welcome to our community! Stay tuned for updates and offers.';
+
+    }
+
+    function renderAbout() {
+        document.getElementById('about-description').textContent = merchantData.info.description;
+
+        const infoContainer = document.getElementById('contact-info-list');
+
+        const establishmentDate = new Date(merchantData.info.establishedAt);
+        const establishmentYear = establishmentDate.getFullYear();
+
+        const primaryAddress = merchantData.addresses.find(a => a.isPrimary) || merchantData.addresses[0];
+        const fullAddress = primaryAddress ? `${primaryAddress.street}, ${primaryAddress.city}, ${primaryAddress.state} ${primaryAddress.zipCode}` : 'Address not available';
+
+        const hours = merchantData.openingHours.note || 'Timings not available';
+
+        // NEW: Social Links Rendering
+        infoContainer.innerHTML = `
+            <div class="info-item"><i class="fas fa-store-alt"></i><span>Established in ${establishmentYear}</span></div>
+            <div class="info-item"><i class="fas fa-clock"></i><span>${hours}</span></div>
+            <div class="info-item"><i class="fas fa-map-marker-alt"></i><span>${fullAddress}</span></div>
+        `;
+
+        // Render Social Links in their own card
+        const socialLinksContainer = document.getElementById('social-links-list');
+        const socialLinks = merchantData.social || {};
+
+        let socialLinksHTML = '';
+        // FIX: Conditionally render each link only if it exists in the data
+        if (socialLinks.facebook) socialLinksHTML += `<div class="info-item" data-social="facebook"><i class="fab fa-facebook"></i><a href="${socialLinks.facebook}" target="_blank" rel="noopener noreferrer">${socialLinks.facebook}</a></div>`;
+        if (socialLinks.instagram) socialLinksHTML += `<div class="info-item" data-social="instagram"><i class="fab fa-instagram"></i><a href="${socialLinks.instagram}" target="_blank" rel="noopener noreferrer">${socialLinks.instagram}</a></div>`;
+        if (socialLinks.twitter) socialLinksHTML += `<div class="info-item" data-social="twitter"><i class="fab fa-twitter"></i><a href="${socialLinks.twitter}" target="_blank" rel="noopener noreferrer">${socialLinks.twitter}</a></div>`;
+        if (socialLinks.youtube) socialLinksHTML += `<div class="info-item" data-social="youtube"><i class="fab fa-youtube"></i><a href="${socialLinks.youtube}" target="_blank" rel="noopener noreferrer">${socialLinks.youtube}</a></div>`;
+        if (socialLinks.linkedin) socialLinksHTML += `<div class="info-item" data-social="linkedin"><i class="fab fa-linkedin"></i><a href="${socialLinks.linkedin}" target="_blank" rel="noopener noreferrer">${socialLinks.linkedin}</a></div>`;
+        socialLinksContainer.innerHTML = socialLinksHTML || '<p>No social media links provided.</p>';
+        const lastSocialItem = socialLinksContainer.querySelector('.info-item:last-child');
+        if (lastSocialItem) lastSocialItem.style.marginBottom = '0';
+
+        // Render Store Policies
+        // This is now static as policies object was removed from new structure
+        document.getElementById('store-policies-content').textContent = 'Returns accepted within 7 days of purchase with original receipt. Items must be in original condition.';
+
+        // NEW: Render Payment & Delivery Info
+        const paymentDeliveryContainer = document.getElementById('payment-delivery-info');
+        const payment = merchantData.paymentOptions || {};
+        const delivery = merchantData.deliveryInfo || {};
+        // FIX: Remove inline padding, parent .about-card now handles it.
+        // paymentDeliveryContainer.style.padding = '0 16px';
+        let paymentDeliveryHTML = '';
+
+        if (payment.acceptsCod) paymentDeliveryHTML += `<div class="info-item"><i class="fas fa-money-bill-wave"></i><span>Cash on Delivery (COD) available</span></div>`;
+        if (payment.acceptsOnline && payment.acceptedGateways?.length > 0) {
+            paymentDeliveryHTML += `<div class="info-item"><i class="fas fa-credit-card"></i><span>Accepts Online Payments (${payment.acceptedGateways.join(', ')})</span></div>`;
+        }
+        if (delivery.isAvailable) {
+            paymentDeliveryHTML += `<div class="info-item"><i class="fas fa-shipping-fast"></i><span>Home delivery available up to ${delivery.deliveryRadiusKm}km</span></div>`;
+            if (delivery.freeDeliveryThreshold > 0) {
+                 paymentDeliveryHTML += `<div class="info-item"><i class="fas fa-box-open"></i><span>Free delivery on orders over ₹${delivery.freeDeliveryThreshold}</span></div>`;
+            }
+        } else {
+            paymentDeliveryHTML += `<div class="info-item"><i class="fas fa-store"></i><span>In-store pickup only</span></div>`;
+        }
+        paymentDeliveryContainer.innerHTML = paymentDeliveryHTML || '<p>Payment and delivery details not provided.</p>';
+
+        // NEW: Render Legal Info
+        const legalContainer = document.getElementById('legal-info-list');
+        const legal = merchantData.legalInfo || {};
+        // FIX: Remove inline padding, parent .about-card now handles it.
+        // legalContainer.style.padding = '0 16px';
+        let legalHTML = '';
+        if (legal.ownerName) legalHTML += `<div class="info-item"><i class="fas fa-user-tie"></i><span>Owner: ${legal.ownerName}</span></div>`;
+        if (legal.gstin) legalHTML += `<div class="info-item"><i class="fas fa-file-invoice-dollar"></i><span>GSTIN: ${legal.gstin}</span></div>`;
+        legalContainer.innerHTML = legalHTML || '<p>Legal information not provided.</p>';
+
+        // NEW: Render More Info
+        const moreInfoContainer = document.getElementById('more-info-list');
+        const joinDate = new Date(merchantData.meta.joinedAt);
+        const formattedJoinDate = joinDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        // FIX: Remove inline padding, parent .about-card now handles it.
+        // moreInfoContainer.style.padding = '0 16px';
+        let moreInfoHTML = '';
+        moreInfoHTML += `<div class="info-item"><i class="fas fa-calendar-check"></i><span>Joined on ${formattedJoinDate}</span></div>`;
+        if (merchantData.meta.merchantId) {
+            moreInfoHTML += `<div class="info-item"><i class="fas fa-id-card-alt"></i><span>ID: ${merchantData.meta.merchantId}</span></div>`;
+        }
+        moreInfoContainer.innerHTML = moreInfoHTML;
+    }
+
+    // --- HELPERS ---
+
+    /**
+     * NEW: Adds click event listeners to poll options.
+     */
+    function addPollListeners() {
+        document.querySelectorAll('.poll-option').forEach(optionElement => {
+            optionElement.addEventListener('click', function() {
+                // Prevent re-voting
+                if (this.classList.contains('voted-on')) return;
+
+                const postId = this.dataset.postId;
+                const chosenOptionId = this.dataset.optionId;
+                const post = posts.find(p => p.meta.postId === postId);
+                if (!post || !post.poll) return;
+
+                const pollOptionsContainer = this.parentElement;
+                
+                // Mark all options in this poll as voted
+                pollOptionsContainer.querySelectorAll('.poll-option').forEach(opt => {
+                    opt.classList.add('voted-on');
+                });
+
+                // Update UI to show results
+                pollOptionsContainer.innerHTML = post.poll.options.map(option => {
+                    const percentage = post.poll.totalVotes > 0 ? ((option.votes / post.poll.totalVotes) * 100).toFixed(0) : 0;
+                    const isUserChoice = option.id === chosenOptionId;
+                    
+                    return `
+                        <div class="poll-option voted-on ${isUserChoice ? 'user-choice' : ''}">
+                            <div class="poll-option-result">
+                                <span class="poll-option-text">${option.text}</span>
+                                <span class="poll-option-percent">${percentage}%</span>
+                            </div>
+                            <div class="poll-progress-bar" style="width: ${percentage}%;"></div>
+                        </div>
+                    `;
+                }).join('');
+
+            }, { once: true }); // The listener will be removed after being invoked once
+        });
+    }
+
+    /**
+     * NEW: Adds click event listeners to post save/bookmark buttons.
+     */
+    function addSavePostListeners() {
+        document.querySelectorAll('.save-action').forEach(action => {
+            action.addEventListener('click', function() {
+                const bookmarkIcon = this.querySelector('.fa-bookmark');
+                if (bookmarkIcon) {
+                    // Toggle classes for visual feedback
+                    bookmarkIcon.classList.toggle('far'); // Regular icon
+                    bookmarkIcon.classList.toggle('fas'); // Solid icon
+                    bookmarkIcon.classList.toggle('saved'); // Class for color
+                }
+            });
+        });
+    }
+
+
+    /**
+     * NEW: Adds click event listeners to post "Read more" links.
+     */
+    function addReadMoreListeners() {
+        document.querySelectorAll('.post-read-more').forEach(link => {
+            link.addEventListener('click', function() {
+                const wrapper = this.parentElement;
+                const descriptionElement = wrapper.querySelector('.post-description');
+                
+                if (wrapper && descriptionElement) {
+                    // Expand the text
+                    descriptionElement.textContent = descriptionElement.dataset.fullText;
+                    descriptionElement.classList.remove('post-description-truncated');
+                    
+                    // Allow the wrapper to wrap text now
+                    wrapper.style.display = 'block';
+                    this.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    /**
+     * Adds click event listeners to post like buttons for a visual-only toggle effect.
+     */
+    function addPostLikeListeners() {
+        document.querySelectorAll('.like-action').forEach(action => {
+            action.addEventListener('click', function() {
+                const heartIcon = this.querySelector('.fa-heart');
+                if (heartIcon) {
+                    // Toggle classes for visual feedback without changing data
+                    heartIcon.classList.toggle('far'); // Regular icon
+                    heartIcon.classList.toggle('fas'); // Solid icon
+                    heartIcon.classList.toggle('liked'); // Class for red color
+                }
+            });
+        });
+    }
+    /**
+     * Enables horizontal scrolling on an element using the mouse wheel.
+     * @param {HTMLElement} element The element to apply the behavior to.
+     */
+    function enableHorizontalScroll(element) {
+        if (!element) return;
+        element.addEventListener('wheel', (e) => {
+            // If there's horizontal overflow
+            if (element.scrollWidth > element.clientWidth) {
+                if (e.deltaY !== 0) {
+                    // Prevent the default vertical scroll and scroll horizontally instead
+                    e.preventDefault();
+                    element.scrollLeft += e.deltaY;
+                }
+            }
+        });
+    }
+
+    /**
+     * Enables click-and-drag horizontal scrolling on an element.
+     * @param {HTMLElement} element The element to make draggable.
+     */
+    function enableDragToScroll(element) {
+        if (!element) return;
+
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        element.addEventListener('mousedown', (e) => {
+            isDown = true;
+            element.classList.add('grabbing');
+            startX = e.pageX - element.offsetLeft;
+            scrollLeft = element.scrollLeft;
+        });
+
+        element.addEventListener('mouseleave', () => {
+            isDown = false;
+            element.classList.remove('grabbing');
+        });
+
+        element.addEventListener('mouseup', () => {
+            isDown = false;
+            element.classList.remove('grabbing');
+        });
+
+        element.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - element.offsetLeft;
+            const walk = (x - startX) * 2; // The multiplier makes scrolling faster
+            element.scrollLeft = scrollLeft - walk;
+        });
+    }
+    // --- INITIALIZATION ---
+    // Initial data rendering
+    renderProfile();
+    renderHome();
+    renderProducts();
+    renderServices();
+    renderPosts();
+    renderAbout();
+    renderCommunity();
+
+    const tabNavElement = document.querySelector('.tab-nav');
+    // Enable horizontal mouse wheel scrolling for the tab navigation
+    enableHorizontalScroll(tabNavElement);
+    enableDragToScroll(tabNavElement); // NEW: Enable click-and-drag scrolling
+
+    // Tab switching logic
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const tabId = link.dataset.tab;
+
+            tabLinks.forEach(l => l.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+
+            link.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+
+            // NEW: Scroll the active tab into the center of the view.
+            link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        });
+    });
+
+    // --- NEW: Functionality for Profile Action Buttons ---
+    const followBtn = document.getElementById('profile-follow-btn');
+    const notificationBtn = document.getElementById('profile-notification-btn');
+
+    // 1. Follow Button Logic
+    followBtn.addEventListener('click', () => {
+        const isFollowing = followBtn.classList.contains('primary');
+        if (isFollowing) {
+            // --- From Following to Follow ---
+            followBtn.classList.remove('primary');
+            followBtn.classList.add('secondary');
+            followBtn.innerHTML = '<i class="fas fa-user-plus"></i> Follow Me';
+        } else {
+            // --- From Follow to Following ---
+            followBtn.classList.remove('secondary');
+            followBtn.classList.add('primary');
+            followBtn.innerHTML = '<i class="fas fa-user-check"></i> Following';
+        }
+    });
+
+    // 2. Notification Bell Logic
+    notificationBtn.addEventListener('click', () => {
+        const icon = notificationBtn.querySelector('i');
+        const isSubscribed = icon.classList.contains('fas');
+
+        // DEFINITIVE FIX: To re-trigger the animation, remove the class first,
+        // force a browser reflow, and then add it back. This works reliably on every click.
+        icon.classList.remove('bell-shake'); // 1. Remove the class
+        void icon.offsetWidth; // 2. Trigger a reflow (this is a crucial step)
+        icon.classList.add('bell-shake'); // 3. Add the class back
+
+        if (isSubscribed) {
+            // --- Unsubscribe ---
+            icon.className = 'far fa-bell';
+        } else {
+            // --- Subscribe ---
+            icon.className = 'fas fa-bell';
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1084 @@
+.merchant-profile-page {
+    background-color: var(--card-background);
+}
+
+
+.bell-shake {
+    animation: bellShake 0.5s ease-in-out;
+}
+
+/* NEW: Bell shake animation for profile notification button */
+@keyframes bellShake {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(15deg);
+    }
+
+    50% {
+        transform: rotate(-15deg);
+    }
+
+    75% {
+        transform: rotate(5deg);
+    }
+}
+
+.profile-header {
+    position: relative;
+    margin-bottom: 60px;
+    /* Increased space for the overlapping DP and details */
+}
+
+/* NEW: Responsive cover photo height */
+@media screen and (min-width: 600px) {
+    .cover-photo-container {
+        height: 120px !important;
+        /* Taller cover on desktop */
+    }
+}
+
+.cover-photo-container {
+    /* --- Cover Photo Rules --- */
+    /* This container sets the height for the cover photo area. */
+    /* It's shorter on mobile and taller on desktop. */
+    height: 90px;
+    /* Mobile height */
+    background-color: var(--border-color);
+    position: relative;
+    overflow: hidden;
+    /* Ensures the image doesn't spill out */
+}
+
+/* This is the core logic for the responsive cover photo. */
+.cover-photo-container img {
+    width: 100%;
+    height: 100%;
+    /* 'object-fit: cover' scales the image to fill the container,
+               maintaining its aspect ratio and cropping any excess. */
+    object-fit: cover;
+    /* 'object-position: center' ensures that the image is cropped
+               from the top and bottom, keeping the center visible. */
+    object-position: center;
+}
+
+.profile-info {
+    /* This class is repurposed for the new layout */
+    display: flex;
+    align-items: flex-end;
+    /* Align items to the bottom */
+    position: absolute;
+    bottom: -40px;
+    /* FIX: Moved up by 10px to be closer to the banner */
+    left: 16px;
+    right: 16px;
+    gap: 12px;
+}
+
+.profile-picture {
+    width: 70px;
+    /* New size */
+    height: 70px;
+    /* New size */
+    border-radius: 50%;
+    margin-left: -5px;
+    margin-bottom: 5px;
+    border: 2px solid var(--card-background);
+    background-color: var(--card-background);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    flex-shrink: 0;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* NEW: Placeholder icon for when the profile picture fails to load */
+.profile-picture-placeholder {
+    font-size: 70px;
+    /* Slightly smaller than the container */
+    color: var(--text-secondary);
+    display: none;
+    /* Hidden by default */
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-secondary);
+    /* A light background for the icon */
+    border-radius: 50%;
+}
+
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 16px;
+    /* Add horizontal padding */
+}
+
+/* New wrapper for name and handle for tighter grouping */
+.profile-identity {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    /* A very small gap between name and handle for readability */
+}
+
+/* Definitive fix for h1/p default margins inside the identity block */
+.profile-identity>* {
+    margin: 0;
+}
+
+.profile-name {
+    font-size: 20px;
+    /* Reduced size */
+    font-weight: 700;
+}
+
+.profile-handle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    /* margin-top is now handled by parent's 'gap' property */
+}
+
+.profile-bio {
+    /* This will now be a single line and truncate with ellipsis */
+    white-space: nowrap;
+    padding: 2px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* It's an inline element to sit next to the 'more' link */
+    display: inline;
+}
+
+.bio-wrapper {
+    /* This wrapper ensures the bio and 'more' link are on one line */
+    display: flex;
+    align-items: baseline;
+    line-height: 1;
+    margin-top: -5px;
+    font-size: 12px;
+    color: var(--text-primary);
+    width: 100%;
+}
+
+/* NEW: "Read more" link styles */
+.read-more-bio {
+    color: var(--accent-primary);
+    /* Link color */
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 0;
+    /* FIX: Remove left margin to eliminate space between '...' and 'more' */
+}
+
+.profile-stats {
+    display: flex;
+    gap: 10px;
+}
+
+.profile-stat {
+    text-align: center;
+}
+
+.profile-stat-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.profile-stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.profile-actions {
+    /* This is now a wrapper for social icons and buttons */
+    display: flex;
+    flex-direction: column;
+    /* Stack items vertically */
+    align-items: flex-start;
+    /* Align items to the left */
+    flex-grow: 1;
+    /* Take up remaining space */
+    justify-content: flex-end;
+    /* This pushes the content to the bottom of the flex container */
+}
+
+.action-buttons-container {
+    display: flex;
+    margin-left: -10px;
+    align-items: center;
+    gap: 8px;
+    /* Add space between the buttons */
+    margin-bottom: 10px;
+    /* Symmetrical spacing below the banner line */
+}
+
+/* Smaller buttons for the profile header actions */
+.action-buttons-container .action-btn {
+    padding: 6px 10px;
+    font-size: 10px;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn.primary {
+    background-color: var(--accent-primary);
+    color: white;
+}
+
+.action-btn.secondary {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.action-btn.icon-only {
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+}
+
+.mrc-social-icons {
+    position: absolute;
+    bottom: 40px;
+    /* Position it just above the banner's bottom edge */
+    left: 75px;
+    /* Position it to the right of the DP */
+    display: flex;
+    gap: 15px;
+}
+
+.mrc-social-icons a {
+    color: white;
+    /* White icons for visibility on cover photo */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    font-size: 18px;
+    transition: var(--transition);
+}
+
+.profile-content {
+    padding-top: 0;
+    /* Space between header and main content removed */
+}
+
+.tabs-container {
+    position: sticky;
+    top: var(--top-nav-height);
+    /* Stick below the top nav */
+    background: var(--card-background);
+    z-index: 10;
+    border-bottom: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+}
+
+.tab-nav {
+    display: flex;
+    overflow-x: auto;
+    cursor: grab;
+    /* Indicate that it's draggable */
+    user-select: none;
+    /* Prevent text selection while dragging */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.tab-nav.grabbing {
+    cursor: grabbing;
+    /* Change cursor while actively dragging */
+}
+
+.tab-nav::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+}
+
+.tab-nav button {
+    flex-shrink: 0;
+    padding: 12px 15px;
+    /* Reduced vertical padding */
+    background: none;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+}
+
+.tab-nav button.active {
+    color: var(--accent-primary);
+}
+
+.tab-nav button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    /* Extend the line slightly beyond the text */
+    right: 10px;
+    /* Extend the line slightly beyond the text */
+    height: 3px;
+    background-color: var(--accent-primary);
+}
+
+.tab-content {
+    display: none;
+    /* NEW: Reduced vertical padding to remove extra space */
+    width: 100%;
+    /* Ensure full width */
+    box-sizing: border-box;
+}
+
+/* NEW: Remove padding for the posts tab to make them full-width */
+#posts.tab-content {
+    padding: 0;
+}
+
+/* NEW: Remove all padding for the community tab to allow full-width borders */
+#community.tab-content {
+    padding: 0;
+}
+
+/* NEW: Remove all padding for the about tab */
+#about.tab-content {
+    padding: 0;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* NEW: Container for list-style cards */
+.item-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Space between cards */
+}
+
+.about-section,
+.posts-section {
+    display: flex;
+    flex-direction: column;
+    /* NEW: Removed gap to make sections flow together */
+    gap: 0;
+}
+
+.about-card {
+    /* NEW: Advanced, borderless card style */
+    background: transparent;
+    /* FIX: Remove horizontal padding to allow full-width title border */
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-color);
+    /* Separator line */
+}
+
+.about-section .about-card:last-child {
+    border-bottom: none;
+    /* No line after the last card */
+}
+
+/* FIX: Create a single, full-width title style for all sections */
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    /* FIX: Use inline-block and padding to make underline slightly wider than text */
+    margin: 0 0 16px 16px;
+    /* Align with content padding */
+    padding: 0 16px 8px 0;
+    /* Extend underline to the right */
+    border-bottom: 1px solid var(--border-color);
+    display: inline-block;
+    /* Make it wrap the content */
+}
+
+.about-card p {
+    /* FIX: Add horizontal padding as it was removed from parent */
+    padding: 0 16px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    /* Slightly darker text for readability */
+    margin: 0;
+}
+
+/* FIX: Ensure info items inside the card also have no extra margin */
+.about-card .info-item {
+    margin-left: 0;
+}
+
+.info-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+}
+
+.info-item i {
+    width: 20px;
+    text-align: center;
+    color: var(--accent-primary);
+    font-size: 16px;
+}
+
+/* NEW: Style for social media links to look like other info items */
+/* FIX: Apply truncation directly to the link element */
+#social-links-list a {
+    color: var(--accent-primary);
+    /* FIX: Use a consistent blue color for all social links */
+    text-decoration: none;
+    font-weight: 500;
+    /* Make link text slightly bolder */
+    transition: color 0.3s ease;
+    /* These properties ensure the link itself truncates */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#social-links-list a:hover {
+    text-decoration: underline;
+}
+
+/* FIX: Add padding to info list containers as parent padding was removed */
+#contact-info-list,
+#social-links-list,
+#payment-delivery-info,
+#legal-info-list,
+#more-info-list {
+    padding: 0 16px;
+}
+
+/* --- NEW: Modern Post Card Design --- */
+.posts-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    /* Remove gap, use border for separation */
+}
+
+.post-card {
+    background: var(--card-background);
+    /* NEW: Remove border and radius for full-width look */
+    border-bottom: 8px solid var(--bg-primary);
+    /* Separator between posts */
+    overflow: hidden;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+}
+
+.post-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post-author-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-author-name {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.post-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* NEW: Container for post image to hold product tags */
+.post-image-container {
+    position: relative;
+    background-color: var(--border-color);
+    /* Shows a bg color if image fails */
+}
+
+.post-image {
+    width: 100%;
+    /* NEW: Let height be determined by aspect ratio for a more natural look */
+    height: auto;
+    aspect-ratio: 16 / 9;
+    /* NEW: Set aspect ratio to 16:9 */
+    object-fit: cover;
+    display: block;
+    /* Remove bottom space */
+}
+
+.post-content {
+    padding: 12px 16px;
+}
+
+.post-description {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.post-actions {
+    display: flex;
+    /* NEW: Justify content to space-between to push save icon to the right */
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.post-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+/* NEW: Wrapper for left-aligned actions */
+.post-main-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.post-main-actions .post-action {
+    flex-grow: 1;
+}
+
+/* NEW: Styles for the product tag on the image */
+.post-product-tag {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.post-product-tag:hover {
+    background: var(--bg-overlay-dark);
+}
+
+.post-action:hover {
+    background-color: var(--bg-hover);
+}
+
+.post-action i {
+    font-size: 18px;
+}
+
+.post-action .fa-heart.liked {
+    color: var(--accent-danger);
+    /* Use a fixed color for liked heart */
+}
+
+/* NEW: Style for saved/bookmarked icon */
+.post-action .fa-bookmark.saved {
+    color: var(--accent-primary);
+}
+
+/* Read more for post description */
+/* NEW: Wrapper to keep text and link on one line */
+.post-description-wrapper {
+    display: flex;
+    align-items: baseline;
+}
+
+.post-description-truncated {
+    /* NEW: Single line truncation */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* display: inline;  No longer needed with flex wrapper */
+}
+
+.post-read-more {
+    /* NEW: Style to look like a link */
+    color: var(--accent-primary);
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 4px;
+    /* Space between text and link */
+    flex-shrink: 0;
+    /* Prevent the link from wrapping */
+    font-size: 14px;
+    /* Reduced font size */
+}
+
+/* --- NEW: Poll Feature Styles --- */
+.post-poll-container {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.poll-question {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.poll-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.poll-option {
+    position: relative;
+    border: 1.5px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    overflow: hidden;
+}
+
+.poll-option:not(.voted-on):hover {
+    background-color: var(--bg-hover);
+}
+
+.poll-option.voted-on {
+    cursor: default;
+}
+
+.poll-option-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.poll-option-text {
+    font-size: 14px;
+}
+
+.poll-option-percent {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.poll-option.user-choice .poll-option-text {
+    font-weight: 700;
+}
+
+.poll-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: rgba(var(--accent-primary-rgb), 0.15);
+    border-radius: 6px;
+    z-index: 1;
+    transition: background-color 0.3s ease;
+}
+
+/* NEW: Highlight the progress bar of the user's chosen option */
+.poll-option.user-choice .poll-progress-bar {
+    background-color: rgba(var(--accent-primary-rgb), 0.4);
+}
+
+/* NEW: Change text color to white when results are shown for better contrast */
+.poll-option.voted-on .poll-option-text,
+.poll-option.voted-on .poll-option-percent {
+    color: var(--text-primary);
+}
+
+.poll-footer {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* --- NEW: Comments Section Styles --- */
+.post-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+.post-engagement-stats span {
+    margin-right: 12px;
+}
+
+.post-comments-section {
+    padding: 0 16px 12px;
+}
+
+.view-all-comments {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+/* NEW: Styles for the guest avatar placeholder in the comment section */
+.post-avatar.guest-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 32px; /* Make the icon fill the circle */
+    width: 32px;
+    height: 32px;
+}
+.comment-add-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.comment-add-section .post-avatar {
+    width: 32px;
+    height: 32px;
+}
+
+.comment-add-input {
+    flex-grow: 1;
+    font-size: 14px;
+    color: var(--text-primary);
+    background-color: var(--bg-tertiary);
+    border: 1px solid transparent; /* Start with a transparent border */
+    border-radius: 20px; /* Pill shape */
+    padding: 8px 16px;
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.comment-add-input:focus {
+    border-color: var(--accent-primary);
+}
+
+/* --- NEW: Redesigned Community Tab --- */
+.community-section {
+    /* FIX: Changed from flex to block to let sections manage their own space */
+    display: block;
+    /* NEW: Removed gap, using padding/margin on individual sections */
+    gap: 0;
+}
+
+/* NEW: Styles for the "Rate this Merchant" button */
+.rate-merchant-prompt {
+    padding: 16px;
+    background-color: var(--primary-light);
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.rate-merchant-btn {
+    background-color: var(--accent-primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.rate-merchant-btn:hover {
+    background-color: var(--accent-primary-hover);
+    /* Darker shade of primary */
+}
+
+/* CHANGED: Converted from a card to a full-width section */
+.community-rating-summary {
+    /* FIX: Remove horizontal padding to allow full-width title border */
+    padding: 16px 0;
+    /* FIX: Remove border, it creates unwanted lines between sections */
+    border-bottom: 8px solid var(--bg-primary);
+}
+
+/* FIX: New styles for the community description to control spacing */
+.community-description {
+    /* FIX: Removed horizontal padding */
+    padding: 16px 0;
+    border-bottom: 8px solid var(--bg-primary);
+    /* Use thick separator like posts */
+}
+
+.community-description p {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.community-description p {
+    margin: 0;
+    /* Remove default paragraph margin */
+}
+
+/* FIX: Add padding to rating summary content as parent padding was removed */
+.rating-summary-header,
+.rating-bars-container {
+    padding: 0 16px;
+}
+
+/* .community-rating-summary-content { padding: 0 16px; } */
+/* REMOVED: Padding is now on parent */
+.rating-summary-header .avg-rating {
+    font-size: 42px;
+    /* Slightly smaller for a cleaner look */
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.rating-summary-header .total-reviews {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.rating-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.rating-bar-row .star-label {
+    white-space: nowrap;
+}
+
+.rating-bar-bg {
+    flex-grow: 1;
+    height: 6px;
+    background-color: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.rating-bar {
+    height: 100%;
+    background-color: var(--accent-warning);
+    /* Yellow for stars */
+    border-radius: 3px;
+}
+
+/* FIX: Add top margin to the activity feed to create space */
+.community-activity-feed {
+    margin-top: 16px;
+}
+
+/* CHANGED: From grid to flex column for a full-width feed */
+.activity-feed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    /* Use borders for separation instead of gap */
+}
+
+/* CHANGED: From a card to a border-separated list item */
+.activity-card {
+    /* FIX: Add horizontal padding */
+    padding: 16px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.activity-feed-list .activity-card:last-child {
+    border-bottom: none;
+    /* No line on the last item */
+}
+
+.activity-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    /* Allow wrapping on small screens */
+}
+
+.activity-avatar {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* NEW: Placeholder for activity feed avatar */
+.activity-avatar.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+}
+
+.activity-user-info .user-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.activity-user-info .activity-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* NEW: Styles for the star rating within the activity card */
+.activity-rating {
+    margin-bottom: 8px;
+    color: var(--accent-warning);
+    /* Yellow for stars */
+    font-size: 13px;
+}
+
+/* NEW: Styles for inline rating in activity header */
+.activity-header .activity-rating {
+    margin-bottom: 0;
+    /* Remove margin when inside header */
+    margin-left: 8px;
+    /* Space between date and stars */
+    color: var(--accent-warning);
+    /* Yellow for stars */
+    font-size: 12px;
+    /* FIX: Match font size with date for better alignment */
+    /* FIX: Removed font-size. The icons will inherit a proper size, fixing the rendering issue. */
+}
+
+.activity-comment {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    margin-left: 0;
+    /* REMOVED: Remove left margin to make comment full-width */
+}
+
+/* NEW: Responsive adjustment for the grid on smaller screens */
+@media (max-width: 480px) {
+
+    /* This rule is no longer needed as we are single-column by default */
+    .activity-feed-list {
+        /* grid-template-columns: 1fr; Stack to a single column on small screens */
+    }
+}
+
+/* --- NEW: Active Members Section --- */
+.community-active-members {
+    /* No margin needed as it's the first element */
+    margin-top: 0;
+    /* FIX: Remove horizontal padding to allow full-width title border */
+    padding: 16px 0;
+    border-bottom: 8px solid var(--bg-primary);
+}
+
+/* CHANGED: From a vertical list to a horizontal, overlapping stack of avatars */
+.active-members-list {
+    display: flex;
+    flex-direction: row;
+    /* FIX: Add consistent horizontal padding */
+    padding: 0 16px;
+}
+
+/* CHANGED: Styles for the individual avatars in the stack */
+.active-member-avatar {
+    width: 36px;
+    /* Small avatars */
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--card-background);
+    /* Border to make them pop */
+    margin-left: -10px;
+    /* The key to the overlapping effect */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative; /* --- FIX: Needed for z-index to work --- */
+    transition: transform 0.2s ease;
+}
+
+.active-member-avatar:hover {
+    transform: translateY(-3px);
+    /* Add a little hover effect */
+    z-index: 1;
+}
+
+/* FIX: Remove the negative margin from the first avatar to prevent it from being cut off */
+.active-member-avatar:first-child {
+    margin-left: 15px;
+}
+
+/* Fake Top Navigation */
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--top-nav-height);
+    background: var(--card-background);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+    font-weight: 600;
+}
+
+.top-nav i {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* New styles to group back button and title */
+.nav-left-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    /* Space between icon and title */
+}

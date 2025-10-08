@@ -89,6 +89,11 @@ const APP_SHELL_URLS = [
   './source/common/styles/profile-update.css',
   './source/common/scripts/profile-update.js',
 
+  // Merchant Profile View
+  './source/common/pages/merchant-profile.html',
+  './source/common/styles/merchant-profile.css',
+  './source/common/scripts/merchant-profile.js',
+  
   // Updates View
   './source/common/pages/updates.html',
   './source/common/styles/updates.css',
@@ -110,9 +115,11 @@ const APP_SHELL_URLS = [
   './source/common/pages/conversation.html',
   './source/common/styles/conversation.css',
   './source/common/scripts/conversation.js',
+
   // Media Editor
   './source/modals/media-editor/media-editor.html',
   './source/modals/media-editor/media-editor.js',
+
   // OTP Modal
   './source/modals/otp-verification-modal.html',
   './source/modals/otp-verification-modal.js',

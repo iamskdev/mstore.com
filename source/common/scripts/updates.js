@@ -1,5 +1,6 @@
 import { fetchAllItems, fetchAllMerchants, fetchAllStories, fetchUserById, fetchMerchantById } from '../../utils/data-manager.js';
 import { showToast } from '../../utils/toast.js';
+import { routeManager } from '../../main.js';
 import * as storyViewer from '../../modals/story-viewer/story-viewer.js';
 import { createListCard, initCardHelper } from '../../templates/cards/card-helper.js';
 
@@ -66,7 +67,7 @@ export async function init(force = false) { // Make function async
             selfMerchantId = merchantId; // Store the ID for filtering later
             if (merchantId) {
                 const selfMerchant = await fetchMerchantById(merchantId);
-                const avatarUrl = selfMerchant?.meta?.info?.logo || './source/assets/logos/app-logo.png';
+                const avatarUrl = selfMerchant?.info?.logo || './source/assets/logos/app-logo.png';
 
                 const myStoryEl = document.createElement('div');
                 myStoryEl.className = 'story-item my-story';
@@ -131,9 +132,9 @@ export async function init(force = false) { // Make function async
             wrap.setAttribute('data-id', m.meta.merchantId);
             wrap.innerHTML = `
             <div class="avatar-wrap" role="button" tabindex="0">
-              <img class="story-avatar" src="${m.meta.info.logo}" alt="${m.meta.info.name}" />
+              <img class="story-avatar" src="${m.info.logo}" alt="${m.info.name}" />
             </div>
-            <div class="avatar-name">${m.meta.info.name}</div>
+            <div class="avatar-name">${m.info.name}</div>
           `;
             storiesRow.appendChild(wrap);
         });
@@ -188,7 +189,11 @@ export async function init(force = false) { // Make function async
             { label: 'Share me', action: 'SHARE_ITEM', class: 'btn-secondary', visible: true }
         ],
         actionHandlers: {
-            'VIEW_DETAILS': (item) => showToast('info', `Viewing details for ${item.info.name}`),
+            'VIEW_DETAILS': (item) => {
+                sessionStorage.setItem('selectedItem', JSON.stringify(item));
+                const role = localStorage.getItem('currentUserType') || 'guest';
+                routeManager.switchView(role, `item-details/${item.meta.itemId}`);
+            },
             'ADD_TO_CART': (item) => showToast('success', `${item.info.name} added to cart!`),
             'SAVE_FOR_LATER': (item) => showToast('info', `${item.info.name} saved for later!`),
             'SHARE_ITEM': (item) => showToast('info', `Sharing ${item.info.name}`),
@@ -335,7 +340,7 @@ export async function init(force = false) { // Make function async
         window.dispatchEvent(new CustomEvent('viewStateOverride', {
             detail: {
                 isSecondary: true,
-                title: merchant.meta.info.name
+                title: merchant.info.name
             }
         }));
     }
@@ -411,7 +416,15 @@ export async function init(force = false) { // Make function async
         }
     });
 
-    storiesRow.addEventListener('click', (e) => {
+    // --- NEW: Function to remove any existing profile action popups ---
+    function removeExistingPopup() {
+        const existingPopup = updatesContainer.querySelector('.profile-action-row');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
+    }
+
+    storiesRow.addEventListener('click', (e) => { // Added event parameter
         if (storiesRow.getAttribute('data-rendered') !== 'true') return;
 
         const storyWrap = e.target.closest('.story-item');
@@ -421,19 +434,49 @@ export async function init(force = false) { // Make function async
         if (id) {
             const m = merchants.find(x => String(x.meta.merchantId) === String(id));
             if (m) {
-                // --- FIX: Check for stories from the fetched stories data ---
-                const hasStory = stories.some(storyCollection => 
+                // हमेशा पॉपअप दिखाएं, चाहे स्टोरी हो या न हो
+                removeExistingPopup(); // कोई और खुला हुआ पॉपअप हो तो उसे हटा दें
+
+                const hasStory = stories.some(storyCollection =>
                     storyCollection.meta.links.merchantId === m.meta.merchantId &&
                     storyCollection.stories?.some(s => s.status === 'active')
                 );
 
+                const popup = document.createElement('div');
+                popup.className = 'profile-action-row';
+
+                // बटन HTML को डायनामिक रूप से बनाएं
+                let buttonsHTML = `<button class="popup-btn-profile">Go to Profile</button>`;
                 if (hasStory) {
-                    // --- FIX: Show merchant page BEFORE opening story viewer ---
-                    showMerchantPage(m);
-                    storyViewer.open(m.meta.merchantId); // Open story viewer
-                } else {
-                    showMerchantPage(m); // Fallback to merchant page
+                    buttonsHTML += `<button class="popup-btn-story">View Story</button>`;
                 }
+                buttonsHTML += `<button class="popup-btn-dismiss">Not Now</button>`;
+                popup.innerHTML = buttonsHTML;
+
+                // एक्शन रो को स्टोरीज़ के बाद और सेगमेंटेड कंट्रोल्स से पहले डालें
+                const segmentedControls = updatesContainer.querySelector('.segmented-controls');
+                updatesContainer.insertBefore(popup, segmentedControls);
+
+                // इवेंट लिस्नर्स जोड़ें
+                popup.querySelector('.popup-btn-profile').addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const role = localStorage.getItem('currentUserType') || 'guest';
+                    routeManager.switchView(role, `merchant-profile/${m.meta.merchantId}`);
+                    removeExistingPopup();
+                });
+
+                if (hasStory) {
+                    popup.querySelector('.popup-btn-story').addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        storyViewer.open(m.meta.merchantId);
+                        removeExistingPopup();
+                    });
+                }
+
+                popup.querySelector('.popup-btn-dismiss').addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    removeExistingPopup();
+                });
             }
         }
     });

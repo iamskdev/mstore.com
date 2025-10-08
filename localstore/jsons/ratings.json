@@ -2,40 +2,141 @@
   {
     "$schema": "../../source/schemas/rating-schema.json",
     "meta": {
-      "ratingId": "RTG-20251028-140000-123-ABCD",
+      "ratingId": "RTG-20251028-140000-123-PROD",
+      "type": "rating",
+      "version": 1.0,
+      "flags": {
+        "reviewed": true,
+        "responded": false,
+        "archived": false,        
+        "isHighImpact": false,
+        "guest": false
+      },
+      "links": {
+        "userId": "USR-20251002-170603-103-CDEF",
+        "orderId": null,
+        "itemId": "ITM-20251002-172501-801-QWRS",
+        "merchantId": "MRC-20251002-170602-401-ASDF"
+      }
+    },
+    "submitter": {
+      "id": "USR-20251002-170603-103-CDEF",
+      "role": "consumer",
+      "submittedAt": "2025-10-28T14:05:10Z"
+    },
+    "details": {
+      "value": 5,
+      "comment": "Best biscuits for tea time! Always fresh stock available at this store.",
+      "tags": ["quality", "freshness"]
+    },
+    "context": {
+      "source": "item_details_page",
+      "triggerEvent": "user_initiated_rating",
+      "appVersion": "0.7.0",
+      "platform": "web_mobile",
+      "device": {
+        "os": "Android 14",
+        "browser": "Chrome 120"
+      }
+    },
+    "lifecycle": {
+      "status": "pending",
+      "milestones": {
+        "reviewedAt": null,
+        "respondedAt": null,
+        "archivedAt": null
+      },
+      "history": []
+    }
+  },
+  {
+    "$schema": "../../source/schemas/rating-schema.json",
+    "meta": {
+      "ratingId": "RTG-20251027-183000-456-MRCH",
+      "type": "rating",
+      "version": 1.0,
+      "flags": {
+        "reviewed": true,
+        "responded": true,
+        "archived": false,
+        "isHighImpact": true,
+        "guest": false
+      },
+      "links": {
+        "userId": "USR-20251003-155439-124-TE82",
+        "orderId": null,
+        "itemId": null,
+        "merchantId": "MRC-20251002-170604-402-FGHJ"
+      }
+    },
+    "submitter": {
+      "id": "USR-20251003-155439-124-TE82",
+      "role": "consumer",
+      "submittedAt": "2025-10-27T18:30:00Z"
+    },
+    "details": {
+      "value": 2,
+      "comment": "The shop was closed during opening hours. Very disappointing experience.",
+      "tags": ["customer_service", "availability"]
+    },
+    "context": {
+      "source": "merchant_profile_page",
+      "triggerEvent": "user_initiated_rating",
+      "appVersion": "0.7.0",
+      "platform": "web_desktop",
+      "device": {
+        "os": "Windows 11",
+        "browser": "Edge 120"
+      }
+    },
+    "lifecycle": {
+      "status": "responded",
+      "milestones": {
+        "reviewedAt": "2025-10-27T19:00:00Z",
+        "respondedAt": "2025-10-27T19:15:00Z",
+        "archivedAt": null
+      },
+      "history": []
+    }
+  },
+  {
+    "$schema": "../../source/schemas/rating-schema.json",
+    "meta": {
+      "ratingId": "RTG-20251026-090000-789-GUEST",
       "type": "rating",
       "version": 1.0,
       "flags": {
         "reviewed": false,
         "responded": false,
-        "archived": false,        "isHighImpact": false,
-        "guest": false
+        "archived": false,
+        "isHighImpact": false,
+        "guest": true
       },
       "links": {
-        "userId": "USR-20251002-170603-103-CDEF",
+        "userId": null,
         "orderId": null,
         "itemId": null,
         "merchantId": null
       }
     },
     "submitter": {
-      "id": "USR-20251002-170603-103-CDEF",
-      "role": "consumer",
-      "submittedAt": "2025-10-28T14:00:00Z"
+      "id": null,
+      "role": "guest",
+      "submittedAt": "2025-10-26T09:00:00Z"
     },
     "details": {
       "value": 4,
-      "comment": "The app is great, but the search could be faster.",
-      "tags": ["ui_ux", "performance"]
+      "comment": "Very useful app for finding local stores!",
+      "tags": ["ui_ux"]
     },
     "context": {
-      "source": "order_confirmation_page",
-      "triggerEvent": "order_completed",
-      "appVersion": "1.2.3",
+      "source": "drawer_menu",
+      "triggerEvent": "user_initiated_rating",
+      "appVersion": "0.7.0",
       "platform": "web_mobile",
       "device": {
-        "os": "Android 13",
-        "browser": "Chrome 118"
+        "os": "iOS 17",
+        "browser": "Safari"
       }
     },
     "lifecycle": {

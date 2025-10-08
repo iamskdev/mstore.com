@@ -1,10 +1,10 @@
- // Define the default "landing" view for each role.
+// Define the default "landing" view for each role.
 // This makes the logic cleaner and easier to manage.
 const defaultViews = {
   guest: 'home',
   consumer: 'home',
   merchant: 'add',
-  admin: 'home' 
+  admin: 'home'
 };
 
 /**
@@ -22,7 +22,7 @@ const routeConfig = {
       path: './source/common/pages/home.html',
       cssPath: './source/common/styles/home.css',
       jsPath: './source/common/scripts/home.js',
-      
+
       embedFooter: true,
       title: 'Home',
       isMainTab: true, // This is a main tab for merchants if they land here
@@ -32,7 +32,7 @@ const routeConfig = {
   },
   admin: {
     home: {
-      id: 'admin-home-view', 
+      id: 'admin-home-view',
       path: "./source/modules/admin/pages/admin-home.html",
       cssPath: "./source/modules/admin/styles/admin-home.css",
       jsPath: "./source/modules/admin/scripts/admin-home.js",
@@ -94,11 +94,13 @@ const routeConfig = {
     },
     'merchant-profile/:id': {
       id: 'merchant-profile-view',
-      path: null, // No HTML file yet, will show a placeholder
+      path: './source/common/pages/merchant-profile.html',
+      cssPath: './source/common/styles/merchant-profile.css',
+      jsPath: './source/common/scripts/merchant-profile.js',
+      isMainTab: false, // It's a sub-view of Account, not a main tab itself
       title: 'Merchant Profile',
       fullscreen: false,
-      dataDependencies: ['merchants'],
-      fullscreen: true
+      dataDependencies: ['merchants']
     },
     'account/saved': {
       id: 'wishlist-view',
@@ -151,6 +153,6 @@ const routeConfig = {
       title: 'Authentication'
     }
   }
-  };
+};
 
 export { routeConfig, defaultViews };

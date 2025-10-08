@@ -1,0 +1,177 @@
+[
+  {
+    "meta": {
+      "postId": "PST-20251006-100000-123-ABCD",
+      "version": 1,
+      "type": "standard",
+      "status": "published",
+      "flags": {
+        "isPinned": false,
+        "isFeatured": true,
+        "allowComments": true,
+        "isDeleted": false
+      },
+      "links": {
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "userId": "USR-20251002-170602-102-BCDE"
+      }
+    },
+    "content": {
+      "text": "Fresh stock of snacks and cold drinks just arrived! Perfect for your gaming sessions or late-night cravings. Grab your favorite munchies now! 🎮🥤 #Snacks #Gaming #Delhi",
+      "media": [
+        {
+          "type": "image",
+          "url": "https://images.unsplash.com/photo-1555945093-97046180a65e?q=80&w=800&auto=format&fit=crop",
+          "aspectRatio": "16:9"
+        }
+      ]
+    },
+    "engagement": {
+      "likes": 95,
+      "comments": 12,
+      "shares": 3,
+      "views": 1500
+    },
+    "poll": null,
+    "taggedProducts": ["ITM-20251002-172501-801-QWRS"],
+    "audit": {
+      "createdAt": "2025-10-06T10:00:00Z",
+      "createdBy": "USR-20251002-170602-102-BCDE",
+      "updatedAt": "2025-10-06T10:05:00Z",
+      "updatedBy": "USR-20251002-170602-102-BCDE",
+      "publishedAt": "2025-10-06T10:00:00Z"
+    }
+  },
+  {
+    "meta": {
+      "postId": "PST-20251002-180000-456-EFGH",
+      "version": 1,
+      "type": "poll",
+      "status": "published",
+      "flags": {
+        "isPinned": true,
+        "isFeatured": false,
+        "allowComments": true,
+        "isDeleted": false
+      },
+      "links": {
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "userId": "USR-20251002-170602-102-BCDE"
+      }
+    },
+    "content": {
+      "text": "We're planning to upgrade our services! Help us decide what to add next. Your feedback is valuable to us.",
+      "media": []
+    },
+    "engagement": {
+      "likes": 180,
+      "comments": 35,
+      "shares": 10,
+      "views": 4200
+    },
+    "poll": {
+      "question": "What new service should we add to our cafe?",
+      "options": [
+        { "id": "opt1", "text": "Faster 1Gbps Internet Plan", "votes": 210 },
+        { "id": "opt2", "text": "New PC Gaming Zone", "votes": 155 },
+        { "id": "opt3", "text": "Document Printing & Scanning", "votes": 90 }
+      ],
+      "totalVotes": 455,
+      "endsAt": "2025-10-20T23:59:59Z"
+    },
+    "taggedProducts": [],
+    "audit": {
+      "createdAt": "2025-10-02T18:00:00Z",
+      "createdBy": "USR-20251002-170602-102-BCDE",
+      "updatedAt": "2025-10-02T18:00:00Z",
+      "updatedBy": "USR-20251002-170602-102-BCDE",
+      "publishedAt": "2025-10-02T18:00:00Z"
+    }
+  },
+  {
+    "meta": {
+      "postId": "PST-20251007-093000-555-GHIJ",
+      "version": 1,
+      "type": "standard",
+      "status": "published",
+      "flags": {
+        "isPinned": false,
+        "isFeatured": false,
+        "allowComments": true,
+        "isDeleted": false
+      },
+      "links": {
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "userId": "USR-20251002-170602-102-BCDE"
+      }
+    },
+    "content": {
+      "text": "Ab pareshani khatam! Pay your electricity, water, and mobile bills easily at our store. Quick and secure bill payment service now available. #BillPayment #DigitalIndia #DelhiServices",
+      "media": [
+        {
+          "type": "image",
+          "url": "https://images.unsplash.com/photo-1616469829935-c2f334623b82?q=80&w=800&auto=format&fit=crop",
+          "aspectRatio": "16:9"
+        }
+      ]
+    },
+    "engagement": {
+      "likes": 45,
+      "comments": 8,
+      "shares": 2,
+      "views": 950
+    },
+    "poll": null,
+    "taggedProducts": [],
+    "audit": {
+      "createdAt": "2025-10-07T09:30:00Z",
+      "createdBy": "USR-20251002-170602-102-BCDE",
+      "updatedAt": "2025-10-07T09:30:00Z",
+      "updatedBy": "USR-20251002-170602-102-BCDE",
+      "publishedAt": "2025-10-07T09:30:00Z"
+    }
+  },
+  {
+    "meta": {
+      "postId": "PST-20251008-110000-789-KLMN",
+      "version": 1,
+      "type": "standard",
+      "status": "published",
+      "flags": {
+        "isPinned": false,
+        "isFeatured": true,
+        "allowComments": true,
+        "isDeleted": false
+      },
+      "links": {
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "userId": "USR-20251002-170602-102-BCDE"
+      }
+    },
+    "content": {
+      "text": "Weekend Special! Get a free chocolate with every purchase of 2 cold drinks. Offer valid till Sunday. #WeekendOffer #ColdDrinks #SpecialDeal",
+      "media": [
+        {
+          "type": "image",
+          "url": "https://images.unsplash.com/photo-1581015992604-7a3a7428a102?q=80&w=800&auto=format&fit=crop",
+          "aspectRatio": "1:1"
+        }
+      ]
+    },
+    "engagement": {
+      "likes": 110,
+      "comments": 22,
+      "shares": 9,
+      "views": 2100
+    },
+    "poll": null,
+    "taggedProducts": [],
+    "audit": {
+      "createdAt": "2025-10-08T11:00:00Z",
+      "createdBy": "USR-20251002-170602-102-BCDE",
+      "updatedAt": "2025-10-08T11:00:00Z",
+      "updatedBy": "USR-20251002-170602-102-BCDE",
+      "publishedAt": "2025-10-08T11:00:00Z"
+    }
+  }
+]

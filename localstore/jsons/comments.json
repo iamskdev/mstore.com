@@ -1,0 +1,70 @@
+[
+  {
+    "meta": {
+      "commentId": "CMT-20251006-110000-123-WXYZ",
+      "version": 1,
+      "type": "comment",
+      "status": "published",
+      "flags": {
+        "isEdited": false,
+        "isDeleted": false,
+        "isReply": false
+      },
+      "links": {
+        "postId": "PST-20251006-100000-123-ABCD",
+        "userId": "USR-20251003-155439-124-TE82",
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "parentCommentId": null
+      }
+    },
+    "submitter": {
+      "id": "USR-20251003-155439-124-TE82",
+      "role": "consumer",
+      "submittedAt": "2025-10-06T11:00:00Z"
+    },
+    "content": {
+      "text": "Great! I was waiting for the new stock. Will visit today."
+    },
+    "engagement": {
+      "likes": 5
+    },
+    "audit": {
+      "createdAt": "2025-10-06T11:00:00Z",
+      "updatedAt": "2025-10-06T11:00:00Z"
+    }
+  },
+  {
+    "meta": {
+      "commentId": "CMT-20251006-110500-456-UVWX",
+      "version": 1,
+      "type": "comment",
+      "status": "published",
+      "flags": {
+        "isEdited": true,
+        "isDeleted": false,
+        "isReply": false
+      },
+      "links": {
+        "postId": "PST-20251006-100000-123-ABCD",
+        "userId": "USR-20251002-170603-103-CDEF",
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "parentCommentId": null
+      }
+    },
+    "submitter": {
+      "id": "USR-20251002-170603-103-CDEF",
+      "role": "consumer",
+      "submittedAt": "2025-10-06T11:05:00Z"
+    },
+    "content": {
+      "text": "Awesome! Do you have Diet Coke as well? 🤔"
+    },
+    "engagement": {
+      "likes": 2
+    },
+    "audit": {
+      "createdAt": "2025-10-06T11:05:00Z",
+      "updatedAt": "2025-10-06T11:10:00Z"
+    }
+  }
+]

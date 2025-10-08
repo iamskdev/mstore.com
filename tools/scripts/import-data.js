@@ -65,7 +65,9 @@ async function exportCollectionsToFiles() {
                 "campaigns": "meta.campaignId",
                 "feedbacks": "meta.feedbackId",
                 "stories": "meta.links.merchantId",
-                "ratings": "meta.ratingId"
+                "ratings": "meta.ratingId",
+                "posts": "meta.postId",
+                "comments": "meta.commentId"
             };
 
             const idFieldPath = idFieldMap[collectionId];

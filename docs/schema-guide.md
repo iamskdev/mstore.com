@@ -1,6 +1,7 @@
+
 > **DOCUMENT AUDIT**
 > - **Status:** `Updated`
-> - **Last Reviewed:** 04/10/2025 00:09:00 IST
+> - **Last Reviewed:** 2025-10-08 18:00:00 IST
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides a comprehensive guide to all Firestore data collections, detailing each schema's structure, fields, and relationships. It is the single source of truth for the data model.
 
@@ -119,16 +120,34 @@
 
 ## 4. Merchants (`merchants.json`)
 
-यह संग्रह प्लेटफॉर्म पर पंजीकृत व्यापारियों की सभी जानकारी संग्रहीत करता है।
+यह संग्रह प्लेटफॉर्म पर पंजीकृत व्यापारियों की सभी जानकारी संग्रहीत करता है। **यह स्कीमा अब अधिक मॉड्यूलर है, जिसमें `meta` और `info` रूट-लेवल ऑब्जेक्ट हैं।**
 
 ### मुख्य ऑब्जेक्ट्स:
 
--   **`meta`**: व्यापारी का मेटाडेटा।
-    -   `merchantId`, `version`, `type`, `status`, `priority`, `flags`, `links`, `info` (जिसमें `name`, `logo`, `qrCode`, `tagline` शामिल हैं)।
+-   **`meta`**: व्यापारी का आंतरिक मेटाडेटा।
+    -   `merchantId`, `version`, `joinedAt` (ISO DateTime), `type`, `adminNote`, `status`, `priority`, `flags`, `links`।
+-   **`info`**: व्यापारी की सार्वजनिक प्रोफ़ाइल जानकारी।
+    -   `name` (string): स्टोर का नाम।
+    -   `handle` (string): अद्वितीय `@handle`।
+    -   `logo` (string): लोगो का URL।
+    -   `coverImage` (string): कवर फोटो का URL।
+    -   `tagline` (string): स्टोर की टैगलाइन।
+    -   `description` (string): स्टोर का विस्तृत विवरण।
+    -   `establishedAt` (ISO DateTime): स्थापना की तारीख।
+    -   `contact` (object): संपर्क जानकारी (`phone`, `email`, `whatsapp`)।
 -   **`openingHours`** (object): स्टोर के खुलने का समय, `isOpen` फ़्लैग और नोट।
 -   **`addresses`** (array): भौतिक स्टोर के पते।
--   **`socialLinks`** (object): फेसबुक, इंस्टाग्राम, ट्विटर के लिए लिंक।
--   **`engagement`** (object): `rank`, `rating`, `reviews`, `views` जैसे मीट्रिक्स।
+-   **`engagement`** (object): `rank`, `rating`, `reviews`, `views`, `followers`, `items` जैसे मीट्रिक्स।
+-   **`social`** (object): फेसबुक, इंस्टाग्राम, ट्विटर आदि के लिए लिंक।
+-   **`community`** (object): सामुदायिक विशेषताएं।
+    -   `description` (string): समुदाय का विवरण।
+    -   `activeMembers` (array): सक्रिय सदस्यों की सूची।
+-   **`paymentOptions`** (object): भुगतान विकल्प।
+    -   `acceptsCod` (boolean), `acceptsOnline` (boolean), `acceptedGateways` (array)।
+-   **`deliveryInfo`** (object): डिलीवरी की जानकारी।
+    -   `isAvailable` (boolean), `deliveryRadiusKm` (number), `minOrderValue` (number), आदि।
+-   **`legalInfo`** (object): कानूनी जानकारी।
+    -   `ownerName` (string), `gstin` (string), `pan` (object), `aadhaar` (object)।
 -   **`seo`** (object): SEO के लिए `title`, `description`, `keywords`।
 -   **`subscription`** (object): व्यापारी की सदस्यता का विवरण।
 -   **`audit`** (object): `createdAt`, `createdBy`, `updatedAt`, `updatedBy` के साथ ऑडिट ट्रेल्स।
@@ -276,7 +295,6 @@
 ### संबंध (Relationships)
 - **`promotions` Many-to-One `merchants`**: प्रमोशन `meta.links.merchantId` के माध्यम से किसी विशिष्ट व्यापारी से जुड़े हो सकते हैं।
 ---
----
 
 ## 10. Stories (`stories.json` and `stories-schema.json`)
 
@@ -327,7 +345,70 @@ This approach allows the feature to evolve without breaking the existing structu
 
 ---
 
-## 11. Logs (`logs.json`)
+## 11. Posts (`posts.json`)
+
+**उद्देश्य:** यह संग्रह व्यापारियों द्वारा बनाए गए सभी पोस्ट्स को संग्रहीत करता है, जिसमें मानक टेक्स्ट/मीडिया पोस्ट और इंटरैक्टिव पोल शामिल हैं। यह व्यापारियों को अपने ग्राहकों के साथ जुड़ने और अपडेट साझा करने की अनुमति देता है।
+
+### मुख्य ऑब्जेक्ट्स:
+
+-   **`meta`**: पोस्ट का मेटाडेटा।
+    -   `postId` (string): पोस्ट के लिए अद्वितीय ID (`PST...`) - प्राइमरी की।
+    -   `type` (string): पोस्ट का प्रकार (`"standard"`, `"poll"`)।
+    -   `status` (string): पोस्ट की स्थिति (`"published"`, `"draft"`, `"archived"`)।
+    -   `flags` (object): बूलियन मान जो पोस्ट की स्थिति दर्शाते हैं (`isPinned`, `isFeatured`, `allowComments`, `isDeleted`)।
+    -   `links` (object): अन्य संग्रहों से संबंध (`merchantId`, `userId`)।
+-   **`content`**: पोस्ट की वास्तविक सामग्री।
+    -   `text` (string): पोस्ट का टेक्स्ट विवरण।
+    -   `media` (array): पोस्ट से जुड़ी मीडिया फ़ाइलों (छवियों, वीडियो) के ऑब्जेक्ट्स की सूची। प्रत्येक ऑब्जेक्ट में `type`, `url`, और `aspectRatio` होता है।
+-   **`engagement`**: पोस्ट पर उपयोगकर्ता की सहभागिता के आँकड़े।
+    -   `likes` (number): लाइक्स की संख्या।
+    -   `comments` (number): टिप्पणियों की संख्या।
+    -   `shares` (number): शेयर्स की संख्या।
+    -   `views` (number): देखे जाने की संख्या।
+-   **`poll`** (object | null): यदि पोस्ट एक पोल है, तो यह ऑब्जेक्ट पोल का विवरण संग्रहीत करता है।
+    -   `question` (string): पोल का प्रश्न।
+    -   `options` (array): पोल के विकल्पों की सूची। प्रत्येक ऑब्जेक्ट में `id`, `text`, और `votes` होते हैं।
+    -   `totalVotes` (number): पोल पर कुल वोटों की संख्या।
+    -   `endsAt` (string - ISO DateTime): पोल समाप्त होने की तारीख और समय।
+-   **`taggedProducts`** (array): पोस्ट में टैग किए गए आइटम IDs की सूची।
+-   **`audit`**: पोस्ट के निर्माण और अपडेट को ट्रैक करने के लिए ऑडिट ट्रेल्स।
+    -   `createdAt`, `createdBy`, `updatedAt`, `updatedBy`, `publishedAt`।
+
+### संबंध (Relationships)
+- **`posts` Many-to-One `merchants`**: कई पोस्ट एक ही `meta.links.merchantId` से जुड़े हो सकते हैं।
+- **`posts` Many-to-One `users`**: कई पोस्ट एक ही `meta.links.userId` (बनाने वाले) से जुड़े हो सकते हैं।
+
+---
+
+## 12. Comments (`comments.json`)
+
+**उद्देश्य:** यह संग्रह पोस्ट पर की गई टिप्पणियों को संग्रहीत करता है।
+
+### मुख्य ऑब्जेक्ट्स:
+
+-   **`meta`**: टिप्पणी का मेटाडेटा।
+    -   `commentId` (string): टिप्पणी के लिए अद्वितीय ID (`CMT...`) - प्राइमरी की।
+    -   `type` (string): हमेशा `"comment"`।
+    -   `status` (string): टिप्पणी की स्थिति (`"published"`, `"pending"`, `"deleted"`)।
+    -   `flags` (object): बूलियन मान (`isEdited`, `isReply`)।
+    -   `links` (object): संबंध (`postId`, `userId`, `merchantId`, `parentCommentId`)।
+-   **`submitter`**: टिप्पणी करने वाले की जानकारी।
+    -   `id` (string): `userId`।
+    -   `role` (string): उपयोगकर्ता की भूमिका।
+    -   `submittedAt` (string - ISO DateTime): सबमिशन का समय।
+-   **`content`**: टिप्पणी की सामग्री।
+    -   `text` (string): टिप्पणी का टेक्स्ट।
+-   **`engagement`**: सहभागिता आँकड़े।
+    -   `likes` (number): लाइक्स की संख्या।
+-   **`audit`**: ऑडिट ट्रेल्स (`createdAt`, `updatedAt`)।
+
+### संबंध (Relationships)
+- **`comments` Many-to-One `posts`**: कई टिप्पणियाँ एक ही `meta.links.postId` से जुड़ी हो सकती हैं।
+- **`comments` Many-to-One `users`**: कई टिप्पणियाँ एक ही `meta.links.userId` से जुड़ी हो सकती हैं।
+
+---
+
+## 13. Logs (`logs.json`)
 
 **उद्देश्य:** यह संग्रह ऑडिटिंग, डिबगिंग और विश्लेषण के लिए ऐप के भीतर होने वाली महत्वपूर्ण घटनाओं (`order_created`, `user_registered`) का रिकॉर्ड रखता है।
 
@@ -345,18 +426,18 @@ This approach allows the feature to evolve without breaking the existing structu
 
 ---
 
-## 12. Price Logs (`price-logs.json`)
+## 14. Price Logs (`price-logs.json`)
 
 यह संग्रह किसी आइटम के मूल्य में होने वाले प्रत्येक परिवर्तन को ट्रैक करता है, जो पारदर्शिता और ऐतिहासिक डेटा विश्लेषण के लिए महत्वपूर्ण है।
 
 ---
 
-## 13. Units (`units.json`)
+## 15. Units (`units.json`)
 
 यह संग्रह माप की विभिन्न इकाइयों (`weight`, `volume`) और उनके रूपांतरण कारकों को परिभाषित करता है।
 
 ---
-## 14. Feedbacks (`feedbacks.json`)
+## 16. Feedbacks (`feedbacks.json`)
 
 **उद्देश्य:** यह संग्रह उपयोगकर्ताओं (लॉग-इन और मेहमान दोनों) से प्राप्त सभी प्रकार की प्रतिक्रिया, जैसे बग रिपोर्ट, सुविधा अनुरोध और सामान्य सुझाव, को संग्रहीत करता है।
 
@@ -398,7 +479,7 @@ This approach allows the feature to evolve without breaking the existing structu
 
 ---
 
-## 15. Ratings (`ratings.json`)
+## 17. Ratings (`ratings.json`)
 
 **उद्देश्य:** यह संग्रह ऐप, आइटम, ऑर्डर या व्यापारियों के लिए उपयोगकर्ताओं से प्राप्त रेटिंग को संग्रहीत करता है। यह 1-5 स्टार मान, टिप्पणियाँ, टैग और प्रासंगिक जानकारी कैप्चर करता है कि रेटिंग कब और कैसे सबमिट की गई थी।
 
@@ -442,6 +523,6 @@ This approach allows the feature to evolve without breaking the existing structu
 
 ---
 
-## 15. Brands (`brands.json`)
+## 18. Brands (`brands.json`)
 
 यह संग्रह उन सभी ब्रांडों की सूची संग्रहीत करता है जिनके उत्पाद प्लेटफॉर्म पर बेचे जाते हैं।

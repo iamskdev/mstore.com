@@ -35,7 +35,7 @@ async function renderChatList() {
 
     // Iterate through merchants to display them as chatable entities
     merchants.forEach((merchant) => {
-      if (!merchant?.meta?.info) {
+      if (!merchant?.info) {
         console.warn('Skipping merchant with incomplete data:', merchant);
         return;
       }
@@ -46,11 +46,11 @@ async function renderChatList() {
       // --- Avatar ---
       const avatarEl = chatItem.querySelector('.chat-avatar');
       if (avatarEl) {
-        const logoUrl = merchant.meta.info.logo;
+        const logoUrl = merchant.info.logo;
         if (logoUrl) {
-          avatarEl.innerHTML = `<img src="${logoUrl}" alt="${merchant.meta.info.name} Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+          avatarEl.innerHTML = `<img src="${logoUrl}" alt="${merchant.info.name} Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
         } else {
-          avatarEl.textContent = merchant.meta.info.name ? merchant.meta.info.name.charAt(0).toUpperCase() : '';
+          avatarEl.textContent = merchant.info.name ? merchant.info.name.charAt(0).toUpperCase() : '';
         }
       }
 
@@ -63,7 +63,7 @@ async function renderChatList() {
 
       // --- Chat Info (Business Name) ---
       const merchantNameEl = chatItem.querySelector('.merchant-name');
-      if (merchantNameEl) merchantNameEl.textContent = merchant.meta.info.name || 'Unknown Merchant';
+      if (merchantNameEl) merchantNameEl.textContent = merchant.info.name || 'Unknown Merchant';
 
       // --- Last Message (Temporary Text) ---
       const lastMessageEl = chatItem.querySelector('.chat-info p');

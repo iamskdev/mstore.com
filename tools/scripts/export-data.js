@@ -101,7 +101,9 @@ async function uploadDataToFirestore() {
                 "campaigns": "meta.campaignId",
                 "stories": "meta.links.merchantId",
                 "feedbacks": "meta.feedbackId",
-                "ratings": "meta.ratingId"
+                "ratings": "meta.ratingId",
+                "posts": "meta.postId",
+                "comments": "meta.commentId"
         };
 
         for (const file of filesToProcess) {

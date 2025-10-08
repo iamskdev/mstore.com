@@ -3,6 +3,7 @@
     "meta": {
       "merchantId": "MRC-20251002-170602-401-ASDF",
       "version": 1,
+      "joinedAt": "2025-08-01T10:30:00Z",
       "type": "Retailer",
       "adminNote": "Newly registered merchant, needs verification.",
       "status": "approved",
@@ -23,54 +24,122 @@
       "links": {
         "userId": "USR-20251002-170602-102-BCDE",
         "staffIds": []
-      },
-      "info": {
-        "name": "Internet Cafe & Grocery",
-        "logo": "./localstore/images/logos/internet-cafe-logo.jpg",
-        "qrCode": "/admin/assets/images/merchant/qr/MQR00000001.png",
-        "tagline": "Affordable groceries & services since 2021",
-        "descriptions": {
-          "short": null,
-          "long": null
-        }
-      },
-      "openingHours": {
-        "days": [],
-        "hours": [
-          {
-            "open": "08:00",
-            "close": "13:00"
-          }
-        ],
-        "isOpen": true,
-        "note": "Opens late on public holidays."
-      },
-      "addresses": [
+      }
+    },
+    "info": {
+      "name": "Internet Cafe & Grocery",
+      "handle": "@internetcafe",
+      "logo": "./localstore/images/logos/internet-cafe-logo.jpg",
+      "qrCode": "/admin/assets/images/merchant/qr/MQR00000001.png",
+      "tagline": "Affordable groceries & services since 2021",
+      "description": "Your one-stop shop for groceries and internet services in Delhi. We offer a wide range of products and high-speed internet access.",
+      "coverImage": "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop",
+      "establishedAt": "2021-03-15T00:00:00Z",
+      "contact": {
+        "phone": "+919876543210",
+        "email": "contact@internetcafe.com",
+        "whatsapp": "+919876543210"
+      }
+    },
+    "openingHours": {
+      "days": [],
+      "hours": [
         {
-          "label": "Primary Store",
-          "landmark": "Near Metro Station",
-          "street": "Main Road, Sector 12",
-          "city": "Delhi",
-          "zipCode": "110012",
-          "state": "Delhi",
-          "country": "India",
-          "geoLocation": {
-            "lat": 28.6139,
-            "lng": 77.209
-          },
-          "isPrimary": true
+          "open": "08:00",
+          "close": "13:00"
         }
       ],
-      "socialLinks": {
-        "facebook": "https://facebook.com/mycafe",
-        "instagram": "https://instagram.com/mycafe",
-        "twitter": "https://twitter.com/mycafe"
+      "isOpen": true,
+      "note": "Opens late on public holidays."
+    },
+    "addresses": [
+      {
+        "label": "Primary Store",
+        "landmark": "Near Metro Station",
+        "street": "Main Road, Sector 12",
+        "city": "Delhi",
+        "zipCode": "110012",
+        "state": "Delhi",
+        "country": "India",
+        "geoLocation": {
+          "lat": 28.6139,
+          "lng": 77.209
+        },
+        "isPrimary": true
+      }
+    ],
+    "engagement": {
+      "rank": 1,
+      "rating": 4.5,
+      "reviews": 128,
+      "views": 1200,
+      "followers": 1845,
+      "items": 152
+    },
+    "social": {
+      "facebook": "https://facebook.com/internetcafe",
+      "instagram": "https://instagram.com/internetcafe",
+      "twitter": "https://twitter.com/internetcafe"
+    },
+    "community": {
+      "description": "Welcome to the Internet Cafe & Grocery community! Get updates on new stock, internet offers, and more. We're glad you're here.",
+      "activeMembers": [
+        {
+          "name": "Rohan S.",
+          "avatarUrl": "https://i.pravatar.cc/150?img=5"
+        },
+        {
+          "name": "Priya Singh",
+          "avatarUrl": "https://i.pravatar.cc/150?img=6"
+        },
+        {
+          "name": "Amit Kumar",
+          "avatarUrl": "https://i.pravatar.cc/150?img=11"
+        },
+        {
+          "name": "Sneha P.",
+          "avatarUrl": "https://i.pravatar.cc/150?img=25"
+        },
+        {
+          "name": "Vikas P.",
+          "avatarUrl": "https://i.pravatar.cc/150?img=32"
+        },
+        {
+          "name": "Anjali M.",
+          "avatarUrl": "https://i.pravatar.cc/150?img=45"
+        }
+      ]
+    },
+    "paymentOptions": {
+      "acceptsCod": true,
+      "acceptsOnline": true,
+      "acceptedGateways": [
+        "UPI",
+        "PayTM",
+        "Card"
+      ]
+    },
+    "deliveryInfo": {
+      "isAvailable": true,
+      "deliveryRadiusKm": 5,
+      "minOrderValue": 150,
+      "deliveryFee": 30,
+      "freeDeliveryThreshold": 500
+    },
+    "legalInfo": {
+      "ownerName": "Rohit Kumar",
+      "gstin": "09AABCU9603R1ZJ",
+      "pan": {
+        "number": "ABCDE1234F",
+        "documentUrl": null
       },
-      "engagement": {
-        "rank": 1,
-        "rating": 4.5,
-        "reviews": 128,
-        "views": 1200
+      "aadhaar": {
+        "last4digits": "5678",
+        "documentUrl": null
+      },
+      "fssaiLicense": {
+        "number": "10012345678901",
+        "documentUrl": null
       }
     },
     "seo": {
@@ -103,6 +172,7 @@
     "meta": {
       "merchantId": "MRC-20251002-170604-402-FGHJ",
       "version": 1,
+      "joinedAt": "2025-08-01T10:30:00Z",
       "type": "Retailer",
       "adminNote": "New cosmetics and sringar store by Anita Kumari.",
       "status": "approved",
@@ -123,16 +193,20 @@
       "links": {
         "userId": "USR-20251002-170604-104-DEFG",
         "staffIds": []
-      },
-      "info": {
-        "name": "Anita Sringar Store",
-        "logo": "./localstore/images/logos/anita-store-logo.jpg",
-        "qrCode": "/admin/assets/images/merchant/qr/MQR00000002.png",
-        "tagline": "Traditional beauty, modern elegance.",
-        "descriptions": {
-          "short": "A curated store for cosmetics, bangles, bindis, and bridal essentials.",
-          "long": "Anita Sringar & Beauty Store brings you a wide range of beauty and sringar items including bangles, cosmetics, sindoor, bindis, mehendi, and bridal accessories. Trusted by local customers for quality and charm."
-        }
+      }
+    },
+    "info": {
+      "name": "Anita Sringar Store",
+      "handle": "@anitastore_patna",
+      "logo": "./localstore/images/logos/anita-store-logo.jpg",
+      "qrCode": "/admin/assets/images/merchant/qr/MQR00000002.png",
+      "tagline": "Traditional beauty, modern elegance.",
+      "description": "Anita Sringar & Beauty Store brings you a wide range of beauty and sringar items including bangles, cosmetics, sindoor, bindis, mehendi, and bridal accessories. Trusted by local customers for quality and charm.",
+      "coverImage": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=1780&auto=format&fit=crop",
+      "contact": {
+        "phone": "+919876543211",
+        "email": "contact@anitastore.com",
+        "whatsapp": null
       }
     },
     "openingHours": {
@@ -170,16 +244,43 @@
         "isPrimary": true
       }
     ],
-    "socialLinks": {
-      "facebook": null,
-      "instagram": null,
-      "twitter": null
-    },
     "engagement": {
       "rank": 12,
       "rating": 4.2,
       "reviews": 63,
-      "views": 740
+      "views": 740,
+      "followers": 890,
+      "items": 210
+    },
+    "social": {
+      "facebook": "https://facebook.com/anitastore",
+      "instagram": "https://instagram.com/anitastore",
+      "twitter": null
+    },
+    "paymentOptions": {
+      "acceptsCod": true,
+      "acceptsOnline": false,
+      "acceptedGateways": []
+    },
+    "deliveryInfo": {
+      "isAvailable": false,
+      "deliveryRadiusKm": 0,
+      "minOrderValue": 0,
+      "deliveryFee": 0,
+      "freeDeliveryThreshold": 0
+    },
+    "legalInfo": {
+      "ownerName": "Anita Kumari",
+      "gstin": null,
+      "pan": {
+        "number": "FGHIJ5678K",
+        "documentUrl": null
+      },
+      "aadhaar": {
+        "last4digits": "1234",
+        "documentUrl": null
+      },
+      "fssaiLicense": null
     },
     "seo": {
       "title": "Anita Sringar & Beauty Store - Bridal & Cosmetic Shop in Patna",

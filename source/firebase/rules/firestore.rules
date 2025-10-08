@@ -87,6 +87,13 @@ service cloud.firestore {
       allow update, delete: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin();
     }
 
+    // NEW: Rules for posts collection
+    match /posts/{postId} {
+      allow read: if true; // Anyone can read posts
+      allow create: if isOwnerOfLinkedDoc(get(/databases/$(database)/documents/merchants/$(request.resource.data.meta.links.merchantId)).data.meta.links.userId) || isAdmin();
+      allow update, delete: if isOwnerOfLinkedDoc(get(/databases/$(database)/documents/merchants/$(resource.data.meta.links.merchantId)).data.meta.links.userId) || isAdmin();
+    }
+
     // ===================================================================
     // --- USER-CENTRIC COLLECTIONS (उपयोगकर्ता-केंद्रित संग्रह) ---
     // In collections ke rules user ke ownership par aadharit hain.
@@ -156,6 +163,14 @@ service cloud.firestore {
       // Sirf admins hi ratings padh, update, ya delete kar sakte hain.
       allow read, update, delete: if isAdmin();
     }
+
+    // NEW: Rules for comments on posts
+    match /comments/{commentId} {
+      allow read: if true; // Anyone can read comments
+      allow create: if request.auth != null; // Any logged-in user can create a comment
+      allow update, delete: if isOwnerOfLinkedDoc(resource.data.meta.links.userId) || isAdmin(); // Only the comment owner or an admin can delete
+    }
+
 
     // ===================================================================
     // --- ADMIN & SYSTEM COLLECTIONS (एडमिन और सिस्टम संग्रह) ---

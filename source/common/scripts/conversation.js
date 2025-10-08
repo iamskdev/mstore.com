@@ -74,7 +74,8 @@ export function init() {
     
     const backButton = document.querySelector('.back-button');
     if (backButton) {
-        backButton.addEventListener('click', () => {
+        backButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent the click from bubbling up to the header-info-clickable listener
             // FIX: Use a more reliable method to go back.
             // Check if there's a previous state in history. If not, go to a default view.
             if (window.history.length > 2) { // More than just the base and current page
@@ -97,8 +98,6 @@ export function init() {
     const headerInfo = document.getElementById('header-info-clickable');
     if (headerInfo && merchantId) {
         headerInfo.addEventListener('click', (e) => {
-            // Stop the event from bubbling up to parent elements.
-            e.stopPropagation(); 
             console.log(`Navigating to profile for merchant: ${merchantId}`);
             // Navigate to the new merchant profile view
             routeManager.switchView(routeManager.currentRole, `merchant-profile/${merchantId}`);
