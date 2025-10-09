@@ -59,12 +59,13 @@ export function initializeBottomNavigationLogic() {
         try {
           const userData = await fetchUserById(userId);
           // --- FIX: Use buildCloudinaryUrl to construct the correct URL from the public_id ---
-          const publicId = userData?.info?.avatar;
-          if (publicId && defaultIcon && accountIconImg) {
+          const avatar = userData?.info?.avatar;
+          if (avatar && defaultIcon && accountIconImg) {
+            const isCloudinaryId = !avatar.startsWith('./') && !avatar.startsWith('http');
             // Build a small, optimized URL for the avatar icon.
-            const avatarUrl = buildCloudinaryUrl(publicId, {
+            const avatarUrl = isCloudinaryId ? buildCloudinaryUrl(avatar, {
               width: 40, height: 40, crop: 'fill', quality: 'auto'
-            });
+            }) : avatar;
             accountIconImg.src = avatarUrl;
             accountIconImg.style.display = 'inline-block';
             if (defaultIcon) defaultIcon.style.display = 'none';

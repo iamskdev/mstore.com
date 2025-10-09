@@ -411,5 +411,13 @@ export function init() {
                 }
             }
         });
+
+        // --- NEW: Add horizontal scroll with mouse wheel ---
+        scrollableButtonsContainer.addEventListener('wheel', (e) => {
+            // Prevent the default vertical scroll to avoid page scrolling
+            e.preventDefault();
+            // Scroll horizontally based on the vertical wheel movement
+            scrollableButtonsContainer.scrollLeft += e.deltaY;
+        });
     }
 }

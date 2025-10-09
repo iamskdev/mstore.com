@@ -143,9 +143,12 @@ function setSectionEditable(sectionName, editable) {
     if(selectWrapper) selectWrapper.classList.toggle('editable', editable);
 
     // Handle phone group specifically
-    const phoneGroup = document.getElementById('phone-group');
-    if (phoneGroup) {
-        phoneGroup.classList.toggle('disabled', !editable);
+    // FIX: Only toggle the phone group's disabled state if we are editing the 'contact' section
+    if (sectionName === 'contact') {
+        const phoneGroup = document.getElementById('phone-group');
+        if (phoneGroup) {
+            phoneGroup.classList.toggle('disabled', !editable);
+        }
     }
 }
 
@@ -155,7 +158,6 @@ function setupEventListeners() {
     const changePictureBtn = document.getElementById('change-picture-btn');
     const removePictureBtn = document.getElementById('remove-picture-btn');
     const avatarUploadInput = document.getElementById('avatar-upload');
-    const formActions = document.querySelector('.form-actions');
     // Username Modal Elements
     const editUsernameBtn = document.getElementById('edit-username-btn');
     const usernameModal = document.getElementById('username-edit-modal');
@@ -180,9 +182,8 @@ function setupEventListeners() {
             if (!isCurrentlyEditing) {
                 setSectionEditable(sectionToEdit, true);
             }
-            // Show/hide save/cancel buttons based on if any section is being edited
-            formActions.style.display = isCurrentlyEditing ? 'none' : 'flex';
-            if (isCurrentlyEditing) updateSaveButtonState(); // Re-check changes when cancelling a section edit
+            // Re-check changes to enable/disable the save button
+            updateSaveButtonState();
         });
     });
 
@@ -346,7 +347,6 @@ function setupEventListeners() {
     });
 
     document.getElementById('cancel-btn').addEventListener('click', () => {
-        formActions.style.display = 'none';
         // Reset any open editing sections
         document.querySelectorAll('.profile-section.editing').forEach(sec => {
             setSectionEditable(sec.dataset.sectionName, false);

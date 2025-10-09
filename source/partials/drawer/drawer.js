@@ -96,10 +96,12 @@ export function initializeDrawer() {
         // Updated to use the new user schema
         if (avatarEl) {
           // --- FIX: Use buildCloudinaryUrl to construct the correct URL from the public_id ---
-          const publicId = userData?.info?.avatar;
-          if (publicId) {
-            const avatarUrl = buildCloudinaryUrl(publicId, {
-              width: 128, height: 128, crop: 'fill', quality: 'auto' });
+          const avatar = userData?.info?.avatar;
+          if (avatar) {
+            const isCloudinaryId = !avatar.startsWith('./') && !avatar.startsWith('http');
+            const avatarUrl = isCloudinaryId ? buildCloudinaryUrl(avatar, {
+              width: 256, height: 256, crop: 'fill', quality: 'auto'
+            }) : avatar;
             avatarEl.style.backgroundImage = `url('${avatarUrl}')`;
             avatarEl.classList.remove('fallback-icon');
           } else {
