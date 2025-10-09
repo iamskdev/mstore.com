@@ -1,9 +1,10 @@
 /**
  * @file upload-to-emulator.js
  * This script uploads data from JSON files in the /localstore/jsons/ folder to the LOCAL FIRESTORE EMULATOR.
- * It's designed for setting up a consistent development environment.
+ * It can upload all JSON files in the directory or a single specified file.
  * It will overwrite existing documents with the same ID in the emulator.
- * To run: node tools/scripts/upload-to-emulator.js
+ * To upload all files: node tools/scripts/upload-to-emulator.js
+ * To upload a single file: node tools/scripts/upload-to-emulator.js users.json
  * PRE-REQUISITE: The Firebase Emulator Suite must be running (`firebase emulators:start`).
  */
 
@@ -22,6 +23,8 @@ const BATCH_LIMIT = 500;
 // Emulator host and port
 const FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080"; // Use 127.0.0.1 for better compatibility
 const AUTH_EMULATOR_HOST = "127.0.0.1:9099"; // Default Firebase Auth Emulator host
+// Optional: specify a single JSON file to upload (e.g., 'users.json') from the command line.
+const SPECIFIC_FILE_TO_UPLOAD = process.argv[2] || '';
 
 
 /**
@@ -146,10 +149,31 @@ async function uploadDataToEmulator() {
         // --- Upload Data ---
         const inputDirPath = path.resolve(__dirname, INPUT_DIR_PATH);
         console.log(`\n🔥 Starting data synchronization with emulator from: ${inputDirPath}`);
-        
-        const files = await fs.readdir(inputDirPath);        const jsonFiles = files.filter(file => file.endsWith('.json') && file !== 'versioner.json' && file !== 'versions.json');
 
-        if (jsonFiles.length === 0) {
+        let filesToProcess;
+
+        if (SPECIFIC_FILE_TO_UPLOAD) {
+            console.log(`🔥 Preparing to upload specific file to emulator: ${SPECIFIC_FILE_TO_UPLOAD}`);
+            const specificFilePath = path.join(inputDirPath, SPECIFIC_FILE_TO_UPLOAD);
+            try {
+                await fs.access(specificFilePath);
+                if (SPECIFIC_FILE_TO_UPLOAD.endsWith('.json')) {
+                    filesToProcess = [SPECIFIC_FILE_TO_UPLOAD];
+                } else {
+                    console.error(`❌ Error: Specified file is not a .json file.`);
+                    return;
+                }
+            } catch (e) {
+                console.error(`❌ Error: Specified file not found at: ${specificFilePath}`);
+                return;
+            }
+        } else {
+            console.log(`🔥 Preparing to upload all JSON files to emulator...`);
+            const allFiles = await fs.readdir(inputDirPath);
+            filesToProcess = allFiles.filter(file => file.endsWith('.json') && file !== 'versioner.json' && file !== 'versions.json');
+        }
+
+        if (filesToProcess.length === 0) {
             console.log(`📂 No JSON files found to upload in: ${inputDirPath}`);
             return;
         }
@@ -181,15 +205,20 @@ async function uploadDataToEmulator() {
         console.log(`✅ Firebase Admin SDK initialized for EMULATOR. Project: ${serviceAccount.project_id}`);
 
         console.log(`\n--- Step 1: Clearing All Collections in Emulator ---`);
-        for (const file of jsonFiles) {
+        // If a specific file is being uploaded, only clear that collection.
+        // Otherwise, clear all collections defined in the files to be processed.
+        for (const file of filesToProcess) {
             const collectionId = path.basename(file, '.json');
             console.log(`   - 🗑️  Clearing collection: '${collectionId}'...`);
             await deleteCollection(db, collectionId, BATCH_LIMIT);
         }
-        console.log(`   - ✅ All specified collections cleared.`);
+        console.log(SPECIFIC_FILE_TO_UPLOAD
+            ? `   - ✅ Collection '${path.basename(SPECIFIC_FILE_TO_UPLOAD, '.json')}' cleared.`
+            : `   - ✅ All specified collections cleared.`
+        );
 
         console.log(`\n--- Step 2: Uploading Data to Firestore Emulator ---`);
-        for (const file of jsonFiles) {
+        for (const file of filesToProcess) {
             const collectionId = path.basename(file, '.json');
             const filePath = path.join(inputDirPath, file);
             console.log(`\n   - Processing collection: ${collectionId}`);
@@ -243,11 +272,14 @@ async function uploadDataToEmulator() {
             console.log(`   - 📤 Successfully uploaded ${totalDocsUploaded} documents to the '${collectionId}' collection in the emulator.`);
         }
 
-        // --- Step 3: Create Auth Users ---
-        console.log(`\n--- Step 3: Creating Authentication Users in Emulator ---`);
-        const auth = admin.auth();
-        const usersJsonPath = path.join(inputDirPath, 'users.json');
-        await createAuthUsersInEmulator(auth, usersJsonPath, db);
+        // --- Step 3: Create Auth Users (if applicable) ---
+        // This step should only run if we are doing a full upload OR if the specific file being uploaded is 'users.json'.
+        if (!SPECIFIC_FILE_TO_UPLOAD || SPECIFIC_FILE_TO_UPLOAD === 'users.json') {
+            console.log(`\n--- Step 3: Creating Authentication Users in Emulator ---`);
+            const auth = admin.auth();
+            const usersJsonPath = path.join(inputDirPath, 'users.json');
+            await createAuthUsersInEmulator(auth, usersJsonPath, db);
+        }
 
         console.log(`\n🎉 Success! All data has been uploaded to the Firestore Emulator.`);
 
