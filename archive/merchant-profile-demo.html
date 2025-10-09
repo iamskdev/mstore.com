@@ -73,7 +73,7 @@
                from the top and bottom, keeping the center visible. */
             object-position: center;
         }
-        .profile-info {
+        .avatar-and-actions {
             /* This class is repurposed for the new layout */
             display: flex;
             align-items: flex-end; /* Align items to the bottom */
@@ -112,7 +112,7 @@
             background-color: var(--bg-secondary); /* A light background for the icon */
             border-radius: 50%;
         }
-        .profile-details {
+        .profile-basic-info {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -164,14 +164,14 @@
             cursor: pointer;
             margin-left: 0; /* FIX: Remove left margin to eliminate space between '...' and 'more' */
         }
-        .profile-stats {
+        .mrc-profile-growth {
             display: flex;
             gap: 10px;
         }
         .profile-stat {
             text-align: center;
         }
-        .profile-stat-value {
+        .stat-counting {
             font-size: 12px;
             font-weight: 600;
             color: var(--text-primary);
@@ -188,7 +188,7 @@
             flex-grow: 1; /* Take up remaining space */
             justify-content: flex-end; /* This pushes the content to the bottom of the flex container */
         }
-        .action-buttons-container {
+        .action-btn-container {
             display: flex;
             margin-left: -10px;
             align-items: center;
@@ -196,7 +196,7 @@
             margin-bottom: 10px; /* Symmetrical spacing below the banner line */
         }
         /* Smaller buttons for the profile header actions */
-        .action-buttons-container .action-btn {
+        .action-btn-container .action-btn {
             padding: 6px 10px;
             font-size: 10px;
         }
@@ -228,14 +228,14 @@
             justify-content: center;
         }
 
-        .mrc-social-icons {
+        .profile-social-icons {
             position: absolute;
             bottom: 40px; /* Position it just above the banner's bottom edge */
             left: 75px; /* Position it to the right of the DP */
             display: flex;
             gap: 15px;
         }
-        .mrc-social-icons a {
+        .profile-social-icons a {
             color: white; /* White icons for visibility on cover photo */
             text-shadow: 0 1px 3px rgba(0,0,0,0.6);
             font-size: 18px;
@@ -918,12 +918,12 @@
         <div class="cover-photo-container">
             <img id="cover-photo" src="" alt="Cover Photo" onerror="this.onerror=null; this.src='https://via.placeholder.com/800x180/f0f2f5/cccccc?text=Cover+Not+Found';">
         </div>
-        <div class="profile-info">
+        <div class="avatar-and-actions">
             <div class="profile-picture">
                 <i class="fas fa-user-circle profile-picture-placeholder"></i>
                 <img id="merchant-logo" src="" alt="Merchant Logo">
             </div>
-            <div class="mrc-social-icons">
+            <div class="profile-social-icons">
                 <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
                 <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
@@ -932,7 +932,7 @@
                 <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
             </div>
             <div class="profile-actions">
-                <div class="action-buttons-container">
+                <div class="action-btn-container">
                     <button class="action-btn secondary" id="profile-follow-btn"><i class="fas fa-user-plus"></i> Follow Me</button>
                     <button class="action-btn secondary"><i class="fas fa-comment-dots"></i> Message</button>
                     <button class="action-btn secondary" id="profile-notification-btn"><i class="far fa-bell"></i></button>
@@ -943,18 +943,18 @@
 
     <main class="profile-content">
         <!-- Profile details are now here, below the header -->
-        <div class="profile-details">
+        <div class="profile-basic-info">
             <div class="profile-identity">
                 <h1 id="merchant-name" class="profile-name"></h1>
                 <p id="merchant-handle" class="profile-handle"></p>
             </div>
-            <div class="profile-stats">
+            <div class="mrc-profile-growth">
                 <div class="profile-stat">
-                    <span class="profile-stat-value" id="followers-count"></span>
+                    <span class="stat-counting" id="followers-count"></span>
                     <span class="profile-stat-label">Followers</span>
                 </div>
                 <div class="profile-stat">
-                    <span class="profile-stat-value" id="items-count"></span>
+                    <span class="stat-counting" id="items-count"></span>
                     <span class="profile-stat-label">Listings</span>
                 </div>
             </div>
@@ -1373,7 +1373,7 @@
         }
         
         // --- FINAL FIX: Dynamically show/hide header social icons based on data ---
-        const socialIconsContainer = document.querySelector('.mrc-social-icons');
+        const socialIconsContainer = document.querySelector('.profile-social-icons');
         const socialLinks = merchantData.social || {};
         const whatsappNumber = merchantData.info.contact?.whatsapp;
         

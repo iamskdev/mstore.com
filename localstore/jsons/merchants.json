@@ -79,7 +79,8 @@
     "social": {
       "facebook": "https://facebook.com/internetcafe",
       "instagram": "https://instagram.com/internetcafe",
-      "twitter": "https://twitter.com/internetcafe"
+      "twitter": "https://twitter.com/internetcafe",
+      "whatsapp": "https://chat.whatsapp.com/GlbVEJGRJbt0TpbLi3XBwm?mode=ems_copy_t"
     },
     "community": {
       "description": "Welcome to the Internet Cafe & Grocery community! Get updates on new stock, internet offers, and more. We're glad you're here.",
@@ -255,7 +256,8 @@
     "social": {
       "facebook": "https://facebook.com/anitastore",
       "instagram": "https://instagram.com/anitastore",
-      "twitter": null
+      "twitter": null,
+      "whatsapp": "https://chat.whatsapp.com/GlbVEJGRJbt0TpbLi3XBwm?mode=ems_copy_t"
     },
     "paymentOptions": {
       "acceptsCod": true,

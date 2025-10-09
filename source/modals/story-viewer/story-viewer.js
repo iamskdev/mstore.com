@@ -667,10 +667,10 @@ import { fetchAllMerchants, fetchAllStories } from '../../utils/data-manager.js'
         return;
     }
 
-    currentMerchant = { ...realMerchant.meta.info, stories: storyCollection.stories };
+    currentMerchant = { ...realMerchant.info, stories: storyCollection.stories };
 
     // Update UI with merchant data
-    storyName.textContent = currentMerchant.name; // Use real name
+    storyName.textContent = currentMerchant.name;
     storyModal.querySelector('.story-viewer-avatar').src = currentMerchant.logo; // Use real logo
 
     // Show the modal and start the first story

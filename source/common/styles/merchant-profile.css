@@ -43,37 +43,25 @@
 }
 
 .cover-photo-container {
-    /* --- Cover Photo Rules --- */
-    /* This container sets the height for the cover photo area. */
-    /* It's shorter on mobile and taller on desktop. */
     height: 90px;
-    /* Mobile height */
     background-color: var(--border-color);
     position: relative;
     overflow: hidden;
-    /* Ensures the image doesn't spill out */
 }
 
 /* This is the core logic for the responsive cover photo. */
 .cover-photo-container img {
     width: 100%;
     height: 100%;
-    /* 'object-fit: cover' scales the image to fill the container,
-               maintaining its aspect ratio and cropping any excess. */
     object-fit: cover;
-    /* 'object-position: center' ensures that the image is cropped
-               from the top and bottom, keeping the center visible. */
     object-position: center;
 }
 
-.profile-info {
-    /* This class is repurposed for the new layout */
+.avatar-and-actions {
     display: flex;
     align-items: flex-end;
-    /* Align items to the bottom */
     position: absolute;
-    bottom: -40px;
-    /* FIX: Moved up by 10px to be closer to the banner */
+    margin-top: -35px;
     left: 16px;
     right: 16px;
     gap: 12px;
@@ -81,12 +69,10 @@
 
 .profile-picture {
     width: 70px;
-    /* New size */
     height: 70px;
-    /* New size */
     border-radius: 50%;
     margin-left: -5px;
-    margin-bottom: 5px;
+    margin-top: 5px;
     border: 2px solid var(--card-background);
     background-color: var(--card-background);
     overflow: hidden;
@@ -100,54 +86,37 @@
     object-fit: cover;
 }
 
-/* NEW: Placeholder icon for when the profile picture fails to load */
-.profile-picture-placeholder {
-    font-size: 70px;
-    /* Slightly smaller than the container */
-    color: var(--text-secondary);
-    display: none;
-    /* Hidden by default */
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--bg-secondary);
-    /* A light background for the icon */
-    border-radius: 50%;
-}
 
-.profile-details {
+.profile-basic-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 0 16px;
-    /* Add horizontal padding */
+    margin-top: 30px;
 }
 
-/* New wrapper for name and handle for tighter grouping */
-.profile-identity {
+/* NEW: Wrapper for name and badge for alignment */
+.name-and-badge {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    /* A very small gap between name and handle for readability */
+    align-items: center;
+    gap: 8px; /* Space between name and badge */
 }
 
-/* Definitive fix for h1/p default margins inside the identity block */
-.profile-identity>* {
-    margin: 0;
+/* NEW: Style for the verified badge */
+.verified-badge {
+    color: var(--accent-secondary);
+    font-size: 18px; 
 }
 
 .profile-name {
     font-size: 20px;
-    /* Reduced size */
     font-weight: 700;
 }
 
 .profile-handle {
     font-size: 14px;
+    margin-top: -10px;
     color: var(--text-secondary);
-    /* margin-top is now handled by parent's 'gap' property */
 }
 
 .profile-bio {
@@ -156,41 +125,38 @@
     padding: 2px 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* It's an inline element to sit next to the 'more' link */
     display: inline;
 }
 
 .bio-wrapper {
-    /* This wrapper ensures the bio and 'more' link are on one line */
     display: flex;
     align-items: baseline;
     line-height: 1;
-    margin-top: -5px;
     font-size: 12px;
     color: var(--text-primary);
     width: 100%;
+    margin-top: -5px;
 }
 
 /* NEW: "Read more" link styles */
 .read-more-bio {
     color: var(--accent-primary);
-    /* Link color */
     font-weight: 600;
     cursor: pointer;
     margin-left: 0;
-    /* FIX: Remove left margin to eliminate space between '...' and 'more' */
 }
 
-.profile-stats {
+.mrc-profile-growth {
     display: flex;
     gap: 10px;
+    margin-top: 3px;
 }
 
 .profile-stat {
     text-align: center;
 }
 
-.profile-stat-value {
+.stat-counting {
     font-size: 12px;
     font-weight: 600;
     color: var(--text-primary);
@@ -202,30 +168,24 @@
 }
 
 .profile-actions {
-    /* This is now a wrapper for social icons and buttons */
     display: flex;
     flex-direction: column;
-    /* Stack items vertically */
     align-items: flex-start;
-    /* Align items to the left */
     flex-grow: 1;
-    /* Take up remaining space */
+    margin-left: -7px;
+    margin-bottom: 10px;
     justify-content: flex-end;
-    /* This pushes the content to the bottom of the flex container */
 }
 
-.action-buttons-container {
+.action-btn-container {
     display: flex;
-    margin-left: -10px;
+
     align-items: center;
     gap: 8px;
-    /* Add space between the buttons */
-    margin-bottom: 10px;
-    /* Symmetrical spacing below the banner line */
 }
 
 /* Smaller buttons for the profile header actions */
-.action-buttons-container .action-btn {
+.action-btn-container .action-btn {
     padding: 6px 10px;
     font-size: 10px;
 }
@@ -260,26 +220,23 @@
     justify-content: center;
 }
 
-.mrc-social-icons {
+.profile-social-icons {
     position: absolute;
     bottom: 40px;
-    /* Position it just above the banner's bottom edge */
-    left: 75px;
-    /* Position it to the right of the DP */
+    left: 70px;
     display: flex;
     gap: 15px;
 }
 
-.mrc-social-icons a {
+.profile-social-icons a {
     color: white;
-    /* White icons for visibility on cover photo */
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     font-size: 18px;
     transition: var(--transition);
 }
 
 .profile-content {
-    padding-top: 0;
+    margin-top: -60px;
     /* Space between header and main content removed */
 }
 
@@ -317,7 +274,6 @@
 .tab-nav button {
     flex-shrink: 0;
     padding: 12px 15px;
-    /* Reduced vertical padding */
     background: none;
     border: none;
     font-size: 15px;
@@ -337,18 +293,14 @@
     position: absolute;
     bottom: 0;
     left: 10px;
-    /* Extend the line slightly beyond the text */
     right: 10px;
-    /* Extend the line slightly beyond the text */
     height: 3px;
     background-color: var(--accent-primary);
 }
 
 .tab-content {
     display: none;
-    /* NEW: Reduced vertical padding to remove extra space */
     width: 100%;
-    /* Ensure full width */
     box-sizing: border-box;
 }
 
@@ -483,7 +435,7 @@
 .post-card {
     background: var(--card-background);
     /* NEW: Remove border and radius for full-width look */
-    border-bottom: 8px solid var(--bg-primary);
+    border-bottom: 8px solid var(--border-color);
     /* Separator between posts */
     overflow: hidden;
 }
@@ -668,7 +620,7 @@
 .poll-option {
     position: relative;
     border: 1.5px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 2px;
     padding: 10px 12px;
     cursor: pointer;
     font-weight: 500;
@@ -712,15 +664,9 @@
     top: 0;
     left: 0;
     height: 100%;
-    background-color: rgba(var(--accent-primary-rgb), 0.15);
-    border-radius: 6px;
+    background-color: var(--bg-tertiary);
     z-index: 1;
     transition: background-color 0.3s ease;
-}
-
-/* NEW: Highlight the progress bar of the user's chosen option */
-.poll-option.user-choice .poll-progress-bar {
-    background-color: rgba(var(--accent-primary-rgb), 0.4);
 }
 
 /* NEW: Change text color to white when results are shown for better contrast */
@@ -799,6 +745,18 @@
 
 .comment-add-input:focus {
     border-color: var(--accent-primary);
+}
+
+/* NEW: Style for the comment send button */
+.comment-send-btn {
+    background: transparent;
+    border: none;
+    color: var(--accent-primary);
+    font-size: 1.2rem; /* Make icon slightly larger */
+    cursor: pointer;
+    padding: 2px; /* Add some padding to make it easier to click */
+    border-radius: 50%;
+    transition: color 0.2s ease;
 }
 
 /* --- NEW: Redesigned Community Tab --- */

@@ -93,6 +93,14 @@ function renderProfile(merchantData) {
     document.getElementById('followers-count').textContent = formatNumber(merchantData.engagement?.followers || 0);
     document.getElementById('items-count').textContent = formatNumber(merchantData.engagement?.items || 0);
 
+    // --- NEW: Show/Hide Verified Badge ---
+    const verifiedBadge = document.getElementById('verified-badge');
+    if (merchantData.meta.flags.isVerified) {
+        verifiedBadge.style.display = 'inline-block';
+    } else {
+        verifiedBadge.style.display = 'none';
+    }
+
     const bioElement = document.getElementById('merchant-bio');
     const bioWrapper = document.querySelector('.bio-wrapper');
     const fullText = merchantData.info.description;
@@ -147,25 +155,13 @@ function renderProfile(merchantData) {
     }
 
     // --- FINAL FIX: Dynamically show/hide header social icons based on data ---
-    const socialIconsContainer = document.querySelector('.mrc-social-icons');
+    const socialIconsContainer = document.querySelector('.profile-social-icons');
     const socialLinks = merchantData.social || {};
-    const whatsappNumber = merchantData.info.contact?.whatsapp;
 
     socialIconsContainer.querySelectorAll('a').forEach(icon => {
         const socialNetwork = icon.title.toLowerCase();
-        let url = null; // Default to null
+        const url = socialLinks[socialNetwork]; // FIX: Directly use the link from the social object for all icons, including WhatsApp.
 
-        if (socialNetwork === 'whatsapp') {
-            // Only create a URL if the whatsapp number is not null or empty
-            // FIX: Use the correct variable 'whatsappNumber' instead of 'whatsapp'
-            if (whatsappNumber && whatsappNumber.trim() !== '') {
-                const phone = whatsappNumber.replace(/\D/g, ''); // Remove non-digit characters
-                url = `https://wa.me/${phone}`;
-            }
-        } else {
-            // For other networks, get the link from the social object
-            url = socialLinks[socialNetwork];
-        }
         if (url) {
             icon.href = url;
             icon.style.display = 'inline-block';
@@ -462,6 +458,7 @@ function renderAbout(merchantData) {
     if (socialLinks.instagram) socialLinksHTML += `<div class="info-item" data-social="instagram"><i class="fab fa-instagram"></i><a href="${socialLinks.instagram}" target="_blank" rel="noopener noreferrer">${socialLinks.instagram}</a></div>`;
     if (socialLinks.twitter) socialLinksHTML += `<div class="info-item" data-social="twitter"><i class="fab fa-twitter"></i><a href="${socialLinks.twitter}" target="_blank" rel="noopener noreferrer">${socialLinks.twitter}</a></div>`;
     if (socialLinks.youtube) socialLinksHTML += `<div class="info-item" data-social="youtube"><i class="fab fa-youtube"></i><a href="${socialLinks.youtube}" target="_blank" rel="noopener noreferrer">${socialLinks.youtube}</a></div>`;
+    if (socialLinks.whatsapp) socialLinksHTML += `<div class="info-item" data-social="whatsapp"><i class="fab fa-whatsapp"></i><a href="${socialLinks.whatsapp}" target="_blank" rel="noopener noreferrer">${socialLinks.whatsapp}</a></div>`; // FIX: Add WhatsApp link rendering
     if (socialLinks.linkedin) socialLinksHTML += `<div class="info-item" data-social="linkedin"><i class="fab fa-linkedin"></i><a href="${socialLinks.linkedin}" target="_blank" rel="noopener noreferrer">${socialLinks.linkedin}</a></div>`;
     socialLinksContainer.innerHTML = socialLinksHTML || '<p>No social media links provided.</p>';
     const lastSocialItem = socialLinksContainer.querySelector('.info-item:last-child');
@@ -758,8 +755,8 @@ export async function init(force = false) {
         buttons: [
             { label: 'View Details', action: 'VIEW_DETAILS', class: 'btn-secondary', visible: true },
             { label: 'Add to Cart', action: 'ADD_TO_CART', class: 'btn-primary', visible: true },
-            { label: 'Save', action: 'SAVE_FOR_LATER', class: 'btn-secondary', visible: true },
-            { label: 'Share', action: 'SHARE_ITEM', class: 'btn-secondary', visible: true }
+            { label: 'Save for later', action: 'SAVE_FOR_LATER', class: 'btn-secondary', visible: true },
+            { label: 'Share me', action: 'SHARE_ITEM', class: 'btn-secondary', visible: true }
         ],
         actionHandlers: {
             'VIEW_DETAILS': (item) => {
@@ -867,9 +864,11 @@ export async function init(force = false) {
                 icon.classList.add('bell-shake');
 
                 if (isSubscribed) {
-                    icon.className = 'far fa-bell';
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
                 } else {
-                    icon.className = 'fas fa-bell';
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
                 }
             });
         }

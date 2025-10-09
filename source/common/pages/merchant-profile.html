@@ -4,12 +4,12 @@
         <img id="cover-photo" src="" alt="Cover Photo"
             onerror="this.onerror=null; this.src='https://via.placeholder.com/800x180/f0f2f5/cccccc?text=Cover+Not+Found';">
     </div>
-    <div class="profile-info">
+    <div class="avatar-and-actions">
         <div class="profile-picture">
-            <i class="fas fa-user-circle profile-picture-placeholder"></i>
+            <i class="fas fa-user-circle"></i>
             <img id="merchant-logo" src="" alt="Merchant Logo">
         </div>
-        <div class="mrc-social-icons">
+        <div class="profile-social-icons">
             <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
             <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
@@ -18,7 +18,7 @@
             <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
         </div>
         <div class="profile-actions">
-            <div class="action-buttons-container">
+            <div class="action-btn-container">
                 <button class="action-btn secondary" id="profile-follow-btn"><i class="fas fa-user-plus"></i> Follow
                     Me</button>
                 <button class="action-btn secondary"><i class="fas fa-comment-dots"></i> Message</button>
@@ -26,30 +26,31 @@
             </div>
         </div>
     </div>
-</header>
-
-<main class="profile-content">
     <!-- Profile details are now here, below the header -->
-    <div class="profile-details">
-        <div class="profile-identity">
-            <h1 id="merchant-name" class="profile-name"></h1>
-            <p id="merchant-handle" class="profile-handle"></p>
-        </div>
-        <div class="profile-stats">
+    <div class="profile-basic-info">
+            <div class="name-and-badge">
+                <h1 id="merchant-name" class="profile-name"></h1>
+                <i id="verified-badge" class="fas fa-check-circle verified-badge" title="Verified Merchant" style="display: none;"></i>
+            </div>
+            <div id="merchant-handle" class="profile-handle"></div>
+        
+            <div class="mrc-profile-growth">
             <div class="profile-stat">
-                <span class="profile-stat-value" id="followers-count"></span>
+                <span class="stat-counting" id="followers-count"></span>
                 <span class="profile-stat-label">Followers</span>
             </div>
             <div class="profile-stat">
-                <span class="profile-stat-value" id="items-count"></span>
+                <span class="stat-counting" id="items-count"></span>
                 <span class="profile-stat-label">Listings</span>
             </div>
-        </div>
+            </div>
         <div class="bio-wrapper">
             <p id="merchant-bio" class="profile-bio"></p> <!-- JS will populate this -->
         </div>
     </div>
+</header>
 
+<main class="profile-content">
     <div class="tabs-container">
         <nav class="tab-nav">
             <button class="tab-link active" data-tab="home">Home</button>

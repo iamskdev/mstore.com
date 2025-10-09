@@ -302,6 +302,7 @@ export async function init(force = false) { // Make function async
         // Dispatch an event to notify top-nav to revert to its original state
         window.dispatchEvent(new CustomEvent('viewStateOverride', {
             detail: {
+                // --- FIX: Ensure the action row is removed when hiding the merchant page ---
                 isSecondary: false,
                 title: null // Title is not needed when reverting
             }
@@ -309,6 +310,50 @@ export async function init(force = false) { // Make function async
     }
 
     function showMerchantPage(merchant) {
+        // --- NEW: Show action row popup when a merchant is selected ---
+        removeExistingPopup(); // Remove any previous popup
+
+        const hasStory = stories.some(storyCollection =>
+            storyCollection.meta.links.merchantId === merchant.meta.merchantId &&
+            storyCollection.stories?.some(s => s.status === 'active')
+        );
+
+        const popup = document.createElement('div');
+        popup.className = 'profile-action-row';
+
+        let buttonsHTML = `<button class="popup-btn-profile">Go to Profile</button>`;
+        if (hasStory) {
+            buttonsHTML += `<button class="popup-btn-story">View Story</button>`;
+        }
+        
+        // --- FIX: Move dismiss button to be after other buttons on the left ---
+        buttonsHTML += `<button class="popup-btn-dismiss" aria-label="Close Actions">Not Now</button>`;
+
+        popup.innerHTML = `
+            <div class="action-buttons-wrap">${buttonsHTML}</div>
+        `;
+
+        updatesContainer.insertBefore(popup, segmentedControls);
+
+        popup.querySelector('.popup-btn-profile').addEventListener('click', (event) => {
+            event.stopPropagation();
+            const role = localStorage.getItem('currentUserType') || 'guest';
+            routeManager.switchView(role, `merchant-profile/${merchant.meta.merchantId}`);
+            removeExistingPopup();
+        });
+
+        if (hasStory) {
+            popup.querySelector('.popup-btn-story').addEventListener('click', (event) => {
+                event.stopPropagation();
+                storyViewer.open(merchant.meta.merchantId);
+            });
+        }
+
+        // --- NEW: Add event listener for the new dismiss button ---
+        popup.querySelector('.popup-btn-dismiss').addEventListener('click', (event) => {
+            event.stopPropagation();
+            removeExistingPopup();
+        });
         currentMerchant = merchant;
 
         // --- FIX: Add active & viewed states to story avatars on click ---
@@ -427,57 +472,14 @@ export async function init(force = false) { // Make function async
     storiesRow.addEventListener('click', (e) => { // Added event parameter
         if (storiesRow.getAttribute('data-rendered') !== 'true') return;
 
-        const storyWrap = e.target.closest('.story-item');
+        // --- FIX: Exclude 'my-story' from this logic ---
+        const storyWrap = e.target.closest('.story-item:not(.my-story)');
         if (!storyWrap) return;
 
         const id = storyWrap.getAttribute('data-id');
         if (id) {
             const m = merchants.find(x => String(x.meta.merchantId) === String(id));
-            if (m) {
-                // हमेशा पॉपअप दिखाएं, चाहे स्टोरी हो या न हो
-                removeExistingPopup(); // कोई और खुला हुआ पॉपअप हो तो उसे हटा दें
-
-                const hasStory = stories.some(storyCollection =>
-                    storyCollection.meta.links.merchantId === m.meta.merchantId &&
-                    storyCollection.stories?.some(s => s.status === 'active')
-                );
-
-                const popup = document.createElement('div');
-                popup.className = 'profile-action-row';
-
-                // बटन HTML को डायनामिक रूप से बनाएं
-                let buttonsHTML = `<button class="popup-btn-profile">Go to Profile</button>`;
-                if (hasStory) {
-                    buttonsHTML += `<button class="popup-btn-story">View Story</button>`;
-                }
-                buttonsHTML += `<button class="popup-btn-dismiss">Not Now</button>`;
-                popup.innerHTML = buttonsHTML;
-
-                // एक्शन रो को स्टोरीज़ के बाद और सेगमेंटेड कंट्रोल्स से पहले डालें
-                const segmentedControls = updatesContainer.querySelector('.segmented-controls');
-                updatesContainer.insertBefore(popup, segmentedControls);
-
-                // इवेंट लिस्नर्स जोड़ें
-                popup.querySelector('.popup-btn-profile').addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const role = localStorage.getItem('currentUserType') || 'guest';
-                    routeManager.switchView(role, `merchant-profile/${m.meta.merchantId}`);
-                    removeExistingPopup();
-                });
-
-                if (hasStory) {
-                    popup.querySelector('.popup-btn-story').addEventListener('click', (event) => {
-                        event.stopPropagation();
-                        storyViewer.open(m.meta.merchantId);
-                        removeExistingPopup();
-                    });
-                }
-
-                popup.querySelector('.popup-btn-dismiss').addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    removeExistingPopup();
-                });
-            }
+            if (m) onAvatarClick(m); // Directly call onAvatarClick
         }
     });
 
