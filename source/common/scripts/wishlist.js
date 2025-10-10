@@ -18,7 +18,7 @@ function _formatSlugForDisplay(slug = '') {
 // Local utility to get category info by ID
 async function getCategoryInfoByCategoryId(categoryId) {
     if (!categoryId) return null;
-    const allCategories = await fetchAllCategories(true);
+    const allCategories = await fetchAllCategories(); // FIX: Use cache, remove force=true
     return allCategories.find(cat => cat.meta.categoryId === categoryId) || null;
 }
 

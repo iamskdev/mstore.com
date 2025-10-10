@@ -1,4 +1,4 @@
-import { fetchAllUsers } from '../../utils/data-manager.js';
+import { fetchAllUsers, localCache } from '../../utils/data-manager.js';
 import { createLog } from '../firestore/logs-collection.js';
 import { showToast } from '../../utils/toast.js';
 import { routeManager } from '../../main.js';
@@ -309,8 +309,9 @@ export const AuthService = (() => {
                 });
                 // FIX: Immediately update localStorage before notifying the router.
                 // This ensures any subscribers (like the drawer) have access to the correct state instantly.
-                localStorage.setItem('currentUserType', role);
-                localStorage.setItem('currentUserId', userId);
+                localCache.set('currentUserType', role);
+                localCache.set('currentUserId', userId);
+                window.dispatchEvent(new CustomEvent('authStateChanged')); // Notify all components
                 // Centralized state update via routeManager
                 routeManager.handleRoleChange(role, userId, merchantId);
                 showToast('login');
@@ -442,9 +443,10 @@ export const AuthService = (() => {
             // --- Step 4: Post-creation Actions (Login & Verification) ---
             // FIX: Immediately update localStorage before notifying the router.
             // This prevents race conditions where subscribers (like the drawer) get the role change
-            // before the userId is available in localStorage.
-            localStorage.setItem('currentUserType', 'consumer');
-            localStorage.setItem('currentUserId', userId);
+            // before the userId is available in localCache.
+            localCache.set('currentUserType', 'consumer');
+            localCache.set('currentUserId', userId);
+            window.dispatchEvent(new CustomEvent('authStateChanged')); // Notify all components
             routeManager.handleRoleChange('consumer', userId);
 
             if (getAppConfig().flags.phoneVerification) {
@@ -641,6 +643,7 @@ export const AuthService = (() => {
             // FIX: Prioritize 'primaryRole' for correct role assignment.            const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'consumer';
             const merchantId = userAccount.meta.links?.merchantId || null;
             routeManager.handleRoleChange(role, userId, merchantId);
+            window.dispatchEvent(new CustomEvent('authStateChanged')); // Notify all components
             showToast('login');
 
         } catch (error) {
@@ -694,6 +697,7 @@ export const AuthService = (() => {
             // FIX: Prioritize 'primaryRole' for correct role assignment.            const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'consumer';
             const merchantId = userAccount.meta.links?.merchantId || null;
             routeManager.handleRoleChange(role, userId, merchantId);
+            window.dispatchEvent(new CustomEvent('authStateChanged')); // Notify all components
             showToast('login');
 
         } catch (error) {
@@ -762,10 +766,10 @@ export const AuthService = (() => {
     async function handleLogout() {
         try {
             // NEW: Immediately clear local storage to prevent any potential race conditions
-            // or stale state issues, even before Firebase signOut completes.
-            localStorage.removeItem('currentUserType');
-            localStorage.removeItem('currentUserId');
-            localStorage.removeItem('currentMerchantId');
+            // or stale state issues, even before Firebase signOut completes.            
+            localCache.remove('currentUserType');
+            localCache.remove('currentUserId');
+            localCache.remove('currentMerchantId');
             console.log("AuthService: Local storage cleared immediately on logout attempt.");
 
             if (getAppConfig().source.data !== 'localstore' && auth && auth.currentUser) {
@@ -774,6 +778,7 @@ export const AuthService = (() => {
             }
             // After successful sign-out (or for local mode), tell routeManager to switch to guest state.
             // No userId or merchantId is passed, so handleRoleChange will clear them.
+            window.dispatchEvent(new CustomEvent('authStateChanged')); // Notify all components
             routeManager.handleRoleChange('guest');
             showToast('logout');
         } catch (error) {
@@ -803,9 +808,9 @@ export const AuthService = (() => {
             const unsubscribe = auth.onAuthStateChanged(async (user) => {
                 console.log("Auth Listener: onAuthStateChanged fired. User:", user ? user.uid : 'null');
 
-                try {
-                    const savedRole = localStorage.getItem('currentUserType');
-                    const savedUserId = localStorage.getItem('currentUserId');
+                try {                    
+                    const savedRole = localCache.get('currentUserType');
+                    const savedUserId = localCache.get('currentUserId');
 
                     if (user) {
                         // Firebase has an authenticated user.
@@ -825,9 +830,9 @@ export const AuthService = (() => {
                                 // Sync localStorage if it's out of sync with the truth (Firebase).
                                 if (savedRole !== role || savedUserId !== userId) {
                                     console.warn("Auth Listener: App state is out of sync. Updating session from Firebase state.");
-                                    if (merchantId) { localStorage.setItem('currentMerchantId', merchantId); } else { localStorage.removeItem('currentMerchantId'); }
-                                    localStorage.setItem('currentUserType', role);
-                                    localStorage.setItem('currentUserId', userId);
+                                    if (merchantId) { localCache.set('currentMerchantId', merchantId); } else { localCache.remove('currentMerchantId'); }
+                                    localCache.set('currentUserType', role);
+                                    localCache.set('currentUserId', userId);
                                 }
                             } else {
                                 // FIX: Handle race condition during signup. The user document might still be in the process of being created.
@@ -839,41 +844,41 @@ export const AuthService = (() => {
                                 if (finalCheck.empty) {
                                     console.error(`Auth Listener: Confirmed data inconsistency after delay. User ${user.uid} exists in Auth but not Firestore. Forcing logout.`);
                                     showToast('error', 'User data missing. Logging out.', 5000);
-                                    await auth.signOut();
-                                    localStorage.removeItem('currentMerchantId');
+                                    await auth.signOut();                                    
+                                    localCache.remove('currentMerchantId');
                                     // Clear all storage on forced logout
-                                    localStorage.removeItem('currentUserType');
-                                    localStorage.removeItem('currentUserId');
+                                    localCache.remove('currentUserType');
+                                    localCache.remove('currentUserId');
                                 } else {
                                     // The document appeared after the delay. This is the expected outcome for a new signup.
                                     console.log(`Auth Listener: Resolved. User document for ${user.uid} found after delay. Proceeding with login.`);
                                     // Set the user state now that the document is confirmed to exist.
                                     const userAccount = finalCheck.docs[0].data();
                                     const role = _determineBestRole(userAccount.meta);
-                                    const userId = userAccount.meta?.userId;
+                                    const userId = userAccount.meta?.userId;                                    
                                     const merchantId = userAccount.meta.links?.merchantId || null;
-                                    if (merchantId) { localStorage.setItem('currentMerchantId', merchantId); }
-                                    localStorage.setItem('currentUserType', role);
-                                    localStorage.setItem('currentUserId', userId);
+                                    if (merchantId) { localCache.set('currentMerchantId', merchantId); }
+                                    localCache.set('currentUserType', role);
+                                    localCache.set('currentUserId', userId);
                                 }
                             }
                         } catch (error) {
                             console.error("Auth Listener: Error fetching user document during state sync. Forcing logout.", error);
                             showToast('error', 'Session sync failed. Logging out.', 5000);
-                            await auth.signOut().catch(() => {});
-                            localStorage.removeItem('currentMerchantId');
-                            localStorage.removeItem('currentUserType');
-                            localStorage.removeItem('currentUserId');
+                            await auth.signOut().catch(() => {});                            
+                            localCache.remove('currentMerchantId');
+                            localCache.remove('currentUserType');
+                            localCache.remove('currentUserId');
                         }
                     } else {
                         // Firebase has no authenticated user. If our localStorage still thinks a user is logged in, it's stale. Clear it.
                         console.log("Auth Listener: Firebase user is null. Checking localStorage for stale state.");
                         if (savedRole || savedUserId) {
                             console.warn("Auth Listener: App state is out of sync (shows logged in). Clearing stale session.");
-                            localStorage.removeItem('currentMerchantId');
-                            localStorage.removeItem('currentUserType');
-                            localStorage.removeItem('currentUserId');
-                            console.log("Auth Listener: localStorage cleared. currentUserType: ", localStorage.getItem('currentUserType'), ", currentUserId: ", localStorage.getItem('currentUserId'));
+                            localCache.remove('currentMerchantId');
+                            localCache.remove('currentUserType');
+                            localCache.remove('currentUserId');
+                            console.log("Auth Listener: localStorage cleared. currentUserType: ", localCache.get('currentUserType'), ", currentUserId: ", localCache.get('currentUserId'));
                         }
                         console.log("Auth Listener: No Firebase user signed in.");
                     }
@@ -894,8 +899,8 @@ export const AuthService = (() => {
      * @returns {boolean} True if a user is logged in, false otherwise.
      */
     function isLoggedIn() {
-        const userType = localStorage.getItem('currentUserType');
-        const userId = localStorage.getItem('currentUserId');
+        const userType = localCache.get('currentUserType');
+        const userId = localCache.get('currentUserId');
         // A user is logged in if their type is set, it's not 'guest', and there's a userId.
         return !!(userType && userType !== 'guest' && userId);
     }

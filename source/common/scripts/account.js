@@ -1,4 +1,4 @@
-import { fetchUserById, fetchAccountById, fetchMerchantById } from '../../utils/data-manager.js';
+import { fetchUserById, fetchAccountById, fetchMerchantById, localCache } from '../../utils/data-manager.js';
 import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 import { routeManager } from '../../main.js';
 import { showFeedbackModal } from '../../partials/modals/feedback.js';
@@ -7,7 +7,7 @@ import { showFeedbackModal } from '../../partials/modals/feedback.js';
  * Renders the user's profile data onto the account page.
  */
 async function renderProfileData() {
-    const userId = localStorage.getItem('currentUserId');
+    const userId = localCache.get('currentUserId');
 
     // Get DOM elements
     const nameDisplay = document.getElementById('profile-name-display');
@@ -46,8 +46,8 @@ async function renderProfileData() {
         // data sources), the primary user data will still be rendered, preventing a "Could not load" error.
         const [userResult, accountResult, merchantResult] = await Promise.allSettled([
             fetchUserById(userId),
-            fetchAccountById(localStorage.getItem('currentAccountId')), // Fetch account if ID exists
-            fetchMerchantById(localStorage.getItem('currentMerchantId')) // Fetch merchant if ID exists
+            fetchAccountById(localCache.get('currentAccountId')), // Fetch account if ID exists
+            fetchMerchantById(localCache.get('currentMerchantId')) // Fetch merchant if ID exists
         ]);
 
         // Extract the data from the settled promises.
@@ -200,7 +200,7 @@ async function initSwitchAccountModal() {
     const roleListContainer = document.getElementById('switch-account-list');
 
     const openModal = async () => {
-        const userId = localStorage.getItem('currentUserId');
+        const userId = localCache.get('currentUserId');
         if (!userId) {
             // FIX: Use custom alert instead of native alert.
             window.showCustomAlert({
@@ -245,7 +245,7 @@ async function initSwitchAccountModal() {
             } else {
                 roles = user?.meta?.roles || [];
             }
-            const currentRole = localStorage.getItem('currentUserType');
+            const currentRole = localCache.get('currentUserType');
 
             const roleIcons = {
                 consumer: 'fa-user',
@@ -336,8 +336,8 @@ export function init() {
     const wishlistMenuItem = document.getElementById('wishlist-menu-item');
     if (wishlistMenuItem) {
         wishlistMenuItem.addEventListener('click', () => {
-            // Get the current role from localStorage to navigate correctly
-            const role = localStorage.getItem('currentUserType') || 'guest';
+            // Get the current role from localCache to navigate correctly
+            const role = localCache.get('currentUserType') || 'guest';
             // Navigate to the 'account/saved' view, which is a sub-view of account
             routeManager.switchView(role, 'account/saved');
         });
@@ -399,8 +399,8 @@ export function init() {
             const btn = e.target.closest('.action-btn');
             if (btn) { // If a button was clicked
                 if (btn.id === 'update-profile-btn') {
-                    // If it's the update profile button, navigate
-                    const role = localStorage.getItem('currentUserType') || 'guest';
+                    // If it's the update profile button, navigate to the profile update page
+                    const role = localCache.get('currentUserType') || 'guest';
                     routeManager.switchView(role, 'account/profile-update');
                 } else if (btn.id !== 'switch-account-btn') { // For any other button except "Switch Account"
                     // Handle other placeholder buttons

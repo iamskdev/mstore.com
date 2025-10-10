@@ -5,6 +5,8 @@ let allActiveBanners = [];
 let currentBannerIndex = 0;
 let autoSwipeIntervalId = null;
 const AUTO_SWIPE_INTERVAL = 5000; // 5 seconds
+let isInitialized = false;
+let eventListeners = [];
 
 let startX = 0;
 let endX = 0;
@@ -141,10 +143,13 @@ function createPaginationDots() {
     for (let i = 0; i < allActiveBanners.length; i++) {
         const dot = document.createElement('span');
         dot.classList.add('banner-dot');
-        dot.dataset.index = i;
-        dot.addEventListener('click', () => {
+        dot.dataset.index = i.toString();
+
+        const handler = () => {
             goToBanner(i);
-        });
+        };
+        dot.addEventListener('click', handler);
+        eventListeners.push({ element: dot, type: 'click', handler });
         dotsContainer.appendChild(dot);
     }
 }
@@ -194,6 +199,16 @@ function handleTouchEnd() {
     startAutoSwipe(); // Restart auto-swipe after swipe
 }
 
+function cleanupEventListeners() {
+    eventListeners.forEach(({ element, type, handler }) => {
+        element.removeEventListener(type, handler);
+    });
+    eventListeners = [];
+    if (autoSwipeIntervalId) {
+        clearInterval(autoSwipeIntervalId);
+    }
+}
+
 /**
  * Initializes the BannerManager by fetching the template and setting up auto-swiping.
  */
@@ -231,9 +246,13 @@ export async function initBannerManager() {
             // Add touch event listeners for swipe
             const bannerContainer = document.getElementById('banner-container');
             if (bannerContainer) {
+                cleanupEventListeners(); // Clear old listeners before adding new ones
                 bannerContainer.addEventListener('touchstart', handleTouchStart);
                 bannerContainer.addEventListener('touchmove', handleTouchMove);
                 bannerContainer.addEventListener('touchend', handleTouchEnd);
+                eventListeners.push({ element: bannerContainer, type: 'touchstart', handler: handleTouchStart });
+                eventListeners.push({ element: bannerContainer, type: 'touchmove', handler: handleTouchMove });
+                eventListeners.push({ element: bannerContainer, type: 'touchend', handler: handleTouchEnd });
             }
 
         } else {

@@ -1,5 +1,5 @@
 import { showToast } from '../../../utils/toast.js';
-import { fetchAllUsers, fetchAllLogs, fetchAllMerchants, fetchAllFeedbacks, fetchAllRatings } from '../../../utils/data-manager.js';
+import { fetchAllUsers, fetchAllLogs, fetchAllMerchants, fetchAllFeedbacks, fetchAllRatings, localCache } from '../../../utils/data-manager.js';
 import { formatCurrency, formatRelativeTime, formatDateForIndia } from '../../../utils/formatters.js';
 
 /** Renders statistical cards with real data. */function renderStats(users = [], merchants = [], feedbacks = [], ratings = []) {
@@ -195,6 +195,63 @@ function renderActivityLog(logs = [], users = []) {
   }).join('');
 }
 
+/** Renders a report of the current data cache status from localStorage. */
+function renderCacheReport() {
+  const collectionsCountEl = document.getElementById('cache-collections-count');
+  const totalSizeEl = document.getElementById('cache-total-size');
+  const detailsListEl = document.getElementById('cache-details-list');
+
+  if (!collectionsCountEl || !totalSizeEl || !detailsListEl) return;
+
+  let totalSize = 0;
+  const cacheDetails = [];
+
+  // Iterate through all keys in localStorage to find our data caches.
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('data-cache-')) {
+      const collectionName = key.replace('data-cache-', '');
+      const value = localStorage.getItem(key);
+      const sizeInBytes = value ? value.length : 0;
+      totalSize += sizeInBytes;
+
+      let itemCount = 0;
+      try {
+        const parsedValue = JSON.parse(value);
+        if (Array.isArray(parsedValue)) {
+          itemCount = parsedValue.length;
+        }
+      } catch (e) {
+        // Could not parse, itemCount remains 0
+      }
+
+      cacheDetails.push({
+        name: collectionName,
+        size: sizeInBytes,
+        count: itemCount
+      });
+    }
+  }
+
+  // Sort details by size, largest first
+  cacheDetails.sort((a, b) => b.size - a.size);
+
+  // Update summary elements
+  collectionsCountEl.textContent = cacheDetails.length;
+  totalSizeEl.textContent = `${(totalSize / 1024).toFixed(2)} KB`;
+
+  // Render details list
+  if (cacheDetails.length === 0) {
+    detailsListEl.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No data collections are currently cached.</p>';
+  } else {
+    detailsListEl.innerHTML = cacheDetails.map(item => `
+      <div class="cache-details-item">
+        <span><i class="fas fa-box" style="margin-right: 8px; color: var(--text-tertiary);"></i>${item.name} (${item.count} items)</span>
+        <span class="cache-item-size">${(item.size / 1024).toFixed(2)} KB</span>
+      </div>`).join('');
+  }
+}
+
 export function init() {
   console.log("🚀 Admin Home View Initialized");
 
@@ -240,6 +297,7 @@ export function init() {
       renderSignupsChart();
       renderCategoriesChart();
       renderActivityLog(logs, users);
+      renderCacheReport(); // Render the new cache report
 
     } catch (error) {
       console.error("❌ Failed to load admin dashboard data:", error);

@@ -21,6 +21,7 @@ import { initAddToCartHandler } from './utils/cart-manager.js'; // Added this li
 import { loadTopNavigation } from './partials/navigations/top-nav.js';
 import { loadBottomNavigation } from './partials/navigations/bottom-nav.js';
 import { getFooterHtml } from './partials/footer/footer.js';
+import { localCache, sessionCache } from './utils/data-manager.js'; // Import from the unified data-manager
 import { loadDrawer } from './partials/drawer/drawer.js';
 
 import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
@@ -326,8 +327,8 @@ class RouteManager {
     // --- Session Persistence ---
     // Save the last active state to localStorage. This is the key to remembering the
     // view across page reloads and app restarts.
-    localStorage.setItem('lastActiveRole', role);
-    localStorage.setItem('lastActiveView', viewId);
+    localCache.set('lastActiveRole', role);
+    localCache.set('lastActiveView', viewId);
 
 
     // --- Manage Shared UI Components ---
@@ -352,11 +353,11 @@ class RouteManager {
     this._notifySubscribers();
   }
 
-  async loadViewContent(viewElement, config, role) {
+  async loadViewContent(viewElement, config, role, force = false) {
     showPageLoader(); // Show page loader at the beginning of content loading
     // Fetch data dependencies before loading view content
     if (config.dataDependencies && config.dataDependencies.length > 0) {
-      await this._fetchDataDependencies(config.dataDependencies);
+      await this._fetchDataDependencies(config.dataDependencies, force);
     }
     try {
       
@@ -484,7 +485,7 @@ class RouteManager {
    * @private Fetches data based on the view's dataDependencies.
    * @param {Array<string>} dependencies - An array of data dependency names (e.g., ['items', 'users']).
    */
-  async _fetchDataDependencies(dependencies) {
+  async _fetchDataDependencies(dependencies, force = false) {
     console.log(`routeManager: Entering _fetchDataDependencies for: ${dependencies.join(', ')}`);
     if (!dependencies || dependencies.length === 0) {
       return;
@@ -497,14 +498,14 @@ class RouteManager {
       // If 'all' is specified, fetch all available data
       for (const key in dataFetchers) {
         if (Object.hasOwnProperty.call(dataFetchers, key)) {
-          fetchPromises.push(dataFetchers[key]());
+          fetchPromises.push(dataFetchers[key](force));
         }
       }
     } else {
       // Fetch only specified dependencies
       for (const dep of dependencies) {
         if (dataFetchers[dep]) {
-          fetchPromises.push(dataFetchers[dep]());
+          fetchPromises.push(dataFetchers[dep](force));
         } else {
           console.warn(`routeManager: Unknown data dependency: ${dep}. Skipping fetch.`);
         }
@@ -524,18 +525,18 @@ class RouteManager {
     console.trace(`routeManager: handleRoleChange called. New Role: ${newRole}, UserID: ${userId}, MerchantID: ${merchantId}`);
 
     // Centralize state change. This is the single source of truth for the user's session role.
-    localStorage.setItem('currentUserType', newRole);
+    localCache.set('currentUserType', newRole);
 
     if (userId) {
-      localStorage.setItem('currentUserId', userId);
+      localCache.set('currentUserId', userId);
     } else {
-      localStorage.removeItem('currentUserId');
+      localCache.remove('currentUserId');
     }
 
     if (merchantId) {
-      localStorage.setItem('currentMerchantId', merchantId);
+      localCache.set('currentMerchantId', merchantId);
     } else {
-      localStorage.removeItem('currentMerchantId');
+      localCache.remove('currentMerchantId');
     }
 
     // Get the default view for the new role from our config object.
@@ -561,14 +562,14 @@ class RouteManager {
     // By waiting here, we ensure that when we read from localStorage in the next steps,
     // the data is guaranteed to be correct and not stale.
     // This check is skipped for 'localstore' data source mode where there's no live auth.
-    if (getAppConfig().source.data !== 'localstore') {
+    if (getAppConfig().source.data !== 'localstore' && AuthService.initializeAuthListener) {
       await AuthService.initializeAuthListener();
     }
 
     // --- STEP 2: Read the now-synchronized state from localStorage and URL ---
-    const savedRole = localStorage.getItem('currentUserType'); // The role of the logged-in user
-    const lastActiveRole = localStorage.getItem('lastActiveRole');
-    const lastActiveView = localStorage.getItem('lastActiveView');
+    const savedRole = localCache.get('currentUserType'); // The role of the logged-in user
+    const lastActiveRole = localCache.get('lastActiveRole');
+    const lastActiveView = localCache.get('lastActiveView');
 
     // Get the state from the current URL path.
     const path = window.location.hash.substring(1); // Read from hash: '#/guest/account' -> '/guest/account'
@@ -835,7 +836,7 @@ export async function initializeApp() {
 
   // --- FIX: Smart Splash Screen & App Initialization Logic ---
   const splashScreen = document.getElementById('splashScreen');
-  const splashEnabled = getAppConfig().ui?.splashEnabled;
+  const splashEnabled = getAppConfig()?.ui?.splashEnabled;
   const isWarmStart = sessionStorage.getItem('isWarmStart') === 'true';
 
   // Show splash screen only on cold start (first visit), not on simple refreshes.
@@ -940,8 +941,13 @@ export async function initializeApp() {
   initAddToCartHandler();
   
   try {
+    // Fetch and cache categories if not already in localStorage
+    if (!localCache.get('allCategories')) {
+      const allCategories = await fetchAllCategories();
+      localCache.set('allCategories', allCategories);
+    }
     const allItems = await fetchAllItems();
-    sessionStorage.setItem('allItems', JSON.stringify(allItems));
+    localCache.set('allItems', allItems); // Use localCache for persistence
     initializeSearch(allItems);
     const promotionData = await fetchActivePromotion();
     if (promotionData) {
@@ -1023,11 +1029,11 @@ export async function initializeApp() {
   }
   initializePullToRefresh();
 
-  if (!sessionStorage.getItem('cart')) {
-    sessionStorage.setItem('cart', '[]');
+  if (!localCache.get('cart')) {
+    localCache.set('cart', []);
   }
-  if (!sessionStorage.getItem('savedItems')) {
-    sessionStorage.setItem('savedItems', '[]');
+  if (!localCache.get('savedItems')) {
+    localCache.set('savedItems', []);
   }
 }
 
@@ -1154,6 +1160,7 @@ function initializePullToRefresh() {
 
       window.dispatchEvent(new CustomEvent('appRefreshRequested'));
 
+
       // Trigger a refresh of the current view
       const currentRole = routeManager.currentRole;
       const currentView = routeManager.currentView;
@@ -1168,7 +1175,7 @@ function initializePullToRefresh() {
 
         // Wait for content to load AND for a minimum spinner display time
         await Promise.all([
-          routeManager.loadViewContent(newViewElement, config, currentRole),
+          routeManager.loadViewContent(newViewElement, config, currentRole, true), // Pass force=true
           new Promise(resolve => setTimeout(resolve, 500)) // Minimum 0.5 second display for spinner
         ]);
 

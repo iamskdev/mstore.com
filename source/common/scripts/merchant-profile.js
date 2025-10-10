@@ -1,10 +1,18 @@
 import { routeManager } from '../../main.js';
-import { fetchMerchantById, fetchAllItems, fetchAllRatings, fetchUserById } from '../../utils/data-manager.js';
+import { fetchMerchantById, fetchAllItems, fetchAllRatings, fetchUserById, localCache } from '../../utils/data-manager.js';
 import { showToast } from '../../utils/toast.js';
 import { createListCard, initCardHelper } from '../../templates/cards/card-helper.js';
 
 import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 // --- SEPARATE MOCK DATA (simulating other collections) ---
+
+// --- MODULE-LEVEL STATE ---
+let isInitialized = false;
+let eventListeners = [];
+let merchantData = null;
+let allItemsData = [];
+let allRatingsData = [];
+let currentUserData = null;
 
 // NEW: Updated mock posts to match the standard posts.json schema
 const posts = [
@@ -636,7 +644,7 @@ function enableHorizontalScroll(element) {
  */
 function addCommentInputListeners() {
     document.querySelectorAll('.comment-add-input').forEach(input => {
-        input.addEventListener('click', function() {
+        addManagedEventListener(input, 'click', function() {
             // Allow both guests and logged-in users to activate the comment field.
             this.readOnly = false;
             this.focus();
@@ -648,13 +656,12 @@ function addCommentInputListeners() {
     });
 
     document.querySelectorAll('.comment-send-btn').forEach(button => {
-        button.addEventListener('click', function (e) {
+        addManagedEventListener(button, 'click', function (e) {
             e.preventDefault(); // Prevent form submission if it's in a form
-            const isGuest = !localStorage.getItem('currentUserId');
             const input = this.previousElementSibling;
 
-            // --- FIX: Check for guest status on SEND, not on input click ---
-            if (isGuest) {
+            // --- FIX: Use localCache to check for guest status on SEND ---
+            if (!localCache.get('currentUserId')) {
                 // Guide guest users to log in only when they try to send a comment.
                 showToast('info', 'Please log in to comment.');
                 // Redirect to login/signup page
@@ -670,6 +677,43 @@ function addCommentInputListeners() {
     });
 }
 
+/**
+ * Caches or removes a followed merchant's data from localStorage.
+ * @param {string} action - 'add' to cache the merchant, 'remove' to delete from cache.
+ * @param {object} merchantData - The full merchant object.
+ * @param {Array} allItems - An array of all items to filter from.
+ */
+function manageFollowedMerchantCache(action, merchantData, allItems) {
+    if (!merchantData || !merchantData.meta?.merchantId) return;
+
+    const cacheKey = 'followedMerchantsData';
+    const merchantId = merchantData.meta.merchantId;
+    let followedMerchants = localCache.get(cacheKey) || {};
+
+    if (action === 'add') {
+        // Filter items belonging to this merchant
+        const merchantItems = allItems.filter(item => item.meta?.links?.merchantId === merchantId);
+
+        // Add the merchant and their items to the cache
+        followedMerchants[merchantId] = {
+            merchantData: merchantData,
+            items: merchantItems,
+            cachedAt: new Date().toISOString()
+        };
+        console.log(`[Cache] Merchant ${merchantId} and their ${merchantItems.length} items cached.`);
+        showToast('success', `${merchantData.info.name} followed and cached!`);
+
+    } else if (action === 'remove') {
+        // Remove the merchant from the cache
+        if (followedMerchants[merchantId]) {
+            delete followedMerchants[merchantId];
+            console.log(`[Cache] Merchant ${merchantId} removed from cache.`);
+            showToast('info', `Unfollowed ${merchantData.info.name}.`);
+        }
+    }
+
+    localCache.set(cacheKey, followedMerchants);
+}
 /**
  * Enables click-and-drag horizontal scrolling on an element.
  * @param {HTMLElement} element The element to make draggable.
@@ -707,9 +751,6 @@ function enableDragToScroll(element) {
     });
 }
 
-let isInitialized = false;
-let eventListeners = [];
-
 export async function init(force = false) {
     if (isInitialized && !force) return;
 
@@ -722,8 +763,8 @@ export async function init(force = false) {
     const merchantId = routeManager.routeParams?.id;
     if (!merchantId) {
         showToast('error', 'Merchant ID not found.');
-        // Optionally, redirect back to a safe page
-        routeManager.switchView(localStorage.getItem('currentUserType') || 'guest', 'home');
+        // Redirect back to a safe page
+        routeManager.switchView(localCache.get('currentUserType') || 'guest', 'home');
         return;
     }
 
@@ -760,8 +801,8 @@ export async function init(force = false) {
         ],
         actionHandlers: {
             'VIEW_DETAILS': (item) => {
-                sessionStorage.setItem('selectedItem', JSON.stringify(item));
-                routeManager.switchView(localStorage.getItem('currentUserType') || 'guest', `item-details/${item.meta.itemId}`);
+                localCache.set('selectedItem', item); // Use localCache for consistency
+                routeManager.switchView(localCache.get('currentUserType') || 'guest', `item-details/${item.meta.itemId}`);
             },
             'ADD_TO_CART': (item) => showToast('success', `${item.info.name} added to cart!`),
             'SAVE_FOR_LATER': (item) => showToast('info', `${item.info.name} saved for later!`),
@@ -770,37 +811,36 @@ export async function init(force = false) {
     };
     try {
         // --- FIX: Fetch current user data to fix 'currentUser is not defined' error ---
-        const currentUserId = localStorage.getItem('currentUserId');
-        let currentUser = null;
+        const currentUserId = localCache.get('currentUserId');
         if (currentUserId) {
-            currentUser = await fetchUserById(currentUserId);
+            currentUserData = await fetchUserById(currentUserId);
         }
 
         // --- FIX: Use Promise.allSettled for more resilient data fetching ---
-        const [merchantResult, allItemsResult, allRatingsResult] = await Promise.allSettled([
+        const results = await Promise.allSettled([
             fetchMerchantById(merchantId),
             fetchAllItems(),
             fetchAllRatings()
         ]);
 
-        const merchant = merchantResult.status === 'fulfilled' ? merchantResult.value : null;
-        if (!merchant) { // If the essential merchant data fails, we can't render the page.
+        // Store fetched data in module-level variables
+        merchantData = results[0].status === 'fulfilled' ? results[0].value : null;
+        allItemsData = results[1].status === 'fulfilled' ? results[1].value : [];
+        allRatingsData = results[2].status === 'fulfilled' ? results[2].value : [];
+
+        if (!merchantData) { // If the essential merchant data fails, we can't render the page.
             showToast('error', 'Merchant data could not be loaded.');
             return;
         }
 
-        // --- FIX: Extract allItems and allRatings from the settled promises ---
-        const allItems = allItemsResult.status === 'fulfilled' ? allItemsResult.value : [];
-        const allRatings = allRatingsResult.status === 'fulfilled' ? allRatingsResult.value : [];
-
         // --- RENDER ALL SECTIONS WITH REAL DATA ---
-        renderProfile(merchant);
-        renderHome(allItems, merchant.meta.merchantId, cardConfig);
-        renderProducts(allItems, merchant.meta.merchantId, cardConfig);
-        renderServices(allItems, merchant.meta.merchantId, cardConfig);
-        renderPosts(merchant, currentUser); // Pass currentUser to renderPosts
-        renderAbout(merchant);
-        await renderCommunity(merchant, allRatings); // This is async now
+        renderProfile(merchantData);
+        renderHome(allItemsData, merchantData.meta.merchantId, cardConfig);
+        renderProducts(allItemsData, merchantData.meta.merchantId, cardConfig);
+        renderServices(allItemsData, merchantData.meta.merchantId, cardConfig);
+        renderPosts(merchantData, currentUserData); // Pass currentUserData to renderPosts
+        renderAbout(merchantData);
+        await renderCommunity(merchantData, allRatingsData); // This is async now
 
     } catch (error) {
         console.error("Error initializing merchant profile:", error);
@@ -809,13 +849,6 @@ export async function init(force = false) {
 
     // --- SETUP EVENT LISTENERS (only once) ---
 
-    // --- REFACTOR: Setup event listeners only once ---
-    if (!isInitialized) {
-        function addManagedEventListener(element, type, listener) {
-            element.addEventListener(type, listener);
-            eventListeners.push({ element, type, listener });
-        }
-
         const tabNavElement = document.querySelector('.tab-nav');
         enableHorizontalScroll(tabNavElement);
         enableDragToScroll(tabNavElement);
@@ -823,7 +856,8 @@ export async function init(force = false) {
         const tabLinks = document.querySelectorAll('.tab-link');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        tabLinks.forEach(link => {
+        if (!isInitialized) { // Only add these listeners once
+            tabLinks.forEach(link => {
             addManagedEventListener(link, 'click', () => {
                 const tabId = link.dataset.tab;
 
@@ -841,14 +875,17 @@ export async function init(force = false) {
         if (followBtn) {
             addManagedEventListener(followBtn, 'click', () => {
                 const isFollowing = followBtn.classList.contains('primary');
+
                 if (isFollowing) {
                     followBtn.classList.remove('primary');
                     followBtn.classList.add('secondary');
                     followBtn.innerHTML = '<i class="fas fa-user-plus"></i> Follow Me';
+                    manageFollowedMerchantCache('remove', merchantData, allItemsData);
                 } else {
                     followBtn.classList.remove('secondary');
                     followBtn.classList.add('primary');
                     followBtn.innerHTML = '<i class="fas fa-user-check"></i> Following';
+                    manageFollowedMerchantCache('add', merchantData, allItemsData);
                 }
             });
         }
@@ -874,7 +911,12 @@ export async function init(force = false) {
         }
     }
 
-    isInitialized = true;
+    isInitialized = true; // Mark as initialized at the end
+}
+
+function addManagedEventListener(element, type, listener) {
+    element.addEventListener(type, listener);
+    eventListeners.push({ element, type, listener });
 }
 
 export function cleanup() {
@@ -883,5 +925,5 @@ export function cleanup() {
         element.removeEventListener(type, listener);
     });
     eventListeners = [];
-    isInitialized = false;
+    isInitialized = false; // Reset for next initialization
 }

@@ -1,5 +1,5 @@
 import { setTheme, getCurrentTheme } from '../../utils/theme-switcher.js';
-import { fetchUserById } from '../../utils/data-manager.js';
+import { fetchUserById, localCache } from '../../utils/data-manager.js';
 import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 import { formatPhoneNumberWithSpace } from '../../utils/formatters.js';
 import { showToast } from '../../utils/toast.js';
@@ -48,7 +48,7 @@ export function initializeDrawer() {
    */
   async function updateDrawerUI({ role, view }) {
     const userType = role;
-    const userId = localStorage.getItem('currentUserId');
+    const userId = localCache.get('currentUserId');
 
     // Get all drawer views
     const guestView = document.getElementById('drawer-guest');

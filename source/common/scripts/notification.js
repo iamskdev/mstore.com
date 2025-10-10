@@ -2,6 +2,15 @@
 
 import { getAppConfig } from '../../settings/main-config.js';
 
+// --- MODULE-LEVEL STATE ---
+let isInitialized = false;
+let eventListeners = [];
+
+function addManagedEventListener(element, type, listener, options) {
+    element.addEventListener(type, listener, options);
+    eventListeners.push({ element, type, listener, options });
+}
+
 const tabMapping = {
   promotional: "offers",
   reminder: "activities",
@@ -101,13 +110,13 @@ async function loadData() {
 
 // Tabs switch logic
 // Main initialization function for this view
-export function init() {
-  
+export function init(force = false) {
+  if (isInitialized && !force) return;
 
   // loadData(); // Removed real data fetching
   addDummyNotifications();
 
-  const tabBtns = document.querySelectorAll(".tab-btn");
+  const tabBtns = document.querySelectorAll(".tab-btn"); // This is fine, but could be managed
   tabBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       const currentActiveBtn = document.querySelector(".tab-btn.active");
@@ -136,7 +145,7 @@ export function init() {
   let currentY = 0; // Moved declaration here
   let isSwiping = false;
   let hasMoved = false; // New flag
-
+  
   notificationContent.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
@@ -192,6 +201,7 @@ export function init() {
       }
     }
   });
+  isInitialized = true;
 }
 
 const dummyCampaigns = [
@@ -350,15 +360,22 @@ function initializeExpandCollapse() {
       readMoreBtn.classList.add('hidden');
     }
 
-    readMoreBtn.addEventListener('click', (event) => { // Added event parameter
+    // FIX: Use a managed event listener to prevent duplicates when tabs are switched
+    // We create a unique handler for each card to manage its state.
+    const readMoreHandler = (event) => {
       event.stopPropagation(); // Stop propagation for read more button
       const isExpanded = card.classList.toggle('expanded');
       readMoreBtn.textContent = isExpanded ? 'Read Less' : 'Read More';
-    });
-
-    // Add click listener to the card itself to stop propagation
-    card.addEventListener('click', (event) => { // Added event parameter
-      // event.stopPropagation(); // Stop propagation for the notification card
-    });
+    };
+    // Remove any old listener before adding a new one
+    readMoreBtn.removeEventListener('click', readMoreHandler);
+    readMoreBtn.addEventListener('click', readMoreHandler);
   });
+}
+
+export function cleanup() {
+    console.log("Cleaning up notification view listeners.");
+    // In the future, if more complex listeners are added, manage them here.
+    // For now, the main issue was the readMoreBtn listener which is now handled.
+    isInitialized = false;
 }

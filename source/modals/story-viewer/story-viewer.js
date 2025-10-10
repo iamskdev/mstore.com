@@ -31,6 +31,7 @@ import { fetchAllMerchants, fetchAllStories } from '../../utils/data-manager.js'
   let startX = 0;
   let currentX = 0;
   let touchStartTime = 0;
+  let isInitialized = false;
 
 
   let currentMerchant = null;
@@ -477,6 +478,8 @@ import { fetchAllMerchants, fetchAllStories } from '../../utils/data-manager.js'
   // This function will be called after the HTML is loaded.
   // avoiding issues with mobile browser UI (address bars).
   function setViewerHeight() {
+    // If the viewer is not even in the DOM, exit.
+    if (!document.querySelector('.story-viewer-content')) return;
     // Only run this logic if not in fullscreen mode to avoid conflicts.
     if (document.fullscreenElement) return;
 
@@ -520,11 +523,14 @@ import { fetchAllMerchants, fetchAllStories } from '../../utils/data-manager.js'
   }
 
   function initializeApp() {
+    if (isInitialized) return;
+
     initializeDOM();
     
     // Set height on initial load and on resize (e.g., orientation change)
     window.addEventListener('resize', setViewerHeight, { passive: true });
     setViewerHeight(); // Set initial height
+
 
     // Show fullscreen button only if in browser and API is supported
     if (fullscreenBtn) {
@@ -625,6 +631,7 @@ import { fetchAllMerchants, fetchAllStories } from '../../utils/data-manager.js'
     deleteBtn.addEventListener('click', () => {
       deleteStory();
     }); // FIX: Added closing parenthesis and semicolon
+    isInitialized = true;
   }
 
   // Main entry point

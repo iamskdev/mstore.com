@@ -1,4 +1,4 @@
-import { fetchUserById, updateUser } from '../../utils/data-manager.js';
+import { fetchUserById, updateUser, localCache } from '../../utils/data-manager.js';
 import { uploadToCloudinary, buildCloudinaryUrl, deleteFromCloudinary } from '../../api/cloudinary.js';
 import { showToast } from '../../utils/toast.js';
 import { routeManager } from '../../main.js';
@@ -8,7 +8,7 @@ let newAvatarFile = null;
 let initialFormData = {}; // NEW: To store initial form state for change detection
 
 async function loadUserData() {
-    const userId = localStorage.getItem('currentUserId');
+    const userId = localCache.get('currentUserId');
     if (!userId) {
         showToast('error', 'User not found. Please log in again.');
         routeManager.switchView('guest', 'account');
@@ -352,8 +352,8 @@ function setupEventListeners() {
             setSectionEditable(sec.dataset.sectionName, false);
         });
         // NEW: Reset form to initial state on cancel
-        populateForm(currentUser);
-        routeManager.switchView(localStorage.getItem('currentUserType'), 'account');
+        populateForm(currentUser);        
+        routeManager.switchView(localCache.get('currentUserType'), 'account');
     });
 
     document.getElementById('save-btn').addEventListener('click', saveProfile);
@@ -494,9 +494,8 @@ async function saveProfile() {
         await fetchUserById(currentUser.meta.userId, true);
 
         newAvatarFile = null; // Reset staged avatar file after successful save
-        showToast('success', 'Profile updated successfully!');
-        
-        routeManager.switchView(localStorage.getItem('currentUserType'), 'account');
+        showToast('success', 'Profile updated successfully!');        
+        routeManager.switchView(localCache.get('currentUserType'), 'account');
 
     } catch (error) {
         console.error('Error saving profile:', error);

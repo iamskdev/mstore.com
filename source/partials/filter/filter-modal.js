@@ -14,6 +14,7 @@ class FilterModalManager {
         this.isModalLoaded = false;
         this.isAdvancedPanelInitialized = false;
         this.allCategoriesData = [];
+        this.eventListeners = [];
         this.currentView = 'home'; // Default view
         this.viewId = placeholderElement?.id || 'unknown-view'; // e.g., 'home-filter-modal'
 
@@ -22,8 +23,21 @@ class FilterModalManager {
             return;
         }
         // Listen for the event to show the modal
-        window.addEventListener('toggleAdvancedFilter', (e) => this._toggleAdvancedPanel(e.detail.show));
-        window.addEventListener('requestViewChange', (e) => this.currentView = e.detail.view); // Update current view
+        this._addManagedListener(window, 'toggleAdvancedFilter', (e) => this._toggleAdvancedPanel(e.detail.show));
+        this._addManagedListener(window, 'requestViewChange', (e) => this.currentView = e.detail.view); // Update current view
+    }
+
+    _addManagedListener(element, type, listener) {
+        element.addEventListener(type, listener);
+        this.eventListeners.push({ element, type, listener });
+    }
+
+    cleanup() {
+        this.eventListeners.forEach(({ element, type, listener }) => {
+            element.removeEventListener(type, listener);
+        });
+        this.eventListeners = [];
+        this.isAdvancedPanelInitialized = false;
     }
 
     async _loadModalHtml() {
@@ -101,10 +115,10 @@ class FilterModalManager {
  
         const closePanel = () => this._toggleAdvancedPanel(false);
  
-        closeBtn.addEventListener('click', closePanel);
-        overlay.addEventListener('click', closePanel);
+        this._addManagedListener(closeBtn, 'click', closePanel);
+        this._addManagedListener(overlay, 'click', closePanel);
  
-        applyBtn?.addEventListener('click', () => {
+        if (applyBtn) this._addManagedListener(applyBtn, 'click', () => {
             const filterDetails = this._getAdvancedFilterValues();
             const viewName = this.viewId.replace('-filter-modal', '');
             const detailWithView = { ...filterDetails, viewId: viewName };
@@ -118,8 +132,8 @@ class FilterModalManager {
             showToast('success', 'Filters Applied!');
             closePanel();
         });
- 
-        resetBtn?.addEventListener('click', () => {
+
+        if (resetBtn) this._addManagedListener(resetBtn, 'click', () => {
             this._resetAdvancedFilters();
             const viewName = this.viewId.replace('-filter-modal', '');
             window.dispatchEvent(new CustomEvent('syncFilterBar', { detail: { slug: 'all', viewId: viewName } }));
@@ -204,7 +218,7 @@ class FilterModalManager {
                 mainCategorySelect.insertAdjacentHTML('beforeend', mainCatOptions);
             }
 
-            mainCategorySelect?.addEventListener('change', (e) => this._onMainCategoryChange(e.target.value));
+            if (mainCategorySelect) this._addManagedListener(mainCategorySelect, 'change', (e) => this._onMainCategoryChange(e.target.value));
 
             const brandSelect = this.modalContainer.querySelector('#adv-filter-brand');
             if (brandSelect) {
@@ -312,8 +326,8 @@ class FilterModalManager {
     _initializePriceSlider() {
         const minSlider = this.modalContainer.querySelector('#adv-min-price-slider');
         const maxSlider = this.modalContainer.querySelector('#adv-max-price-slider');
-        minSlider?.addEventListener('input', () => this._updatePriceSlider());
-        maxSlider?.addEventListener('input', () => this._updatePriceSlider());
+        if (minSlider) this._addManagedListener(minSlider, 'input', () => this._updatePriceSlider());
+        if (maxSlider) this._addManagedListener(maxSlider, 'input', () => this._updatePriceSlider());
         this._updatePriceSlider();
     }
 

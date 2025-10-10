@@ -7,6 +7,9 @@
 import { getAppConfig } from '../../settings/main-config.js';
 import { showToast } from '../../utils/toast.js';
 
+let eventListeners = [];
+let isInitialized = false;
+
 /**
  * एक सहायक फ़ंक्शन जो एक बटन की लोडिंग स्थिति को प्रबंधित करता है।
  * यह मूल सामग्री को संग्रहीत करता है और इसे पुनर्स्थापित करता है, जिससे स्थिति का नुकसान नहीं होता है।
@@ -37,6 +40,11 @@ function setupAuthTabs() {
     const forms = document.querySelectorAll('.auth-form');
     const titleEl = document.querySelector('.auth-title');
     const subtitleEl = document.querySelector('.auth-subtitle');
+
+    const addManagedListener = (element, event, handler) => {
+        element.addEventListener(event, handler);
+        eventListeners.push({ element, event, handler });
+    };
 
     const formText = {
         loginForm: {
@@ -69,23 +77,23 @@ function setupAuthTabs() {
     };
 
     tabs.forEach(tab => {
-        tab.addEventListener('click', (e) => {
+        addManagedListener(tab, 'click', (e) => {
             e.preventDefault();
             const formId = tab.dataset.form;
             showForm(formId);
             sessionStorage.setItem('initialAuthTab', formId.replace('Form', ''));
         });
     });
-
+    
     const initialTab = sessionStorage.getItem('initialAuthTab') || 'login';
     showForm(`${initialTab}Form`);
 
-    document.getElementById('forgot-password-link')?.addEventListener('click', (e) => {
+    addManagedListener(document.getElementById('forgot-password-link'), 'click', (e) => {
         e.preventDefault();
         showForm('resetForm');
     });
 
-    document.querySelector('.back-to-login-link')?.addEventListener('click', (e) => {
+    addManagedListener(document.querySelector('.back-to-login-link'), 'click', (e) => {
         e.preventDefault();
         showForm('loginForm');
         sessionStorage.setItem('initialAuthTab', 'login');
@@ -100,7 +108,7 @@ function setupPasswordToggles() {
     const toggleButtons = document.querySelectorAll('.pw-toggle');
 
     toggleButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', () => { // This is simple, managed cleanup not strictly needed but good practice
             // बटन के सबसे करीबी '.input-wrapper' को खोजें
             const inputWrapper = button.closest('.input-wrapper');
             if (!inputWrapper) return;
@@ -145,13 +153,13 @@ function setupPhoneVerificationUI() {
     const validatePhone = (phone) => /^\d{10}$/.test(phone);
 
     // फ़ोन इनपुट की वैधता के आधार पर "Send OTP" बटन दिखाएं/छिपाएं।
-    phoneInput.addEventListener('input', () => {
+    phoneInput.addEventListener('input', () => { // Also simple, managed cleanup is good practice
         const isValid = validatePhone(phoneInput.value);
         // यदि नंबर मान्य है तो 'hidden' क्लास हटाएं, अन्यथा जोड़ें।
         otpBtn.classList.toggle('hidden', !isValid);
     });
 
-    // "Send OTP" बटन क्लिक को हैंडल करें।
+    // "Send OTP" बटन क्लिक को हैंडल करें। // Managed cleanup would be good here
     otpBtn.addEventListener('click', async () => {
         phoneInput.disabled = true; // बदलावों को रोकने के लिए इनपुट को अक्षम करें।
         otpBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`; // लोडिंग स्थिति दिखाएं।
@@ -197,7 +205,7 @@ function setupPhoneVerificationUI() {
         }
     });
 
-    // "Verify OTP" बटन क्लिक को हैंडल करें।
+    // "Verify OTP" बटन क्लिक को हैंडल करें। // Managed cleanup would be good here
     otpVerifyBtn.addEventListener('click', async () => {
         let success = false;
         try {
@@ -220,15 +228,22 @@ function setupPhoneVerificationUI() {
  * गेस्ट अकाउंट व्यू के लिए मुख्य इनिशियलाइज़ेशन फ़ंक्शन।
  */
 export function init() {
+    if (isInitialized) return;
     console.log("✅ Guest Account view initialized.");
 
-    setupAuthTabs();
-    setupPasswordToggles(); // पासवर्ड टॉगल कार्यक्षमता जोड़ें
-    setupPhoneVerificationUI(); // फ़ोन सत्यापन UI लॉजिक जोड़ें
+    // Clear previous listeners before setting up new ones
+    cleanup();
+
+    const addManagedListener = (element, event, handler) => {
+        if (!element) return;
+        element.addEventListener(event, handler);
+        eventListeners.push({ element, event, handler });
+    };
 
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const resetForm = document.getElementById('resetForm');
+
 
     // लॉगिन फॉर्म सबमिशन
     loginForm?.addEventListener('submit', async (e) => {
@@ -306,4 +321,17 @@ export function init() {
             showToast('error', 'Cannot connect to Apple. Check connection.', 5000);
         }
     });
+
+    setupAuthTabs();
+    setupPasswordToggles(); // पासवर्ड टॉगल कार्यक्षमता जोड़ें
+    setupPhoneVerificationUI(); // फ़ोन सत्यापन UI लॉजिक जोड़ें
+    isInitialized = true;
+}
+
+export function cleanup() {
+    eventListeners.forEach(({ element, event, handler }) => {
+        element.removeEventListener(event, handler);
+    });
+    eventListeners = [];
+    isInitialized = false;
 }

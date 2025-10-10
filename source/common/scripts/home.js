@@ -138,7 +138,7 @@ function applyFilters(items, filterValue, advancedFilters = {}) {
 export async function getGlobalFilterTabs() {
     try {
         if (Object.keys(allCategoriesMap).length === 0) {
-            const categoriesResponse = await fetchAllCategories(true);
+            const categoriesResponse = await fetchAllCategories(); // FIX: Removed force=true to allow caching
             categoriesResponse.forEach(cat => {
                 allCategoriesMap[cat.meta.categoryId] = cat;
             });
@@ -194,7 +194,7 @@ export async function init() {
     try {
         const [unitsResponse, categoriesResponse] = await Promise.all([
             fetchAllUnits(),
-            fetchAllCategories(true)
+            fetchAllCategories() // FIX: Removed force=true to allow caching
         ]);
 
         const unitsData = {};

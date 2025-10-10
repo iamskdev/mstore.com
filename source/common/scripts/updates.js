@@ -1,34 +1,61 @@
-import { fetchAllItems, fetchAllMerchants, fetchAllStories, fetchUserById, fetchMerchantById } from '../../utils/data-manager.js';
+import { fetchAllItems, fetchAllMerchants, fetchAllStories, fetchUserById, fetchMerchantById, localCache } from '../../utils/data-manager.js';
 import { showToast } from '../../utils/toast.js';
 import { routeManager } from '../../main.js';
 import * as storyViewer from '../../modals/story-viewer/story-viewer.js';
 import { createListCard, initCardHelper } from '../../templates/cards/card-helper.js';
 
-export async function init(force = false) { // Make function async
-    const view = document.getElementById('updates-view');
-    // यह सुनिश्चित करता है कि लॉजिक दोबारा न चले
-    if (view.dataset.initialized && !force) { // Check for the force flag
-        return;
-    }
+// --- MODULE-LEVEL STATE ---
+let eventListeners = []; // To manage event listeners for cleanup
+let isInitialized = false; // To prevent re-initialization
+let currentMerchant = null; // To track the currently viewed merchant
+let merchants = [], items = [], stories = []; // Data stores
+let currentPage = 1;
+const itemsPerPage = 6;
+let isLoading = false;
+let allItemsLoaded = false;
+let currentFilterState = { type: 'all', merchantId: null };
+
+// Helper to add and track event listeners
+function addManagedEventListener(element, type, listener) {
+    element.addEventListener(type, listener);
+    eventListeners.push({ element, type, listener });
+}
+
+export async function init(force = false) {
+    if (isInitialized && !force) return;
     console.log('🚀 Initializing Updates View...');
 
     // --- NEW: Initialize the card helper to load templates ---
     await initCardHelper();
 
-    // --- FIX: Fetch data individually to prevent a single failure from blocking the entire view ---
-    let merchants = [], items = [], stories = [];
-    try {
-        // Fetch essential data. If these fail, we might want to show a bigger error.
-        [merchants, items] = await Promise.all([
-            fetchAllMerchants(),
-            fetchAllItems()
-        ]);
-    } catch (error) {
-        console.error("🚨 Critical error fetching merchants or items:", error);
-        // Optionally, show a full-page error message here
-        return; // Stop execution if essential data fails
+    // --- NEW: Prioritize loading data from followed merchants cache ---
+    const followedMerchantsData = localCache.get('followedMerchantsData');
+    if (followedMerchantsData && Object.keys(followedMerchantsData).length > 0) {
+        console.log('[Updates] ⚡️ Found cached data for followed merchants. Loading from cache...');
+        merchants = Object.values(followedMerchantsData).map(data => data.merchantData);
+        // Combine all items from all followed merchants into a single array
+        items = Object.values(followedMerchantsData).flatMap(data => data.items || []);
+    } else {
+        console.log('[Updates] No cached data. Falling back to fetching all merchants and items.');
+        // --- FALLBACK: Fetch data individually to prevent a single failure from blocking the entire view ---
+        try {
+            // Fetch essential data. If these fail, we might want to show a bigger error.
+            [merchants, items] = await Promise.all([
+                fetchAllMerchants(),
+                fetchAllItems()
+            ]);
+        } catch (error) {
+            const view = document.getElementById('updates-view');
+            console.error("🚨 Critical error fetching merchants or items:", error);
+            // Optionally, show a full-page error message here
+            const updatesContainer = view.querySelector('.updates-container');
+            if (updatesContainer) {
+                updatesContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: var(--accent-danger);">Could not load essential data. Please refresh.</p>`;
+            }
+            return; // Stop execution if essential data fails
+        }
     }
-
+    
     try {
         // Fetch stories separately. If it fails, the rest of the page can still render.
         stories = await fetchAllStories();
@@ -39,6 +66,7 @@ export async function init(force = false) { // Make function async
     }
 
     // DOM refs
+    const view = document.getElementById('updates-view');
     const updatesContainer = view.querySelector('.updates-container');
     const storiesRow = view.querySelector('#storiesRow');
     const feedGrid = view.querySelector('#feedGrid');
@@ -49,16 +77,13 @@ export async function init(force = false) { // Make function async
     const segmentedControls = view.querySelector('.segmented-controls');
     const feedLoader = view.querySelector('#feed-loader');
 
-    // state
-    let currentMerchant = null;
-
     // render stories
     async function renderStories() {
         storiesRow.innerHTML = '';
 
         // --- FIX: Conditionally show "My Status" only for merchants ---
-        const currentUserRole = localStorage.getItem('currentUserType');
-        const currentUserId = localStorage.getItem('currentUserId');
+        const currentUserRole = localCache.get('currentUserType');
+        const currentUserId = localCache.get('currentUserId');
         let selfMerchantId = null; // To store the logged-in merchant's ID
 
         if (currentUserRole === 'merchant' && currentUserId) {
@@ -79,13 +104,13 @@ export async function init(force = false) { // Make function async
                     </div>
                     <div class="avatar-name">My Status</div>
                 `;
-                // --- FIX: Separate click events for plus button and the rest of the circle ---
-                myStoryEl.querySelector('.add-story-btn').addEventListener('click', (e) => {
+                // --- FIX: Use managed event listeners ---
+                addManagedEventListener(myStoryEl.querySelector('.add-story-btn'), 'click', (e) => {
                     e.stopPropagation(); // Prevent the parent click event from firing
                     alert('Add Story feature coming soon!');
                 });
 
-                myStoryEl.querySelector('.avatar-wrap').addEventListener('click', (e) => {
+                addManagedEventListener(myStoryEl.querySelector('.avatar-wrap'), 'click', (e) => {
                     showMerchantPage(selfMerchant);
                 });
 
@@ -140,12 +165,6 @@ export async function init(force = false) { // Make function async
         });
     }
 
-    let currentPage = 1;
-    const itemsPerPage = 6;
-    let isLoading = false;
-    let allItemsLoaded = false;
-    let currentFilterState = { type: 'all', merchantId: null };
-
     // --- REFACTOR: Create a single common card config to be used everywhere ---
     const commonCardConfig = {
         fields: [
@@ -191,7 +210,7 @@ export async function init(force = false) { // Make function async
         actionHandlers: {
             'VIEW_DETAILS': (item) => {
                 sessionStorage.setItem('selectedItem', JSON.stringify(item));
-                const role = localStorage.getItem('currentUserType') || 'guest';
+                const role = localCache.get('currentUserType') || 'guest';
                 routeManager.switchView(role, `item-details/${item.meta.itemId}`);
             },
             'ADD_TO_CART': (item) => showToast('success', `${item.info.name} added to cart!`),
@@ -337,7 +356,7 @@ export async function init(force = false) { // Make function async
 
         popup.querySelector('.popup-btn-profile').addEventListener('click', (event) => {
             event.stopPropagation();
-            const role = localStorage.getItem('currentUserType') || 'guest';
+            const role = localCache.get('currentUserType') || 'guest';
             routeManager.switchView(role, `merchant-profile/${merchant.meta.merchantId}`);
             removeExistingPopup();
         });
@@ -399,7 +418,7 @@ export async function init(force = false) { // Make function async
 
     function enableHorizontalScroll(element) {
         if (!element) return;
-        element.addEventListener('wheel', (e) => {
+        addManagedEventListener(element, 'wheel', (e) => {
             if (element.scrollWidth > element.clientWidth) {
                 if (e.deltaY !== 0) {
                     e.preventDefault();
@@ -419,7 +438,7 @@ export async function init(force = false) { // Make function async
     }
 
     view.querySelectorAll('.segmented-controls button').forEach(btn => {
-        btn.addEventListener('click', function() {
+        addManagedEventListener(btn, 'click', function() {
             const id = this.id;
 
             // Handle settings button separately as it doesn't change the filter
@@ -451,7 +470,7 @@ export async function init(force = false) { // Make function async
         });
     });
 
-    updatesContentWrapper.addEventListener('scroll', () => {
+    addManagedEventListener(updatesContentWrapper, 'scroll', () => {
         if (defaultFeed.style.display === 'none' || isLoading || allItemsLoaded) return;
 
         if (updatesContentWrapper.scrollTop + updatesContentWrapper.clientHeight >= updatesContentWrapper.scrollHeight - 100) {
@@ -469,7 +488,7 @@ export async function init(force = false) { // Make function async
         }
     }
 
-    storiesRow.addEventListener('click', (e) => { // Added event parameter
+    addManagedEventListener(storiesRow, 'click', (e) => {
         if (storiesRow.getAttribute('data-rendered') !== 'true') return;
 
         // --- FIX: Exclude 'my-story' from this logic ---
@@ -483,39 +502,33 @@ export async function init(force = false) { // Make function async
         }
     });
 
-    document.addEventListener('keydown', (e) => {
+    addManagedEventListener(document, 'keydown', (e) => {
         if (e.key === 'Escape') {
             hideMerchantPage();
         }
     });
 
-    updatesContainer.addEventListener('dblclick', () => {
+    addManagedEventListener(updatesContainer, 'dblclick', () => {
         hideMerchantPage();
     });
 
     // --- NEW: Listen for the manual back button press from top-nav ---
     // This is the correct way to handle the "fake" navigation back action.
-    window.addEventListener('handleManualBack', () => {
+    addManagedEventListener(window, 'handleManualBack', () => {
         // Only act if the merchant page is currently visible.
         if (merchantPage.style.display === 'flex') {
             hideMerchantPage();
         }
     });
 
-    // व्यू को इनिशियलाइज़ के रूप में मार्क करें
-    view.dataset.initialized = 'true';
+    isInitialized = true;
 }
 
 export function cleanup() {
-    console.log('🧹 Cleaning up Updates View...');
-    // भविष्य में यदि आवश्यक हो तो यहां इवेंट लिसनर्स हटा दें
-
-    // --- FIX: Reset the initialization state ---
-    // This is crucial. When the user navigates away, we remove the 'initialized' flag.
-    // This ensures that when they navigate back, the init() function will run again
-    // and re-render all the dynamic dummy content.
-    const view = document.getElementById('updates-view');
-    if (view) {
-        delete view.dataset.initialized;
-    }
+    console.log('🧹 Cleaning up Updates View listeners...');
+    eventListeners.forEach(({ element, type, listener }) => {
+        element.removeEventListener(type, listener);
+    });
+    eventListeners = [];
+    isInitialized = false;
 }

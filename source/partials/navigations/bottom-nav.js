@@ -1,4 +1,4 @@
-import { fetchUserById } from '../../utils/data-manager.js';
+import { fetchUserById, localCache } from '../../utils/data-manager.js';
 import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 
 /**
@@ -44,11 +44,15 @@ export function initializeBottomNavigationLogic() {
   }
 
   async function updateAccountAvatar(role) {
-    const accountBtn = navBar.querySelector(`.nav-btn[data-role="${role}"][data-path="account"]`);
+    // --- FIX: Add a guard clause to prevent errors if the role is null or empty. ---
+    // This can happen during initial load or state transitions.
+    if (!role) return;
+
+    const accountBtn = navBar.querySelector(`.nav-btn[data-role='${role}'][data-path='account']`);
     if (accountBtn) {
       const defaultIcon = accountBtn.querySelector('.default-icon');
       const accountIconImg = accountBtn.querySelector('.account-icon');
-      const userId = localStorage.getItem('currentUserId');
+      const userId = localCache.get('currentUserId');
 
       if (userId && (role === 'consumer' || role === 'merchant' || role === 'admin')) {
         // Only fetch and update if the avatar isn't already set.

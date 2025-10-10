@@ -1,10 +1,14 @@
 import { routeManager } from '../../main.js';
 import { fetchMerchantById } from '../../utils/data-manager.js';
 
-let sendMessage;
-let enterKeyPressHandler;
-// --- NEW: Keep track of the resize handler to remove it later ---
-let visualViewportResizeHandler;
+// --- MODULE-LEVEL STATE ---
+let isInitialized = false;
+let eventListeners = [];
+
+function addManagedEventListener(element, type, listener, options) {
+    element.addEventListener(type, listener, options);
+    eventListeners.push({ element, type, listener, options });
+}
 
 /**
  * Formats a date for the date separator in the chat.
@@ -67,14 +71,15 @@ async function loadConversationHeader(merchantId) {
 }
 
 // This function will be called by the router when the page is loaded.
-export function init() {
+export function init(force = false) {
+    if (isInitialized && !force) return;
     console.log("Conversation view initialized");
 
     const conversationScreen = document.querySelector('.conversation-screen');
     
     const backButton = document.querySelector('.back-button');
     if (backButton) {
-        backButton.addEventListener('click', (e) => {
+        addManagedEventListener(backButton, 'click', (e) => {
             e.stopPropagation(); // Prevent the click from bubbling up to the header-info-clickable listener
             // FIX: Use a more reliable method to go back.
             // Check if there's a previous state in history. If not, go to a default view.
@@ -97,7 +102,7 @@ export function init() {
     // --- NEW: Add click listener to header info to navigate to merchant profile ---
     const headerInfo = document.getElementById('header-info-clickable');
     if (headerInfo && merchantId) {
-        headerInfo.addEventListener('click', (e) => {
+        addManagedEventListener(headerInfo, 'click', (e) => {
             console.log(`Navigating to profile for merchant: ${merchantId}`);
             // Navigate to the new merchant profile view
             routeManager.switchView(routeManager.currentRole, `merchant-profile/${merchantId}`);
@@ -109,7 +114,7 @@ export function init() {
     // It prevents the entire screen from being pushed up and ensures the input bar
     // sits correctly above the keyboard.
     if (window.visualViewport && conversationScreen) {
-        visualViewportResizeHandler = () => {
+        const visualViewportResizeHandler = () => {
             // Set the height of the conversation screen to the height of the visible area.
             // This makes the layout stable when the keyboard appears/disappears.
             conversationScreen.style.height = `${window.visualViewport.height}px`;
@@ -117,7 +122,7 @@ export function init() {
             window.scrollTo(0, document.body.scrollHeight);
         };
 
-        window.visualViewport.addEventListener('resize', visualViewportResizeHandler);
+        addManagedEventListener(window.visualViewport, 'resize', visualViewportResizeHandler);
 
         // Set initial height
         conversationScreen.style.height = `${window.visualViewport.height}px`;
@@ -130,7 +135,7 @@ export function init() {
     const msgInput = document.getElementById('msgInput');
     const sendBtn = document.getElementById('sendBtn');
 
-    sendMessage = () => {
+    const sendMessage = () => {
         const text = msgInput.value.trim();
         if (!text) return;
 
@@ -166,7 +171,7 @@ export function init() {
         messages.scrollTop = messages.scrollHeight;
     }
 
-    enterKeyPressHandler = (e) => {
+    const enterKeyPressHandler = (e) => {
         if (e.key === "Enter") {
             sendMessage();
         }
@@ -177,7 +182,7 @@ export function init() {
 
         // Use 'mousedown' and preventDefault to avoid the input losing focus,
         // which keeps the keyboard open. This listener is on the whole footer.
-        footer.addEventListener('mousedown', (e) => {
+        addManagedEventListener(footer, 'mousedown', (e) => {
             // If the mousedown event is on a button or its icon,
             // prevent the default action (taking focus).
             if (e.target.closest('button')) {
@@ -186,21 +191,19 @@ export function init() {
         }, true); // Use capture phase to catch event early.
 
         // Handle the actual button clicks
-        sendBtn.addEventListener('click', sendMessage);
+        addManagedEventListener(sendBtn, 'click', sendMessage);
 
-        msgInput.addEventListener('keypress', enterKeyPressHandler);
+        addManagedEventListener(msgInput, 'keypress', enterKeyPressHandler);
     }
+    isInitialized = true;
 }
 
 // The router will call this function when the view is about to be removed.
 export function cleanup() {
     console.log("Conversation view cleaned up");
-
-    const sendBtn = document.getElementById('sendBtn');
-    const msgInput = document.getElementById('msgInput');
-
-    // --- NEW: Remove the visualViewport listener to prevent memory leaks ---
-    if (window.visualViewport && visualViewportResizeHandler) {
-        window.visualViewport.removeEventListener('resize', visualViewportResizeHandler);
-    }
+    eventListeners.forEach(({ element, type, listener, options }) => {
+        element.removeEventListener(type, listener, options);
+    });
+    eventListeners = [];
+    isInitialized = false;
 }

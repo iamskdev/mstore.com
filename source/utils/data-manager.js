@@ -1,10 +1,73 @@
 /**
  * @file Centralized data fetching service for the application.
- * Implements a caching mechanism to prevent redundant network requests for static data.
+ * This module is the single source of truth for all data interactions, including:
+ * - Fetching data from Firestore or local JSON mocks.
+ * - Caching data aggressively in localStorage to minimize reads and improve performance.
+ * - Providing a unified interface for client-side storage (localStorage and sessionStorage).
  */
 
 import { getAppConfig } from '../settings/main-config.js';
 import { firestore } from '../firebase/firebase-config.js'; // ✅ Import firestore service
+
+// ===================================================================================
+// --- EMBEDDED CACHE MANAGER ---
+// This logic was moved from cache-manager.js to keep all data-related logic in one file.
+// It provides a safe and unified way to interact with browser storage.
+// ===================================================================================
+
+const createStorage = (storage) => ({
+    /**
+     * Retrieves an item from storage and deserializes it from JSON.
+     * @param {string} key The key of the item to retrieve.
+     * @returns {any | null} The retrieved item, or null if not found or if parsing fails.
+     */
+    get(key) {
+        const itemStr = storage.getItem(key);
+        if (!itemStr) return null;
+        try {
+            return JSON.parse(itemStr);
+        } catch (e) {
+            console.error(`CacheService: Error parsing JSON from key "${key}"`, e);
+            storage.removeItem(key); // Remove corrupted item to prevent future errors.
+            return null;
+        }
+    },
+
+    /**
+     * Serializes and adds an item to storage.
+     * @param {string} key The key of the item to set.
+     * @param {any} value The value to store.
+     */
+    set(key, value) {
+        if (value === undefined || value === null) {
+            storage.removeItem(key);
+            return;
+        }
+        try {
+            storage.setItem(key, JSON.stringify(value));
+        } catch (e) {
+            console.error(`CacheService: Error setting item for key "${key}". Storage might be full.`, e);
+        }
+    },
+
+    /**
+     * Removes an item from storage.
+     * @param {string} key The key of the item to remove.
+     */
+    remove(key) {
+        storage.removeItem(key);
+    },
+
+    /**
+     * Clears all items from the storage.
+     */
+    clear() {
+        storage.clear();
+    },
+});
+
+export const localCache = createStorage(localStorage);
+export const sessionCache = createStorage(sessionStorage);
 
 /**
  * A generic factory function to create a cached data fetcher for a specific collection.
@@ -14,71 +77,109 @@ import { firestore } from '../firebase/firebase-config.js'; // ✅ Import firest
  * @returns {{fetchAll: Function, fetchById: Function}} An object with fetchAll and fetchById functions.
  */
 const createDataFetcher = (collectionName, idKey) => {
-    let cachePromise = null;
+    const cacheKey = `data-cache-${collectionName}`; // Key for storing the collection data
+    let unsubscribeListener = null; // To hold the Firestore listener unsubscribe function
+    let isListenerActive = false; // Flag to prevent multiple listeners
 
     /**
      * Fetches all documents from a collection, from local mock or Firestore.
-     * @param {boolean} [force=false] - If true, bypasses the cache and fetches fresh data.
+     * This function now establishes a real-time listener for Firebase sources.
+     * @param {boolean} [force=false] - If true, forces a UI refresh with cached data. Not for re-fetching.
      * @returns {Promise<Array>} A promise that resolves to an array of documents.
      */
-    const fetchAll = (force = false) => {
+    const fetchAll = async (force = false) => {
         const dataSource = getAppConfig().source.data || 'firebase';
 
-        if (cachePromise && !force) {
-            return cachePromise;
-        }
- 
-        const promise = (async () => {
-            if (dataSource === 'localstore') {
-                try {
-                    const response = await fetch(`../../localstore/jsons/${collectionName}.json`);
-                    if (!response.ok) throw new Error(`Failed to fetch local ${collectionName}.json: ${response.statusText}`);
-                    const data = await response.json();
-                    // --- FIX: Handle both array and single object JSON files ---
-                    // stories.json is a single object, but the app expects an array of story collections.
-                    // For consistency, we'll wrap the single object in an array if it's not already one.
-                    if (collectionName === 'stories' && !Array.isArray(data)) {
-                        // If data is a single object and not null/undefined, wrap it.
-                        if (data && typeof data === 'object') {
-                            return [data];
-                        }
-                        return []; // Return empty array if it's not a valid object
-                    }
-                    return data;
-                } catch (err) {
-                    // FIX: For localstore, if a file doesn't exist (like feedbacks.json or logs.json),
-                    // it should not break the entire app. Log a warning and return an empty array.
-                    if (err.message.includes('404')) { // Check if it's a file not found error
-                        console.warn(`Local data file not found: ${collectionName}.json. Returning empty array.`);
-                    } else {
-                        console.error(`Error reading local data for ${collectionName}:`, err);
-                    }
-                    cachePromise = null; // Reset cache on error
-                    return [];
+        // --- STRATEGY 1: Local Store (Simple Fetch & Cache) ---
+        if (dataSource === 'localstore') {
+            const cachedData = localCache.get(cacheKey);
+            if (cachedData && !force) {
+                return Promise.resolve(cachedData);
+            }
+            try {
+                const response = await fetch(`../../localstore/jsons/${collectionName}.json`);
+                if (!response.ok) throw new Error(`404`);
+                const data = await response.json();
+                localCache.set(cacheKey, data);
+                return data;
+            } catch (err) {
+                if (err.message.includes('404')) {
+                    console.warn(`Local data file not found: ${collectionName}.json. Returning empty array.`);
+                } else {
+                    console.error(`Error reading local data for ${collectionName}:`, err);
                 }
-            } else if (dataSource === 'firebase' || dataSource === 'emulator') {
-                if (!firestore) {
-                    throw new Error(`Firestore is not initialized! Check Firebase CDN scripts and config for ${collectionName}.`);
-                }
-                try {
-                    const snapshot = await firestore.collection(collectionName).get();
-                    // FIX: Return only doc.data(). The document's data already contains the
-                    // ID within its `meta` object (e.g., meta.userId). This ensures the
-                    // data structure is identical to the local JSON mock files, preventing inconsistencies.
-                    const data = snapshot.docs.map(doc => doc.data());
-                    return data;
-                } catch (err) {
-                    cachePromise = null; // Reset cache on error to allow retries
-                    // Re-throw the error so the calling component can handle it (e.g., show an error message)
-                    throw err;
-                }
-            } else {
                 return [];
             }
-        })();
+        }
 
-        cachePromise = promise;
-        return cachePromise;
+        // --- STRATEGY 2: Firebase (Real-time Listener & Smart Cache) ---
+        if (dataSource === 'firebase' || dataSource === 'emulator') {
+            // --- Listener Setup Function (defined once, used in multiple places) ---
+            // This function is defined here so it's in scope for both the "cached data" path and the "fresh fetch" path.
+            const setupListener = (resolve, reject) => {
+                if (!firestore) {
+                    // If reject is not provided, just throw an error.
+                    const error = new Error(`Firestore is not initialized for ${collectionName}.`);
+                    if (reject) reject(error); else throw error;
+                    return;
+                }
+
+                console.log(`[DataManager] 🎧 Setting up real-time listener for '${collectionName}'...`);
+                const collectionRef = firestore.collection(collectionName);
+
+                unsubscribeListener = collectionRef.onSnapshot(
+                    (snapshot) => {
+                        console.log(`[DataManager] ✨ Snapshot received for '${collectionName}'. Processing ${snapshot.docChanges().length} changes.`);
+                        let currentCache = localCache.get(cacheKey) || [];
+
+                        snapshot.docChanges().forEach(change => {
+                            const data = change.doc.data();
+                            const docId = data.meta?.[idKey] || change.doc.id;
+                            const index = currentCache.findIndex(item => item.meta?.[idKey] === docId);
+
+                            if (change.type === 'added') { if (index === -1) currentCache.push(data); }
+                            if (change.type === 'modified') { if (index > -1) currentCache[index] = data; }
+                            if (change.type === 'removed') { if (index > -1) currentCache.splice(index, 1); }
+                        });
+
+                        localCache.set(cacheKey, currentCache);
+
+                        if (!isListenerActive) {
+                            isListenerActive = true;
+                            if (resolve) resolve(currentCache); // Resolve the promise on the very first fetch.
+                        } else {
+                            window.dispatchEvent(new CustomEvent('dataUpdated', { detail: { collection: collectionName } }));
+                        }
+                    },
+                    (error) => {
+                        console.error(`[DataManager] Listener error for '${collectionName}':`, error);
+                        isListenerActive = false; // Reset flag on error
+                        if (reject) reject(error);
+                    }
+                );
+            };
+
+            // If a listener is already active, just return the latest data from the cache.
+            if (isListenerActive) {
+                return Promise.resolve(localCache.get(cacheKey) || []);
+            }
+
+            // If there's data in the cache, return it immediately for a fast UI response,
+            // while the listener sets up in the background.
+            const cachedData = localCache.get(cacheKey);
+            if (cachedData) {
+                console.log(`[DataManager] ⚡️ Serving '${collectionName}' from cache while listener connects.`);
+                // Call setupListener without resolve/reject, as we are not in a promise context here.
+                // It will set up the listener in the background.
+                setupListener(null, null);
+                return Promise.resolve(cachedData);
+            }
+
+            // If no cached data, create a new promise and set up the listener.
+            return new Promise(setupListener);
+        }
+
+        return Promise.resolve([]); // Fallback
     };
 
     /**

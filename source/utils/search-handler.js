@@ -164,10 +164,11 @@ class SearchComponent {
  * @param {Array} [items] - Optional. An array of all items to search. If not provided, it will try to load from sessionStorage.
  * @returns {Fuse|null} The initialized Fuse.js instance, or null if initialization fails.
  */
-export function initializeSearch(items) {
+export async function initializeSearch(items) {
+  const { localCache } = await import('./data-manager.js');
   let allItems = items;
   if (!Array.isArray(allItems) || allItems.length === 0) {
-    allItems = JSON.parse(sessionStorage.getItem('allItems')) || [];
+    allItems = localCache.get('allItems') || [];
   }
 
   if (!allItems || allItems.length === 0) {

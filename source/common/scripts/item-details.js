@@ -1,6 +1,6 @@
 /**
  * @file Manages all logic for the Item Details page.
- * It retrieves item data from route parameters, populates the DOM, and handles all user interactions
+ * It retrieves item data from route parameters, populates the DOM, and handles all user interactions.
  * like adding to cart, saving, sharing, and viewing related items.
  */
 import { toggleCartItem, isItemInCart } from '../../utils/cart-manager.js';
@@ -13,6 +13,7 @@ import { initializeSearch } from '../../utils/search-handler.js';
 import { showFeedbackModal } from '../../partials/modals/feedback.js';
 
 // Module-level variable to hold the zoom cleanup function, preventing duplicate listeners.
+let eventListeners = [];
 let cleanupImageZoom = () => {};
 let cleanupDesktopZoom = () => {};
 
@@ -27,8 +28,19 @@ function replaceElement(elementId) {
   const oldElement = document.getElementById(elementId);
   if (!oldElement) return null;
   const newElement = oldElement.cloneNode(true);
+  // Copy over dataset properties
+  for (const key in oldElement.dataset) {
+    if (Object.hasOwnProperty.call(oldElement.dataset, key)) {
+      newElement.dataset[key] = oldElement.dataset[key];
+    }
+  }
   oldElement.parentNode.replaceChild(newElement, oldElement);
   return newElement;
+}
+
+function addManagedEventListener(element, type, listener, options) {
+    element.addEventListener(type, listener, options);
+    eventListeners.push({ element, type, listener, options });
 }
 
 /**
@@ -295,7 +307,7 @@ function setupActionButtons(item) {
 
     updateNotifyButtonState(notificationList.some(notifyItem => String(notifyItem.itemId) === String(item.meta.itemId))); // Set initial state
 
-    addToCartBtn.addEventListener('click', () => {
+    addManagedEventListener(addToCartBtn, 'click', () => {
       let notifications = JSON.parse(sessionStorage.getItem('notificationList') || '[]');
       const existingIndex = notifications.findIndex(notifyItem => String(notifyItem.itemId) === String(item.meta.itemId));
       let message = '';
@@ -324,7 +336,7 @@ function setupActionButtons(item) {
     const isInCart = isItemInCart(item.meta.itemId);
     addToCartBtn.innerHTML = isInCart ? '<i class="fas fa-check"></i> Added to Cart' : '<i class="fas fa-shopping-cart"></i> Add to Cart';
 
-    addToCartBtn.addEventListener('click', () => {
+    addManagedEventListener(addToCartBtn, 'click', () => {
       // Get the current state *before* toggling
       const wasInCart = isItemInCart(item.meta.itemId);
       
@@ -342,7 +354,7 @@ function setupActionButtons(item) {
 
   updateSaveButtonState(isItemSaved(item.meta.itemId));
 
-  saveItemBtn.addEventListener('click', () => {
+  addManagedEventListener(saveItemBtn, 'click', () => {
     // Toggle the state and update UI instantly
     const isNowSaved = !isItemSaved(item.meta.itemId);
     updateSaveButtonState(isNowSaved);
@@ -579,15 +591,14 @@ export async function init(force = false) { // Make the function async
 
   // Share button
   const shareBtn = document.getElementById('item-share-btn');
-  if (shareBtn) {
-    shareBtn.addEventListener('click', shareItem);
-  }
+  if (shareBtn) addManagedEventListener(shareBtn, 'click', shareItem);
 
   // --- Professional Feedback Modal Implementation ---
   const feedbackBtn = replaceElement('item-feedback-btn');
 
   if (feedbackBtn) {
-    feedbackBtn.addEventListener('click', async () => {
+    // This listener is on a replaced element, so it doesn't need to be managed for cleanup.
+    feedbackBtn.addEventListener('click', () => {
       // Pass context to the feedback modal
       const context = {
         itemId: item.meta.itemId,
@@ -601,8 +612,11 @@ export async function init(force = false) { // Make the function async
 
 export function cleanup() {
     console.log('🧹 Cleaning up Item Details View...');
+    eventListeners.forEach(({ element, type, listener, options }) => {
+        element.removeEventListener(type, listener, options);
+    });
+    eventListeners = [];
     // Clean up any existing zoom listeners.
     if (cleanupImageZoom) cleanupImageZoom();
     if (cleanupDesktopZoom) cleanupDesktopZoom();
-    // भविष्य में यदि आवश्यक हो तो यहां और इवेंट लिसनर्स हटा दें
 }

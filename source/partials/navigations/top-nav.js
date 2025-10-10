@@ -1,6 +1,9 @@
-import { fetchUserById, fetchMerchantById } from '../../utils/data-manager.js';
+import { fetchUserById, fetchMerchantById, localCache } from '../../utils/data-manager.js';
 import { getAppConfig } from '../../settings/main-config.js';
 import { routeManager } from '../../main.js'; // DEFINITIVE FIX: Import routeManager directly
+
+let eventListeners = [];
+let isInitialized = false;
 
 export function initializeTopNavigation() {
     // --- Elements ---
@@ -69,7 +72,7 @@ export function initializeTopNavigation() {
     function updateHeaderUI({ role, view, config }) {
       const userType = role;
       const appMode = getAppConfig().app.environment;
-      const userId = localStorage.getItem('currentUserId');
+      const userId = localCache.get('currentUserId');
       const defaultLogo = './source/assets/logos/app-logo.png';
       const defaultName = 'mStore';
 
@@ -181,10 +184,16 @@ export function initializeTopNavigation() {
       }
     }
 
+    function addManagedEventListener(element, type, listener) {
+        if (!element) return;
+        element.addEventListener(type, listener);
+        eventListeners.push({ element, type, listener });
+    }
+
     // --- Event Listeners ---
-    document.querySelectorAll('#header-logo-container, #header-menu-icon').forEach(el => {
-      el.addEventListener('click', () => window.dispatchEvent(new CustomEvent('toggleDrawerRequest')));
-    });
+    addManagedEventListener(document.getElementById('header-logo-container'), 'click', () => window.dispatchEvent(new CustomEvent('toggleDrawerRequest')));
+    addManagedEventListener(document.getElementById('header-menu-icon'), 'click', () => window.dispatchEvent(new CustomEvent('toggleDrawerRequest')));
+
 
     // NEW: Add click listener for the universal back button
     if (viewBackBtn) {
@@ -193,7 +202,9 @@ export function initializeTopNavigation() {
             // --- FIX: Prioritize closing search over other back actions ---
             if (topNav.classList.contains('search-active')) {
                 closeSearchView();
-            } else if (topNav.classList.contains('manual-override')) {
+            } else if (topNav.classList.contains('manual-override') && routeManager.currentView === 'updates') {
+                // FIX: Only dispatch handleManualBack if we are actually in the 'updates' view,
+                // where this manual override is used. Otherwise, default to history.back().
                 // If not searching, but in a manual override state (like from updates.js),
                 // dispatch an event to let the view handle the back action.
                 window.dispatchEvent(new CustomEvent('handleManualBack'));
@@ -204,12 +215,12 @@ export function initializeTopNavigation() {
         });
     }
 
-    if (searchToggleBtn) searchToggleBtn.addEventListener('click', openSearchView);    
-    window.addEventListener('closeSearchViewRequest', closeSearchView);
+    addManagedEventListener(searchToggleBtn, 'click', openSearchView);
+    addManagedEventListener(window, 'closeSearchViewRequest', closeSearchView);
 
     // NEW: Add a click listener for the settings icon
     if (settingsIcon) {
-      settingsIcon.addEventListener('click', () => {
+      addManagedEventListener(settingsIcon, 'click', () => {
         // Use the new global custom alert
         window.showCustomAlert({
           title: 'Settings',
@@ -226,13 +237,13 @@ export function initializeTopNavigation() {
     }
 
     if (searchInput) {
-      searchInput.addEventListener('input', () => {
+      addManagedEventListener(searchInput, 'input', () => {
         searchClearBtn.style.display = searchInput.value ? 'block' : 'none';
       });
     }
 
     if (searchClearBtn) {
-      searchClearBtn.addEventListener('click', () => {
+      addManagedEventListener(searchClearBtn, 'click', () => {
         searchInput.value = '';
         searchInput.focus();
         searchClearBtn.style.display = 'none';
@@ -241,8 +252,8 @@ export function initializeTopNavigation() {
       });
     }
 
-    if (notificationIcon) {
-      notificationIcon.addEventListener('click', (e) => {
+    // Use a named function for the listener to be able to remove it in cleanup
+    const handleNotificationClick = (e) => {
         // Ripple effect for notification icon
         const ripple = document.createElement('span');
         ripple.classList.add('ripple');
@@ -269,13 +280,13 @@ export function initializeTopNavigation() {
             detail: { role: currentRole, view: 'notifications' }
           }));
         }
-      });
-    }
+    };
+    addManagedEventListener(notificationIcon, 'click', handleNotificationClick);
 
     // --- NEW: Listener for manual header override ---
     // This allows views like 'updates.js' to manually control the header
     // without a full route change.
-    window.addEventListener('viewStateOverride', (e) => {
+    const handleViewStateOverride = (e) => {
         const { isSecondary, title } = e.detail;
         topNav.classList.toggle('manual-override', isSecondary); // Add/remove override class
 
@@ -297,13 +308,22 @@ export function initializeTopNavigation() {
             // This correctly handles all cases, including navigating back from a merchant's page.
             updateHeaderUI(routeManager.getCurrentState());
         }
-    });
+    };
+    addManagedEventListener(window, 'viewStateOverride', handleViewStateOverride);
 
     // --- Initialization ---
     routeManager.subscribe(updateHeaderUI);
     // NEW: Subscribe the notification icon UI update function
     routeManager.subscribe(updateNotificationIconUI);
     console.log("✅ Header: Subscribed to routeManager for state updates.");
+}
+export function cleanup() {
+    console.log("Cleaning up top-nav listeners.");
+    eventListeners.forEach(({ element, type, listener }) => {
+        element.removeEventListener(type, listener);
+    });
+    eventListeners = [];
+    isInitialized = false;
 }
 
 // NEW: Function to load the HTML and then initialize the existing logic

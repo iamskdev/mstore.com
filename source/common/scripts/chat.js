@@ -1,6 +1,10 @@
 import { fetchAllMerchants, fetchAllUsers, waitForData } from '../../utils/data-manager.js';
 import { AuthService } from '../../firebase/auth/auth.js';
 
+// --- MODULE-LEVEL STATE ---
+let isInitialized = false;
+let eventListeners = [];
+
 /**
  * Renders the chat list into the container.
  * This logic was moved from chat-list.js to simplify the view's structure.
@@ -74,7 +78,7 @@ async function renderChatList() {
       if (chatTimeEl) chatTimeEl.textContent = ''; // Placeholder for time
 
       // Add click listener to navigate to the conversation view
-      chatItem.addEventListener('click', () => {
+      addManagedEventListener(chatItem, 'click', () => {
         const conversationId = chatItem.dataset.id;
         if (conversationId) {
           const currentRole = window.routeManager.currentRole || 'guest';
@@ -91,7 +95,13 @@ async function renderChatList() {
   }
 }
 
-export async function init() {
+function addManagedEventListener(element, type, listener) {
+    element.addEventListener(type, listener);
+    eventListeners.push({ element, type, listener });
+}
+
+export async function init(force = false) {
+  if (isInitialized && !force) return;
   console.log("Chat View Initialized");
 
   const chatListContainer = document.getElementById('chat-list-container');
@@ -118,7 +128,7 @@ export async function init() {
 
     const goToLoginButton = document.getElementById('go-for-auth');
     if (goToLoginButton) {
-      goToLoginButton.addEventListener('click', () => {
+      addManagedEventListener(goToLoginButton, 'click', () => {
         console.log('Go to Login button clicked!');
         // Use the global routeManager to navigate to the account view
         if (window.routeManager) {
@@ -133,7 +143,7 @@ export async function init() {
 
   // Add event listener for the support chat button (always visible)
   if (supportChatButton) {
-    supportChatButton.addEventListener('click', () => {
+    addManagedEventListener(supportChatButton, 'click', () => {
       console.log('Support Chat button clicked!');
       // FIX: Use custom alert for placeholder action
       window.showCustomAlert({
@@ -149,4 +159,14 @@ export async function init() {
       });
     });
   }
+  isInitialized = true;
+}
+
+export function cleanup() {
+    console.log("Cleaning up chat view listeners.");
+    eventListeners.forEach(({ element, type, listener }) => {
+        element.removeEventListener(type, listener);
+    });
+    eventListeners = [];
+    isInitialized = false;
 }
