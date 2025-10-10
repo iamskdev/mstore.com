@@ -59,6 +59,7 @@
   background: var(--bg-secondary);
   -webkit-background-clip: initial;
   background-clip: initial;
+  z-index: 2; /* --- FIX: Ensure active ring is on top of story gradient ring --- */
 }
 
 .story-item.active .avatar-name {
@@ -93,6 +94,15 @@
   background-clip: border-box;
   animation: none;
   box-shadow: none;
+}
+
+/* --- FIX: Ensure active ring (blue) is visible on top of a viewed story ring (gray) --- */
+/* This rule has higher specificity to override the .viewed styles when an item is also active. */
+.story-item.viewed.active .avatar-wrap {
+  border: 2px solid var(--accent-primary); /* Re-apply the blue border */
+  background: var(--bg-secondary); /* Reset background to show border correctly */
+  -webkit-background-clip: initial;
+  background-clip: initial;
 }
 
 .avatar-name {
