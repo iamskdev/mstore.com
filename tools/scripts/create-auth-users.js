@@ -56,6 +56,10 @@ async function createAuthUsers() {
                 let userRecord;
                 try {
                     userRecord = await auth.getUserByEmail(email);
+                    // --- FIX REVERTED: Do NOT reset password for existing users ---
+                    // This respects any custom passwords set by developers during testing,
+                    // preventing login failures after re-running the script. The script
+                    // will now only create users if they don't exist.
                     console.log(`   - 👤 User ${email} already exists in Auth. UID: ${userRecord.uid}`);
                 } catch (error) {
                     if (error.code === 'auth/user-not-found') {
@@ -100,14 +104,17 @@ async function createAuthUsers() {
                 const firestoreUid = doc.data().auth?.provider?.uid;
                 const firestoreProvider = doc.data().auth?.provider?.name;
 
-                // Update if UID is missing/different or if provider name is not 'firebase'
-                if (firestoreUid !== userRecord.uid || firestoreProvider !== 'firebase') {
+                // --- SAFER UPDATE LOGIC ---
+                // Only update the Firestore document if the UID is missing.
+                // If it's present but different, log a warning to avoid overwriting potentially intentional changes.
+                if (!firestoreUid) {
                     console.log(`   - 🔄 Syncing Firestore document ${customUserId} with Auth UID ${userRecord.uid}...`);
-                    await firestoreDocRef.update({ 
-                        'auth.provider.uid': userRecord.uid,
-                        'auth.provider.name': 'firebase' // Explicitly set the provider
-                    });
+                    await firestoreDocRef.update({ 'auth.provider.uid': userRecord.uid, 'auth.provider.name': 'firebase' });
                     console.log(`   - ✅ Firestore document updated.`);
+                } else if (firestoreUid !== userRecord.uid) {
+                    // If the UID is present but doesn't match, it's a significant inconsistency.
+                    // Instead of overwriting, we warn the developer.
+                    console.warn(`   - ⚠️ WARNING: UID mismatch for ${email}. Firestore has '${firestoreUid}', Auth has '${userRecord.uid}'. Skipping update to prevent data loss.`);
                 } else {
                     console.log(`   - 👍 Firestore document ${customUserId} is already in sync.`);
                 }
@@ -130,7 +137,8 @@ async function createAuthUsers() {
                                 links: { userId: customUserId },
                                 lastUpdated: new Date().toISOString(),
                                 note: "Account created via dev script (create-auth-users.js).",
-                                ownerUID: userRecord.uid
+                                // FIX: Add the ownerUID to the meta object for security rule checks.
+                                ownerUID: userRecord.uid 
                             },
                             // Add other essential fields with default values to match the live schema
                             deviceInfo: [],

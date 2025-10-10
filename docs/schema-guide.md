@@ -1,7 +1,7 @@
 
 > **DOCUMENT AUDIT**
 > - **Status:** `Updated`
-> - **Last Reviewed:** 2025-10-08 18:00:00 IST
+> - **Last Reviewed:** 2025-10-10 18:00:00 IST
 > - **Reviewer:** Santosh (with Gemini)
 > - **Purpose:** This document provides a comprehensive guide to all Firestore data collections, detailing each schema's structure, fields, and relationships. It is the single source of truth for the data model.
 
@@ -80,8 +80,8 @@
 -   **`meta`**: उपयोगकर्ता की पहचान, भूमिका और स्थिति के लिए मेटाडेटा।
     -   `userId` (string): अद्वितीय उपयोगकर्ता ID (जैसे `USR...`) - प्राइमरी की।
     -   `roles` (array): उपयोगकर्ता को सौंपी गई भूमिकाएँ (`user`, `merchant`, `admin`)।
-    -   `primaryRole` (string): उपयोगकर्ता की प्राथमिक भूमिका।
-    -   `links` (object): अन्य संग्रहों से संबंध (`accountId`, `merchantId`)।
+    -   `primaryRole` (string): उपयोगकर्ता की प्राथमिक भूमिका (जैसे, `consumer`, `merchant`)।
+    -   `links` (object): अन्य संग्रहों से संबंध (`accountId`, `merchantIds`)।
     -   `flags` (object): बूलियन मान जो उपयोगकर्ता की स्थिति दर्शाते हैं (`isActive`, `isSuspended`, `isVerified`, `isAdmin`, `isSuperAdmin` आदि)।
 -   **`info`**: उपयोगकर्ता की व्यक्तिगत जानकारी।
 -   **`info`**: उपयोगकर्ता की व्यक्तिगत जानकारी।
@@ -98,7 +98,7 @@
 
 ### संबंध (Relationships)
 - **`users` 1-to-1 `accounts`**: प्रत्येक `users` दस्तावेज़ `meta.links.accountId` के माध्यम से एक `accounts` दस्तावेज़ से जुड़ा होता है।
-- **`users` 1-to-1 `merchants`**: यदि उपयोगकर्ता एक व्यापारी है, तो `meta.links.merchantId` उसे संबंधित `merchants` दस्तावेज़ से जोड़ता है।
+- **`users` 1-to-Many `merchants`**: एक उपयोगकर्ता अब कई व्यावसायिक खातों का मालिक हो सकता है। `meta.links.merchantIds` (एक ऐरे) उसे संबंधित `merchants` दस्तावेज़ों से जोड़ता है।
 
 ---
 
@@ -109,7 +109,8 @@
 ### मुख्य फ़ील्ड्स:
 
 -   **`meta`**: खाते का मेटाडेटा (`accountId`, `links.userId`)।
--   **`deviceInfo`**: उपयोगकर्ता द्वारा उपयोग किए गए उपकरणों की सूची, जिसमें प्रत्येक डिवाइस के लिए `fcmToken` शामिल है।
+-   `ownerUID` (string): **(महत्वपूर्ण)** यह फ़ील्ड उपयोगकर्ता के फायरबेस प्रमाणीकरण UID को संग्रहीत करता है। यह सुरक्षा नियमों के लिए आवश्यक है ताकि यह सुनिश्चित हो सके कि केवल मालिक ही अपने खाते के दस्तावेज़ को पढ़ सकता है।
+-   `deviceInfo`: उपयोगकर्ता द्वारा उपयोग किए गए उपकरणों की सूची, जिसमें प्रत्येक डिवाइस के लिए `fcmToken` शामिल है।
 -   **`settings`**: उपयोगकर्ता-विशिष्ट सेटिंग्स (`theme`, `language`)।
 -   **`searchHistory`**: हाल की खोजें।
 -   **`subscription`** (object): उपयोगकर्ता की सदस्यता का विवरण (`plan`, `type`, `status`, आदि)।

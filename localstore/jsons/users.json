@@ -32,21 +32,6 @@
         "state": "Jharkhand"
       }
     },
-    "info": {
-      "fullName": "Santosh Kumar",
-      "gender": "male",
-      "dob": "2000-04-15",
-      "tags": [
-        "Top Contributor"
-      ],
-      "email": "iamsantosh@outlook.in",
-      "username": "iamskdev.io",
-      "usernameUpdatedAt": "2025-10-04T20:47:31.401Z",
-      "bio": "Crafting code with creativity 💻 | Building ideas into reality 🚀 | Passionate developer & lifelong learner 🌱",
-      "nickName": "Mr. Santosh",
-      "phone": "+91 9608547007",
-      "avatar": "assets/users/avatars/iamskdev.io_profile_pic"
-    },
     "auth": {
       "login": {
         "attempts": 1,
@@ -76,8 +61,23 @@
       "provider": {
         "name": "firebase",
         "lastUpdated": "2025-08-07T14:23:00Z",
-        "uid": "GicJvLLgsMZlYq8AogB3snrIeEo2"
+        "uid": "7WtDEZQFmiUW7RiqxcFMSMxJkDw2"
       }
+    },
+    "info": {
+      "fullName": "Santosh Kumar",
+      "gender": "male",
+      "dob": "2000-04-15",
+      "tags": [
+        "Top Contributor"
+      ],
+      "email": "iamsantosh@outlook.in",
+      "username": "iamskdev.io",
+      "usernameUpdatedAt": "2025-10-04T20:47:31.401Z",
+      "nickName": "Mr. Santosh",
+      "avatar": "assets/users/avatars/iamskdev.io_profile_pic",
+      "phone": "+919608547007",
+      "bio": "Crafting code with creativity."
     }
   },
   {
@@ -91,7 +91,7 @@
       ],
       "links": {
         "accountId": "ACC-20251002-170602-202-XYZA",
-        "merchantId": "MRC-20251002-170602-401-ASDF"
+        "merchantIds": ["MRC-20251002-170602-401-ASDF"]
       },
       "flags": {
         "isActive": true,
@@ -111,19 +111,6 @@
         "street": "Durgapur",
         "state": "Jharkhand"
       }
-    },
-    "info": {
-      "fullName": "Rohit Kumar",
-      "nickName": "Rohit Kumar",
-      "gender": "male",
-      "avatar": "./localstore/images/users/rohit.jpg",
-      "tagline": "Premium seller",
-      "email": "mycafe@outlook.in",
-      "phone": "+91 1234567890",
-      "dob": "2000-04-15",
-      "bio": "",
-      "username": "internetcafe",
-      "usernameUpdatedAt": "2025-10-04T20:44:17.718Z"
     },
     "auth": {
       "login": {
@@ -149,8 +136,21 @@
       "provider": {
         "lastUpdated": null,
         "name": "firebase",
-        "uid": "USR-20251002-170602-102-BCDE"
+        "uid": "3pcE7auXtVPrD5Cith8AvMTIRJn1"
       }
+    },
+    "info": {
+      "fullName": "Rohit Kumar",
+      "nickName": "Rohit Kumar",
+      "gender": "male",
+      "tagline": "Premium seller",
+      "email": "mycafe@outlook.in",
+      "dob": "2000-04-15",
+      "username": "internetcafe",
+      "usernameUpdatedAt": "2025-10-04T20:44:17.718Z",
+      "phone": "+911234567890",
+      "bio": "The businessman ever.",
+      "avatar": "assets/users/avatars/internetcafe_profile_pic"
     }
   },
   {
@@ -173,6 +173,14 @@
         "isConsumer": true,
         "isAgent": false,
         "isStaff": false
+      }
+    },
+    "address": {
+      "0": {
+        "zipCode": "827013",
+        "city": "Chas",
+        "street": "Durgapur",
+        "state": "Jharkhand"
       }
     },
     "auth": {
@@ -198,16 +206,8 @@
       },
       "provider": {
         "lastUpdated": null,
-        "uid": "J7nVsborLegTRbVTbQopd3ZlBIA2",
-        "name": "firebase"
-      }
-    },
-    "address": {
-      "0": {
-        "zipCode": "827013",
-        "city": "Chas",
-        "street": "Durgapur",
-        "state": "Jharkhand"
+        "name": "firebase",
+        "uid": "3OkkX5RHEQZHZpe8iewpkLUnE1P2"
       }
     },
     "info": {
@@ -218,12 +218,12 @@
       "phone": "+919876543210",
       "gender": "male",
       "dob": "2020-04-15",
-      "bio": "hi",
       "fullName": "Vansh Kumar",
       "username": "vanshkkumar",
       "usernameUpdatedAt": "2025-10-04T18:17:36.605Z",
       "nickName": "Hey Vansh",
-      "avatar": "assets/users/avatars/vanshkkumar_profile_pic"
+      "avatar": "assets/users/avatars/vanshkkumar_profile_pic",
+      "bio": "Shopping lover"
     }
   },
   {
@@ -237,7 +237,7 @@
       ],
       "links": {
         "accountId": "ACC-20251002-170604-204-ZABC",
-        "merchantId": "MRC-20251002-170604-402-FGHJ"
+        "merchantIds": ["MRC-20251002-170604-402-FGHJ"]
       },
       "flags": {
         "isActive": true,
@@ -299,7 +299,7 @@
       "provider": {
         "lastUpdated": null,
         "name": "firebase",
-        "uid": "USR-20251002-170604-104-DEFG"
+        "uid": "eOtvRwDp9vX8qWnp1thGVH4Xpd13"
       }
     }
   },
@@ -339,6 +339,7 @@
       "email": "chittaranjanm754@gmail.com",
       "phone": ""
     },
+    "address": [],
     "auth": {
       "login": {
         "attempts": 0,
@@ -347,11 +348,6 @@
           "hash": "",
           "updatedAt": "2025-10-03T15:54:39.126Z"
         }
-      },
-      "provider": {
-        "name": "google.com",
-        "uid": "QovXdUTDIWMf90ANQvp4l0z4zXn2",
-        "lastUpdated": "2025-10-03T15:54:39.126Z"
       },
       "flags": {
         "twoFactorEnabled": false,
@@ -364,8 +360,12 @@
         "email": "",
         "phone": "",
         "securityQuestions": []
+      },
+      "provider": {
+        "lastUpdated": "2025-10-03T15:54:39.126Z",
+        "uid": "sMR6jutXzkYctuUtojjFe4dHIO02",
+        "name": "firebase"
       }
-    },
-    "address": []
+    }
   }
 ]

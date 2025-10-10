@@ -14,6 +14,8 @@ import { fileURLToPath } from 'url';
 const SERVICE_ACCOUNT_PATH = '../../source/firebase/serviceAccountKey.json';
 // Output directory where JSON files will be saved
 const OUTPUT_DIR_PATH = '../../localstore/jsons';
+// Optional: specify a single collection to export from the command line.
+const SPECIFIC_COLLECTION_TO_EXPORT = process.argv[2] ? path.basename(process.argv[2], '.json') : '';
 
 /**
  * Main function to export Firestore data to separate JSON files.
@@ -37,12 +39,19 @@ async function exportCollectionsToFiles() {
         await fs.mkdir(outputDirPath, { recursive: true });
         console.log(`📂 Output directory ensured: ${outputDirPath}`);
 
+        // --- Determine which collections to process ---
+        let collectionsToProcess;
+
+        if (SPECIFIC_COLLECTION_TO_EXPORT) {
+            console.log(`🔥 Fetching and exporting specific collection: ${SPECIFIC_COLLECTION_TO_EXPORT}...`);
+            collectionsToProcess = [db.collection(SPECIFIC_COLLECTION_TO_EXPORT)];
+        } else {
+            console.log('🔥 Fetching and exporting all collections...');
+            collectionsToProcess = await db.listCollections();
+        }
+
         // --- Fetch data and write to files ---
-        console.log('🔥 Fetching and exporting all collections...');
-
-        const collections = await db.listCollections();
-
-        for (const collectionRef of collections) {
+        for (const collectionRef of collectionsToProcess) {
             const collectionId = collectionRef.id;
             console.log(`   - Processing collection: ${collectionId}`);
 

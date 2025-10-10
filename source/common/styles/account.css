@@ -90,6 +90,20 @@
     margin-bottom: 8px;
 }
 
+/* NEW: Style for the clickable action link next to the username */
+.profile-username .action-link {
+    font-weight: 600;
+    color: var(--accent-primary);
+    cursor: pointer;
+    margin-left: 8px;
+    transition: color 0.2s;
+}
+
+.profile-username .action-link:hover {
+    color: var(--accent-primary-hover);
+    text-decoration: underline;
+}
+
 .accout-type-info {
     display: flex;
     flex-direction: column;
@@ -306,4 +320,21 @@
 .promo-text {
     font-size: 16px;
     font-weight: 600;
+}
+
+/* --- Styles for the new action items in the Switch Account modal --- */
+.switch-account-action-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin-top: 10px; /* Add some space above */
+    border-top: 1px solid var(--border-color); /* Separator */
+    cursor: pointer;
+    color: var(--accent-primary);
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.switch-account-action-item:hover {
+    background-color: rgba(var(--accent-primary-rgb), 0.1);
 }

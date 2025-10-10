@@ -101,13 +101,12 @@ service cloud.firestore {
 
     match /users/{userId} {
       // GET: Ek user apna document padh sakta hai. Admin kisi ka bhi.
-      // DEV-NOTE: `request.auth != null` rule development ke liye hai taaki impersonation feature kaam kare.
-      // PRODUCTION me ise `isOwnerOfDoc()` se badalna chahiye.
-      allow get: if isOwnerOfDoc() || isAdmin() || request.auth != null;
+      // A user can get their own document, or an admin can get any document.
+      allow get: if isOwnerOfDoc() || isAdmin();
 
       // LIST: Sirf logged-in user hi users collection ko query kar sakte hain (e.g., phone number check ke liye).
-      // WARNING: Yeh development ke liye hai. Production me, ise sirf Admins tak seemit hona chahiye.
-      allow list: if request.auth != null || isAdmin();
+      // Only an admin can list all users (for the impersonation tool).
+      allow list: if isAdmin();
 
       // UPDATE: User apna profile update kar sakta hai, ya Admin kisi ka bhi.
       allow update: if isOwnerOfDoc() || isAdmin();

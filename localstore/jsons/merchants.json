@@ -28,7 +28,7 @@
     },
     "info": {
       "name": "Internet Cafe & Grocery",
-      "handle": "@internetcafe",
+      "handle": "internetcafe",
       "logo": "./localstore/images/logos/internet-cafe-logo.jpg",
       "qrCode": "/admin/assets/images/merchant/qr/MQR00000001.png",
       "tagline": "Affordable groceries & services since 2021",
@@ -198,7 +198,7 @@
     },
     "info": {
       "name": "Anita Sringar Store",
-      "handle": "@anitastore_patna",
+      "handle": "anitastore_patna",
       "logo": "./localstore/images/logos/anita-store-logo.jpg",
       "qrCode": "/admin/assets/images/merchant/qr/MQR00000002.png",
       "tagline": "Traditional beauty, modern elegance.",

@@ -18,7 +18,7 @@
 <div id="impersonate-modal" class="impersonate-modal">
   <div class="impersonate-modal-content">
     <div class="impersonate-header">
-      <h3>Impersonate User</h3>
+      <h3>User List</h3>
       <button id="impersonate-close-btn">&times;</button>
     </div>
     <div class="impersonate-search-wrapper">
@@ -153,6 +153,20 @@
     cursor: pointer;
     line-height: 1
   }
+  /* --- FIX: Avatar styles to handle both img and icon --- */
+  .impersonate-user-item .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: var(--bg-secondary);
+    font-size: 24px; /* Icon size */
+  }
   /* Ensure the user list takes available space and scrolls */
   .impersonate-user-list {
     max-height: 300px;
@@ -173,14 +187,10 @@
   .impersonate-user-item:hover {
     background-color: var(--bg-tertiary);
   }
-  .impersonate-user-item .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-size: cover;
-    background-position: center;
-    margin-right: 10px;
-    flex-shrink: 0;
+  .impersonate-user-item .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .impersonate-user-info {
     display: flex;
@@ -246,6 +256,7 @@
   import { routeManager } from './source/main.js';
   import { showToast } from './source/utils/toast.js';
   import { getAppConfig } from './source/settings/main-config.js';
+  import { buildCloudinaryUrl } from './source/api/cloudinary.js';
 
   (async function() {
     // --- Initialization and Role Button Logic ---
@@ -414,30 +425,35 @@
 
     function populateUserSelector(users) {
       userListContainer.innerHTML = '';
-      users.forEach(user => {
+      // --- FIX: Filter to show only consumers ---
+      const consumers = users.filter(user => user.meta.roles.includes('consumer'));
+
+      consumers.forEach(user => {
         const userItem = document.createElement('button'); // Changed to button for accessibility
         userItem.className = 'impersonate-user-item';
         userItem.dataset.userId = user.meta.userId; 
         userItem.dataset.userType = user.meta.primaryRole || 'consumer';
+
+        // --- FIX: Robust avatar/logo handling ---
+        const avatarPath = user.info.avatar;
+        let avatarHtml;
+        if (avatarPath) {
+            const isCloudinaryId = !avatarPath.startsWith('./') && !avatarPath.startsWith('http');
+            const avatarUrl = isCloudinaryId ? buildCloudinaryUrl(avatarPath) : avatarPath;
+            avatarHtml = `<img src="${avatarUrl}" alt="${user.info.fullName || 'Avatar'}">`;
+        } else {
+            avatarHtml = `<i class="fas fa-user-circle"></i>`; // Fallback icon
+        }
+
         userItem.innerHTML = `
-          <div class="avatar" style="background-image: url('${user.info.avatar || './source/assets/logos/app-logo.png'}')"></div>
+          <div class="avatar">${avatarHtml}</div>
           <div class="impersonate-user-info">
             <span class="name">${user.info.fullName || 'Unknown User'}</span>
-            <span class="roles">${user.meta.roles.join(', ')}</span>
-            <span class="email">${user.info.email || ''}</span>
+            <span class="email">${user.info.email || ''}</span>            
+            <span class="roles">User is &gt; ${user.meta.roles.join(', ')}</span>
           </div>
         `;
-        userItem.addEventListener('click', () => {
-          localStorage.setItem('currentUserId', user.meta.userId);
-          routeManager.handleRoleChange(user.meta.primaryRole || 'consumer');
-          // --- FIX: Also update type and dispatch event on impersonation ---
-          localStorage.setItem('currentUserType', user.meta.primaryRole || 'consumer');
-          window.dispatchEvent(new CustomEvent('authStateChanged'));
-
-          impersonateModal.classList.remove('visible');
-          // Show a toast to confirm the impersonation
-          showToast('info', `Now impersonating: ${user.info.fullName}`, 2500);
-        });
+        // --- REMOVED: Click listener to prevent account switching from this modal ---
         userListContainer.appendChild(userItem);
       });
     }

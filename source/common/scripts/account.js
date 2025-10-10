@@ -1,4 +1,4 @@
-import { fetchUserById, fetchAccountById, fetchMerchantById, localCache } from '../../utils/data-manager.js';
+import { fetchUserById, fetchAccountById, fetchMerchantById, localCache, fetchAllMerchants } from '../../utils/data-manager.js';
 import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 import { routeManager } from '../../main.js';
 import { showFeedbackModal } from '../../partials/modals/feedback.js';
@@ -8,6 +8,7 @@ import { showFeedbackModal } from '../../partials/modals/feedback.js';
  */
 async function renderProfileData() {
     const userId = localCache.get('currentUserId');
+    const currentUserType = localCache.get('currentUserType');
 
     // Get DOM elements
     const nameDisplay = document.getElementById('profile-name-display');
@@ -46,8 +47,9 @@ async function renderProfileData() {
         // data sources), the primary user data will still be rendered, preventing a "Could not load" error.
         const [userResult, accountResult, merchantResult] = await Promise.allSettled([
             fetchUserById(userId),
-            fetchAccountById(localCache.get('currentAccountId')), // Fetch account if ID exists
-            fetchMerchantById(localCache.get('currentMerchantId')) // Fetch merchant if ID exists
+            fetchAccountById(localCache.get('currentAccountId')),
+            // Fetch current merchant data only if the active role is 'merchant'
+            currentUserType === 'merchant' ? fetchMerchantById(localCache.get('currentMerchantId')) : Promise.resolve(null)
         ]);
 
         // Extract the data from the settled promises.
@@ -74,9 +76,37 @@ async function renderProfileData() {
         // FIX: Prioritize nickName over fullName for consistency with top-nav.
         nameDisplay.textContent = user.info?.nickName || user.info?.fullName || 'Anonymous User';
 
-        // --- NEW: Display the @username ---
-        if (user.info?.username) {
-            usernameDisplay.textContent = `@${user.info.username}`;
+        // --- NEW: Role-based header logic ---
+        if (currentUserType === 'merchant' && merchant) {
+            // For merchants, show their handle (without the extra @) and a "View Profile" link
+            usernameDisplay.innerHTML = `
+                <span>@${merchant.info.handle.replace('@', '')}</span>
+                <span class="action-link" data-merchant-id="${merchant.meta.merchantId}">› View Profile</span>
+            `;
+            usernameDisplay.querySelector('.action-link').addEventListener('click', (e) => {
+                const merchantId = e.target.dataset.merchantId;
+                routeManager.switchView(currentUserType, `merchant-profile/${merchantId}`);
+            });
+        } else if (currentUserType === 'consumer') {
+            // For consumers, show their username and potentially a "Create Business Profile" link
+            const hasMerchantProfiles = user.meta?.links?.merchantIds && user.meta.links.merchantIds.length > 0;
+            const username = user.info?.username ? `@${user.info.username}` : '';
+            // FIX: Shorten the text to "Create Business"
+            const createProfileLink = !hasMerchantProfiles
+                ? `<span class="action-link" id="create-business-profile-link">› Create Business</span>`
+                : '';
+            usernameDisplay.innerHTML = `<span>${username}</span>${createProfileLink}`;
+
+            if (!hasMerchantProfiles) {
+                document.getElementById('create-business-profile-link')?.addEventListener('click', () => {
+                    // Placeholder: In a real app, this would navigate to a merchant registration page
+                    window.showCustomAlert({ title: 'Coming Soon', message: 'The business profile creation flow is under development.' });
+                });
+            }
+        } else {
+            // For other roles like admin, just show the username.
+            const username = user.info?.username ? `@${user.info.username}` : '';
+            usernameDisplay.innerHTML = `<span>${username}</span>`;
         }
 
         // --- Collect and Render All Profile Tags using both user and account data ---
@@ -234,16 +264,28 @@ async function initSwitchAccountModal() {
         modal.classList.add('visible');
 
         try {
+            console.log(`[SwitchAccount] 1. Fetching user data for userId: ${userId}`);
             const user = await fetchUserById(userId);
-            const account = user.meta.links.accountId ? await fetchAccountById(user.meta.links.accountId) : null;
-            const merchant = user.meta.links.merchantId ? await fetchMerchantById(user.meta.links.merchantId) : null;
+            console.log('[SwitchAccount] 1a. User data fetched successfully:', user);
+
+            // --- FIX: Securely fetch only the user's own merchant profiles ---
+            // This avoids calling fetchAllMerchants(), which causes permission errors for non-admins.
+            let merchantProfiles = [];
+            const userMerchantIds = user.meta?.links?.merchantIds || [];
+            console.log(`[SwitchAccount] 3. Found ${userMerchantIds.length} linked merchant IDs.`);
+ 
+            if (userMerchantIds.length > 0) {
+                console.log(`[SwitchAccount] 3a. Fetching individual merchant profiles...`);
+                const merchantPromises = userMerchantIds.map(id => fetchMerchantById(id));
+                merchantProfiles = (await Promise.all(merchantPromises)).filter(Boolean); // Filter out any null results
+                console.log('[SwitchAccount] 3b. Merchant profiles fetched successfully:', merchantProfiles);
+            }
 
             let roles;
-            if (user?.meta?.flags?.isSuperAdmin) {
-                // If the user is a Super Admin, grant them access to all primary roles.
-                roles = [consumer, 'merchant', 'admin'];
-            } else {
-                roles = user?.meta?.roles || [];
+            // FIX: Use user.meta.roles as the source of truth, isSuperAdmin is for additional capabilities.
+            roles = user?.meta?.roles || [];
+            if (user?.meta?.flags?.isSuperAdmin && !roles.includes('admin')) {
+                roles.push('admin'); // Ensure super admin always has admin role option
             }
             const currentRole = localCache.get('currentUserType');
 
@@ -255,67 +297,192 @@ async function initSwitchAccountModal() {
 
             roleListContainer.innerHTML = ''; // Clear loader
 
-            // Determine if the primary user account is suspended
-            const isUserSuspended = user.meta?.flags?.isSuspended;
+            // --- NEW: Final Role-based Modal Logic ---
+            const isSuperAdmin = user?.meta?.flags?.isSuperAdmin;
+            const currentMerchantId = localCache.get('currentMerchantId');
 
-            roles.forEach(role => {
-                const item = document.createElement('div');
-                item.className = 'switch-account-item';
-                item.dataset.role = role;
+            if (isSuperAdmin) {
+                // --- SUPER ADMIN VIEW ---
+                // Always show all three primary roles for testing.
+                ['consumer', 'merchant', 'admin'].forEach(role => {
+                    // For the generic 'merchant' switch, don't pass a specific merchant object.
+                    const item = createRoleItem({
+                        role: role,
+                        user: user,
+                        isActive: currentRole === role && !currentMerchantId, // Active only if it's the generic role
+                        currentRole: currentRole
+                    });
+                    roleListContainer.appendChild(item);
+                });
 
-                // --- NEW: Logic for suspended accounts ---
-                let isRoleSuspended = false;
-                // For now, we assume only the entire user can be suspended.
-                // In the future, you could have role-specific suspension flags.
-                if (isUserSuspended) {
-                    isRoleSuspended = true;
+                // Now, add the conditional action button based on the current role.
+                if (currentRole === 'consumer') { // This was the block with the error
+                    const createBtn = createActionRoleItem('fa-store', 'Create Business Profile', 'User • Merchant Account', () => {
+                        window.showCustomAlert({ title: 'Coming Soon', message: 'The business profile creation flow is under development.' });
+                        closeModal();
+                    });
+                    roleListContainer.appendChild(createBtn);
+                } else if (currentRole === 'merchant') { // This was the block with the error
+                    const addBtn = createActionRoleItem('fa-plus-circle', 'Add Another Business', 'User • Merchant Account', () => {
+                        window.showCustomAlert({ title: 'Coming Soon', message: 'The flow to add another business is under development.' });
+                        closeModal();
+                    });
+                    roleListContainer.appendChild(addBtn);
                 }
 
-                let statusIconHtml = '';
-                if (isRoleSuspended) {
-                    item.classList.add('disabled'); // Make it non-interactive
-                    statusIconHtml = '<div class="status-icon suspended"><i class="fas fa-ban"></i></div>';
-                } else if (role === currentRole) {
-                    statusIconHtml = '<div class="status-icon active"><i class="fas fa-check-circle"></i></div>';
-                }
+            } else {
+                // --- STANDARD USER VIEW (Consumer/Merchant) ---
+                const consumerItem = createRoleItem({ role: 'consumer', user, isActive: currentRole === 'consumer', isSuspended: user.meta?.flags?.isSuspended, currentRole });
+                roleListContainer.appendChild(consumerItem);
 
-                const avatarHtml = user.info?.avatar
-                    ? `<img src="${user.info.avatar}" alt="Avatar">`
-                    : `<i class="fas ${roleIcons[role] || 'fa-user-circle'}"></i>`;
-
-                item.innerHTML = `
-                    <div class="switch-account-avatar">${avatarHtml}</div>
-                    <div class="switch-account-details">
-                        <span class="user-full-name">${user.info?.nickName || user.info?.fullName || 'Apna User'}</span>
-                        <span class="account-role-type">${getTagsForRole(role, user, account, merchant, { showPremium: false, showPrivilegeTags: false })}</span>
-                    </div>
-                    ${statusIconHtml}
-                `;
-                // Only add click listener if the role is not suspended
-                if (!isRoleSuspended) {
-                    item.addEventListener('click', () => switchRole(role));
+                if (userMerchantIds.length > 0) {
+                    merchantProfiles.sort((a, b) => {
+                        if (a.meta.merchantId === currentMerchantId) return -1;
+                        if (b.meta.merchantId === currentMerchantId) return 1;
+                        return a.info.storeName.localeCompare(b.info.storeName);
+                    });
+                    merchantProfiles.forEach(merchant => {
+                        const merchantItem = createRoleItem({ role: 'merchant', user, merchant, isActive: currentRole === 'merchant' && currentMerchantId === merchant.meta.merchantId, isSuspended: user.meta?.flags?.isSuspended || merchant.meta?.flags?.isSuspended, currentRole });
+                        roleListContainer.appendChild(merchantItem);
+                    });
+                    const addBusinessBtn = createActionRoleItem('fa-plus-circle', 'Add Another Business', 'User • Merchant Account', () => {
+                        window.showCustomAlert({ title: 'Coming Soon', message: 'The flow to add another business is under development.' });
+                        closeModal();
+                    });
+                    roleListContainer.appendChild(addBusinessBtn);
+                } else if (roles.includes('consumer')) {
+                    const createBusinessBtn = createActionRoleItem('fa-store', 'Create Business Profile', 'User • Merchant Account', () => {
+                        window.showCustomAlert({ title: 'Coming Soon', message: 'The business profile creation flow is under development.' });
+                        closeModal();
+                    });
+                    roleListContainer.appendChild(createBusinessBtn);
                 }
-                roleListContainer.appendChild(item);
-            });
+            }
         } catch (error) {
             console.error('Failed to fetch user roles:', error);
             roleListContainer.innerHTML = '<p>Could not load Accounts.</p>';
-        }
+        } // The misplaced brace was here, now it's correct.
     };
 
     const closeModal = () => modal.classList.remove('visible');
-
-    const switchRole = (newRole) => {
+    
+    const switchRole = (newRole, merchantId = null) => {
         const userId = localStorage.getItem('currentUserId');
-        console.log(`Switching to role: ${newRole} for user: ${userId}`);
+        console.log(`Switching to role: ${newRole} for user: ${userId}`, merchantId ? `Merchant: ${merchantId}` : '');
         // The routeManager will handle updating localStorage and reloading the view.
-        routeManager.handleRoleChange(newRole, userId);
+        routeManager.handleRoleChange(newRole, userId, merchantId);
         closeModal();
     };
 
     openBtn.addEventListener('click', openModal);
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => e.target === modal && closeModal());
+}
+
+/**
+ * Helper function to create a role item for the switch account modal.
+ * @param {object} config - Configuration for the item.
+ * @returns {HTMLElement} The created DOM element.
+ */
+function createRoleItem({ role, user, merchant = null, isActive, isSuspended = false, currentRole }) {
+    // --- FIX: Correctly determine active state for merchant accounts ---
+    // The `isActive` flag passed in was not always correct for merchants.
+    // We need to explicitly check if the current role is 'merchant' AND
+    // if the current merchant ID matches the one for this item.
+    const currentMerchantId = localCache.get('currentMerchantId');
+    const isActuallyActive = (role === 'merchant' && merchant) ? (currentRole === 'merchant' && currentMerchantId === merchant.meta.merchantId) : isActive;
+
+    const item = document.createElement('div');    
+    item.className = 'switch-account-item';
+    item.dataset.role = role;
+    if (merchant) {
+        item.dataset.merchantId = merchant.meta.merchantId;
+    }
+    
+    let statusIconHtml = '';
+    if (isSuspended) {
+        item.classList.add('disabled');
+        statusIconHtml = '<div class="status-icon suspended"><i class="fas fa-ban"></i></div>';    
+    } else if (isActuallyActive) {
+        statusIconHtml = '<div class="status-icon active"><i class="fas fa-check-circle"></i></div>';
+    }
+
+    let displayName, avatarHtml;
+
+    if (role === 'merchant' && merchant) {
+        // --- FIX: Use merchant's logo and name for merchant accounts ---
+        displayName = merchant.info.name;
+        // --- FIX: Differentiate between local paths and Cloudinary public_ids ---
+        // Only build a Cloudinary URL if the path is not a local one (doesn't start with './' or '/').
+        const logoPath = merchant.info.logo;
+        let finalLogoUrl = null;
+        if (logoPath) {
+            finalLogoUrl = !logoPath.startsWith('./') && !logoPath.startsWith('/') ? buildCloudinaryUrl(logoPath) : logoPath;
+        }
+        avatarHtml = finalLogoUrl // FIX: Use the correct variable name 'finalLogoUrl' instead of 'logoUrl'
+            ? `<img src="${finalLogoUrl}" alt="${displayName} Logo">`
+            : `<i class="fas fa-store"></i>`; // Fallback icon for merchant
+    } else {
+        // For consumer and admin roles, use user's info
+        displayName = user.info?.nickName || user.info?.fullName || 'Apna User';
+        const avatarUrl = user.info?.avatar ? buildCloudinaryUrl(user.info.avatar) : null;
+        avatarHtml = avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` : `<i class="fas fa-user-circle"></i>`;
+    }
+    const roleTags = getTagsForRole(role, user, null, merchant, { showPremium: false, showPrivilegeTags: false });
+
+    item.innerHTML = `
+        <div class="switch-account-avatar">${avatarHtml}</div>
+        <div class="switch-account-details">
+            <span class="user-full-name">${displayName}</span>
+            <span class="account-role-type">${roleTags}</span>
+        </div>
+        ${statusIconHtml}
+    `;
+
+    if (!isSuspended) {
+        item.addEventListener('click', () => {
+            const newRole = item.dataset.role;
+            const merchantId = item.dataset.merchantId || null;
+            const currentMerchantId = localCache.get('currentMerchantId');
+
+            // Prevent re-switching to the already active role/merchant
+            if (newRole === currentRole && merchantId === currentMerchantId) {
+                return;
+            }
+            routeManager.handleRoleChange(newRole, user.meta.userId, merchantId);
+            document.getElementById('switch-account-modal').classList.remove('visible');
+        });
+    }
+    return item;
+}
+
+function createActionItem(iconClass, text, onClick) {
+    const item = document.createElement('div');
+    item.className = 'switch-account-action-item';
+    item.innerHTML = `<i class="fas ${iconClass}" style="margin-right: 15px; width: 20px; text-align: center;"></i> ${text}`;
+    item.addEventListener('click', onClick);
+    return item;
+}
+
+/**
+ * NEW: Helper function to create an action item that looks like a role item.
+ * @param {string} iconClass - Font Awesome icon class.
+ * @param {string} title - The main text (e.g., "Create Business Profile").
+ * @param {string} subtitle - The secondary text (e.g., "User • Merchant Account").
+ * @param {function} onClick - The function to call on click.
+ * @returns {HTMLElement} The created DOM element.
+ */
+function createActionRoleItem(iconClass, title, subtitle, onClick) {
+    const item = document.createElement('div');
+    item.className = 'switch-account-item action-item'; // Use same base class + an action identifier
+    item.innerHTML = `
+        <div class="switch-account-avatar"><i class="fas ${iconClass}"></i></div>
+        <div class="switch-account-details">
+            <span class="user-full-name">${title}</span>
+            <span class="account-role-type">${subtitle}</span>
+        </div>`;
+    item.addEventListener('click', onClick);
+    return item;
 }
 
 export function init() {
@@ -404,6 +571,7 @@ export function init() {
                     routeManager.switchView(role, 'account/profile-update');
                 } else if (btn.id !== 'switch-account-btn') { // For any other button except "Switch Account"
                     // Handle other placeholder buttons
+                    const btnText = btn.textContent.trim();
                     window.showCustomAlert({
                         title: 'Feature Coming Soon',
                         message: `The "${btnText}" feature is currently under development.`
