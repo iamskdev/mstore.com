@@ -53,14 +53,14 @@ async function loadConversationHeader(merchantId) {
             return;
         }
 
-        nameEl.textContent = merchant.meta.info.name;
+        nameEl.textContent = merchant.info.name;
         // TODO: Implement real-time status later. For now, use a placeholder.
         statusEl.textContent = 'Tap to see info';
 
-        if (merchant.meta.info.logo) {
-            avatarEl.innerHTML = `<img src="${merchant.meta.info.logo}" alt="Logo" style="width:100%; height:100%; object-fit:cover;">`;
+        if (merchant.info.logo) {
+            avatarEl.innerHTML = `<img src="${merchant.info.logo}" alt="Logo" style="width:100%; height:100%; object-fit:cover;">`;
         } else {
-            avatarEl.textContent = merchant.meta.info.name.charAt(0).toUpperCase();
+            avatarEl.textContent = merchant.info.name.charAt(0).toUpperCase();
         }
 
     } catch (error) {

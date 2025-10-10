@@ -364,6 +364,11 @@ export async function init(force = false) {
         if (hasStory) {
             popup.querySelector('.popup-btn-story').addEventListener('click', (event) => {
                 event.stopPropagation();
+                // --- FIX: Mark story as viewed only after clicking 'View Story' ---
+                const storyEl = storiesRow.querySelector(`.story-item[data-id='${merchant.meta.merchantId}']`);
+                if (storyEl) {
+                    storyEl.classList.add('viewed');
+                }
                 storyViewer.open(merchant.meta.merchantId);
             });
         }
@@ -381,14 +386,6 @@ export async function init(force = false) {
         const storyEl = storiesRow.querySelector(`.story-item[data-id='${merchant.meta.merchantId}']`);
         if (storyEl) {
             storyEl.classList.add('active');
-            // Check if the merchant has a story to mark it as 'viewed'
-            const hasStory = stories.some(storyCollection =>
-                storyCollection.meta.links.merchantId === merchant.meta.merchantId &&
-                storyCollection.stories?.some(s => s.status === 'active')
-            );
-            if (hasStory) {
-                storyEl.classList.add('viewed');
-            }
         }
 
         // --- FIX: Restore the call to render the merchant's items ---
