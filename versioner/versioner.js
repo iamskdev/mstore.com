@@ -266,15 +266,24 @@ function updateConfigFile(entry) {
     const configJsonPath = path.resolve(__dirname, '../source/settings/config.json');
     try {
         const configJson = JSON.parse(fs.readFileSync(configJsonPath, 'utf-8'));
+        
+        // App version update
         if (!configJson.app) {
             configJson.app = {};
         }
         configJson.app.version = entry.version.new;
+
+        // Set dataSource to 'firebase' for the commit
+        if (!configJson.source) configJson.source = {};
+        configJson.source.data = "firebase"; 
+        console.log(`🔧 dataSource set to 'firebase' for commit.`);
+
+        // Audit details update
         if (!configJson.audit) {
             configJson.audit = {};
         }
         configJson.audit.modifyAt = nowISO();
-        configJson.audit.modifyBy = "System"; // Or a more specific value if available from commitDetails
+        configJson.audit.modifyBy = "System";
         fs.writeFileSync(configJsonPath, JSON.stringify(configJson, null, 2));
         console.log(`✅ config.json updated to version ${entry.version.new}`);
     } catch (e) {
