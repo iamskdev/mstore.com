@@ -22,6 +22,5 @@ if [ $EXIT_CODE -ne 0 ]; then
   exit $EXIT_CODE
 fi
 
-# If versioner.js performed a bump, then add the modified files to the commit
-git add source/settings/config.json
+# If versioner.js performed a bump, amend the commit. The staging is handled inside versioner.js.
 git commit --amend --no-edit --allow-empty

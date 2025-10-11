@@ -272,20 +272,29 @@ function updateConfigFile(entry) {
             configJson.app = {};
         }
         configJson.app.version = entry.version.new;
-
-        // Set dataSource to 'firebase' for the commit
-        if (!configJson.source) configJson.source = {};
-        configJson.source.data = "firebase"; 
-        console.log(`🔧 dataSource set to 'firebase' for commit.`);
-
+ 
         // Audit details update
         if (!configJson.audit) {
             configJson.audit = {};
         }
         configJson.audit.modifyAt = nowISO();
         configJson.audit.modifyBy = "System";
+
+        // Set dataSource to 'firebase' for the commit
+        if (!configJson.source) configJson.source = {};
+        configJson.source.data = "firebase"; 
+        console.log(`✅ Set dataSource to 'firebase'.`);
         fs.writeFileSync(configJsonPath, JSON.stringify(configJson, null, 2));
         console.log(`✅ config.json updated to version ${entry.version.new}`);
+
+        // Stage the file with the 'firebase' change
+        execSync(`git add "${configJsonPath}"`);
+        console.log(`✅ Staged config.json`);
+
+        // ALWAYS revert dataSource to 'emulator' for local development
+        configJson.source.data = 'emulator';
+        fs.writeFileSync(configJsonPath, JSON.stringify(configJson, null, 2));
+        console.log(`⏪ Reverted dataSource to 'emulator' for local development.`);
     } catch (e) {
         console.error(`❌ Failed to update config.json:`, e.message);
     }
