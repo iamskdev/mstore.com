@@ -48,7 +48,9 @@
   --shadow-focus-error: rgba(217, 48, 37, 0.2);
   --shadow-hover-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Added for card hover effect */
   --text-shadow-on-image: 0 1px 3px rgba(0,0,0,0.6); /* For text on cover photos */
-  --shadow-glow-accent: 0 0 10px rgba(var(--accent-primary-rgb), 0.7); /* For glowing effects */
+  --shadow-glow-accent: 0 0 10px rgba(var(--accent-primary-rgb), 0.7); /* Default blue glow */
+  --shadow-glow-story: 0 0 10px rgba(247, 37, 133, 0.6); /* Pink glow for new stories */
+  --shadow-glow-viewed: 0 0 10px rgba(8, 174, 234, 0.6); /* Cyan glow for viewed stories */
 
 
   /* --- 6. Component-Specific: Header --- */
@@ -125,7 +127,9 @@ html.dark-mode {
   --shadow-focus-error: rgba(255, 82, 82, 0.25);
   --shadow-hover-card: 0 10px 15px -3px rgba(255, 255, 255, 0.07), 0 4px 6px -2px rgba(255, 255, 255, 0.05); /* Changed to a light shadow for dark mode */
   --text-shadow-on-image: 0 1px 3px rgba(0,0,0,0.8); /* Stronger shadow for dark mode */
-  --shadow-glow-accent: 0 0 10px rgba(var(--accent-primary-rgb), 0.7); /* For glowing effects */
+  --shadow-glow-accent: 0 0 10px rgba(var(--accent-primary-rgb), 0.7); /* Default blue glow */
+  --shadow-glow-story: 0 0 10px rgba(247, 37, 133, 0.6); /* Pink glow for new stories */
+  --shadow-glow-viewed: 0 0 10px rgba(8, 174, 234, 0.6); /* Cyan glow for viewed stories */
 
   /* --- 6. Component-Specific: Header --- */
   --header-banner-dev-bg: #f39c12;

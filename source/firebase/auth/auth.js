@@ -186,9 +186,26 @@ export const AuthService = (() => {
             const userAgent = navigator.userAgent;
             const deviceType = /android/i.test(userAgent) ? 'android' : (/iphone|ipad|ipod/i.test(userAgent) ? 'ios' : 'web');
             const accountDocData = {
-                meta: { accountId, createdOn: new Date().toISOString(), isGuest: false, links: { userId }, lastUpdated: new Date().toISOString(), note: note || "Account created on login.", ownerUID: user.uid },
-                deviceInfo: [{ status: "active", isLoggedIn: true, deviceId: `DEV-${Date.now()}`, device: deviceType, model: null, platform: navigator.platform || '', browser: navigator.appName || '', name: null, ipAddress: null, location: null, loginTime: new Date().toISOString(), lastActive: new Date().toISOString(), sessionToken: `SST-${Date.now()}`, fcmToken: '', userAgent }],
-                Alerts: { alertId: [], isCleared: false, updatedAt: null },
+                meta: {
+                    accountId,
+                    createdOn: new Date().toISOString(),
+                    isGuest: false,
+                    links: { userId },
+                    lastUpdated: new Date().toISOString(),
+                    note: note || "Account created on login.",
+                    ownerUID: user.uid // This is the critical field for security
+                },
+                deviceInfo: [{
+                    status: "active",
+                    isLoggedIn: true,
+                    deviceId: `DEV-${Date.now()}`,
+                    device: deviceType,
+                    platform: navigator.platform || '',
+                    browser: navigator.appName || '',
+                    loginTime: new Date().toISOString(),
+                    lastActive: new Date().toISOString(),
+                    userAgent
+                }],
                 settings: { language: "en", theme: "light", push: true, email: false, sms: false, clearSettings: false },
                 privacy: { showOnline: true, personalizedAds: false },
                 autoClear: { recentlyViewed: false, saved: false, notifications: false },
@@ -295,8 +312,8 @@ export const AuthService = (() => {
                 }
                 
                 const userAccount = userDocQuery.docs[0].data();
-                // FIX: Use a robust function to determine the highest-privilege role.
-                const role = _determineBestRole(userAccount.meta);
+                // Use the authoritative primaryRole for login redirection.
+                const role = userAccount.meta?.primaryRole || _determineBestRole(userAccount.meta);
                 const userId = userAccount.meta.userId;
                 const merchantId = userAccount.meta.links?.merchantId || null;
 
@@ -640,7 +657,8 @@ export const AuthService = (() => {
                 userAccount = userDoc.data();
             }
 
-            // FIX: Prioritize 'primaryRole' for correct role assignment.            const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'consumer';
+            // Use the authoritative primaryRole for login redirection.
+            const role = userAccount.meta?.primaryRole || _determineBestRole(userAccount.meta);
             const merchantId = userAccount.meta.links?.merchantId || null;
             routeManager.handleRoleChange(role, userId, merchantId);
             window.dispatchEvent(new CustomEvent('authStateChanged')); // Notify all components
@@ -694,7 +712,8 @@ export const AuthService = (() => {
                 userAccount = userDoc.data();
             }
 
-            // FIX: Prioritize 'primaryRole' for correct role assignment.            const role = userAccount.meta?.primaryRole || userAccount.meta?.roles?.[0] || 'consumer';
+            // Use the authoritative primaryRole for login redirection.
+            const role = userAccount.meta?.primaryRole || _determineBestRole(userAccount.meta);
             const merchantId = userAccount.meta.links?.merchantId || null;
             routeManager.handleRoleChange(role, userId, merchantId);
             window.dispatchEvent(new CustomEvent('authStateChanged')); // Notify all components

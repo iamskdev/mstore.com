@@ -83,7 +83,7 @@
   background: var(--story-ring-gradient) border-box;
   -webkit-background-clip: border-box;
   background-clip: border-box;
-  box-shadow: var(--shadow-glow-accent);
+  box-shadow: var(--shadow-glow-story); /* --- FIX: Use story-specific pink glow --- */
   animation: pulse-ring 2s infinite;
 }
 
@@ -93,7 +93,7 @@
   -webkit-background-clip: border-box;
   background-clip: border-box;
   animation: none;
-  box-shadow: none;
+  box-shadow: var(--shadow-glow-viewed); /* --- FIX: Use viewed-story-specific cyan glow --- */
 }
 
 /* --- FIX: Ensure active ring (blue) is visible on top of a viewed story ring (gray) --- */
@@ -113,8 +113,10 @@
   color: var(--text-secondary);
 }
 
-.story-item.my-story .avatar-wrap {
-  background: var(--bg-secondary); /* No story ring for self */
+/* --- FIX: Allow story rings on 'My Status' but prevent default border --- */
+/* This ensures that if 'my-story' doesn't have 'has-story', it doesn't show a plain border. */
+.story-item.my-story:not(.has-story):not(.viewed) .avatar-wrap {
+  background: var(--bg-secondary);
 }
 
 .story-item .add-story-btn {

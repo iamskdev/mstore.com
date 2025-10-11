@@ -56,10 +56,6 @@ async function createAuthUsers() {
                 let userRecord;
                 try {
                     userRecord = await auth.getUserByEmail(email);
-                    // --- FIX REVERTED: Do NOT reset password for existing users ---
-                    // This respects any custom passwords set by developers during testing,
-                    // preventing login failures after re-running the script. The script
-                    // will now only create users if they don't exist.
                     console.log(`   - 👤 User ${email} already exists in Auth. UID: ${userRecord.uid}`);
                 } catch (error) {
                     if (error.code === 'auth/user-not-found') {

@@ -113,7 +113,7 @@ async function renderProfileData() {
         const tags = [];
 
         // Use the centralized getTagsForRole function to ensure consistency.
-        tagsContainer.innerHTML = getTagsForRole(user.meta?.primaryRole, user, account, merchant);
+        tagsContainer.innerHTML = getTagsForRole(currentUserType, user, account, merchant);
 
         // Render tags to the container
 
@@ -179,16 +179,9 @@ function getTagsForRole(role, user, account, merchant, options = {}) {
     const showPrivilegeTags = options.showPrivilegeTags !== false; // Default to true
 
     // Add special privilege tags after the account type
-    if (showPrivilegeTags) {
-        if (user.meta?.flags?.isOwner) {
-            // As per rule, Owner also gets 'Top Contributor'
-            tags.push('Top Contributor');
-        }
-        // Rule: Super Admin (non-owner) gets a specific tag.
-        // The 'else if' prevents 'Super Admin' from showing if 'Owner' is already shown.
-        else if (user.meta?.flags?.isSuperAdmin) {
-            tags.push('Super Admin');
-        }
+    // Rule: Owner and Super Admin both get the 'Top Contributor' tag for elevated status.
+    if (showPrivilegeTags && (user.meta?.flags?.isOwner || user.meta?.flags?.isSuperAdmin)) {
+        tags.push('Top Contributor');
     }
 
     // Rule: Add Premium tag only for the 'merchant' role if applicable.
@@ -276,8 +269,15 @@ async function initSwitchAccountModal() {
  
             if (userMerchantIds.length > 0) {
                 console.log(`[SwitchAccount] 3a. Fetching individual merchant profiles...`);
-                const merchantPromises = userMerchantIds.map(id => fetchMerchantById(id));
-                merchantProfiles = (await Promise.all(merchantPromises)).filter(Boolean); // Filter out any null results
+                // Use Promise.allSettled to ensure that if one merchant fetch fails,
+                // the entire operation doesn't fail. This makes the modal more resilient.
+                const merchantResults = await Promise.allSettled(userMerchantIds.map(id => fetchMerchantById(id)));
+                merchantProfiles = merchantResults
+                    .filter(result => {
+                        if (result.status === 'rejected') console.warn(`Failed to fetch merchant profile:`, result.reason);
+                        return result.status === 'fulfilled' && result.value;
+                    })
+                    .map(result => result.value);
                 console.log('[SwitchAccount] 3b. Merchant profiles fetched successfully:', merchantProfiles);
             }
 

@@ -111,9 +111,14 @@
 -   **`meta`**: खाते का मेटाडेटा (`accountId`, `links.userId`)।
 -   `ownerUID` (string): **(महत्वपूर्ण)** यह फ़ील्ड उपयोगकर्ता के फायरबेस प्रमाणीकरण UID को संग्रहीत करता है। यह सुरक्षा नियमों के लिए आवश्यक है ताकि यह सुनिश्चित हो सके कि केवल मालिक ही अपने खाते के दस्तावेज़ को पढ़ सकता है।
 -   `deviceInfo`: उपयोगकर्ता द्वारा उपयोग किए गए उपकरणों की सूची, जिसमें प्रत्येक डिवाइस के लिए `fcmToken` शामिल है।
--   **`settings`**: उपयोगकर्ता-विशिष्ट सेटिंग्स (`theme`, `language`)।
--   **`searchHistory`**: हाल की खोजें।
--   **`subscription`** (object): उपयोगकर्ता की सदस्यता का विवरण (`plan`, `type`, `status`, आदि)।
+-   **`settings`**: उपयोगकर्ता-विशिष्ट सेटिंग्स (`theme`, `language`, `push`, `email`, `sms`)।
+-   **`privacy`**: गोपनीयता-संबंधी सेटिंग्स (`showOnline`, `personalizedAds`)।
+-   **`searchHistory`**: हाल की खोजों की सूची।
+-   **`recentlyViewed`**: हाल ही में देखे गए आइटम की सूची।
+-   **`personalized`** (object): वैयक्तिकरण से संबंधित डेटा, जैसे देखे गए आइटम और उपयोगकर्ता की प्राथमिकताएं।
+-   **`autoClear`** (object): डेटा को स्वचालित रूप से साफ़ करने के लिए उपयोगकर्ता की सेटिंग्स।
+-   **`subscription`** (object): उपयोगकर्ता की सदस्यता का विवरण (`plan`, `status`, `autoRenew`)।
+-   **`Alerts`** (object): उपयोगकर्ता के लिए अलर्ट (`alertId`, `isCleared`, `updatedAt`)।
 
 ### संबंध (Relationships)
 - **`accounts` 1-to-1 `users`**: प्रत्येक `accounts` दस्तावेज़ `meta.links.userId` के माध्यम से एक `users` दस्तावेज़ से वापस जुड़ता है।

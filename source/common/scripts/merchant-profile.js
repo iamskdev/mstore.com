@@ -644,7 +644,7 @@ function enableHorizontalScroll(element) {
  */
 function addCommentInputListeners() {
     document.querySelectorAll('.comment-add-input').forEach(input => {
-        addManagedEventListener(input, 'click', function() {
+        addManagedEventListener(input, 'click', function () {
             // Allow both guests and logged-in users to activate the comment field.
             this.readOnly = false;
             this.focus();
@@ -751,6 +751,59 @@ function enableDragToScroll(element) {
     });
 }
 
+/**
+ * Renders the appropriate action buttons based on whether the viewer is the owner.
+ * @param {boolean} isOwner - True if the current user is the owner of the profile.
+ */
+function renderActionButtons(isOwner) {
+    const container = document.getElementById('profile-action-buttons');
+    if (!container) return;
+
+    if (isOwner) {
+        // --- OWNER VIEW ---
+        container.innerHTML = `
+            <button class="action-btn primary" id="edit-profile-btn"><i class="fas fa-pen-to-square"></i> Edit</button>
+            <button class="action-btn secondary" id="view-insights-btn"><i class="fas fa-chart-line"></i> Insights</button>
+            <button class="action-btn secondary" id="promote-profile-btn" title="Promote Profile"><i class="fas fa-rocket"></i></button>
+        `;
+
+        const editBtn = document.getElementById('edit-profile-btn');
+        const insightsBtn = document.getElementById('view-insights-btn');
+        const promoteBtn = document.getElementById('promote-profile-btn');
+
+        if (editBtn) {
+            // --- FIX: Show a toast message as the merchant edit page is not ready ---
+            addManagedEventListener(editBtn, 'click', () => {
+                showToast('info', 'Merchant profile editing coming soon!');
+            });
+        }
+        if (insightsBtn) {
+            addManagedEventListener(insightsBtn, 'click', () => showToast('info', 'Insights page coming soon!'));
+        }
+        if (promoteBtn) {
+            addManagedEventListener(promoteBtn, 'click', () => showToast('info', 'Profile promotion feature coming soon!'));
+        }
+
+    } else {
+        // --- VISITOR VIEW ---
+        container.innerHTML = `
+            <button class="action-btn secondary" id="profile-follow-btn"><i class="fas fa-user-plus"></i> Follow Me</button>
+            <button class="action-btn secondary" id="profile-message-btn"><i class="fas fa-comment-dots"></i> Message</button>
+            <button class="action-btn secondary" id="profile-notification-btn"><i class="far fa-bell"></i></button>
+        `;
+
+        const followBtn = document.getElementById('profile-follow-btn');
+        const notificationBtn = document.getElementById('profile-notification-btn');
+        const messageBtn = document.getElementById('profile-message-btn');
+
+        if (followBtn) addFollowButtonListener(followBtn);
+        if (notificationBtn) addNotificationButtonListener(notificationBtn);
+        if (messageBtn) {
+            addManagedEventListener(messageBtn, 'click', () => showToast('info', 'Messaging feature coming soon!'));
+        }
+    }
+}
+
 export async function init(force = false) {
     if (isInitialized && !force) return;
 
@@ -833,6 +886,10 @@ export async function init(force = false) {
             return;
         }
 
+        // --- NEW: Check if the current user is the owner of this profile ---
+        const isOwner = merchantData.meta.links.userId === currentUserId;
+
+
         // --- RENDER ALL SECTIONS WITH REAL DATA ---
         renderProfile(merchantData);
         renderHome(allItemsData, merchantData.meta.merchantId, cardConfig);
@@ -841,77 +898,77 @@ export async function init(force = false) {
         renderPosts(merchantData, currentUserData); // Pass currentUserData to renderPosts
         renderAbout(merchantData);
         await renderCommunity(merchantData, allRatingsData); // This is async now
+        // --- NEW: Render the correct action buttons based on ownership ---
+        renderActionButtons(isOwner);
 
     } catch (error) {
         console.error("Error initializing merchant profile:", error);
         showToast('error', 'Failed to load merchant profile.');
-    }
+    } finally {
+        // --- FIX: Move event listener setup into a finally block to ensure it always runs ---
+        if (!isInitialized) {
+            const tabNavElement = document.querySelector('.tab-nav');
+            enableHorizontalScroll(tabNavElement);
+            enableDragToScroll(tabNavElement);
 
-    // --- SETUP EVENT LISTENERS (only once) ---
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
 
-        const tabNavElement = document.querySelector('.tab-nav');
-        enableHorizontalScroll(tabNavElement);
-        enableDragToScroll(tabNavElement);
-
-        const tabLinks = document.querySelectorAll('.tab-link');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        if (!isInitialized) { // Only add these listeners once
             tabLinks.forEach(link => {
-            addManagedEventListener(link, 'click', () => {
-                const tabId = link.dataset.tab;
+                addManagedEventListener(link, 'click', () => {
+                    const tabId = link.dataset.tab;
 
-                tabLinks.forEach(l => l.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
 
-                link.classList.add('active');
-                document.getElementById(tabId).classList.add('active');
+                    link.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
 
-                link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            });
-        });
-
-        const followBtn = document.getElementById('profile-follow-btn');
-        if (followBtn) {
-            addManagedEventListener(followBtn, 'click', () => {
-                const isFollowing = followBtn.classList.contains('primary');
-
-                if (isFollowing) {
-                    followBtn.classList.remove('primary');
-                    followBtn.classList.add('secondary');
-                    followBtn.innerHTML = '<i class="fas fa-user-plus"></i> Follow Me';
-                    manageFollowedMerchantCache('remove', merchantData, allItemsData);
-                } else {
-                    followBtn.classList.remove('secondary');
-                    followBtn.classList.add('primary');
-                    followBtn.innerHTML = '<i class="fas fa-user-check"></i> Following';
-                    manageFollowedMerchantCache('add', merchantData, allItemsData);
-                }
+                    link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                });
             });
         }
-
-        const notificationBtn = document.getElementById('profile-notification-btn');
-        if (notificationBtn) {
-            addManagedEventListener(notificationBtn, 'click', () => {
-                const icon = notificationBtn.querySelector('i');
-                const isSubscribed = icon.classList.contains('fas');
-
-                icon.classList.remove('bell-shake');
-                void icon.offsetWidth;
-                icon.classList.add('bell-shake');
-
-                if (isSubscribed) {
-                    icon.classList.remove('fas');
-                    icon.classList.add('far');
-                } else {
-                    icon.classList.remove('far');
-                    icon.classList.add('fas');
-                }
-            });
-        }
+        isInitialized = true; // Mark as initialized at the end
     }
+}
 
-    isInitialized = true; // Mark as initialized at the end
+function addFollowButtonListener(followBtn) {
+    addManagedEventListener(followBtn, 'click', () => {
+        const isFollowing = followBtn.classList.contains('primary');
+
+        if (isFollowing) {
+            followBtn.classList.remove('primary');
+            followBtn.classList.add('secondary');
+            followBtn.innerHTML = '<i class="fas fa-user-plus"></i> Follow Me';
+            manageFollowedMerchantCache('remove', merchantData, allItemsData);
+        } else {
+            followBtn.classList.remove('secondary');
+            followBtn.classList.add('primary');
+            followBtn.innerHTML = '<i class="fas fa-user-check"></i> Following';
+            manageFollowedMerchantCache('add', merchantData, allItemsData);
+        }
+    });
+}
+
+function addNotificationButtonListener(notificationBtn) {
+    addManagedEventListener(notificationBtn, 'click', () => {
+        const icon = notificationBtn.querySelector('i');
+        const isSubscribed = icon.classList.contains('fas');
+
+        icon.classList.remove('bell-shake');
+        void icon.offsetWidth; // Trigger reflow to restart animation
+        icon.classList.add('bell-shake');
+
+        if (isSubscribed) {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            showToast('info', 'Notifications turned off.');
+        } else {
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            showToast('success', 'Notifications turned on!');
+        }
+    });
 }
 
 function addManagedEventListener(element, type, listener) {

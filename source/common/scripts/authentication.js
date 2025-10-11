@@ -228,7 +228,11 @@ function setupPhoneVerificationUI() {
  * गेस्ट अकाउंट व्यू के लिए मुख्य इनिशियलाइज़ेशन फ़ंक्शन।
  */
 export function init() {
-    if (isInitialized) return;
+    // FIX: Prevent re-initialization to avoid duplicate event listeners.
+    // If the view is already initialized, do nothing.
+    if (isInitialized) {
+        return;
+    }
     console.log("✅ Guest Account view initialized.");
 
     // Clear previous listeners before setting up new ones

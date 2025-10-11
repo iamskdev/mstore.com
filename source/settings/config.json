@@ -2,7 +2,7 @@
   "app": {
     "owner": "santosh",
     "name": "mStore",
-    "version": "0.23.3",
+    "version": "0.23.4",
     "environment": "development",
     "description": ""
   },
@@ -14,7 +14,7 @@
     "localHost": "http://localhost:2201"
   },
   "source": {
-    "data": "firebase",
+    "data": "emulator",
     "offlineCache": true
   },
   "ui": {
@@ -32,7 +32,7 @@
   "audit": {
     "createdAt": "2025-09-08T09:56:14Z",
     "createdBy": "Santosh",
-    "modifyAt": "2025-10-10T21:20:55Z",
+    "modifyAt": "2025-10-11T12:06:18Z",
     "modifyBy": "System"
   },
   "cloudinary": {

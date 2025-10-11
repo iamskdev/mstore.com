@@ -24,14 +24,14 @@
         "admin"
       ]
     },
-    "address": {
-      "0": {
+    "address": [
+      {
         "zipCode": "827013",
         "city": "Chas",
         "street": "Durgapur",
         "state": "Jharkhand"
       }
-    },
+    ],
     "auth": {
       "login": {
         "attempts": 1,
@@ -104,14 +104,14 @@
         "isStaff": false
       }
     },
-    "address": {
-      "0": {
+    "address": [
+      {
         "zipCode": "827013",
         "city": "Chas",
         "street": "Durgapur",
         "state": "Jharkhand"
       }
-    },
+    ],
     "auth": {
       "login": {
         "attempts": 0,
@@ -175,14 +175,14 @@
         "isStaff": false
       }
     },
-    "address": {
-      "0": {
+    "address": [
+      {
         "zipCode": "827013",
         "city": "Chas",
         "street": "Durgapur",
         "state": "Jharkhand"
       }
-    },
+    ],
     "auth": {
       "login": {
         "attempts": 0,

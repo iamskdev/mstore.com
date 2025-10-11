@@ -18,6 +18,16 @@ const OUTPUT_DIR_PATH = '../../localstore/jsons';
 const SPECIFIC_COLLECTION_TO_EXPORT = process.argv[2] ? path.basename(process.argv[2], '.json') : '';
 
 /**
+ * Safely retrieves a nested property from an object.
+ * @param {object} obj The object to query.
+ * @param {string} path The dot-separated path to the property.
+ * @returns {*} The value of the property or undefined if not found.
+ */
+const getNestedValue = (obj, path) => {
+    if (!path) return undefined;
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+};
+/**
  * Main function to export Firestore data to separate JSON files.
  */
 async function exportCollectionsToFiles() {
@@ -83,21 +93,15 @@ async function exportCollectionsToFiles() {
 
             snapshot.forEach(doc => {
                 const docData = doc.data();
-                if (idFieldPath) {
-                    const pathParts = idFieldPath.split('.');
-                    let current = docData;
-                    for (let i = 0; i < pathParts.length - 1; i++) {
-                        const part = pathParts[i];
-                        if (!current[part] || typeof current[part] !== 'object') {
-                            current[part] = {};
-                        }
-                        current = current[part];
-                    }
-                    current[pathParts[pathParts.length - 1]] = doc.id;
-                } else {
-                    // Fallback for collections without a specific ID field mapping
-                    docData.id = doc.id;
+                const internalId = getNestedValue(docData, idFieldPath);
+
+                // --- DATA INTEGRITY CHECK ---
+                // Verify that the document's ID matches the ID stored inside its data.
+                // This helps catch inconsistencies. We do NOT overwrite the internal data.
+                if (idFieldPath && internalId && internalId !== doc.id) {
+                    console.warn(`     - ⚠️ ID Mismatch in '${collectionId}': Doc ID '${doc.id}' != Internal ID '${internalId}'. Using data as-is from Firestore.`);
                 }
+
                 collectionData.push(docData);
             });
 

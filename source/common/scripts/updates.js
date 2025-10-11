@@ -85,18 +85,34 @@ export async function init(force = false) {
         const currentUserRole = localCache.get('currentUserType');
         const currentUserId = localCache.get('currentUserId');
         let selfMerchantId = null; // To store the logged-in merchant's ID
-
+        
+        // --- FIX: Correctly retrieve merchant ID for the logged-in user ---
+        // The user object contains an array `merchantIds`. We should use the first one
+        // for the "My Status" feature, as a user can own multiple businesses.
         if (currentUserRole === 'merchant' && currentUserId) {
             const user = await fetchUserById(currentUserId);
-            const merchantId = user?.meta?.links?.merchantId;
-            selfMerchantId = merchantId; // Store the ID for filtering later
-            if (merchantId) {
-                const selfMerchant = await fetchMerchantById(merchantId);
+            // Get the array of merchant IDs linked to the user.
+            const merchantIds = user?.meta?.links?.merchantIds || [];
+            const firstMerchantId = merchantIds[0]; // Use the first merchant profile for "My Status"
+            selfMerchantId = firstMerchantId; // Store the ID for filtering later
+            if (firstMerchantId) {
+                const selfMerchant = await fetchMerchantById(firstMerchantId);
                 const avatarUrl = selfMerchant?.info?.logo || './source/assets/logos/app-logo.png';
 
+                // --- FIX: Check if the merchant's own story exists ---
+                const hasOwnStory = stories.some(storyCollection =>
+                    storyCollection.meta.links.merchantId === firstMerchantId &&
+                    storyCollection.stories?.some(s => s.status === 'active')
+                );
+
                 const myStoryEl = document.createElement('div');
+                // --- FIX: Add 'has-story' class if the merchant has an active story ---
                 myStoryEl.className = 'story-item my-story';
-                myStoryEl.setAttribute('data-id', merchantId); // Add data-id for selection
+                if (hasOwnStory) {
+                    myStoryEl.classList.add('has-story');
+                }
+
+                myStoryEl.setAttribute('data-id', firstMerchantId); // Add data-id for selection
                 myStoryEl.innerHTML = `
                     <div class="avatar-wrap" role="button" tabindex="0" aria-label="Add to your story">
                       <img class="story-avatar" src="${avatarUrl}" alt="My Story" />

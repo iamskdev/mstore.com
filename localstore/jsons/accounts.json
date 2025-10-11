@@ -2,207 +2,220 @@
   {
     "meta": {
       "accountId": "ACC-20251002-170601-201-WXYZ",
+      "createdOn": "2025-10-10T19:38:38.374Z",
       "isGuest": false,
-      "createdOn": "2025-08-06T10:30:00Z",
-      "lastUpdated": "2025-08-07T14:23:00Z",
       "links": {
         "userId": "USR-20251002-170601-101-ABCD"
       },
-      "note": "Account created on login, synced across devices."
+      "lastUpdated": "2025-10-10T19:38:38.374Z",
+      "note": "Account created via dev script (create-auth-users.js).",
+      "ownerUID": "7WtDEZQFmiUW7RiqxcFMSMxJkDw2"
     },
-    "deviceInfo": [
-      {
-        "status": "active",
-        "isLoggedIn": true,
-        "deviceId": "DEV-abc001-mob-sm127g",
-        "device": "mobile",
-        "model": "SM-M127G",
-        "platform": "android",
-        "browser": "chrome",
-        "name": "Samsung Galaxy M12",
-        "ipAddress": "103.254.25.54",
-        "location": "Chas, Bokaro, India",
-        "loginTime": "2025-08-06T10:30:00Z",
-        "lastActive": "2025-08-07T05:30:00Z",
-        "sessionToken": "SST-xyz123-session-token",
-        "fcmToken": "fcm_token_for_device_1",
-        "userAgent": "Mozilla/5.0 (Linux; Android 11; SM-M127G) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
-      },
-      {
-        "status": "logged_out",
-        "isLoggedIn": false,
-        "deviceId": "DEV-abc002-mob-sm127g",
-        "device": "mobile",
-        "model": "SM-M127G",
-        "platform": "android",
-        "browser": "chrome",
-        "name": "Samsung Galaxy M12",
-        "ipAddress": "103.254.25.54",
-        "location": "Chas, Bokaro, India",
-        "loginTime": "2025-08-06T10:30:00Z",
-        "lastActive": "2025-08-07T08:00:00Z",
-        "sessionToken": "SST-xyz456-session-token",
-        "fcmToken": "fcm_token_for_device_2",
-        "userAgent": "Mozilla/5.0 (Linux; Android 11; SM-M127G) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
-      }
-    ],
-    "Alerts": {
-      "alertId": [
-        "ALT-20251002-172001-501-QWER",
-        "ALT-20251002-172001-502-ASDF",
-        "ALT-20251002-172001-503-ZXCV"
-      ],
-      "isCleared": false,
-      "updatedAt": "2025-08-07T13:55:00Z"
+    "deviceInfo": [],
+    "settings": {
+      "language": "en",
+      "theme": "light",
+      "push": true,
+      "email": false,
+      "sms": false,
+      "clearSettings": false
     },
     "privacy": {
       "showOnline": true,
       "personalizedAds": false
     },
-    "autoClear": {
-      "recentlyViewed": false,
-      "saved": false,
-      "notifications": false
-    },
-    "searchHistory": [
-      {
-        "query": "men's t-shirts",
-        "timestamp": "2025-08-07T14:10:00Z"
-      },
-      {
-        "query": "running shoes",
-        "timestamp": "2025-08-07T14:05:00Z"
-      }
-    ],
-    "personalized": {
-      "enabled": false,
-      "isCleared": false,
-      "users": [],
-      "merchants": [],
-      "brands": [],
-      "items": [],
-      "activeHours": []
-    },
+    "searchHistory": [],
     "recentlyViewed": {
-      "items": [
-        {
-          "itemId": "ITM-20251002-172505-805-BNMK",
-          "viewedAt": "2025-08-07T14:12:00Z"
-        },
-        {
-          "itemId": "ITM-20251002-172506-806-QAZX",
-          "viewedAt": "2025-08-07T14:11:00Z"
-        }
-      ]
-    },
-    "settings": {
-      "language": "en",
-      "push": true,
-      "email": false,
-      "sms": false,
-      "clearSettings": false,
-      "theme": "light"
+      "items": []
     },
     "subscription": {
-      "plan": "Premium",
-      "type": "Monthly",
-      "startDate": "2025-08-1T00:00:00Z",
-      "endDate": "2025-09-01T00:00:00Z",
-      "status": "active",
-      "autoRenew": true,
-      "clearSettings": false,
-      "theme": "light"
+      "plan": "Free",
+      "status": "inactive",
+      "autoRenew": false
     }
   },
   {
     "meta": {
       "accountId": "ACC-20251002-170602-202-XYZA",
+      "createdOn": "2025-10-10T19:38:39.233Z",
       "isGuest": false,
-      "createdOn": "2025-08-06T10:30:00Z",
-      "lastUpdated": "2025-08-07T14:23:00Z",
       "links": {
         "userId": "USR-20251002-170602-102-BCDE"
       },
-      "note": "Account created on login, synced across devices."
+      "lastUpdated": "2025-10-10T19:38:39.233Z",
+      "note": "Account created via dev script (create-auth-users.js).",
+      "ownerUID": "3pcE7auXtVPrD5Cith8AvMTIRJn1"
     },
     "deviceInfo": [],
-    "Alerts": {
-      "alertId": [],
-      "isCleared": false,
-      "updatedAt": "2025-08-07T14:23:00Z"
-    },
     "settings": {
       "language": "en",
-      "theme": "dark",
+      "theme": "light",
       "push": true,
       "email": false,
       "sms": false,
-      "clearSettings": false
-    },
-    "subscription": {
-      "plan": "Free",
-      "type": "Monthly",
-      "startDate": null,
-      "endDate": null,
-      "status": "inactive",
-      "autoRenew": false,
       "clearSettings": false
     },
     "privacy": {
       "showOnline": true,
       "personalizedAds": false
     },
-    "autoClear": {
-      "recentlyViewed": false,
-      "saved": false,
-      "notifications": false
-    },
     "searchHistory": [],
-    "personalized": {
-      "enabled": false,
-      "isCleared": false,
-      "users": [],
-      "merchants": [],
-      "brands": [],
-      "items": [],
-      "activeHours": []
-    },
     "recentlyViewed": {
       "items": []
+    },
+    "subscription": {
+      "plan": "Free",
+      "status": "inactive",
+      "autoRenew": false
     }
   },
   {
     "meta": {
       "accountId": "ACC-20251002-170603-203-YZAB",
+      "createdOn": "2025-10-10T19:38:40.022Z",
       "isGuest": false,
-      "createdOn": "2025-08-06T10:30:00Z",
-      "lastUpdated": "2025-08-07T14:23:00Z",
       "links": {
         "userId": "USR-20251002-170603-103-CDEF"
       },
-      "note": "Account created on login, synced across devices."
+      "lastUpdated": "2025-10-10T19:38:40.022Z",
+      "note": "Account created via dev script (create-auth-users.js).",
+      "ownerUID": "3OkkX5RHEQZHZpe8iewpkLUnE1P2"
     },
     "deviceInfo": [],
-    "Alerts": {
-      "alertId": [],
-      "isCleared": false,
-      "updatedAt": "2025-08-07T14:23:00Z"
-    },
     "settings": {
       "language": "en",
-      "theme": "dark",
+      "theme": "light",
       "push": true,
       "email": false,
       "sms": false,
       "clearSettings": false
     },
+    "privacy": {
+      "showOnline": true,
+      "personalizedAds": false
+    },
+    "searchHistory": [],
+    "recentlyViewed": {
+      "items": []
+    },
     "subscription": {
       "plan": "Free",
-      "type": null,
-      "startDate": null,
-      "endDate": null,
       "status": "inactive",
-      "autoRenew": false,
+      "autoRenew": false
+    }
+  },
+  {
+    "meta": {
+      "accountId": "ACC-20251002-170604-204-ZABC",
+      "createdOn": "2025-10-10T19:38:40.820Z",
+      "isGuest": false,
+      "links": {
+        "userId": "USR-20251002-170604-104-DEFG"
+      },
+      "lastUpdated": "2025-10-10T19:38:40.820Z",
+      "note": "Account created via dev script (create-auth-users.js).",
+      "ownerUID": "eOtvRwDp9vX8qWnp1thGVH4Xpd13"
+    },
+    "deviceInfo": [],
+    "settings": {
+      "language": "en",
+      "theme": "light",
+      "push": true,
+      "email": false,
+      "sms": false,
+      "clearSettings": false
+    },
+    "privacy": {
+      "showOnline": true,
+      "personalizedAds": false
+    },
+    "searchHistory": [],
+    "recentlyViewed": {
+      "items": []
+    },
+    "subscription": {
+      "plan": "Free",
+      "status": "inactive",
+      "autoRenew": false
+    }
+  },
+  {
+    "meta": {
+      "accountId": "ACC-20251003-155439-125-G1U2",
+      "createdOn": "2025-10-10T19:38:41.623Z",
+      "isGuest": false,
+      "links": {
+        "userId": "USR-20251003-155439-124-TE82"
+      },
+      "lastUpdated": "2025-10-10T19:38:41.623Z",
+      "note": "Account created via dev script (create-auth-users.js).",
+      "ownerUID": "sMR6jutXzkYctuUtojjFe4dHIO02"
+    },
+    "deviceInfo": [],
+    "settings": {
+      "language": "en",
+      "theme": "light",
+      "push": true,
+      "email": false,
+      "sms": false,
+      "clearSettings": false
+    },
+    "privacy": {
+      "showOnline": true,
+      "personalizedAds": false
+    },
+    "searchHistory": [],
+    "recentlyViewed": {
+      "items": []
+    },
+    "subscription": {
+      "plan": "Free",
+      "status": "inactive",
+      "autoRenew": false
+    }
+  },
+  {
+    "meta": {
+      "accountId": "ACC-20251011-083321-515-2YY2",
+      "createdOn": "2025-10-11T08:33:21.533Z",
+      "isGuest": false,
+      "links": {
+        "userId": "USR-20251011-083321-514-9E0K"
+      },
+      "lastUpdated": "2025-10-11T08:33:21.533Z",
+      "note": "Account created on Google sign-in.",
+      "ownerUID": "Q05w4pwuidSW4Ic5l3JMkKA6bo62"
+    },
+    "deviceInfo": [
+      {
+        "status": "active",
+        "isLoggedIn": true,
+        "deviceId": "DEV-1760171601533",
+        "device": "android",
+        "model": null,
+        "platform": "Linux armv81",
+        "browser": "Netscape",
+        "name": null,
+        "ipAddress": null,
+        "location": null,
+        "loginTime": "2025-10-11T08:33:21.534Z",
+        "lastActive": "2025-10-11T08:33:21.534Z",
+        "sessionToken": "SST-1760171601534",
+        "fcmToken": "",
+        "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36"
+      }
+    ],
+    "Alerts": {
+      "alertId": [],
+      "isCleared": false,
+      "updatedAt": null
+    },
+    "settings": {
+      "language": "en",
+      "theme": "light",
+      "push": true,
+      "email": false,
+      "sms": false,
       "clearSettings": false
     },
     "privacy": {
@@ -226,32 +239,6 @@
     },
     "recentlyViewed": {
       "items": []
-    }
-  },
-  {
-    "meta": {
-      "accountId": "ACC-20251002-170604-204-ZABC",
-      "isGuest": false,
-      "createdOn": "2025-08-06T10:30:00Z",
-      "lastUpdated": "2025-08-07T14:23:00Z",
-      "links": {
-        "userId": "USR-20251002-170604-104-DEFG"
-      },
-      "note": "Account created on login, synced across devices."
-    },
-    "deviceInfo": [],
-    "Alerts": {
-      "alertId": [],
-      "isCleared": false,
-      "updatedAt": "2025-08-07T14:23:00Z"
-    },
-    "settings": {
-      "language": "en",
-      "theme": "dark",
-      "push": true,
-      "email": false,
-      "sms": false,
-      "clearSettings": false
     },
     "subscription": {
       "plan": "Free",
@@ -261,28 +248,6 @@
       "status": "inactive",
       "autoRenew": false,
       "clearSettings": false
-    },
-    "privacy": {
-      "showOnline": true,
-      "personalizedAds": false
-    },
-    "autoClear": {
-      "recentlyViewed": false,
-      "saved": false,
-      "notifications": false
-    },
-    "searchHistory": [],
-    "personalized": {
-      "enabled": false,
-      "isCleared": false,
-      "users": [],
-      "merchants": [],
-      "brands": [],
-      "items": [],
-      "activeHours": []
-    },
-    "recentlyViewed": {
-      "items": []
     }
   }
 ]

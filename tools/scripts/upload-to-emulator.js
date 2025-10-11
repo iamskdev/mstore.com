@@ -82,6 +82,7 @@ async function createAuthUsersInEmulator(auth, usersFilePath, db) {
             const email = mockUser.info?.email;
             const customUserId = mockUser.meta?.userId;
             const fullName = mockUser.info?.fullName;
+            const roles = mockUser.meta?.roles || [];
 
             if (!email || !customUserId) {
                 console.warn(`     - ⚠️ Skipping user due to missing email or userId:`, JSON.stringify(mockUser).substring(0, 100));
@@ -89,20 +90,35 @@ async function createAuthUsersInEmulator(auth, usersFilePath, db) {
             }
 
             try {
-                // Create user in Auth Emulator
-                const userRecord = await auth.createUser({
-                    uid: customUserId,
-                    email: email,
-                    emailVerified: true,
-                    password: 'password123',
-                    displayName: fullName,
-                    disabled: false,
-                });
+                let userRecord;
+                try {
+                    userRecord = await auth.getUser(customUserId);
+                    // console.log(`     - 👤 Auth user ${email} already exists in emulator.`);
+                } catch (error) {
+                    if (error.code === 'auth/user-not-found') {
+                        // Create user in Auth Emulator if they don't exist
+                        userRecord = await auth.createUser({
+                            uid: customUserId,
+                            email: email,
+                            emailVerified: true,
+                            password: 'password123',
+                            displayName: fullName,
+                            disabled: false,
+                        });
+                    } else {
+                        throw error;
+                    }
+                }
 
                 // Sync UID back to Firestore document (important for consistency)
                 await db.collection('users').doc(customUserId).update({
                     'auth.provider.uid': userRecord.uid
                 });
+
+                // Set custom claims for admin users
+                if (roles.includes("admin")) {
+                    await auth.setCustomUserClaims(userRecord.uid, { isAdmin: true });
+                }
                 successCount++;
             } catch (error) {
                 if (error.code !== 'auth/uid-already-exists' && error.code !== 'auth/email-already-exists') {
