@@ -14,7 +14,7 @@
     "localHost": "http://localhost:2201"
   },
   "source": {
-    "data": "emulator",
+    "data": "firebase",
     "offlineCache": true
   },
   "ui": {
