@@ -21,7 +21,7 @@ const INPUT_DIR_PATH = '../../localstore/jsons';
 // Firestore batch write limit
 const BATCH_LIMIT = 500;
 // Emulator host and port
-const FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080"; // Use 127.0.0.1 for better compatibility
+const FIRESTORE_EMULATOR_HOST = "127.0.0.1:8090"; // Use 127.0.0.1 for better compatibility
 const AUTH_EMULATOR_HOST = "127.0.0.1:9099"; // Default Firebase Auth Emulator host
 // Optional: specify a single JSON file to upload (e.g., 'users.json') from the command line.
 const SPECIFIC_FILE_TO_UPLOAD = process.argv[2] || '';

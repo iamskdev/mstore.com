@@ -47,7 +47,7 @@ export function initializeFirebase(appConfig) {
       if (appConfig.source.data === 'emulator') {
         console.warn("🔌 App is configured to use EMULATOR data source. Connecting to local Firebase Emulators...");
         // Note: The host for firestore is just 'localhost', not a full URL.
-        firestore.useEmulator('127.0.0.1', 8080); 
+        firestore.useEmulator('127.0.0.1', 8090); 
         auth.useEmulator('http://127.0.0.1:9099');
         functions.useEmulator('127.0.0.1', 5001);
         console.log("✅ Connected to local Firestore, Auth, and Functions emulators.");

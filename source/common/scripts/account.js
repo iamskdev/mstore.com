@@ -385,12 +385,14 @@ async function initSwitchAccountModal() {
  * @returns {HTMLElement} The created DOM element.
  */
 function createRoleItem({ role, user, merchant = null, isActive, isSuspended = false, currentRole }) {
-    // --- FIX: Correctly determine active state for merchant accounts ---
-    // The `isActive` flag passed in was not always correct for merchants.
-    // We need to explicitly check if the current role is 'merchant' AND
-    // if the current merchant ID matches the one for this item.
+    // --- FIX: Correctly determine active state for ALL account types ---
+    // The logic needs to handle three cases for an item to be "active":
+    // 1. The role is 'merchant' AND the current merchant ID matches this item's merchant ID.
+    // 2. The role is 'consumer' AND the current role is 'consumer' (no merchant ID is involved).
+    // 3. The role is 'admin' AND the current role is 'admin' (no merchant ID is involved).
+    // The original logic only handled case #1 correctly.
     const currentMerchantId = localCache.get('currentMerchantId');
-    const isActuallyActive = (role === 'merchant' && merchant) ? (currentRole === 'merchant' && currentMerchantId === merchant.meta.merchantId) : isActive;
+    const isActuallyActive = (role === 'merchant' && merchant) ? (currentRole === 'merchant' && currentMerchantId === merchant.meta.merchantId) : (currentRole === role && !currentMerchantId);
 
     const item = document.createElement('div');    
     item.className = 'switch-account-item';

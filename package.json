@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "npx live-server . --port=3000 --host=0.0.0.0",
-    "tunnel": "ngrok http 3000",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm start\" \"wait-on http://localhost:3000/ && npm run tunnel\""
+    "dev": "npm run start",
+    "emulators": "node tools/scripts/set-emulator.js && firebase emulators:start",
+    "upload": "wait-on tcp:8090 tcp:9099 && node tools/scripts/upload-to-emulator.js",
+    "start:dev": "wait-on tcp:8090 tcp:9099 && npm start",
+    "open:ui": "wait-on http://127.0.0.1:4000 && open-cli http://127.0.0.1:4000"
   },
   "keywords": [
     "pwa",
@@ -24,7 +27,7 @@
   "devDependencies": {
     "concurrently": "^8.2.2",
     "live-server": "^1.2.2",
-    "ngrok": "^5.0.0-beta.2",
-    "wait-on": "^8.0.4"
+    "wait-on": "^9.0.1",
+    "open-cli": "^8.0.0"
   }
 }

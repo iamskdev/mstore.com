@@ -1,0 +1,86 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Emulators",
+      "type": "npm",
+      "script": "emulators",
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "custom",
+          "pattern": {
+            "regexp": ".*"
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "i  emulators: Starting emulators",
+            "endsPattern": "All emulators ready!"
+          }
+        }
+      ],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Run Live Server",
+      "type": "npm",
+      "script": "start:dev",
+      "isBackground": true,
+      "dependsOn": ["Run Emulators"],
+      "problemMatcher": [
+        {
+          "owner": "custom",
+          "pattern": {
+            "regexp": ".*"
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "Serving",
+            "endsPattern": "Ready for changes"
+          }
+        }
+      ],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Upload Data",
+      "type": "npm",
+      "script": "upload",
+      "dependsOn": ["Run Emulators"],
+      "presentation": {
+        "group": "devGroup"
+      }
+    },
+    {
+      "label": "Open Emulator UI",
+      "type": "npm",
+      "script": "open:ui",
+      "dependsOn": ["Run Emulators"],
+      "presentation": {
+        "reveal": "never"
+      }
+    },
+    {
+      "label": "Start Dev Environment",
+      "dependsOn": [
+        "Run Emulators",
+        "Run Live Server",
+        "Upload Data",
+        "Open Emulator UI"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
