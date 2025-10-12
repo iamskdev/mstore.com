@@ -1,0 +1,125 @@
+[
+  {
+    "meta": {
+      "transactionId": "TRN-20251008-110000-123-ABCD",
+      "type": "sale",
+      "status": "partially_paid",
+      "links": {
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "partyId": "USR-20251002-170603-103-CDEF"
+      }
+    },
+    "party": {
+      "id": "USR-20251002-170603-103-CDEF",
+      "name": "Priya Singh",
+      "role": "consumer"
+    },
+    "details": {
+      "billNumber": "SLE-123",
+      "transactionDate": "2025-10-08T11:00:00Z",
+      "category": "Groceries",
+      "note": "Customer will pay remaining due by evening."
+    },
+    "financials": {
+      "currency": "INR",
+      "subtotal": 550.00,
+      "discount": {
+        "amount": 0.00,
+        "description": null
+      },
+      "tax": {
+        "amount": 0.00,
+        "details": []
+      },
+      "totalAmount": 550.00,
+      "paidAmount": 465.00,
+      "due": 85.00,
+      "paymentDetails": [
+        {
+          "method": "upi",
+          "amount": 465.00,
+          "gatewayTransactionId": "UPI-XYZ12345",
+          "timestamp": "2025-10-08T11:01:00Z"
+        }
+      ]
+    },
+    "items": [
+      {
+        "itemId": "ITM-20250908-163035-456-C8D2",
+        "quantity": 2,
+        "snapshot": {
+          "name": "Product A",
+          "unitPrice": 200.00
+        },
+        "total": 400.00
+      },
+      {
+        "itemId": "ITM-20250908-163035-789-E6F3",
+        "quantity": 1,
+        "snapshot": {
+          "name": "Service B",
+          "unitPrice": 150.00
+        },
+        "total": 150.00
+      }
+    ],
+    "audit": {
+      "createdAt": "2025-10-08T11:02:15Z",
+      "updatedAt": "2025-10-08T11:02:15Z",
+      "createdBy": {
+        "id": "USR-20251002-170601-101-ABCD",
+        "role": "merchant"
+      },
+      "updatedBy": {
+        "id": "USR-20251002-170601-101-ABCD",
+        "role": "merchant"
+      }
+    }
+  },
+  {
+    "meta": {
+      "transactionId": "TRN-20251007-054500-456-EFGH",
+      "type": "purchase",
+      "status": "paid",
+      "links": {
+        "merchantId": "MRC-20251002-170602-401-ASDF",
+        "partyId": "MRC-SUPPLIER-001"
+      }
+    },
+    "party": {
+      "id": "MRC-SUPPLIER-001",
+      "name": "Global Distributors",
+      "role": "supplier"
+    },
+    "details": {
+      "billNumber": "PUR-456",
+      "transactionDate": "2025-10-07T05:45:00Z",
+      "category": "Stock",
+      "note": "Stock received for winter collection."
+    },
+    "financials": {
+      "currency": "INR",
+      "subtotal": 1200.00,
+      "discount": { "amount": 0, "description": null },
+      "tax": { "amount": 0, "details": [] },
+      "totalAmount": 1200.00,
+      "paidAmount": 1200.00,
+      "due": 0.00,
+      "paymentDetails": [
+        {
+          "method": "bank_transfer",
+          "amount": 1200.00,
+          "gatewayTransactionId": null,
+          "timestamp": "2025-10-07T05:46:00Z"
+        }
+      ]
+    },
+    "items": [],
+    "audit": {
+      "createdAt": "2025-10-07T05:48:40Z",
+      "updatedAt": "2025-10-07T05:48:40Z",
+      "createdBy": { "id": "USR-20251002-170601-101-ABCD", "role": "merchant" },
+      "updatedBy": { "id": "USR-20251002-170601-101-ABCD", "role": "merchant" }
+    }
+  }
+]

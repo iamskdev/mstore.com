@@ -28,8 +28,15 @@ const routeConfig = {
       isMainTab: true, // This is a main tab for merchants if they land here
       dataDependencies: ['items', 'promotions', 'categories', 'brands', 'orders', 'price-logs', 'alerts']
     },
-    add: { id: 'merchant-add-view', path: null, title: 'Add', isMainTab: true, dataDependencies: ['categories', 'brands', 'units'] },
-  },
+    add: {
+      id: 'merchant-add-view',
+      path: './source/modules/merchant/pages/add.html',
+      cssPath: './source/modules/merchant/styles/add.css',
+      jsPath: './source/modules/merchant/scripts/add.js',
+      title: 'Add',
+      isMainTab: true,
+      dataDependencies: []
+    },  },
   admin: {
     home: {
       id: 'admin-home-view',

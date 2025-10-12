@@ -101,6 +101,11 @@ const APP_SHELL_URLS = [
   './source/modules/admin/styles/admin-home.css',
   './source/modules/admin/scripts/admin-home.js',
 
+  // Merchant Add View
+  './source/modules/merchant/pages/add.html',
+  './source/modules/merchant/styles/add.css',
+  './source/modules/merchant/scripts/add.js',
+  
   //Modals
   './source/modals/account-switcher.html',
   './source/modals/rating/rating-modal.html',

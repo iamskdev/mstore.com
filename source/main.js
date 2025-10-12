@@ -30,7 +30,7 @@ class RouteManager {
   constructor() {
     // Initialize with a null state. The correct state will be determined
     // asynchronously by the init() method, preventing a "flash" of guest content.
-    this.currentRole = 'guest';
+    this.currentRole = 'merchant';
     this.currentView = 'home';
     this.routeConfig = routeConfig; // Expose config if needed externally
     this.defaultViews = defaultViews;
