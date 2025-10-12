@@ -181,7 +181,7 @@ class RouteManager {
    * @param {string} role The user role for the view.
    * @param {string} viewId The ID of the view to switch to.
    */
-  async switchView(role, viewId) {
+  async switchView(role, viewId, fromPopState = false) {
     console.log(`routeManager: Attempting to switch to role: ${role}, viewId: ${viewId}`); // Added log
     // --- FIX: Close any open modals before switching views ---
     window.dispatchEvent(new CustomEvent('toggleAdvancedFilter', { detail: { show: false } }));
@@ -346,10 +346,12 @@ class RouteManager {
     const sanitizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 
     const finalPath = `${sanitizedBaseUrl}${hashPath}`;
-
-    // केवल तभी एक नई स्थिति पुश करें जब पाथ वास्तव में बदल रहा हो।
-    history.pushState({ role, view: viewId }, '', finalPath);
-    console.log("pushing state", finalPath);
+    
+    // --- FIX: Only push state if not called from a popstate event ---
+    if (!fromPopState) {
+      history.pushState({ role, view: viewId }, '', finalPath);
+      console.log("pushing state", finalPath);
+    }
     this._notifySubscribers();
   }
 
@@ -635,11 +637,18 @@ class RouteManager {
     await this.switchView(initialRole, initialView);
 
     window.addEventListener('popstate', (e) => {
-      console.log("Popstate event:", e);
-       if (e.state && e.state.role && e.state.view) {
-           console.log(`Switching view from popstate: Role=${e.state.role}, View=${e.state.view}`);
-           this.switchView(e.state.role, e.state.view);
-       }
+        console.log("Popstate event:", e);
+        // --- FIX: Handle popstate for both hash-based and direct state ---
+        // This ensures back navigation works correctly from fullscreen views.
+        const path = window.location.hash.substring(1); // e.g., /guest/chat
+        const [, pathRole, ...pathViewParts] = path.split('/');
+        const pathView = pathViewParts.join('/');
+
+        if (pathRole && pathView) {
+            console.log(`Switching view from popstate (hash): Role=${pathRole}, View=${pathView}`);
+            // Call switchView without pushing a new state, as we are navigating history.
+            this.switchView(pathRole, pathView, true); // Pass true for fromPopState
+        }
     });
     
 

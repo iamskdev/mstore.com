@@ -1,9 +1,11 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 08/10/2025, 23:36
+📅 Last Updated: 12/10/2025, 09:57
 
 ├── .firebaserc
 ├── .gitignore
+├── firebase-debug.log
 ├── firebase.json
+├── firestore-debug.log
 ├── index.html
 ├── manifest.json
 ├── package-lock.json
@@ -33,11 +35,13 @@
 │   │   ├── pre-rebase
 │   │   └── prepare-commit-msg
 │   ├── post-commit
+│   ├── post-commit.sh
 │   ├── pre-commit
 │   └── pre-push
 ├── 📁 archive\
 │   ├── card-old.html
 │   ├── error-page.html
+│   ├── merchant-add-demo.html
 │   ├── merchant-profile-demo.html
 │   ├── photo-editor-demo.html
 │   ├── rating-demo.html
@@ -130,6 +134,7 @@
 │       ├── promotions.json
 │       ├── ratings.json
 │       ├── stories.json
+│       ├── transactions.json
 │       ├── units.json
 │       ├── users.json
 │       └── versions.json
@@ -420,6 +425,7 @@
 │   │   ├── import-data.js
 │   │   ├── item-seeds.js
 │   │   ├── path-generator.js
+│   │   ├── set-emulator.js
 │   │   └── upload-to-emulator.js
 │   ├── field-inject.json
 │   └── firebase-inject.md

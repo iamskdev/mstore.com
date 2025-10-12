@@ -34,7 +34,7 @@
       "qrCode": "/admin/assets/images/merchant/qr/MQR00000001.png",
       "tagline": "Affordable groceries & services since 2021",
       "description": "Your one-stop shop for groceries and internet services in Delhi. We offer a wide range of products and high-speed internet access.",
-      "coverImage": "mstore/merchants/covers/internet-cafe-cover",
+      "coverImage": "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop",
       "establishedAt": "2021-03-15T00:00:00Z",
       "contact": {
         "phone": "+919876543210",
@@ -205,7 +205,7 @@
       "qrCode": "/admin/assets/images/merchant/qr/MQR00000002.png",
       "tagline": "Traditional beauty, modern elegance.",
       "description": "Anita Sringar & Beauty Store brings you a wide range of beauty and sringar items including bangles, cosmetics, sindoor, bindis, mehendi, and bridal accessories. Trusted by local customers for quality and charm.",
-      "coverImage": "mstore/merchants/covers/anita-store-cover",
+      "coverImage": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=1780&auto=format&fit=crop",
       "contact": {
         "phone": "+919876543211",
         "email": "contact@anitastore.com",

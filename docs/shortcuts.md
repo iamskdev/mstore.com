@@ -12,6 +12,10 @@ These are some highly recommended shortcuts for faster development in VS Code.
 - **Shortcut:** `Ctrl+Shift+P`
 - **Action:** Access to all VS Code commands.
 
+### Run Default Build Task
+- **Shortcut:** `Ctrl+Shift+B`
+- **Action:** Runs the default build task defined in `tasks.json`. In this project, it starts the full development environment.
+
 ### Go to File
 - **Shortcut:** `Ctrl+P`
 - **Action:** Quickly open any file by typing its name.

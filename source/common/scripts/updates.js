@@ -420,6 +420,16 @@ export async function init(force = false) {
                 title: merchant.info.name
             }
         }));
+
+        // --- FIX: Manually notify the routeManager to update subscribers ---
+        // This ensures the bottom-nav updates its active state correctly without a full view switch.
+        window.dispatchEvent(new CustomEvent('notifySubscribers'));
+        window.dispatchEvent(new CustomEvent('viewStateOverride', {
+            detail: {
+                isSecondary: true,
+                title: merchant.info.name
+            }
+        }));
     }
 
     function onAvatarClick(merchant) {

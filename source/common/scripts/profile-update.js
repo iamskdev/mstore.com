@@ -54,7 +54,9 @@ function populateForm(user) {
     document.getElementById('nickName').value = user.info.nickName || '';
     document.getElementById('dob').value = user.info.dob || '';
     document.getElementById('gender').value = user.info.gender || 'prefer_not_to_say';
-    document.getElementById('bio').value = user.info.bio || '';
+    const bioTextarea = document.getElementById('bio');
+    bioTextarea.value = user.info.bio || '';
+    bioTextarea.rows = 1; // FIX: Set initial rows to 1 to match content size.
 
     // Address (assuming first address)
     const address = user.address?.[0] || {};
@@ -130,6 +132,12 @@ function setSectionEditable(sectionName, editable) {
     // Don't enable/disable contact fields with this function anymore
     if (sectionName !== 'contact' && fields.length > 0) {
         fields.forEach(field => { field.disabled = !editable; });
+    }
+
+    // FIX: Toggle bio textarea rows between editing (4) and viewing (1) state.
+    if (sectionName === 'bio') {
+        const bioTextarea = section.querySelector('#bio');
+        if (bioTextarea) bioTextarea.rows = editable ? 4 : 1;
     }
 
     section.classList.toggle('editing', editable);
@@ -472,9 +480,11 @@ async function saveProfile() {
             'address.0.zipCode': document.getElementById('zipCode').value,
         };
         
-        // --- FIX: Re-assemble the full phone number before saving ---
-        const countryCode = document.getElementById('phone-country-code').textContent;
-        updatedData['info.phone'] = `${countryCode}${document.getElementById('phone').value.trim()}`;
+        // --- BUG FIX: Do not save unverified contact info ---
+        // Only save the existing, verified contact info from the currentUser object.
+        // The actual update of these fields should happen after a successful OTP verification flow.
+        updatedData['info.phone'] = currentUser.info.phone;
+        updatedData['info.email'] = currentUser.info.email;
 
         // Handle username update separately due to its special rules
         const newUsername = document.getElementById('username-modal-input').value.trim();

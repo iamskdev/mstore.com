@@ -12,6 +12,7 @@ export function initializeBottomNavigationLogic() {
   // This prevents re-initialization if the module is imported multiple times,
   // though in a typical SPA setup, it should only be imported once.
   if (initializeBottomNavigationLogic.initialized) {
+    updateNavUI(routeManager.getCurrentState()); // Re-run UI update on re-init
     return;
   }
   initializeBottomNavigationLogic.initialized = true;
@@ -19,6 +20,7 @@ export function initializeBottomNavigationLogic() {
   const navBar = document.getElementById('bottom-nav');
 
   // --- UI Update Function ---
+  let lastActiveMainTab = 'home'; // Default to home
   async function updateNavUI({ role, view }) {
     console.log(`TabNav: updateNavUI called with role: ${role}, view: ${view}`);
     // If promo is active, don't run the standard UI update logic.
@@ -26,16 +28,29 @@ export function initializeBottomNavigationLogic() {
       return;
     }
 
+    let aTabIsActive = false;
     // Standard UI update logic
     navBar.querySelectorAll('.nav-btn').forEach(btn => {
       btn.classList.toggle('hidden', btn.dataset.role !== role);
       const path = btn.dataset.path;
       const isCorrectRole = btn.dataset.role === role;
-      // --- FIX: Make tab active for parent and child routes ---
-      // Check if the current view is an exact match OR a sub-route (e.g., 'account/authentication' for 'account' tab)
       const isCorrectView = (view === path) || view.startsWith(path + '/');
-      btn.classList.toggle('active', isCorrectRole && isCorrectView);
+      const shouldBeActive = isCorrectRole && isCorrectView;
+      btn.classList.toggle('active', shouldBeActive);
+      if (shouldBeActive) {
+        aTabIsActive = true;
+        lastActiveMainTab = path; // Remember the last active main tab
+      }
     });
+
+    // --- NEW: If no tab is active, highlight the last known main tab ---
+    // This keeps the 'Updates' tab highlighted when navigating to a merchant profile from it.
+    if (!aTabIsActive) {
+      const lastActiveBtn = navBar.querySelector(`.nav-btn[data-path='${lastActiveMainTab}']`);
+      if (lastActiveBtn && lastActiveBtn.dataset.role === role) {
+        lastActiveBtn.classList.add('active');
+      }
+    }
     navBar.classList.toggle('dev-mode', role === 'admin');
 
     // --- Dynamic Account Icon Logic ---

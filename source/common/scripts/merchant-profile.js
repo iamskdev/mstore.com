@@ -762,7 +762,7 @@ function renderActionButtons(isOwner) {
     if (isOwner) {
         // --- OWNER VIEW ---
         container.innerHTML = `
-            <button class="action-btn primary" id="edit-profile-btn"><i class="fas fa-pen-to-square"></i> Edit</button>
+            <button class="action-btn primary" id="edit-profile-btn"><i class="fas fa-pen-to-square"></i> Update Profile</button>
             <button class="action-btn secondary" id="view-insights-btn"><i class="fas fa-chart-line"></i> Insights</button>
             <button class="action-btn secondary" id="promote-profile-btn" title="Promote Profile"><i class="fas fa-rocket"></i></button>
         `;
@@ -799,7 +799,15 @@ function renderActionButtons(isOwner) {
         if (followBtn) addFollowButtonListener(followBtn);
         if (notificationBtn) addNotificationButtonListener(notificationBtn);
         if (messageBtn) {
-            addManagedEventListener(messageBtn, 'click', () => showToast('info', 'Messaging feature coming soon!'));
+            addManagedEventListener(messageBtn, 'click', () => {
+                // --- FIX: Navigate to the conversation view for this merchant ---
+                if (merchantData && merchantData.meta.merchantId) {
+                    const role = localCache.get('currentUserType') || 'guest';
+                    routeManager.switchView(role, `conversation/${merchantData.meta.merchantId}`);
+                } else {
+                    showToast('error', 'Could not open chat. Merchant ID is missing.');
+                }
+            });
         }
     }
 }

@@ -115,10 +115,18 @@
 
 /* NEW: Specific style for the bio textarea when disabled to ensure readability */
 .profile-section[data-section-name="bio"] textarea:disabled {
-    padding-top: 0; /* Align with the label */
-    min-height: 40px; /* Ensure it has some height even when empty */
+    min-height: auto;
+    padding-top: 5px;
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+
+/* FIX: Apply a better font to the bio textarea to make it more stylish. */
+.profile-section[data-section-name="bio"] textarea {
+    font-family: 'Poppins', sans-serif;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 .profile-section h3 {
@@ -152,11 +160,15 @@
     color: var(--text-primary);
     transition: all 0.2s ease;
 }
-/* NEW: Remove top margin for form groups without a label */
+/* Remove top margin for form groups without a label */
 .form-group.no-label {
     margin-top: -1rem; /* Pulls the textarea up to align with the header's bottom border */
 }
 
+/* FIX: Override the negative margin specifically for the bio section to add space below the divider. */
+.profile-section[data-section-name="bio"] .form-group.no-label {
+    margin-top: 0;
+}
 
 /* Styles for disabled fields to look like plain text */
 .form-group input:disabled,
@@ -172,6 +184,12 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+}
+
+/* FIX: Specifically target disabled date inputs to remove browser-default padding */
+.form-group input[type="date"]:disabled {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 /* FIX: Hide the default calendar icon on date inputs */
@@ -307,6 +325,12 @@ input[type="date"] {
     pointer-events: none;
     color: var(--text-secondary);
 }
+/* FIX: Hide the arrow on the select wrapper when its child select is disabled. */
+/* This prevents the arrow from showing up on other fields like the date input on some browsers. */
+.select-wrapper:not(.editable)::after {
+    display: none;
+}
+
 
 select:not(:disabled) {
     -webkit-appearance: none;

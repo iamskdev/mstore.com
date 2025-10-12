@@ -48,8 +48,15 @@ async function renderProfileData() {
         const [userResult, accountResult, merchantResult] = await Promise.allSettled([
             fetchUserById(userId),
             fetchAccountById(localCache.get('currentAccountId')),
-            // Fetch current merchant data only if the active role is 'merchant'
-            currentUserType === 'merchant' ? fetchMerchantById(localCache.get('currentMerchantId')) : Promise.resolve(null)
+            // --- FIX: Correctly determine which merchant profile to fetch ---
+            // When a merchant logs in, `currentMerchantId` might not be set yet.
+            // The source of truth is the user's linked merchantIds. We fetch the first one.
+            (async () => {
+                if (currentUserType !== 'merchant') return null;
+                const userForId = await fetchUserById(userId); // Re-fetch user to be sure we have the latest links
+                const primaryMerchantId = localCache.get('currentMerchantId') || userForId?.meta?.links?.merchantIds?.[0];
+                return primaryMerchantId ? fetchMerchantById(primaryMerchantId) : null;
+            })()
         ]);
 
         // Extract the data from the settled promises.
@@ -73,40 +80,50 @@ async function renderProfileData() {
         usernameDisplay.style.display = 'block'; // Ensure username is visible for logged-in users
 
         // Update Name
-        // FIX: Prioritize nickName over fullName for consistency with top-nav.
         nameDisplay.textContent = user.info?.nickName || user.info?.fullName || 'Anonymous User';
 
         // --- NEW: Role-based header logic ---
-        if (currentUserType === 'merchant' && merchant) {
-            // For merchants, show their handle (without the extra @) and a "View Profile" link
-            usernameDisplay.innerHTML = `
-                <span>@${merchant.info.handle.replace('@', '')}</span>
-                <span class="action-link" data-merchant-id="${merchant.meta.merchantId}">› View Profile</span>
-            `;
-            usernameDisplay.querySelector('.action-link').addEventListener('click', (e) => {
-                const merchantId = e.target.dataset.merchantId;
-                routeManager.switchView(currentUserType, `merchant-profile/${merchantId}`);
-            });
-        } else if (currentUserType === 'consumer') {
-            // For consumers, show their username and potentially a "Create Business Profile" link
-            const hasMerchantProfiles = user.meta?.links?.merchantIds && user.meta.links.merchantIds.length > 0;
-            const username = user.info?.username ? `@${user.info.username}` : '';
-            // FIX: Shorten the text to "Create Business"
-            const createProfileLink = !hasMerchantProfiles
-                ? `<span class="action-link" id="create-business-profile-link">› Create Business</span>`
-                : '';
-            usernameDisplay.innerHTML = `<span>${username}</span>${createProfileLink}`;
-
-            if (!hasMerchantProfiles) {
-                document.getElementById('create-business-profile-link')?.addEventListener('click', () => {
-                    // Placeholder: In a real app, this would navigate to a merchant registration page
-                    window.showCustomAlert({ title: 'Coming Soon', message: 'The business profile creation flow is under development.' });
+        if (currentUserType === 'merchant') {
+            if (merchant) {
+                // Case 1: A specific merchant is loaded
+                usernameDisplay.innerHTML = `
+                    <span>@${merchant.info.handle.replace('@', '')}</span>
+                    <span class="action-link" data-merchant-id="${merchant.meta.merchantId}">› View Profile</span>
+                `;
+                usernameDisplay.querySelector('.action-link').addEventListener('click', (e) => {
+                    const merchantId = e.target.dataset.merchantId;
+                    routeManager.switchView(currentUserType, `merchant-profile/${merchantId}`);
+                });
+            } else if (user.meta?.flags?.isSuperAdmin) {
+                // Case 2: Super admin in generic merchant role (no specific merchant loaded)
+                usernameDisplay.innerHTML = `
+                    <span>@merchant_handle</span>
+                    <span class="action-link" id="admin-view-profile-test">› View Profile</span>
+                `;
+                document.getElementById('admin-view-profile-test')?.addEventListener('click', () => {
+                    window.showCustomAlert({ title: 'Admin Test View', message: 'This is where the merchant profile page would appear for a standard merchant.' });
                 });
             }
-        } else {
-            // For other roles like admin, just show the username.
+        } else if (currentUserType === 'consumer') {
+            // For consumers, show their username and potentially a "Create Business Profile" link
+            const hasMerchantProfiles = user.meta?.links?.merchantIds?.length > 0;
             const username = user.info?.username ? `@${user.info.username}` : '';
-            usernameDisplay.innerHTML = `<span>${username}</span>`;
+            
+            // --- FIX: Always show "Add Business" for consumers, as requested ---
+            const actionText = 'Add Business';
+            const createProfileLink = `<span class="action-link" id="header-business-action-link">› ${actionText}</span>`;
+
+            usernameDisplay.innerHTML = `<span>${username}</span>${createProfileLink}`;
+
+            document.getElementById('header-business-action-link')?.addEventListener('click', () => {
+                window.showCustomAlert({ title: 'Coming Soon', message: `The flow to '${actionText}' is under development.` });
+            });
+        } else {
+            // --- FIX: Add "Admin Tools" link for admins for consistency ---
+            const username = user.info?.username ? `@${user.info.username}` : '';
+            const adminToolsLink = (currentUserType === 'admin') ? `<span class="action-link" id="admin-tools-link">› Admin Tools</span>` : '';
+            usernameDisplay.innerHTML = `<span>${username}</span>${adminToolsLink}`;
+            document.getElementById('admin-tools-link')?.addEventListener('click', () => window.showCustomAlert({ title: 'Coming Soon', message: 'The Admin Tools section is under development.' }));
         }
 
         // --- Collect and Render All Profile Tags using both user and account data ---
@@ -162,34 +179,37 @@ async function renderProfileData() {
  */
 function getTagsForRole(role, user, account, merchant, options = {}) {
     const tags = [];
-
-    // Base tag for all users
-    tags.push('User'); // Base tag for all
-
-    // Add specific role account type
+    tags.push('User');
+    
     if (role === 'consumer') {
         tags.push('Consumer Account');
+        // --- FIX: Prioritize Super Admin tag over subscription status ---
+        if (user.meta?.flags?.isSuperAdmin && options.showPrivilegeTags !== false) {
+            tags.push('Top Contributor');
+        } else if (!user.meta?.flags?.isSuperAdmin && options.showSubscription !== false) {
+            const plan = account?.subscription?.plan;
+            tags.push(plan === 'Premium' ? 'Premium' : 'Basic');
+        }
     } else if (role === 'merchant') {
         tags.push('Merchant Account');
+        // --- FIX: Prioritize Super Admin tag over subscription status ---
+        if (user.meta?.flags?.isSuperAdmin && options.showPrivilegeTags !== false) {
+            tags.push('Top Contributor');
+        } else if (!user.meta?.flags?.isSuperAdmin && options.showSubscription !== false) {
+            const plan = merchant?.subscription?.plan;
+            tags.push(plan === 'Premium' ? 'Premium' : 'Basic');
+        }
     } else if (role === 'admin') {
-        tags.push('Admin Account');
-    }
-
-    // --- NEW: Control visibility of special privilege tags ---
-    const showPrivilegeTags = options.showPrivilegeTags !== false; // Default to true
-
-    // Add special privilege tags after the account type
-    // Rule: Owner and Super Admin both get the 'Top Contributor' tag for elevated status.
-    if (showPrivilegeTags && (user.meta?.flags?.isOwner || user.meta?.flags?.isSuperAdmin)) {
-        tags.push('Top Contributor');
-    }
-
-    // Rule: Add Premium tag only for the 'merchant' role if applicable.
-    // The options parameter can disable this for specific contexts like the account switcher modal.
-    const showPremium = options.showPremium !== false; // Default to true
-
-    if (showPremium && role === 'merchant' && merchant?.subscription?.status === 'active' && merchant?.subscription?.plan === 'Premium') {
-        tags.push('Premium');
+        tags.push('Admin Account');        
+        // Only show privilege tags in the main header, not in the modal.
+        // --- FIX: Always show privilege tags for admins, even if showPrivilegeTags is false ---
+        if (options.showPrivilegeTags !== false) {
+            if (user.meta?.flags?.isOwner || user.meta?.flags?.isSuperAdmin) {
+                tags.push('Top Contributor');
+            } else {
+                tags.push('Administration');
+            }
+        }
     }
 
     return tags.join(' • ');
@@ -300,6 +320,7 @@ async function initSwitchAccountModal() {
             // --- NEW: Final Role-based Modal Logic ---
             const isSuperAdmin = user?.meta?.flags?.isSuperAdmin;
             const currentMerchantId = localCache.get('currentMerchantId');
+            const hasMerchantProfiles = userMerchantIds.length > 0;
 
             if (isSuperAdmin) {
                 // --- SUPER ADMIN VIEW ---
@@ -315,44 +336,37 @@ async function initSwitchAccountModal() {
                     roleListContainer.appendChild(item);
                 });
 
-                // Now, add the conditional action button based on the current role.
-                if (currentRole === 'consumer') { // This was the block with the error
-                    const createBtn = createActionRoleItem('fa-store', 'Create Business Profile', 'User • Merchant Account', () => {
-                        window.showCustomAlert({ title: 'Coming Soon', message: 'The business profile creation flow is under development.' });
-                        closeModal();
-                    });
-                    roleListContainer.appendChild(createBtn);
-                } else if (currentRole === 'merchant') { // This was the block with the error
-                    const addBtn = createActionRoleItem('fa-plus-circle', 'Add Another Business', 'User • Merchant Account', () => {
-                        window.showCustomAlert({ title: 'Coming Soon', message: 'The flow to add another business is under development.' });
-                        closeModal();
-                    });
-                    roleListContainer.appendChild(addBtn);
-                }
-
+                // --- FIX: Always show "Add Business" for all logged-in users, including admins ---
+                const actionText = 'Add Business';
+                const createBusinessBtn = createActionRoleItem('fa-plus-circle', actionText, 'User • Merchant Account', () => {
+                    window.showCustomAlert({ title: 'Coming Soon', message: `The flow to '${actionText}' is under development.` });
+                    closeModal();
+                });
+                roleListContainer.appendChild(createBusinessBtn);
             } else {
                 // --- STANDARD USER VIEW (Consumer/Merchant) ---
                 const consumerItem = createRoleItem({ role: 'consumer', user, isActive: currentRole === 'consumer', isSuspended: user.meta?.flags?.isSuspended, currentRole });
                 roleListContainer.appendChild(consumerItem);
-
-                if (userMerchantIds.length > 0) {
+                
+                if (hasMerchantProfiles) {
                     merchantProfiles.sort((a, b) => {
                         if (a.meta.merchantId === currentMerchantId) return -1;
                         if (b.meta.merchantId === currentMerchantId) return 1;
-                        return a.info.storeName.localeCompare(b.info.storeName);
+                        return a.info.name.localeCompare(b.info.name);
                     });
                     merchantProfiles.forEach(merchant => {
                         const merchantItem = createRoleItem({ role: 'merchant', user, merchant, isActive: currentRole === 'merchant' && currentMerchantId === merchant.meta.merchantId, isSuspended: user.meta?.flags?.isSuspended || merchant.meta?.flags?.isSuspended, currentRole });
                         roleListContainer.appendChild(merchantItem);
                     });
-                    const addBusinessBtn = createActionRoleItem('fa-plus-circle', 'Add Another Business', 'User • Merchant Account', () => {
-                        window.showCustomAlert({ title: 'Coming Soon', message: 'The flow to add another business is under development.' });
-                        closeModal();
-                    });
-                    roleListContainer.appendChild(addBusinessBtn);
-                } else if (roles.includes('consumer')) {
-                    const createBusinessBtn = createActionRoleItem('fa-store', 'Create Business Profile', 'User • Merchant Account', () => {
-                        window.showCustomAlert({ title: 'Coming Soon', message: 'The business profile creation flow is under development.' });
+                }
+
+                // --- FIX: Move action button creation to the end to ensure correct order ---
+                // --- FIX: Always show "Add Business" at the end for all logged-in users ---
+                if (roles.includes('consumer')) {
+                    const actionText = 'Add Business'; // Universal text as requested
+                    const iconClass = 'fa-plus-circle'; // Universal icon
+                    const createBusinessBtn = createActionRoleItem(iconClass, actionText, 'User • Merchant Account', () => {
+                        window.showCustomAlert({ title: 'Coming Soon', message: `The flow to ${actionText.toLowerCase()} is under development.` });
                         closeModal();
                     });
                     roleListContainer.appendChild(createBusinessBtn);
@@ -385,14 +399,23 @@ async function initSwitchAccountModal() {
  * @returns {HTMLElement} The created DOM element.
  */
 function createRoleItem({ role, user, merchant = null, isActive, isSuspended = false, currentRole }) {
-    // --- FIX: Correctly determine active state for ALL account types ---
-    // The logic needs to handle three cases for an item to be "active":
-    // 1. The role is 'merchant' AND the current merchant ID matches this item's merchant ID.
-    // 2. The role is 'consumer' AND the current role is 'consumer' (no merchant ID is involved).
-    // 3. The role is 'admin' AND the current role is 'admin' (no merchant ID is involved).
-    // The original logic only handled case #1 correctly.
-    const currentMerchantId = localCache.get('currentMerchantId');
-    const isActuallyActive = (role === 'merchant' && merchant) ? (currentRole === 'merchant' && currentMerchantId === merchant.meta.merchantId) : (currentRole === role && !currentMerchantId);
+    // --- FIX: Correctly determine the active state for all account types ---
+    // This logic ensures the checkmark appears on the correct account in the "Switch Account" modal,
+    // especially on the first load after a merchant logs in.
+    // It now falls back to the user's primary merchantId if the one in localCache isn't set yet.
+    const currentMerchantId = localCache.get('currentMerchantId') || user?.meta?.links?.merchantIds?.[0];
+    let isActuallyActive;
+
+    if (role === 'merchant') {
+        // If this item is for a specific merchant, it's active if the current role is 'merchant' AND the IDs match.
+        // If this item is for the generic 'merchant' role (for super-admins), it's active if the current role is 'merchant' AND there's no currentMerchantId.
+        isActuallyActive = (currentRole === 'merchant') && (merchant ? currentMerchantId === merchant.meta.merchantId : !currentMerchantId);
+    } else {
+        // For 'consumer' or 'admin', it's active if the current role matches this item's role AND there is no merchantId set.
+        // This prevents the 'consumer' role from being marked active when the user is in a 'merchant' role,
+        // and ensures the 'admin' role is correctly marked active when an admin is logged in.
+        isActuallyActive = (currentRole === role);
+    }
 
     const item = document.createElement('div');    
     item.className = 'switch-account-item';
@@ -430,12 +453,18 @@ function createRoleItem({ role, user, merchant = null, isActive, isSuspended = f
         const avatarUrl = user.info?.avatar ? buildCloudinaryUrl(user.info.avatar) : null;
         avatarHtml = avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` : `<i class="fas fa-user-circle"></i>`;
     }
-    const roleTags = getTagsForRole(role, user, null, merchant, { showPremium: false, showPrivilegeTags: false });
+    const roleTags = getTagsForRole(role, user, null, merchant, { showSubscription: false, showPrivilegeTags: false });
+    
+    // --- NEW: Add icons for special roles instead of text tags ---
+    let specialRoleIcon = '';
 
     item.innerHTML = `
         <div class="switch-account-avatar">${avatarHtml}</div>
         <div class="switch-account-details">
-            <span class="user-full-name">${displayName}</span>
+            <span class="user-full-name">
+                ${displayName}
+                ${specialRoleIcon}
+            </span>
             <span class="account-role-type">${roleTags}</span>
         </div>
         ${statusIconHtml}
@@ -477,7 +506,7 @@ function createActionItem(iconClass, text, onClick) {
 function createActionRoleItem(iconClass, title, subtitle, onClick) {
     const item = document.createElement('div');
     item.className = 'switch-account-item action-item'; // Use same base class + an action identifier
-    item.innerHTML = `
+    item.innerHTML = ` 
         <div class="switch-account-avatar"><i class="fas ${iconClass}"></i></div>
         <div class="switch-account-details">
             <span class="user-full-name">${title}</span>

@@ -1,5 +1,5 @@
 # 📁 Project Path Tree (Gemini-friendly)
-📅 Last Updated: 08/10/2025, 23:36
+📅 Last Updated: 12/10/2025, 09:57
 
 S:\My Projects\Apna Store\mStore\.firebaserc
 S:\My Projects\Apna Store\mStore\.github\workflows\release.yml
@@ -22,10 +22,12 @@ S:\My Projects\Apna Store\mStore\.husky\_\pre-push
 S:\My Projects\Apna Store\mStore\.husky\_\pre-rebase
 S:\My Projects\Apna Store\mStore\.husky\_\prepare-commit-msg
 S:\My Projects\Apna Store\mStore\.husky\post-commit
+S:\My Projects\Apna Store\mStore\.husky\post-commit.sh
 S:\My Projects\Apna Store\mStore\.husky\pre-commit
 S:\My Projects\Apna Store\mStore\.husky\pre-push
 S:\My Projects\Apna Store\mStore\archive\card-old.html
 S:\My Projects\Apna Store\mStore\archive\error-page.html
+S:\My Projects\Apna Store\mStore\archive\merchant-add-demo.html
 S:\My Projects\Apna Store\mStore\archive\merchant-profile-demo.html
 S:\My Projects\Apna Store\mStore\archive\photo-editor-demo.html
 S:\My Projects\Apna Store\mStore\archive\rating-demo.html
@@ -49,7 +51,9 @@ S:\My Projects\Apna Store\mStore\docs\schema-guide.md
 S:\My Projects\Apna Store\mStore\docs\shortcuts.md
 S:\My Projects\Apna Store\mStore\docs\versions-guide.md
 S:\My Projects\Apna Store\mStore\docs\workflow.md
+S:\My Projects\Apna Store\mStore\firebase-debug.log
 S:\My Projects\Apna Store\mStore\firebase.json
+S:\My Projects\Apna Store\mStore\firestore-debug.log
 S:\My Projects\Apna Store\mStore\functions\firebase-debug.log
 S:\My Projects\Apna Store\mStore\functions\index.js
 S:\My Projects\Apna Store\mStore\functions\package-lock.json
@@ -112,6 +116,7 @@ S:\My Projects\Apna Store\mStore\localstore\jsons\price-logs.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\promotions.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\ratings.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\stories.json
+S:\My Projects\Apna Store\mStore\localstore\jsons\transactions.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\units.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\users.json
 S:\My Projects\Apna Store\mStore\localstore\jsons\versions.json
@@ -348,6 +353,7 @@ S:\My Projects\Apna Store\mStore\tools\scripts\export-data.js
 S:\My Projects\Apna Store\mStore\tools\scripts\import-data.js
 S:\My Projects\Apna Store\mStore\tools\scripts\item-seeds.js
 S:\My Projects\Apna Store\mStore\tools\scripts\path-generator.js
+S:\My Projects\Apna Store\mStore\tools\scripts\set-emulator.js
 S:\My Projects\Apna Store\mStore\tools\scripts\upload-to-emulator.js
 S:\My Projects\Apna Store\mStore\versioner\config-updater.js
 S:\My Projects\Apna Store\mStore\versioner\deploy-update.js
