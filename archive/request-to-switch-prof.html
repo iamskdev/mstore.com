@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Application Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --accent-primary: #007bff;
+            --accent-primary-hover: #0056b3;
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --border-color: #3a3a3a;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --radius: 8px;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px var(--shadow-color);
+            overflow: hidden;
+        }
+
+        .form-header {
+            padding: 2rem;
+            text-align: center;
+            background-color: var(--bg-tertiary);
+        }
+
+        .form-header h1 {
+            margin: 0;
+            font-size: 1.75rem;
+            color: var(--accent-primary);
+        }
+
+        .form-header p {
+            margin: 0.5rem 0 0;
+            color: var(--text-secondary);
+        }
+
+        #merchant-form {
+            padding: 2rem;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 4px;
+            width: 100%;
+            background-color: var(--border-color);
+            z-index: 1;
+        }
+
+        .progress-bar-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 4px;
+            background-color: var(--accent-primary);
+            z-index: 2;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 3;
+            position: relative;
+        }
+
+        .progress-step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--bg-secondary);
+            border: 3px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.4s ease;
+            color: var(--text-secondary);
+        }
+
+        .progress-step-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            transition: color 0.4s ease;
+        }
+
+        .progress-step.active .progress-step-circle {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .progress-step.active .progress-step-label {
+            color: var(--accent-primary);
+        }
+
+        /* Form Steps */
+        .form-step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .form-step.form-step-active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-prev {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-prev:hover {
+            background-color: #3c3c3c;
+        }
+
+        .btn-next {
+            background-color: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: var(--accent-primary-hover);
+        }
+
+        .btn:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+        }
+
+        /* Success Step */
+        .success-message {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        .success-message h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .success-message p {
+            color: var(--text-secondary);
+            max-width: 80%;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0;
+                align-items: flex-start;
+            }
+            .container {
+                border-radius: 0;
+                min-height: 100vh;
+                box-shadow: none;
+            }
+            #merchant-form, .form-header {
+                padding: 1.5rem;
+            }
+            .progress-step-label {
+                display: none;
+            }
+        }
+                /* NEW: Style for validation error messages */
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-header">
+        <h1>Become a Merchant</h1>
+        <p>Fill out the details below to create your business profile.</p>
+    </div>
+
+    <form id="merchant-form">
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-bar-line"></div>
+            <div class="progress-step active" data-step="1">
+                <div class="progress-step-circle"><i class="fas fa-store"></i></div>
+                <div class="progress-step-label">Business</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="progress-step-circle"><i class="fas fa-address-book"></i></div>
+                <div class="progress-step-label">Contact</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="progress-step-circle"><i class="fas fa-file-alt"></i></div>
+                <div class="progress-step-label">Documents</div>
+            </div>
+            <div class="progress-step" data-step="4">
+                <div class="progress-step-circle"><i class="fas fa-check"></i></div>
+                <div class="progress-step-label">Finish</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Business Information -->
+        <div class="form-step form-step-active">
+            <div class="input-group">
+                <label for="business-name">Business Name</label>
+                <input type="text" id="business-name" name="businessName" placeholder="e.g., Anita General Store" required>
+            </div>
+            <div class="input-group">
+                <label for="business-category">Business Category</label>
+                <select id="business-category" name="businessCategory" required>
+                    <option value="" disabled selected>Select a category</option>
+                    <option value="grocery">Grocery & Kirana</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="fashion">Fashion & Apparel</option>
+                    <option value="services">Services (e.g., Cafe, Salon)</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="business-description">Business Description</label>
+                <textarea id="business-description" name="businessDescription" placeholder="Tell us a little about your business..." required></textarea>
+            </div>
+        </div>
+
+        <!-- Step 2: Contact & Address -->
+        <div class="form-step">
+            <div class="input-group">
+                <label for="contact-person">Contact Person</label>
+                <input type="text" id="contact-person" name="contactPerson" placeholder="e.g., Santosh Kumar" required>
+            </div>
+            <div class="input-group">
+                <label for="business-phone">Business Phone</label>
+                <input type="tel" id="business-phone" name="businessPhone" placeholder="10-digit mobile number" required pattern="\d{10}">
+            </div>
+            <div class="input-group">
+                <label for="business-address">Street Address</label>
+                <input type="text" id="business-address" name="businessAddress" placeholder="e.g., Main Road, Boring Road" required>
+            </div>
+            <div class="input-group">
+                <label for="business-city">City</label>
+                <input type="text" id="business-city" name="businessCity" placeholder="e.g., Patna" required>
+            </div>
+        </div>
+
+        <!-- Step 3: Documents & Bank Details -->
+        <div class="form-step">
+            <div class="input-group">
+                <label for="gstin">GSTIN (Optional)</label>
+                <input type="text" id="gstin" name="gstin" placeholder="15-digit GST Identification Number">
+            </div>
+            <div class="input-group">
+                <label for="bank-account">Bank Account Number</label>
+                <input type="text" id="bank-account" name="bankAccount" placeholder="For receiving payments" required>
+            </div>
+            <div class="input-group">
+                <label for="ifsc-code">IFSC Code</label>
+                <input type="text" id="ifsc-code" name="ifscCode" placeholder="e.g., SBIN0001234" required>
+            </div>
+        </div>
+
+        <!-- Step 4: Success Message -->
+        <div class="form-step">
+            <div class="success-message">
+                <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                <h2>Application Submitted!</h2>
+                <p>Your request to become a merchant is under review. We will notify you once it's approved.</p>
+                <button type="button" class="btn btn-next" id="finish-btn">Go to My Account</button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="form-navigation">
+            <button type="button" class="btn btn-prev" disabled>Previous</button>
+            <button type="button" class="btn btn-next">Next</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const prevBtn = document.querySelector('.btn-prev');
+        // FIX: Select the 'Next' button specifically from the navigation area to avoid conflict with the 'Finish' button.
+        const nextBtn = document.querySelector('.form-navigation .btn-next');
+        const formSteps = document.querySelectorAll('.form-step');
+        const progressSteps = document.querySelectorAll('.progress-step');
+        const progressBarLine = document.querySelector('.progress-bar-line');
+        const formNavigation = document.querySelector('.form-navigation');
+        const finishBtn = document.getElementById('finish-btn');
+
+        let currentStep = 1;
+
+        nextBtn.addEventListener('click', () => {
+            // Validate current step before proceeding
+            // FIX: Validation is bypassed to allow for quick UI testing.
+            if (validateStep(currentStep)) {
+                if (currentStep < formSteps.length) {
+                    currentStep++;
+                    updateFormSteps();
+                    updateProgressBar();
+                }
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateFormSteps();
+                updateProgressBar();
+            }
+        });
+
+        // NEW: Add event listeners to inputs to remove errors on input
+        const allInputs = document.querySelectorAll('.form-step input, .form-step select, .form-step textarea');
+        allInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                removeError(input);
+            });
+        });
+
+        finishBtn.addEventListener('click', () => {
+            alert("Redirecting to account page...");
+            // In a real app, you would redirect:
+            // window.location.href = '/account';
+        });
+
+        function validateStep(step) {
+            // Bypassing validation for quick UI testing as requested.
+            return true;
+        }
+
+        function highlightError(input, customMessage = null) {
+            input.style.borderColor = 'var(--error-color)';
+            
+            // Remove existing error message
+            const existingError = input.parentNode.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Add error message
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message'; // Use CSS class for styling
+            errorMessage.textContent = customMessage || 'This field is required';
+            
+            input.parentNode.appendChild(errorMessage);
+        }
+        function removeError(input) {
+            input.style.borderColor = 'var(--border-color)';
+            
+            // Remove error message
+            const errorMessage = input.parentNode.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.remove();
+            }
+        }
+
+        function updateFormSteps() {
+            formSteps.forEach((step, index) => {
+                step.classList.toggle('form-step-active', index + 1 === currentStep);
+            });
+
+            if (currentStep === formSteps.length) { // Success step
+                formNavigation.style.display = 'none';
+            } else {
+                formNavigation.style.display = 'flex';
+            }
+
+            prevBtn.disabled = currentStep === 1;
+            nextBtn.textContent = currentStep === formSteps.length - 1 ? 'Submit' : 'Next';
+        }
+
+        function updateProgressBar() {
+            progressSteps.forEach((step, index) => {
+                if (index < currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+
+            const width = ((currentStep - 1) / (progressSteps.length - 1)) * 100;
+            progressBarLine.style.width = `${width}%`;
+        }
+
+        // Initial call
+        updateFormSteps();
+        updateProgressBar();
+    });
+</script>
+
+</body>
+</html>

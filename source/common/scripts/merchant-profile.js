@@ -82,22 +82,39 @@ function formatNumber(num) {
 
 // --- RENDER FUNCTIONS ---
 function renderProfile(merchantData) {
+    console.log('[merchant-profile] 1. renderProfile called. Data:', merchantData);
+
     const logoImg = document.getElementById('merchant-logo');
-    const logoPlaceholder = logoImg.previousElementSibling;
+    const logoPlaceholder = document.getElementById('logo-placeholder-icon');
+    const logoUrl = merchantData.info.logo;
 
-    // Reset state before loading new image
-    logoImg.style.display = 'block';
-    logoPlaceholder.style.display = 'none';
+    console.log('[merchant-profile] 2. Found elements:', { logoImg, logoPlaceholder });
+    console.log('[merchant-profile] 3. Logo URL from data:', logoUrl);
 
-    logoImg.src = merchantData.info.logo;
-    logoImg.onerror = function () {
-        this.style.display = 'none'; // Hide broken image
-        logoPlaceholder.style.display = 'flex'; // Show placeholder icon
-    };
+    // --- FIX: Correctly handle null or empty logo URLs ---
+    // First, check if a logo URL actually exists.
+    if (logoUrl) {
+        console.log('[merchant-profile] 4. Path A: logoUrl exists. Trying to load image.');
+        // If a URL exists, attempt to load the image.
+        logoImg.style.display = 'block';
+        logoPlaceholder.style.display = 'none';
+        logoImg.src = logoUrl;
+        logoImg.onerror = function () {
+            console.log('[merchant-profile] 5a. Image load failed (onerror). Showing placeholder.');
+            // If the image fails to load, hide it and show the placeholder icon.
+            this.style.display = 'none';
+            logoPlaceholder.style.display = 'flex';
+        };
+    } else {
+        console.log('[merchant-profile] 4. Path B: logoUrl is null/empty. Showing placeholder directly.');
+        // If there is no logo URL, immediately show the placeholder icon.
+        logoImg.style.display = 'none';
+        logoPlaceholder.style.display = 'flex';
+    }
 
-    document.getElementById('cover-photo').src = merchantData.info.coverImage;
+    // --- FIX: Correctly populate name, handle, and engagement counts ---
     document.getElementById('merchant-name').textContent = merchantData.info.name;
-    document.getElementById('merchant-handle').textContent = merchantData.info.handle;
+    document.getElementById('merchant-handle').textContent = `@${merchantData.info.handle}`;
     document.getElementById('followers-count').textContent = formatNumber(merchantData.engagement?.followers || 0);
     document.getElementById('items-count').textContent = formatNumber(merchantData.engagement?.items || 0);
 
@@ -761,11 +778,17 @@ function renderActionButtons(isOwner) {
 
     if (isOwner) {
         // --- OWNER VIEW ---
+        // If the owner is viewing their own profile, show editing and insights buttons.
+        const isProfileIncomplete = merchantData.meta.status === 'incomplete';
+        const editButtonText = isProfileIncomplete ? 'Complete Profile' : 'Update Profile';
+
         container.innerHTML = `
-            <button class="action-btn primary" id="edit-profile-btn"><i class="fas fa-pen-to-square"></i> Update Profile</button>
+            <button class="action-btn primary" id="edit-profile-btn"><i class="fas fa-pen-to-square"></i> ${editButtonText}</button>
             <button class="action-btn secondary" id="view-insights-btn"><i class="fas fa-chart-line"></i> Insights</button>
             <button class="action-btn secondary" id="promote-profile-btn" title="Promote Profile"><i class="fas fa-rocket"></i></button>
         `;
+        // If the profile is incomplete, add a pulsing animation to the edit button to draw attention.
+        if (isProfileIncomplete) document.getElementById('edit-profile-btn').classList.add('pulse-animation');
 
         const editBtn = document.getElementById('edit-profile-btn');
         const insightsBtn = document.getElementById('view-insights-btn');
@@ -774,7 +797,8 @@ function renderActionButtons(isOwner) {
         if (editBtn) {
             // --- FIX: Show a toast message as the merchant edit page is not ready ---
             addManagedEventListener(editBtn, 'click', () => {
-                showToast('info', 'Merchant profile editing coming soon!');
+                // Navigate to the new multi-step profile completion page.
+                routeManager.switchView('merchant', 'profile-edit');
             });
         }
         if (insightsBtn) {
@@ -894,8 +918,12 @@ export async function init(force = false) {
             return;
         }
 
-        // --- NEW: Check if the current user is the owner of this profile ---
-        const isOwner = merchantData.meta.links.userId === currentUserId;
+        // --- FIX: Robust check to determine if the current user is the owner ---
+        // This check is now more reliable. It verifies if the `userId` linked in the
+        // merchant's data matches the `currentUserId` stored in the session cache.
+        // This is crucial for the "Add Business" flow, where the user is immediately
+        // redirected to their new, incomplete profile.
+        const isOwner = !!currentUserId && (merchantData.meta.links.userId === currentUserId);
 
 
         // --- RENDER ALL SECTIONS WITH REAL DATA ---

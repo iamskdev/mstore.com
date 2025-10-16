@@ -8,6 +8,7 @@
 
 import { getAppConfig } from '../settings/main-config.js';
 import { firestore } from '../firebase/firebase-config.js'; // ✅ Import firestore service
+import { routeManager } from '../main.js';
 
 // ===================================================================================
 // --- EMBEDDED CACHE MANAGER ---
@@ -388,4 +389,95 @@ export async function fetchActivePromotion() {
         return null;
     }
     return null;
+}
+
+/**
+ * Generates a unique ID based on the project's standard format.
+ * Format: TYPE-YYYYMMDD-HHMMSS-SSS-RRRR
+ * @param {string} entityType - The 3-letter uppercase code for the entity (e.g., 'MRC', 'USR').
+ * @returns {string} The generated unique ID.
+ */
+function generateId(entityType) {
+  const now = new Date();
+  const yyyy = now.getUTCFullYear();
+  const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(now.getUTCDate()).padStart(2, '0');
+  const hh = String(now.getUTCHours()).padStart(2, '0');
+  const min = String(now.getUTCMinutes()).padStart(2, '0');
+  const ss = String(now.getUTCSeconds()).padStart(2, '0');
+  const ms = String(now.getUTCMilliseconds()).padStart(3, '0');
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  
+  return `${entityType}-${yyyy}${mm}${dd}-${hh}${min}${ss}-${ms}-${random}`;
+}
+
+/**
+ * Creates a new skeleton merchant profile, saves it to Firestore,
+ * links it to the current user, and then switches the user's role to that new merchant.
+ */
+export async function createAndSwitchToNewMerchant() {
+    const currentUserId = localCache.get('currentUserId');
+    if (!currentUserId) {
+        console.error("Cannot create business: User is not logged in.");
+        window.showCustomAlert({ title: 'Login Required', message: 'You must be logged in to create a business profile.' });
+        return;
+    }
+
+    const currentUser = await fetchUserById(currentUserId);
+    if (!currentUser) {
+        console.error("Cannot create business: Current user data not found.");
+        window.showCustomAlert({ title: 'Error', message: 'Could not retrieve your user data. Please try again.' });
+        return;
+    }
+
+    const newMerchantId = generateId('MRC');
+    const now = new Date().toISOString();
+
+    // --- FIX: Create a complete skeleton object matching the merchants.json schema ---
+    const newMerchant = {
+        meta: {
+            merchantId: newMerchantId, version: 1, joinedAt: now, type: "Retailer", adminNote: "Newly created via Add Business flow.",
+            status: 'incomplete', // This is the crucial flag for our flow
+            flags: { isActive: true, isVerified: false, isPopular: false, isNew: true, isDeleted: false },
+            links: { userId: currentUserId, staffIds: [] },
+            ownerUID: currentUser.auth.provider.uid
+        },
+        info: {
+            name: "My New Business", handle: `new-business-${newMerchantId.slice(-4).toLowerCase()}`, logo: null, qrCode: null,
+            tagline: "Your amazing new business tagline!", description: "Complete your profile to add a detailed description about your business.",
+            coverImage: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop",
+            establishedAt: now, contact: { phone: null, email: null, whatsapp: null }
+        },
+        openingHours: { days: [], hours: [], isOpen: false, note: "" }, addresses: [],
+        engagement: { rank: 0, rating: 0, reviews: 0, views: 0, followers: 0, items: 0 },
+        social: { facebook: null, instagram: null, twitter: null, whatsapp: null },
+        community: { description: "Welcome to the community!", activeMembers: [] },
+        paymentOptions: { acceptsCod: false, acceptsOnline: false, acceptedGateways: [] },
+        deliveryInfo: { isAvailable: false, deliveryRadiusKm: 0, minOrderValue: 0, deliveryFee: 0, freeDeliveryThreshold: 0 },
+        legalInfo: { ownerName: currentUser.info.fullName || '', gstin: null, pan: { number: null }, aadhaar: { last4digits: null } },
+        seo: { title: "My New Business", description: "", keywords: [] },
+        subscription: { plan: "free", status: "active", startDate: now, endDate: null, autoRenew: false, amount: 0 },
+        audit: { createdAt: now, createdBy: currentUserId, updatedAt: now, updatedBy: currentUserId }
+    };
+
+    try {
+        const merchantRef = firestore.collection('merchants').doc(newMerchantId);
+        await merchantRef.set(newMerchant);
+        console.log(`[Firestore] ✅ New merchant document created: merchants/${newMerchantId}`);
+
+        const userRef = firestore.collection('users').doc(currentUserId);
+        await userRef.update({ 'meta.links.merchantIds': firebase.firestore.FieldValue.arrayUnion(newMerchantId) });
+        console.log(`[Firestore] ✅ User document updated to link new merchant.`);
+
+        const allMerchants = localCache.get('allMerchants') || [];
+        allMerchants.push(newMerchant);
+        localCache.set('allMerchants', allMerchants);
+
+    } catch (error) {
+        console.error("❌ Firestore Error: Failed to create new business.", error);
+        window.showCustomAlert({ title: 'Database Error', message: 'Could not create your business profile. Please try again.' });
+        return;
+    }
+
+    routeManager.handleRoleChange('merchant', currentUserId, newMerchantId);
 }

@@ -421,6 +421,16 @@
         #more-info-list {
             padding: 0 16px;
         }
+        /* NEW: Verification Status Styles */
+        .verification-status-list .info-item {
+            justify-content: space-between;
+        }
+        .verification-status {
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
 
         /* --- NEW: Modern Post Card Design --- */
         .posts-section {
@@ -1048,6 +1058,16 @@
                     <h3 class="section-title">Store Policies</h3>
                     <p id="store-policies-content">Return and refund policies will be listed here. Currently, all sales are final.</p>
                 </div>
+                <!-- NEW: Card for Banking Details -->
+                <div class="about-card">
+                    <h3 class="section-title">Banking Details</h3>
+                    <div id="banking-info-list"></div>
+                </div>
+                <!-- NEW: Card for Verification Status -->
+                <div class="about-card">
+                    <h3 class="section-title">Verification Status</h3>
+                    <div id="verification-status-list" class="verification-status-list"></div>
+                </div>
                 <!-- NEW: Card for Social Links -->
                 <div class="about-card">
                     <h3 class="section-title">Social Media</h3>
@@ -1157,7 +1177,24 @@
         legalInfo: {
             ownerName: "Rohit Kumar",
             gstin: "09AABCU9603R1ZJ"
-        }
+        },
+        // --- NEW FIELDS ADDED TO MOCK DATA ---
+        policies: {
+          returnPolicy: "Returns accepted within 7 days of purchase with original receipt. Items must be in original condition.",
+          refundPolicy: "Refunds are processed to the original payment method within 5-7 business days.",
+          cancellationPolicy: "Orders can be cancelled within 15 minutes of placement."
+        },
+        tags: ["24/7 Delivery", "Internet Cafe", "Snacks", "Online Payments"],
+        banking: {
+          bankName: "State Bank of India",
+          accountNumber: "xxxx-xxxx-1234",
+          ifscCode: "SBIN0001234",
+          accountHolderName: "Rohit Kumar"
+        },
+        verification: {
+          pan: { status: "pending" },
+          bank: { status: "verified" }
+        },
     };
 
     // --- SEPARATE MOCK DATA (simulating other collections) ---
@@ -1651,8 +1688,13 @@
         if (lastSocialItem) lastSocialItem.style.marginBottom = '0';
 
         // Render Store Policies
-        // This is now static as policies object was removed from new structure
-        document.getElementById('store-policies-content').textContent = 'Returns accepted within 7 days of purchase with original receipt. Items must be in original condition.';
+        const policies = merchantData.policies || {};
+        const policiesContent = `
+            <strong>Return Policy:</strong> ${policies.returnPolicy || 'Not specified.'}<br>
+            <strong>Refund Policy:</strong> ${policies.refundPolicy || 'Not specified.'}<br>
+            <strong>Cancellation Policy:</strong> ${policies.cancellationPolicy || 'Not specified.'}
+        `;
+        document.getElementById('store-policies-content').innerHTML = policiesContent;
 
         // NEW: Render Payment & Delivery Info
         const paymentDeliveryContainer = document.getElementById('payment-delivery-info');
@@ -1698,6 +1740,30 @@
             moreInfoHTML += `<div class="info-item"><i class="fas fa-id-card-alt"></i><span>ID: ${merchantData.meta.merchantId}</span></div>`;
         }
         moreInfoContainer.innerHTML = moreInfoHTML;
+
+        // NEW: Render Banking Info
+        const bankingContainer = document.getElementById('banking-info-list');
+        const banking = merchantData.banking || {};
+        let bankingHTML = '';
+        if (banking.accountHolderName) bankingHTML += `<div class="info-item"><i class="fas fa-user-circle"></i><span>${banking.accountHolderName}</span></div>`;
+        if (banking.bankName) bankingHTML += `<div class="info-item"><i class="fas fa-university"></i><span>${banking.bankName}</span></div>`;
+        if (banking.accountNumber) bankingHTML += `<div class="info-item"><i class="fas fa-hashtag"></i><span>A/C: ${banking.accountNumber}</span></div>`;
+        if (banking.ifscCode) bankingHTML += `<div class="info-item"><i class="fas fa-code-branch"></i><span>IFSC: ${banking.ifscCode}</span></div>`;
+        bankingContainer.innerHTML = bankingHTML || '<p>Banking details not provided.</p>';
+
+        // NEW: Render Verification Status
+        const verificationContainer = document.getElementById('verification-status-list');
+        const verification = merchantData.verification || {};
+        let verificationHTML = '';
+        const statusColors = { verified: '#28a745', pending: '#ffc107', rejected: '#dc3545', not_applicable: '#6c757d' };
+        const statusTextColors = { verified: 'white', pending: 'black', rejected: 'white', not_applicable: 'white' };
+
+        for (const [key, value] of Object.entries(verification)) {
+            const status = value.status || 'pending';
+            verificationHTML += `<div class="info-item"><i class="fas fa-check-double"></i><span>${key.toUpperCase()} Status</span><span class="verification-status" style="background-color:${statusColors[status]}; color:${statusTextColors[status]}">${status}</span></div>`;
+        }
+        verificationContainer.innerHTML = verificationHTML || '<p>Verification status not available.</p>';
+
     }
 
     // --- HELPERS ---

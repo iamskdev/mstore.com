@@ -36,7 +36,17 @@ const routeConfig = {
       title: 'Add',
       isMainTab: true,
       dataDependencies: []
-    },  },
+    },
+    'profile-edit': {
+      id: 'merchant-profile-edit-view',
+      path: './source/modules/merchant/pages/merchant-profile-edit.html',
+      cssPath: './source/modules/merchant/styles/merchant-profile-edit.css',
+      jsPath: './source/modules/merchant/scripts/merchant-profile-edit.js',
+      title: 'Complete Your Profile',
+      isMainTab: false, // It's a sub-view, not a main tab
+      dataDependencies: []
+    }
+  },
   admin: {
     home: {
       id: 'admin-home-view',

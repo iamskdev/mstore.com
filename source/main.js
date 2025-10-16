@@ -541,14 +541,27 @@ class RouteManager {
       localCache.remove('currentMerchantId');
     }
 
-    // Get the default view for the new role from our config object.
-    const defaultView = this.defaultViews[newRole] || 'home';
+    // --- SMART REDIRECTION FOR NEW MERCHANTS ---
+    // If the user is switching to a merchant role and that merchant's profile is incomplete,
+    // redirect them to their profile page instead of the default dashboard.
+    if (newRole === 'merchant' && merchantId) {
+      const merchantData = localCache.get('allMerchants')?.find(m => m.meta.merchantId === merchantId);
+      // Check for the 'incomplete' status we set in data-manager.
+      if (merchantData && merchantData.meta.status === 'incomplete') {
+        console.log(`[RouteManager] Incomplete merchant profile detected. Redirecting to 'merchant-profile/${merchantId}'.`);
+        // Redirect to the merchant's own profile page.
+        this.switchView('merchant', `merchant-profile/${merchantId}`);
+        return; // Stop further execution to prevent switching to the default view.
+      }
+    }
+    // --- END SMART REDIRECTION ---
 
     // --- NEW: Explicitly hide all view containers before switching ---
     document.querySelectorAll('.page-view-area').forEach(container => {
       container.classList.remove('view-active');
     });
     // --- END NEW ---
+    const defaultView = this.defaultViews[newRole] || 'home';
 
     this.switchView(newRole, defaultView);
   }

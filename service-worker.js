@@ -106,6 +106,11 @@ const APP_SHELL_URLS = [
   './source/modules/merchant/styles/add.css',
   './source/modules/merchant/scripts/add.js',
   
+  // Merchant Profile Edit View
+  './source/modules/merchant/pages/merchant-profile-edit.html',
+  './source/modules/merchant/styles/merchant-profile-edit.css',
+  './source/modules/merchant/scripts/merchant-profile-edit.js',
+
   //Modals
   './source/modals/account-switcher.html',
   './source/modals/rating/rating-modal.html',

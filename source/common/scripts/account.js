@@ -1,4 +1,4 @@
-import { fetchUserById, fetchAccountById, fetchMerchantById, localCache, fetchAllMerchants } from '../../utils/data-manager.js';
+import { fetchUserById, fetchAccountById, fetchMerchantById, localCache, fetchAllMerchants, createAndSwitchToNewMerchant } from '../../utils/data-manager.js';
 import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 import { routeManager } from '../../main.js';
 import { showFeedbackModal } from '../../partials/modals/feedback.js';
@@ -116,7 +116,8 @@ async function renderProfileData() {
             usernameDisplay.innerHTML = `<span>${username}</span>${createProfileLink}`;
 
             document.getElementById('header-business-action-link')?.addEventListener('click', () => {
-                window.showCustomAlert({ title: 'Coming Soon', message: `The flow to '${actionText}' is under development.` });
+                // --- FIX: Call the function to create a new business profile ---
+                createAndSwitchToNewMerchant();
             });
         } else {
             // --- FIX: Add "Admin Tools" link for admins for consistency ---
@@ -339,8 +340,8 @@ async function initSwitchAccountModal() {
                 // --- FIX: Always show "Add Business" for all logged-in users, including admins ---
                 const actionText = 'Add Business';
                 const createBusinessBtn = createActionRoleItem('fa-plus-circle', actionText, 'User • Merchant Account', () => {
-                    window.showCustomAlert({ title: 'Coming Soon', message: `The flow to '${actionText}' is under development.` });
-                    closeModal();
+                    closeModal(); // Close the modal first
+                    createAndSwitchToNewMerchant(); // Then call the function
                 });
                 roleListContainer.appendChild(createBusinessBtn);
             } else {
@@ -366,8 +367,8 @@ async function initSwitchAccountModal() {
                     const actionText = 'Add Business'; // Universal text as requested
                     const iconClass = 'fa-plus-circle'; // Universal icon
                     const createBusinessBtn = createActionRoleItem(iconClass, actionText, 'User • Merchant Account', () => {
-                        window.showCustomAlert({ title: 'Coming Soon', message: `The flow to ${actionText.toLowerCase()} is under development.` });
-                        closeModal();
+                        closeModal(); // Close the modal first
+                        createAndSwitchToNewMerchant(); // Then call the function
                     });
                     roleListContainer.appendChild(createBusinessBtn);
                 }
