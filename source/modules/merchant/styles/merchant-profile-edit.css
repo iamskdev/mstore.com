@@ -2,48 +2,54 @@
     width: 100%;
     max-width: 600px; /* Limit width on larger screens */
     margin: 0 auto;
-    padding: 1rem;
+    padding: 0; /* Remove padding to allow progress bar to be full-width */
     background-color: var(--bg-primary);
     color: var(--text-primary);
     box-sizing: border-box;
 }
 
 .form-header {
-    padding: 1rem 0;
+    padding: 1rem 1rem 0 1rem; /* Add padding here instead */
     text-align: center;
     border-bottom: 1px solid var(--border-color);
-    margin-bottom: 2rem;
+    margin-bottom: 0rem;
 }
 
 .form-header h1 {
     margin: 0;
+    margin-bottom: 0.5rem; /* Added a small bottom margin for consistent spacing */
     font-size: 1.75rem;
     color: var(--text-primary);
 }
 
 .form-header p {
-    margin: 0.5rem 0 0;
+    margin: 0 1rem 1.5rem; /* Removed top margin completely */
     color: var(--text-secondary);
 }
 
 #merchant-edit-form {
-    padding: 0;
+    padding: 1rem; /* Add padding here instead */
 }
 
 /* Progress Bar */
 .progress-bar {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 2rem;
-    position: relative;
+    position: sticky;
+    top: var(--top-height);
+    z-index: 10;
+    padding: 0;
+    background-color: var(--bg-primary); /* Add background to hide content scrolling underneath */
+    border-bottom: none;
+    height: 4px; /* Set height to match the progress line */
 }
 
 .progress-bar::before {
     content: '';
     position: absolute;
-    top: 50%;
+    top: 0;
     left: 0;
-    transform: translateY(-50%);
+    transform: none;
     height: 4px;
     width: 100%;
     background-color: var(--border-color);
@@ -52,9 +58,9 @@
 
 .progress-bar-line {
     position: absolute;
-    top: 50%;
+    top: 0;
     left: 0;
-    transform: translateY(-50%);
+    transform: none;
     height: 4px;
     background-color: var(--accent-primary);
     z-index: 2;
@@ -63,43 +69,8 @@
 }
 
 .progress-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 3;
-    position: relative;
-}
-
-.progress-step-circle {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: var(--bg-secondary);
-    border: 3px solid var(--border-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.4s ease;
-    color: var(--text-secondary);
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.progress-step-label {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-top: 0.5rem;
-    transition: color 0.4s ease;
-}
-
-.progress-step.active .progress-step-circle {
-    border-color: var(--accent-primary);
-    background-color: var(--accent-primary);
-    color: white;
-}
-
-.progress-step.active .progress-step-label {
-    color: var(--accent-primary);
+    /* Hide the steps visually but keep them in the DOM for JS logic */
+    display: none;
 }
 
 /* Form Steps */

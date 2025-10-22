@@ -259,6 +259,30 @@ export async function updateUser(userId, updateData) {
 }
 
 /**
+ * Updates a merchant document in Firestore.
+ * @param {string} merchantId - The ID of the merchant to update.
+ * @param {object} updateData - An object with fields to update, using dot notation for nested fields.
+ * @returns {Promise<void>} A promise that resolves when the update is complete.
+ */
+export async function updateMerchant(merchantId, updateData) {
+    const dataSource = getAppConfig().source.data || 'firebase';
+    if (dataSource !== 'firebase' && dataSource !== 'emulator') {
+        console.warn('Data source is not Firestore. Skipping merchant update.');
+        return Promise.resolve();
+    }
+
+    if (!firestore) {
+        throw new Error('Firestore is not initialized! Cannot update merchant.');
+    }
+    if (!merchantId || !updateData) {
+        throw new Error('Merchant ID and update data are required.');
+    }
+
+    const merchantRef = firestore.collection('merchants').doc(merchantId);
+    await merchantRef.update(updateData);
+}
+
+/**
  * A utility to wait for one or more data caches to be populated.
  * This is useful for views that are accessed immediately after login,
  * before the initial data fetch might be complete.

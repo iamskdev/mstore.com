@@ -1,5 +1,5 @@
 import { routeManager } from '../../../main.js';
-import { fetchMerchantById, localCache, updateUser } from '../../../utils/data-manager.js';
+import { fetchMerchantById, localCache, updateMerchant } from '../../../utils/data-manager.js';
 import { showToast } from '../../../utils/toast.js';
 
 let currentStep = 1;
@@ -59,12 +59,42 @@ async function handleSubmit() {
         return;
     }
 
-    // In a real app, you would collect all form data here.
-    // For now, we'll just update the status to 'active' as an example.
+    // Collect all data from the form fields
+    const updatedData = {
+        'info.name': document.getElementById('info-name').value,
+        'info.handle': document.getElementById('info-handle').value,
+        'info.tagline': document.getElementById('info-tagline').value,
+        'info.description': document.getElementById('info-description').value,
+        
+        // Firestore dot notation for updating nested objects in an array is tricky.
+        // It's often easier to read the whole document, modify the array in JS, and write it back.
+        // For this fix, we'll assume a simple update for the first address.
+        // A more robust solution would handle multiple addresses.
+        'addresses.0.street': document.getElementById('address-street').value,
+        'addresses.0.city': document.getElementById('address-city').value,
+        'addresses.0.zipCode': document.getElementById('address-zipCode').value,
+
+        'openingHours.note': document.getElementById('opening-hours-note').value,
+        
+        'paymentOptions.acceptsCod': document.getElementById('payment-cod').checked,
+        'paymentOptions.acceptsOnline': document.getElementById('payment-online').checked,
+        
+        'deliveryInfo.isAvailable': document.getElementById('delivery-available').checked,
+
+        'legalInfo.ownerName': document.getElementById('legal-ownerName').value,
+        'legalInfo.gstin': document.getElementById('legal-gstin').value,
+
+        'social.facebook': document.getElementById('social-facebook').value,
+        'social.instagram': document.getElementById('social-instagram').value,
+
+        // Crucially, update the status to 'active'
+        'meta.status': 'active'
+    };
+
     try {
-        await updateUser(merchantData.meta.links.userId, { 'merchant.status': 'active' }); // Example update
+        // Use updateMerchant instead of updateUser
+        await updateMerchant(merchantId, updatedData);
         showToast('success', 'Profile updated successfully!');
-        // Redirect to the merchant profile page after saving.
         routeManager.switchView('merchant', `merchant-profile/${merchantId}`);
     } catch (error) {
         console.error('Error updating profile:', error);
