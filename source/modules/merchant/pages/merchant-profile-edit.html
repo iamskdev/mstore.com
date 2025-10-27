@@ -19,24 +19,33 @@
         <div class="form-step form-step-active">
             <div class="input-group">
                 <label for="info-name">Business Name</label>
-                <input type="text" id="info-name" name="info.name" placeholder="e.g., Anita General Store" required>
+                <div class="input-wrapper">
+                    <input type="text" id="info-name" name="info.name" placeholder="e.g., Anita General Store" required disabled>
+                    <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="info-name"></i>
+                </div>
             </div>
             <div class="input-group">
                 <label for="info-handle">Business Handle</label>
                 <div class="input-with-prefix">
                     <span>@</span>
-                    <input type="text" id="info-handle" name="info.handle" placeholder="youruniquehandle" required>
+                    <input type="text" id="info-handle" name="info.handle" placeholder="youruniquehandle" required disabled>
+                    <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="info-handle"></i>
                 </div>
+                <small id="handle-eligibility-message" class="field-note"></small>
             </div>
             <div class="input-group">
                 <label for="info-tagline">Tagline</label>
-                <input type="text" id="info-tagline" name="info.tagline" placeholder="Your one-line business pitch"
-                    required>
+                <div class="input-wrapper">
+                    <input type="text" id="info-tagline" name="info.tagline" placeholder="Your one-line business pitch" required disabled>
+                    <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="info-tagline"></i>
+                </div>
             </div>
             <div class="input-group">
                 <label for="info-description">Description</label>
-                <textarea id="info-description" name="info.description"
-                    placeholder="Tell customers about your business..." required></textarea>
+                <div class="input-wrapper">
+                    <textarea id="info-description" name="info.description" placeholder="Tell customers about your business..." required disabled></textarea>
+                    <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="info-description"></i>
+                </div>
             </div>
         </div>
 
@@ -46,39 +55,66 @@
                 <h4 class="section-title">Store Address</h4>
                 <div class="input-group">
                     <label for="address-street">Street Address</label>
-                    <input type="text" id="address-street" name="addresses.0.street"
-                        placeholder="e.g., Main Road, Boring Road" required>
+                    <div class="input-wrapper">
+                        <input type="text" id="address-street" name="addresses.0.street" placeholder="e.g., Main Road, Boring Road" required disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="address-street"></i>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="address-city">City</label>
-                    <input type="text" id="address-city" name="addresses.0.city" placeholder="e.g., Patna" required>
+                    <div class="input-wrapper">
+                        <input type="text" id="address-city" name="addresses.0.city" placeholder="e.g., Patna" required disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="address-city"></i>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="address-zipCode">Zip Code</label>
-                    <input type="text" id="address-zipCode" name="addresses.0.zipCode" placeholder="e.g., 800001"
-                        required>
+                    <div class="input-wrapper">
+                        <input type="text" id="address-zipCode" name="addresses.0.zipCode" placeholder="e.g., 800001" required disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="address-zipCode"></i>
+                    </div>
                 </div>
             </div>
             <div class="form-section">
-                <h4 class="section-title">Opening Hours</h4>
-                <div class="input-group">
-                    <label for="opening-hours-note">Timings Note</label>
-                    <input type="text" id="opening-hours-note" name="openingHours.note"
-                        placeholder="e.g., Mon-Sat: 10am - 8pm, Sun: Closed" required>
+                <div class="section-title-wrapper">
+                    <h4 class="section-title">Opening Hours</h4>
+                    <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="opening-hours-container" title="Edit Hours"></i>
+                </div>
+                <div class="opening-hours-top-actions">
+                    <button type="button" class="btn-link" id="copy-first-day-btn" disabled>Copy first day's time to all</button>
+                </div>
+                <div class="opening-hours-container" id="opening-hours-container">
+                    <!-- Day rows will be injected by JS -->
+                </div>
+                <div class="opening-hours-actions">
+                    <div class="checkbox-group simple">
+                        <input type="checkbox" id="open-24-7" disabled>
+                        <label for="open-24-7">Open 24/7</label>
+                    </div>                    
+                </div>
+                <div class="input-group" style="margin-top: 1rem;">
+                    <label for="opening-hours-note">Additional Notes (Optional)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="opening-hours-note" name="openingHours.note" placeholder="e.g., Closed on public holidays" disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="opening-hours-note"></i>
+                    </div>
                 </div>
             </div>
-            <div class="form-section">
-                <h4 class="section-title">Payment & Delivery</h4>
+            <div class="form-section" id="payment-delivery-section">
+                <div class="section-title-wrapper">
+                    <h4 class="section-title">Payment & Delivery</h4>
+                    <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="payment-delivery-section" title="Edit Payment & Delivery Options"></i>
+                </div>
                 <div class="checkbox-group">
-                    <input type="checkbox" id="payment-cod" name="paymentOptions.acceptsCod">
+                    <input type="checkbox" id="payment-cod" name="paymentOptions.acceptsCod" disabled>
                     <label for="payment-cod">Accept Cash on Delivery (COD)</label>
                 </div>
                 <div class="checkbox-group">
-                    <input type="checkbox" id="payment-online" name="paymentOptions.acceptsOnline">
+                    <input type="checkbox" id="payment-online" name="paymentOptions.acceptsOnline" disabled>
                     <label for="payment-online">Accept Online Payments (UPI, Cards)</label>
                 </div>
                 <div class="checkbox-group">
-                    <input type="checkbox" id="delivery-available" name="deliveryInfo.isAvailable">
+                    <input type="checkbox" id="delivery-available" name="deliveryInfo.isAvailable" disabled>
                     <label for="delivery-available">Home Delivery Available</label>
                 </div>
             </div>
@@ -90,26 +126,48 @@
                 <h4 class="section-title">Legal Information</h4>
                 <div class="input-group">
                     <label for="legal-ownerName">Owner's Full Name</label>
-                    <input type="text" id="legal-ownerName" name="legalInfo.ownerName"
-                        placeholder="As per official documents" required>
+                    <div class="input-wrapper">
+                        <input type="text" id="legal-ownerName" name="legalInfo.ownerName" placeholder="As per official documents" required disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="legal-ownerName"></i>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="legal-gstin">GSTIN (Optional)</label>
-                    <input type="text" id="legal-gstin" name="legalInfo.gstin"
-                        placeholder="15-digit GST Identification Number">
+                    <div class="input-wrapper">
+                        <input type="text" id="legal-gstin" name="legalInfo.gstin" placeholder="15-digit GST Identification Number" disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="legal-gstin"></i>
+                    </div>
                 </div>
             </div>
             <div class="form-section">
                 <h4 class="section-title">Social Media (Optional)</h4>
                 <div class="input-group">
                     <label for="social-facebook">Facebook Page URL</label>
-                    <input type="url" id="social-facebook" name="social.facebook"
-                        placeholder="https://facebook.com/yourpage">
+                    <div class="input-wrapper">
+                        <input type="url" id="social-facebook" name="social.facebook" placeholder="https://facebook.com/yourpage" disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="social-facebook"></i>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="social-instagram">Instagram Profile URL</label>
-                    <input type="url" id="social-instagram" name="social.instagram"
-                        placeholder="https://instagram.com/yourprofile">
+                    <div class="input-wrapper">
+                        <input type="url" id="social-instagram" name="social.instagram" placeholder="https://instagram.com/yourprofile" disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="social-instagram"></i>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="social-twitter">Twitter Profile URL</label>
+                    <div class="input-wrapper">
+                        <input type="url" id="social-twitter" name="social.twitter" placeholder="https://twitter.com/yourhandle" disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="social-twitter"></i>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="social-whatsapp">WhatsApp Business Link</label>
+                    <div class="input-wrapper">
+                        <input type="url" id="social-whatsapp" name="social.whatsapp" placeholder="https://wa.me/yournumber" disabled>
+                        <i class="fa-solid fa-pen-to-square field-edit-btn" data-field="social-whatsapp"></i>
+                    </div>
                 </div>
             </div>
         </div>

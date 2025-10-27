@@ -40,6 +40,7 @@
   --bg-skeleton: #e0e0e0;
   --bg-skeleton-shimmer: #f0f0f0;
   --button-disabled-bg: #cbd5e1; /* Added for disabled button background */
+  --icon-invert-value: 0; /* FIX: Value for inverting icons (0 = no invert for light mode) */
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.05);
@@ -119,6 +120,7 @@ html.dark-mode {
   --bg-skeleton: #2a2a3b;
   --bg-skeleton-shimmer: #3a3b4c;
   --button-disabled-bg: #cbd5e1; /* Added for disabled button background */
+  --icon-invert-value: 1; /* FIX: Value for inverting icons (1 = invert for dark mode) */
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(255, 255, 255, 0.05); /* Changed to a light shadow for dark mode */

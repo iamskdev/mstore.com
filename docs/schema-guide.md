@@ -135,6 +135,7 @@
 -   **`info`**: व्यापारी की सार्वजनिक प्रोफ़ाइल जानकारी।
     -   `name` (string): स्टोर का नाम।
     -   `handle` (string): अद्वितीय `@handle`।
+    -   **`handleUpdatedAt` (string - ISO DateTime | null): वह तारीख जब हैंडल पिछली बार बदला गया था। यह 90-दिन की परिवर्तन नीति को लागू करने के लिए उपयोग किया जाता है।**
     -   `logo` (string): लोगो का URL।
     -   `coverImage` (string): कवर फोटो का URL।
     -   `tagline` (string): स्टोर की टैगलाइन।

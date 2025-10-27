@@ -461,7 +461,9 @@ function renderAbout(merchantData) {
     const establishmentDate = new Date(merchantData.info.establishedAt);
     const establishmentYear = establishmentDate.getFullYear();
 
-    const primaryAddress = merchantData.addresses.find(a => a.isPrimary) || merchantData.addresses[0];
+    // --- FIX: Add a safety check to ensure merchantData.addresses is an array ---
+    // This prevents the "find is not a function" error if the data is malformed.
+    const primaryAddress = Array.isArray(merchantData.addresses) ? (merchantData.addresses.find(a => a.isPrimary) || merchantData.addresses[0]) : null;
     const fullAddress = primaryAddress ? `${primaryAddress.street}, ${primaryAddress.city}, ${primaryAddress.state} ${primaryAddress.zipCode}` : 'Address not available';
 
     const hours = merchantData.openingHours.note || 'Timings not available';
@@ -779,7 +781,7 @@ function renderActionButtons(isOwner) {
     if (isOwner) {
         // --- OWNER VIEW ---
         // If the owner is viewing their own profile, show editing and insights buttons.
-        const isProfileIncomplete = merchantData.meta.status === 'incomplete';
+        const isProfileIncomplete = merchantData.meta.status === 'incomplete'; // Status check
         const editButtonText = isProfileIncomplete ? 'Complete Profile' : 'Update Profile';
 
         container.innerHTML = `
@@ -788,6 +790,9 @@ function renderActionButtons(isOwner) {
             <button class="action-btn secondary" id="promote-profile-btn" title="Promote Profile"><i class="fas fa-rocket"></i></button>
         `;
         // If the profile is incomplete, add a pulsing animation to the edit button to draw attention.
+        // Otherwise, ensure it still has the primary styling.
+        const editProfileBtnElement = document.getElementById('edit-profile-btn');
+        if (!isProfileIncomplete) editProfileBtnElement.classList.add('primary'); // Ensure it's always primary for owner
         if (isProfileIncomplete) document.getElementById('edit-profile-btn').classList.add('pulse-animation');
 
         const editBtn = document.getElementById('edit-profile-btn');

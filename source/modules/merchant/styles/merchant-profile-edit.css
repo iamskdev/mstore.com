@@ -89,23 +89,49 @@
 }
 
 .input-group {
-    margin-bottom: 1.5rem;
+    /* REFACTORED: Use padding and border for separation instead of just margin */
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    position: relative; /* Ensure it's a positioning context for child elements */
 }
 
 /* NEW: Styles for sectioning within a step */
 .form-section {
-    margin-bottom: 2rem;
+    margin-bottom: 0.25rem; /* REDUCED: Further decreased margin to reduce gap between sections */
+    padding-top: 1rem; /* ADDED: Space above the section title */
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color);
+}
+
+/* FIX: Remove the bottom border from the last field in any container to prevent double lines */
+.form-step > .input-group:last-child,
+.form-section > .input-group:last-child,
+.form-section > .checkbox-group:last-child {
+    border-bottom: none;
 }
 .form-step .form-section:last-child {
     border-bottom: none;
     margin-bottom: 0;
 }
 .section-title {
+    /* REFACTORED: Added underline style for better visual separation */
     font-size: 1.1rem;
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
+    font-weight: 600; /* Make it a bit bolder */
+    color: var(--text-primary); /* Make it darker */    
+    margin: 0; /* FIX: Remove individual margin, let parent flexbox handle alignment */
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: inline-block; /* To make the border only as wide as the text */
+}
+
+/* NEW: Wrapper for section title and edit icon */
+.section-title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative; /* For the edit button positioning */
+    margin-bottom: 1.5rem; /* This provides spacing for sections with an edit icon */
 }
 
 .input-group label {
@@ -113,6 +139,13 @@
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: var(--text-secondary);
+}
+
+/* NEW: Wrapper for input and edit icon */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .input-group input,
@@ -129,25 +162,102 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+input:disabled,
+textarea:disabled,
+input[type="checkbox"]:disabled + label {
+    cursor: default;
+}
+
+.input-group input:disabled,
+.input-group textarea:disabled {
+    background: transparent;
+    border-color: transparent;
+    padding-left: 0;
+    color: var(--text-primary);
+}
 .input-with-prefix {
     display: flex;
     align-items: center;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     background-color: var(--bg-tertiary);
+    position: relative; /* FIX: Make this a positioning context for the child icon */
 }
+
+/* NEW: Make the whole handle box look like one unit */
+.input-with-prefix.disabled-style {
+    background: transparent; /* Make wrapper transparent */
+    border-color: transparent; /* Make wrapper border transparent */
+}
+.input-with-prefix.disabled-style input {
+    padding-left: 0; /* Align text with other inputs */
+}
+
+/* FIX: When the input inside is disabled, make the wrapper transparent */
+.input-with-prefix:has(input:disabled) {
+    background: transparent;
+    border-color: transparent;
+}
+
+/* FIX: When the input is disabled, remove left padding from the '@' span to align it left */
+.input-with-prefix:has(input:disabled) span {
+    padding-left: 0;
+}
+
+/* NEW: Add a specific focus style for the entire handle box when its input is focused */
+.input-with-prefix:has(input:focus) {
+    /* This is now handled by the general input:focus rule to avoid duplication */
+}
+
 .input-with-prefix span {
     padding: 0.875rem 0 0.875rem 1rem;
     color: var(--text-secondary);
 }
 .input-with-prefix input {
     border: none;
+    background: transparent; /* Make inner input transparent */
     padding-left: 0.25rem;
 }
-.input-with-prefix input:focus {
-    box-shadow: none;
+
+.input-with-prefix input:disabled {
+    background-color: transparent;
+    padding-left: 0; /* Align with other disabled fields */
 }
 
+/* NEW: Positioning for the edit icon inside the wrapper */
+.field-edit-btn {
+    position: absolute;
+    right: 0px;
+    top: 14px; /* Position from the top */
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    /* REMOVED: The vertical centering transform that caused the issue */
+}
+.field-edit-btn:hover {
+    color: var(--accent-primary);
+    transform: scale(1.1); /* Simplified hover transform */
+}
+
+/* FIX: Override absolute positioning for icons next to section titles */
+.section-title-wrapper .field-edit-btn {
+    position: static; /* Let flexbox handle the alignment */
+    margin-left: 1rem; /* Add some space between title and icon */
+}
+
+/* NEW: Style for the cancel (cross) icon */
+.field-edit-btn.fa-times, .cancel-btn {
+    color: var(--accent-danger);
+    font-size: 1.2rem; /* Make it slightly larger */
+}
+
+/* FIX: Prevent double border on handle input */
 .input-group input:focus,
 .input-group select:focus,
 .input-group textarea:focus {
@@ -155,10 +265,104 @@
     border-color: var(--accent-primary);
     box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.25);
 }
+.input-with-prefix input:focus {
+    /* Override the general focus style for the input inside the prefix wrapper */
+    box-shadow: none;
+    border-color: transparent;
+}
 
 textarea {
     resize: vertical;
     min-height: 100px;
+}
+
+.field-note {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* --- NEW: Opening Hours Styles --- */
+.opening-hours-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.opening-hours-top-actions {
+    display: flex;
+    justify-content: flex-start; /* FIX: Align button to the right */
+    margin-bottom: 0.5rem;
+}
+
+.day-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr minmax(0, auto); /* FIX: Allow the time-inputs column to shrink below its content's intrinsic size if needed. */
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: var(--radius);
+    background-color: var(--bg-tertiary);
+}
+
+.day-row .day-label {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.day-row .time-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.day-row input[type="time"] {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 2px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    box-sizing: border-box; /* Ensure padding is included in the element's total width. */
+    text-align: center; /* FIX: Center the time text within the input. */
+}
+
+.day-row input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(var(--icon-invert-value, 0));
+    /* FIX: Reduce the gap between the time text and the clock icon. */
+    margin-left: 2px;
+}
+
+.day-row input[type="time"]:disabled {
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-color: var(--bg-tertiary);
+    cursor: not-allowed;
+}
+
+.opening-hours-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--accent-primary);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0;
+}
+.btn-link:disabled {
+    color: var(--text-secondary);
+    cursor: not-allowed;
 }
 
 /* NEW: Styles for checkbox groups */
@@ -172,7 +376,16 @@ textarea {
     margin-right: 10px;
     accent-color: var(--accent-primary); /* Modern way to color checkboxes */
 }
+.checkbox-group {
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
 .checkbox-group label {
+    margin-bottom: 0; /* Override default label margin */
+}
+
+/* Simpler checkbox group for opening hours actions */
+.checkbox-group.simple label {
     margin-bottom: 0; /* Override default label margin */
 }
 

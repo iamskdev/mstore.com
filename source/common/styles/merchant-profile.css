@@ -223,7 +223,7 @@
 }
 
 /* NEW: Apply pulsing animation to the primary action button */
-.action-btn-container .action-btn.pulse-animation {
+.action-btn.pulse-animation { /* Apply to the button directly */
     animation: pulse 2s infinite;
 }
 

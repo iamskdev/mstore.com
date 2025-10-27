@@ -115,6 +115,14 @@ const createDataFetcher = (collectionName, idKey) => {
 
         // --- STRATEGY 2: Firebase (Real-time Listener & Smart Cache) ---
         if (dataSource === 'firebase' || dataSource === 'emulator') {
+            // --- FIX: Add a security check for admin-only collections ---
+            // Prevent non-admin users from trying to listen to collections they don't have access to.
+            if (collectionName === 'ratings' || collectionName === 'logs') {
+                const currentUserType = localCache.get('currentUserType');
+                if (currentUserType !== 'admin') {
+                    return Promise.resolve([]); // Return empty array for non-admins
+                }
+            }
             // --- Listener Setup Function (defined once, used in multiple places) ---
             // This function is defined here so it's in scope for both the "cached data" path and the "fresh fetch" path.
             const setupListener = (resolve, reject) => {
