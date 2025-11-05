@@ -3,5 +3,20 @@
   "files.autoSaveDelay": 1000,
   "python-envs.defaultEnvManager": "ms-python.python:system",
   "python-envs.pythonProjects": [],
-  "geminicodeassist.verboseLogging": true
+  "geminicodeassist.verboseLogging": true,
+  "terminal.integrated.sendKeybindingsToShell": false,
+  "chat.tools.terminal.blockDetectedFileWrites": "outsideWorkspace",
+  "terminal.integrated.shellIntegration.showCommandGuide": true,
+  "terminal.integrated.allowMnemonics": false,
+  "terminal.integrated.automationProfile.windows": {
+    
+  },
+  "geminicodeassist.codeGenerationPaneViewEnabled": true,
+  "geminicodeassist.chat.enableStreaming": false,
+  "geminicodeassist.customCommands": {
+    "only-stage-diff": "Only stage area ka diff dekho and analysis karo, commit guideline ko follow karte huye, commit message draft karo."
+  },
+  "geminicodeassist.chat.changeView": "Default diff view",
+  "geminicodeassist.chat.defaultCodeBlockDisplay": "Collapsed",
+  "geminicodeassist.rules": "# Gemini Memories\n\n## General Preferences\n\n- **Language:** Always respond in Hinglish/Hindi.\n- **Project Knowledge:** Read `readme.md` for basic project knowledge.\n- **Discussion vs. Diff:** When the user says 'discussion', discuss the feature instead of providing a diff.\n\n## Commit Workflows\n\nThis section outlines the process for creating and managing commits.\n\n### Drafting a Commit Message\nWhen the user asks to \"draft a commit message\", follow these steps:\n- Check the status of the repository with `git status`.\n- Stage all changes using `git add .`.\n- Review the staged changes with `git diff --staged`.\n- Analyze the diff to understand the purpose of the modifications.\n- Create a proper commit message draft.\n- Strictly follow the format defined in `h:\\My Projects\\ecommerce\\mStore\\docs\\commit-guide.md`.\n- Write the final commit message to the file `H:\\My Projects\\ecommerce\\mStore\\docs\\commit_message.txt`.\n\n### Executing a Commit\nWhen the user says 'git run commit', follow this process:\n- Run `git status` to show the changed files.\n- Ask the user which files to commit.\n- Stage the specified files with `git add <user_specified_files>`.\n- Run `git diff --staged` to review the changes.\n- Draft a commit message following the guide at `h:\\My Projects\\ecommerce\\mStore\\docs\\commit-guide.md`.\n- Write the message to `H:\\My Projects\\ecommerce\\mStore\\docs\\commit_message.txt`.\n- Execute the commit with `git commit -F \"H:\\My Projects\\ecommerce\\mStore\\docs\\commit_message.txt\"`.\n- Finally, ask the user if they want to push the changes with `git push`.\n"
 }

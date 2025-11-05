@@ -7,7 +7,7 @@
     "start": "npx live-server . --port=3000 --host=0.0.0.0",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run start",
-    "emulators": "node tools/scripts/set-emulator.js && firebase emulators:start",
+    "emulators": "node tools/scripts/set-emulator.js && npx firebase emulators:start",
     "upload": "wait-on tcp:8090 tcp:9099 && node tools/scripts/upload-to-emulator.js",
     "start:dev": "wait-on tcp:8090 tcp:9099 && npm start",
     "open:ui": "wait-on http://127.0.0.1:4000 && open-cli http://127.0.0.1:4000"
