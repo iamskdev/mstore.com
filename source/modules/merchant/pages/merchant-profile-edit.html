@@ -1,4 +1,21 @@
 <div class="form-container">
+    <div class="media-profile-container">
+        <div class="cover-image-wrapper">
+            <img src="https://via.placeholder.com/600x200" alt="Cover Photo" class="cover-image" id="cover-image-preview">
+            <div class="edit-icon-wrapper cover-edit-icon">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+            <input type="file" id="cover-image-input" class="image-input" accept="image/*">
+        </div>
+        <div class="logo-image-wrapper">
+            <img src="https://via.placeholder.com/150" alt="Logo" class="logo-image" id="logo-image-preview">
+            <div class="edit-icon-wrapper logo-edit-icon">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+            <input type="file" id="logo-image-input" class="image-input" accept="image/*">
+        </div>
+    </div>
+    <!-- Debug helper (temporary) -->
     <!-- Progress Bar -->
     <div class="progress-bar">
         <div class="progress-bar-line"></div>
@@ -6,10 +23,6 @@
         <div class="progress-step active" data-step="1"></div>
         <div class="progress-step" data-step="2"></div>
         <div class="progress-step" data-step="3"></div>
-    </div>
-    <div class="form-header">
-        <h1>Complete Your Business Profile</h1>
-        <p>Provide the following details to get your store ready for customers.</p>
     </div>
 
     <form id="merchant-edit-form">

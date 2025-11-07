@@ -86,29 +86,83 @@ function renderProfile(merchantData) {
 
     const logoImg = document.getElementById('merchant-logo');
     const logoPlaceholder = document.getElementById('logo-placeholder-icon');
+    const logoSkeleton = document.getElementById('logo-skeleton');
+    const coverImg = document.getElementById('cover-photo');
+    const coverSkeleton = document.getElementById('cover-skeleton');
     const logoUrl = merchantData.info.logo;
+    const coverUrl = merchantData.info.coverImage;
 
-    console.log('[merchant-profile] 2. Found elements:', { logoImg, logoPlaceholder });
+    console.log('[merchant-profile] 2. Found elements:', { logoImg, logoPlaceholder, logoSkeleton, coverImg, coverSkeleton });
     console.log('[merchant-profile] 3. Logo URL from data:', logoUrl);
+    console.log('[merchant-profile] 3b. Cover URL from data:', coverUrl);
 
-    // --- FIX: Correctly handle null or empty logo URLs ---
-    // First, check if a logo URL actually exists.
+    // --- FIX: Handle cover image with skeleton loading state ---
+    if (coverUrl) {
+        console.log('[merchant-profile] 4a. Cover URL exists. Showing skeleton.');
+        coverSkeleton.style.display = 'block';
+        const fullCoverUrl = buildCloudinaryUrl(coverUrl);
+        
+        coverImg.onload = function () {
+            console.log('[merchant-profile] 4b. Cover image loaded successfully.');
+            coverSkeleton.style.display = 'none';
+            coverImg.style.opacity = '1'; /* Ensure image is visible */
+            coverImg.style.visibility = 'visible'; /* Show the image */
+        };
+        
+        coverImg.onerror = function () {
+            console.log('[merchant-profile] 4c. Cover image failed to load. Hiding broken image.');
+            coverSkeleton.style.display = 'none';
+            coverImg.style.opacity = '0'; /* Hide the broken image completely */
+            coverImg.style.visibility = 'hidden'; /* Hide broken icon */
+            coverImg.style.backgroundColor = 'var(--bg-tertiary)';
+        };
+        
+        coverImg.src = fullCoverUrl;
+    } else {
+        console.log('[merchant-profile] 4a. Cover URL is null. Hiding skeleton.');
+        coverSkeleton.style.display = 'none';
+        coverImg.style.opacity = '0'; /* Hide empty image */
+        coverImg.style.visibility = 'hidden'; /* Hide broken icon */
+        coverImg.style.backgroundColor = 'var(--bg-tertiary)';
+    }
+
+    // --- FIX: Logo with skeleton loading state ---
+    // Show skeleton initially (smooth loading indicator)
+    logoSkeleton.style.display = 'block';
+    logoPlaceholder.style.display = 'none';
+    logoImg.style.display = 'none';
+    logoImg.style.visibility = 'hidden'; /* Hide broken icon initially */
+    
     if (logoUrl) {
-        console.log('[merchant-profile] 4. Path A: logoUrl exists. Trying to load image.');
-        // If a URL exists, attempt to load the image.
-        logoImg.style.display = 'block';
-        logoPlaceholder.style.display = 'none';
-        logoImg.src = logoUrl;
+        console.log('[merchant-profile] 4. Path A: logoUrl exists. Converting to full URL.');
+        const fullLogoUrl = buildCloudinaryUrl(logoUrl);
+        console.log('[merchant-profile] 4b. Full logo URL:', fullLogoUrl);
+        
+        // Set up onload (hide skeleton, show image)
+        logoImg.onload = function () {
+            console.log('[merchant-profile] 5. Logo image loaded successfully.');
+            logoSkeleton.style.display = 'none';
+            logoPlaceholder.style.display = 'none';
+            logoImg.style.display = 'block';
+            logoImg.style.visibility = 'visible'; /* Show the loaded image */
+        };
+        
+        // Set up onerror (hide skeleton, show placeholder icon)
         logoImg.onerror = function () {
-            console.log('[merchant-profile] 5a. Image load failed (onerror). Showing placeholder.');
-            // If the image fails to load, hide it and show the placeholder icon.
-            this.style.display = 'none';
+            console.log('[merchant-profile] 5a. Logo image failed to load. Showing placeholder icon.');
+            logoSkeleton.style.display = 'none';
+            logoImg.style.display = 'none';
+            logoImg.style.visibility = 'hidden'; /* Hide broken icon */
             logoPlaceholder.style.display = 'flex';
         };
+        
+        // NOW set the src (triggers loading)
+        logoImg.src = fullLogoUrl;
     } else {
-        console.log('[merchant-profile] 4. Path B: logoUrl is null/empty. Showing placeholder directly.');
-        // If there is no logo URL, immediately show the placeholder icon.
+        console.log('[merchant-profile] 4. Path B: logoUrl is null/empty. Showing placeholder icon.');
+        logoSkeleton.style.display = 'none';
         logoImg.style.display = 'none';
+        logoImg.style.visibility = 'hidden'; /* Hide empty image */
         logoPlaceholder.style.display = 'flex';
     }
 
@@ -318,7 +372,7 @@ function renderPosts(merchantData, currentUser) {
         return `
             <div class="post-card">
                 <div class="post-header">
-                    <img src="${merchantData.info.logo}" alt="${merchantData.info.name}" class="post-avatar">
+                    <img src="${buildCloudinaryUrl(merchantData.info.logo)}" alt="${merchantData.info.name}" class="post-avatar">
                     <div class="post-author-info">
                         <span class="post-author-name">${merchantData.info.name}</span>
                         <span class="post-date">${new Date(post.audit.createdAt).toLocaleDateString()}</span>
@@ -800,10 +854,15 @@ function renderActionButtons(isOwner) {
         const promoteBtn = document.getElementById('promote-profile-btn');
 
         if (editBtn) {
-            // --- FIX: Show a toast message as the merchant edit page is not ready ---
             addManagedEventListener(editBtn, 'click', () => {
-                // Navigate to the new multi-step profile completion page.
-                routeManager.switchView('merchant', 'profile-edit');
+                // NEW: Set the merchant ID in cache before navigating
+                if (merchantData && merchantData.meta.merchantId) {
+                    localCache.set('currentMerchantId', merchantData.meta.merchantId);
+                    // Navigate to the new multi-step profile completion page.
+                    routeManager.switchView('merchant', 'profile-edit');
+                } else {
+                    showToast('error', 'Could not edit profile. Merchant ID is missing.');
+                }
             });
         }
         if (insightsBtn) {

@@ -69,6 +69,18 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+    display: block; /* Prevent inline spacing artifacts */
+    z-index: 5; /* Below skeleton while loading */
+    font-size: 0; /* Hide alt text when image fails */
+    color: transparent; /* Hide alt text color */
+    text-indent: -9999px; /* Push alt text off-screen */
+    background: transparent; /* Remove background to prevent icon space */
+}
+
+/* Hide broken image icon by making the image invisible until it loads */
+.cover-photo-container img:not([src]),
+.cover-photo-container img[src=""] {
+    visibility: hidden; /* Completely hide the broken icon */
 }
 
 .avatar-and-actions {
@@ -114,6 +126,18 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block; /* Prevent inline spacing artifacts */
+    z-index: 5; /* Below skeleton while loading */
+    font-size: 0; /* Hide alt text when image fails */
+    color: transparent; /* Hide alt text color */
+    text-indent: -9999px; /* Push alt text off-screen */
+    background: transparent; /* Remove background to prevent icon space */
+}
+
+/* Hide broken image icon by making image invisible until it loads */
+.profile-picture img:not([src]),
+.profile-picture img[src=""] {
+    visibility: hidden; /* Completely hide the broken icon */
 }
 
 .profile-picture #logo-placeholder-icon {
@@ -123,6 +147,7 @@
     align-items: center;
     background-color: var(--bg-primary);
     justify-content: center;
+    z-index: 8; /* Above skeleton and image */
 }
 
 .profile-basic-info {
@@ -1073,4 +1098,36 @@
     align-items: center;
     gap: 16px;
     /* Space between icon and title */
+}
+
+/* --- SKELETON LOADER STYLES --- */
+.skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+        90deg,
+        var(--bg-tertiary) 0%,
+        var(--bg-secondary) 50%,
+        var(--bg-tertiary) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    z-index: 10; /* Ensure it's on top, covering any broken placeholder */
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-logo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.skeleton-cover {
+    width: 100%;
+    height: 100%;
 }

@@ -1,5 +1,6 @@
 import { routeManager } from '../../main.js';
 import { fetchMerchantById } from '../../utils/data-manager.js';
+import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 
 // --- MODULE-LEVEL STATE ---
 let isInitialized = false;
@@ -58,7 +59,7 @@ async function loadConversationHeader(merchantId) {
         statusEl.textContent = 'Tap to see info';
 
         if (merchant.info.logo) {
-            avatarEl.innerHTML = `<img src="${merchant.info.logo}" alt="Logo" style="width:100%; height:100%; object-fit:cover;">`;
+            avatarEl.innerHTML = `<img src="${buildCloudinaryUrl(merchant.info.logo)}" alt="Logo" style="width:100%; height:100%; object-fit:cover;">`;
         } else {
             avatarEl.textContent = merchant.info.name.charAt(0).toUpperCase();
         }

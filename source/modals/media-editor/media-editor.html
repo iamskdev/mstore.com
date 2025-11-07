@@ -16,7 +16,14 @@
             <div class="me-preview-area">
                 <div class="me-image-crop-wrapper">
                     <img class="me-preview-image" id="previewImage" src="" alt="Preview">
-                    <div class="me-crop-frame" id="cropFrame"></div>
+                    <div class="me-crop-frame" id="cropFrame">
+                        <div class="me-circle-overlay"></div>
+                        <div class="me-safe-area-overlay">
+                            <div class="me-safe-area-label">Safe Area (16:9)</div>
+                            <div class="me-safe-dim-width">0px</div>
+                            <div class="me-safe-dim-height">0px</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,6 +52,10 @@
     </button>
     <button class="me-action-btn" id="flipHorizontalBtn" title="Flip Horizontal"><i class="fas fa-right-left"></i></button>
     <button class="me-action-btn" id="flipVerticalBtn" title="Flip Vertical"><i class="fas fa-up-down"></i></button>
+    <button class="me-action-btn" id="fitBtn" title="Fit to Frame"><i class="fas fa-compress-arrows-alt"></i></button>
+    <button class="me-action-btn" id="resetBtn" title="Reset"><i class="fas fa-undo"></i></button>
+    <!-- Guideline toggle button -->
+    <button class="me-action-btn" id="guidelineToggleBtn" title="Toggle Guideline"><i class="fas fa-border-all"></i></button>
     <button class="me-action-btn" id="circleCropBtn" title="Toggle Circle Crop">
         <i class="far fa-circle"></i>
     </button>
@@ -191,6 +202,69 @@
     
     .me-crop-frame.circle .me-circle-overlay {
         display: block;
+    }
+
+    /* Safe area overlay - for 16:9 ratio (like YouTube safe zone) */
+    .me-safe-area-overlay {
+        position: absolute;
+        inset: 0;
+        display: none;
+        pointer-events: none;
+        /* Full width horizontal dotted lines (top and bottom)
+           keep these full-width so they always span the crop frame */
+        border-top: 2px dotted var(--accent-primary);
+        border-bottom: 2px dotted var(--accent-primary);
+        z-index: 2;
+    }
+
+    /* Vertical dotted lines at fixed inset (15px) from left/right */
+    .me-safe-area-overlay::before,
+    .me-safe-area-overlay::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1px; /* thinner vertical line */
+        pointer-events: none;
+        background-image: repeating-linear-gradient(180deg, var(--accent-primary) 0px, var(--accent-primary) 3px, transparent 3px, transparent 6px);
+        z-index: 3;
+    }
+    .me-safe-area-overlay::before { left: 20px; }
+    .me-safe-area-overlay::after { right: 20px; }
+    
+    .me-crop-frame.with-safe-area .me-safe-area-overlay {
+        display: block;
+    }
+
+    .me-safe-area-label {
+        display: none; /* Hide the label */
+    }
+
+    /* Measurement badges for safe area overlay - very small */
+    .me-safe-dim-width,
+    .me-safe-dim-height {
+        position: absolute;
+        background: var(--accent-primary);
+        color: var(--accent-text);
+        padding: 2px 4px;
+        border-radius: 2px;
+        font-size: 7px;
+        font-weight: 700;
+        pointer-events: none;
+        white-space: nowrap;
+        z-index: 1;
+    }
+
+    .me-safe-dim-width {
+        bottom: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .me-safe-dim-height {
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     .me-crop-handle {

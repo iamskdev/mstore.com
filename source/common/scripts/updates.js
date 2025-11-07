@@ -3,6 +3,7 @@ import { showToast } from '../../utils/toast.js';
 import { routeManager } from '../../main.js';
 import * as storyViewer from '../../modals/story-viewer/story-viewer.js';
 import { createListCard, initCardHelper } from '../../templates/cards/card-helper.js';
+import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 
 // --- MODULE-LEVEL STATE ---
 let eventListeners = []; // To manage event listeners for cleanup
@@ -97,7 +98,7 @@ export async function init(force = false) {
             selfMerchantId = firstMerchantId; // Store the ID for filtering later
             if (firstMerchantId) {
                 const selfMerchant = await fetchMerchantById(firstMerchantId);
-                const avatarUrl = selfMerchant?.info?.logo || './source/assets/logos/app-logo.png';
+                const avatarUrl = selfMerchant?.info?.logo ? buildCloudinaryUrl(selfMerchant.info.logo) : './source/assets/logos/app-logo.png';
 
                 // --- FIX: Check if the merchant's own story exists ---
                 const hasOwnStory = stories.some(storyCollection =>
@@ -173,7 +174,7 @@ export async function init(force = false) {
             wrap.setAttribute('data-id', m.meta.merchantId);
             wrap.innerHTML = `
             <div class="avatar-wrap" role="button" tabindex="0">
-              <img class="story-avatar" src="${m.info.logo}" alt="${m.info.name}" />
+              <img class="story-avatar" src="${buildCloudinaryUrl(m.info.logo)}" alt="${m.info.name}" />
             </div>
             <div class="avatar-name">${m.info.name}</div>
           `;

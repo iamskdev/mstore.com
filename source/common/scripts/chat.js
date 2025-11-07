@@ -1,5 +1,6 @@
 import { fetchAllMerchants, fetchAllUsers, waitForData } from '../../utils/data-manager.js';
 import { AuthService } from '../../firebase/auth/auth.js';
+import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 
 // --- MODULE-LEVEL STATE ---
 let isInitialized = false;
@@ -52,7 +53,7 @@ async function renderChatList() {
       if (avatarEl) {
         const logoUrl = merchant.info.logo;
         if (logoUrl) {
-          avatarEl.innerHTML = `<img src="${logoUrl}" alt="${merchant.info.name} Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+          avatarEl.innerHTML = `<img src="${buildCloudinaryUrl(logoUrl)}" alt="${merchant.info.name} Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
         } else {
           avatarEl.textContent = merchant.info.name ? merchant.info.name.charAt(0).toUpperCase() : '';
         }

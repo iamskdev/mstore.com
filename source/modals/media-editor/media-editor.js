@@ -20,6 +20,10 @@ let panStartX, panStartY;
 let initialPinchDistance = 0;
 let lastScale = 1;
 
+let showSafeArea = false;
+let safeAreaAspectRatio = null;
+let guidelineMode = 'safe'; // modes: 'safe' | 'mobile' | 'desktop'
+
 // DOM Elements (will be populated by initMediaEditor)
 let modal, previewContainer, previewImage, cropFrame;
 let controls = {};
@@ -178,12 +182,39 @@ function loadImage(src) {
         let wrapper = previewContainer.querySelector('.me-image-crop-wrapper');
         let area = previewContainer.querySelector('.me-preview-area');
 
+        // Preserve safe-area overlay if it exists
+        const existingSafeArea = cropFrame.querySelector('.me-safe-area-overlay');
+        const existingCircleOverlay = cropFrame.querySelector('.me-circle-overlay');
+
         cropFrame.innerHTML = `
-            <div class="me-crop-handle top-left"></div><div class="me-circle-overlay"></div>
+            <div class="me-crop-handle top-left"></div>
             <div class="me-crop-handle top-right"></div><div class="me-crop-handle bottom-left"></div>
             <div class="me-crop-handle bottom-right"></div><div class="me-crop-handle top"></div>
             <div class="me-crop-handle bottom"></div><div class="me-crop-handle left"></div>
             <div class="me-crop-handle right"></div>`;
+
+        // Re-add circle overlay if it exists
+        if (existingCircleOverlay) {
+            cropFrame.appendChild(existingCircleOverlay);
+        } else {
+            const circleDiv = document.createElement('div');
+            circleDiv.className = 'me-circle-overlay';
+            cropFrame.appendChild(circleDiv);
+        }
+
+        // Re-add safe-area overlay if it exists
+        if (existingSafeArea) {
+            cropFrame.appendChild(existingSafeArea);
+        } else {
+            const safeAreaDiv = document.createElement('div');
+            safeAreaDiv.className = 'me-safe-area-overlay';
+            safeAreaDiv.innerHTML = `
+                <div class="me-safe-area-label">Safe Area (16:9)</div>
+                <div class="me-safe-dim-width">0px</div>
+                <div class="me-safe-dim-height">0px</div>
+            `;
+            cropFrame.appendChild(safeAreaDiv);
+        }
         
         const parentRect = wrapper.getBoundingClientRect();
         const size = Math.min(parentRect.width, parentRect.height) * 0.8;
@@ -199,6 +230,7 @@ function loadImage(src) {
         previewImage.style.transform = 'rotate(0deg) scaleX(1) scaleY(1) scale(1) translate(0px, 0px)';
 
         updateCropFrameAspectRatio();
+        updateSafeAreaFrame();
     };
 }
 
@@ -281,8 +313,12 @@ function applyEditorConfiguration(options) {
                     rowElement.appendChild(controls.flipHorizontalBtn);
                     rowElement.appendChild(controls.flipVerticalBtn);
                 }
+                if (rowConfig.fit) rowElement.appendChild(controls.fitBtn);
+                if (rowConfig.reset) rowElement.appendChild(controls.resetBtn);
+                if (rowConfig.guideline) {
+                    if (controls.guidelineToggleBtn) rowElement.appendChild(controls.guidelineToggleBtn);
+                }
                 if (rowConfig.circle) rowElement.appendChild(controls.circleCropBtn);
-                if (rowConfig.fullscreen) rowElement.appendChild(controls.fullscreenBtn);
 
                 if (rowConfig.final) {
                     rowElement.appendChild(controls.closeBtn);
@@ -317,6 +353,50 @@ function applyEditorConfiguration(options) {
     onSaveCallback = options.onSave;
     if (controls.saveBtn) {
         controls.saveBtn.onclick = () => applyAndSaveCrop(options.compression);
+    }
+    
+    // Safe area overlay options (optional)
+    showSafeArea = !!options.showSafeArea;
+    if (options.safeAreaPixels && options.safeAreaPixels.width && options.safeAreaPixels.height) {
+        safeAreaAspectRatio = options.safeAreaPixels.width / options.safeAreaPixels.height;
+        // store pixel safe area for badges
+        if (modal) {
+            modal.dataset.safeAreaWidth = String(options.safeAreaPixels.width);
+            modal.dataset.safeAreaHeight = String(options.safeAreaPixels.height);
+        }
+    } else {
+        safeAreaAspectRatio = options.safeAreaAspectRatio || null;
+        if (modal) {
+            delete modal.dataset.safeAreaWidth;
+            delete modal.dataset.safeAreaHeight;
+        }
+    }
+    cropFrame.classList.toggle('with-safe-area', showSafeArea);
+    // recommended full image size (optional)
+    if (options.recommendedSize && options.recommendedSize.width && options.recommendedSize.height) {
+        if (modal) {
+            modal.dataset.recommendedWidth = String(options.recommendedSize.width);
+            modal.dataset.recommendedHeight = String(options.recommendedSize.height);
+        }
+    } else if (modal) {
+        delete modal.dataset.recommendedWidth;
+        delete modal.dataset.recommendedHeight;
+    }
+
+    // page cover dimensions (from merchant profile view) - optional
+    if (options.pageCover && options.pageCover.width && options.pageCover.height) {
+        if (modal) {
+            modal.dataset.pageCoverWidth = String(options.pageCover.width);
+            modal.dataset.pageCoverHeight = String(options.pageCover.height);
+        }
+    } else if (modal) {
+        delete modal.dataset.pageCoverWidth;
+        delete modal.dataset.pageCoverHeight;
+    }
+
+    // Initialize guideline visibility based on showSafeArea
+    if (showSafeArea && controls.guidelineToggleBtn) {
+        controls.guidelineToggleBtn.classList.add('active');
     }
 }
 
@@ -412,6 +492,8 @@ function onMouseMove(e) {
         cropFrame.style.left = `${newLeft}px`;
         cropFrame.style.top = `${newTop}px`;
     }
+    // Update guideline in real-time
+    try { updateSafeAreaFrame(); } catch (e) { /* ignore */ }
 }
 
 function onTouchMoveCropFrame(e) {
@@ -465,6 +547,8 @@ function onTouchMoveCropFrame(e) {
         cropFrame.style.left = `${newLeft}px`;
         cropFrame.style.top = `${newTop}px`;
     }
+    // Update guideline in real-time
+    try { updateSafeAreaFrame(); } catch (e) { /* ignore */ }
 }
 
 function onMouseUp() {
@@ -472,6 +556,7 @@ function onMouseUp() {
     isResizing = false;
     isPanning = false;
     previewImage.style.cursor = 'default';
+    try { updateSafeAreaFrame(); } catch (e) { /* ignore */ }
 }
 
 function onPanStart(e) {
@@ -557,6 +642,11 @@ export function initMediaEditor() {
     controlIds.forEach(id => {
         controls[id] = document.getElementById(id);
     });
+    // optional new controls
+    controls.fitBtn = document.getElementById('fitBtn');
+    controls.resetBtn = document.getElementById('resetBtn');
+    // guideline toggle button
+    controls.guidelineToggleBtn = document.getElementById('guidelineToggleBtn');
 
     // --- Setup Event Listeners ---
     controls.circleCropBtn.addEventListener('click', () => {
@@ -578,6 +668,18 @@ export function initMediaEditor() {
     controls.rotateRightBtn.addEventListener('click', () => applyTransform('rotate', 90));
     controls.flipHorizontalBtn.addEventListener('click', () => applyTransform('flip', 'horizontal'));
     controls.flipVerticalBtn.addEventListener('click', () => applyTransform('flip', 'vertical'));
+
+    if (controls.resetBtn) controls.resetBtn.addEventListener('click', resetTransform);
+    if (controls.fitBtn) controls.fitBtn.addEventListener('click', fitImageToCrop);
+    // guideline toggle button
+    if (controls.guidelineToggleBtn) {
+        controls.guidelineToggleBtn.addEventListener('click', () => {
+            showSafeArea = !showSafeArea;
+            cropFrame.classList.toggle('with-safe-area', showSafeArea);
+            controls.guidelineToggleBtn.classList.toggle('active', showSafeArea);
+            updateSafeAreaFrame();
+        });
+    }
 
     controls.zoomInBtn.addEventListener('click', () => {
         imageScale += 0.1;
@@ -619,5 +721,97 @@ export function initMediaEditor() {
 
     // Make the main function globally available
     window.openPhotoEditor = openPhotoEditor;
+
+    // Update safe area on resize
+    window.addEventListener('resize', () => {
+        try { updateSafeAreaFrame(); } catch (e) { /* no-op */ }
+    });
+
     console.log("✅ Media Editor Initialized and ready.");
 }
+
+function updateSafeAreaFrame() {
+    if (!cropFrame) return;
+    const safeArea = cropFrame.querySelector('.me-safe-area-overlay');
+    if (!safeArea || !showSafeArea) return;
+
+    const cropRect = cropFrame.getBoundingClientRect();
+
+    // YouTube cover: full width with horizontal lines, reduced height with vertical margins
+    // Left-right margins (20px) show mobile viewport cutoffs
+    const horizontalMargin = 20; // px margin on left and right to show mobile cutoff
+
+    // If page cover dimensions were passed (from profile), compute overlay height to match
+    let overlayHeightPx;
+    if (modal && modal.dataset && modal.dataset.pageCoverWidth && modal.dataset.pageCoverHeight && modal.dataset.recommendedWidth && modal.dataset.recommendedHeight) {
+        const pageW = parseFloat(modal.dataset.pageCoverWidth);
+        const pageH = parseFloat(modal.dataset.pageCoverHeight);
+        const recW = parseFloat(modal.dataset.recommendedWidth);
+        const recH = parseFloat(modal.dataset.recommendedHeight);
+        // Compute overlay height in editor pixels so that when image of size recW x recH
+        // is displayed at page width, the visible height equals pageH.
+        // Formula: overlayH = cropRect.height * pageH * recW / (recH * pageW)
+        overlayHeightPx = Math.round(cropRect.height * (pageH * recW) / (recH * pageW));
+        // clamp
+        overlayHeightPx = Math.max(20, Math.min(overlayHeightPx, cropRect.height));
+    } else {
+        const visibleHeightRatio = 0.45; // fallback ~45%
+        overlayHeightPx = Math.round(cropRect.height * visibleHeightRatio);
+    }
+
+    // Full width with horizontal lines; vertical margins indicated by pseudo-elements at horizontalMargin
+    safeArea.style.width = `${cropRect.width}px`;
+    safeArea.style.height = `${overlayHeightPx}px`;
+    safeArea.style.left = `0px`;
+    safeArea.style.top = `${Math.round((cropRect.height - overlayHeightPx) / 2)}px`;
+    // expose mobile margin to CSS (not strictly required but kept for reference)
+    safeArea.dataset.mobileMargin = `${horizontalMargin}px`;
+
+    // Update measurement badges
+    try {
+        const dimW = safeArea.querySelector('.me-safe-dim-width');
+        const dimH = safeArea.querySelector('.me-safe-dim-height');
+        if (dimW && dimH) {
+            // Calculate based on center visible area (account for side margins)
+            const overlayW = Math.max(0, cropRect.width - (2 * parseFloat(safeArea.dataset.mobileMargin || '20')));
+            const overlayH = parseFloat(safeArea.style.height);
+            const cropW = cropRect.width;
+            const cropH = cropRect.height;
+            
+            let displayText = '';
+            if (modal && modal.dataset && modal.dataset.recommendedWidth && modal.dataset.recommendedHeight) {
+                const recW = parseFloat(modal.dataset.recommendedWidth);
+                const recH = parseFloat(modal.dataset.recommendedHeight);
+                const pxW = Math.round(recW * (overlayW / cropW));
+                const pxH = Math.round(recH * (overlayH / cropH));
+                displayText = `${pxW}×${pxH}`;
+            } else {
+                displayText = `${Math.round(overlayW)}×${Math.round(overlayH)}`;
+            }
+            
+            dimW.textContent = displayText;
+            dimH.textContent = 'Desktop';
+        }
+    } catch (e) { /* ignore */ }
+}
+
+function resetTransform() {
+    imageScale = 1;
+    imagePosX = 0;
+    imagePosY = 0;
+    previewImage.style.transform = `rotate(0deg) scaleX(1) scaleY(1) scale(1) translate(0px, 0px)`;
+    updateImageZoomAndPan();
+}
+
+function fitImageToCrop() {
+    if (!previewImage || !cropFrame) return;
+    const imgRect = previewImage.getBoundingClientRect();
+    const cropRect = cropFrame.getBoundingClientRect();
+    const scaleX = cropRect.width / imgRect.width;
+    const scaleY = cropRect.height / imgRect.height;
+    imageScale = Math.max(scaleX, scaleY, 1);
+    imagePosX = 0;
+    imagePosY = 0;
+    updateImageZoomAndPan();
+}
+

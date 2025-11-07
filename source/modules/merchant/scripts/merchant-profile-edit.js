@@ -1,12 +1,15 @@
 import { routeManager } from '../../../main.js';
 import { fetchMerchantById, localCache, updateMerchant, fetchAllMerchants } from '../../../utils/data-manager.js';
 import { showToast } from '../../../utils/toast.js';
+import { uploadToCloudinary, buildCloudinaryUrl } from '../../../api/cloudinary.js';
 
 let currentStep = 1;
 let formSteps = [];
 let merchantData = null;
 let initialHandle = ''; // To track if handle has changed
 let handleCheckTimeout = null; // For debouncing handle check
+let newLogoFile = null;
+let newCoverFile = null;
 
 function updateFormSteps() {
     const prevBtn = document.querySelector('.btn-prev');
@@ -38,6 +41,22 @@ function populateForm(data) {
     document.getElementById('info-handle').value = data.info.handle || '';
     document.getElementById('info-tagline').value = data.info.tagline || '';
     document.getElementById('info-description').value = data.info.description || '';
+
+    // --- NEW: Populate Logo and Cover Image ---
+    const logoImagePreview = document.getElementById('logo-image-preview');
+    const coverImagePreview = document.getElementById('cover-image-preview');
+
+    if (data.info.logo) {
+        logoImagePreview.src = buildCloudinaryUrl(data.info.logo);
+    } else {
+        logoImagePreview.src = 'https://via.placeholder.com/150';
+    }
+
+    if (data.info.coverImage) {
+        coverImagePreview.src = buildCloudinaryUrl(data.info.coverImage);
+    } else {
+        coverImagePreview.src = 'https://via.placeholder.com/600x200';
+    }
     
     // --- REFACTORED: Populate structured opening hours ---
     const hoursContainer = document.getElementById('opening-hours-container');
@@ -89,9 +108,141 @@ function populateForm(data) {
     document.getElementById('social-whatsapp').value = data.social?.whatsapp || '';
 }
 
+function setupImageEditing() {
+    // Prefer attaching the click to the visible edit icons so users can click the camera.
+    const logoWrapper = document.querySelector('.logo-image-wrapper');
+    const coverWrapper = document.querySelector('.cover-image-wrapper');
+    const logoEditIcon = document.querySelector('.logo-edit-icon');
+    const coverEditIcon = document.querySelector('.cover-edit-icon');
+    const logoInput = document.getElementById('logo-image-input');
+    const coverInput = document.getElementById('cover-image-input');
+
+    // Guard: ensure inputs exist before adding listeners.
+    if (logoInput) {
+        // Clicking the wrapper or the camera icon should both trigger the file chooser.
+        logoWrapper && logoWrapper.addEventListener('click', () => console.debug('logo wrapper clicked')); // native input overlays the wrapper
+        logoEditIcon && logoEditIcon.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            console.debug('logo edit icon clicked, triggering input');
+            logoInput.click();
+        });
+        // Also listen for native input events to verify file dialog opened
+        logoInput.addEventListener('click', () => console.debug('logo input clicked (native)'), { once: false });
+        logoInput.addEventListener('change', (e) => console.debug('logo input change event', e.target.files && e.target.files.length ? e.target.files[0].name : 'no-file'));
+    }
+    if (coverInput) {
+        coverWrapper && coverWrapper.addEventListener('click', () => console.debug('cover wrapper clicked')); // native input overlays the wrapper
+        coverEditIcon && coverEditIcon.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            console.debug('cover edit icon clicked, triggering input');
+            coverInput.click();
+        });
+        coverInput.addEventListener('click', () => console.debug('cover input clicked (native)'), { once: false });
+        coverInput.addEventListener('change', (e) => console.debug('cover input change event', e.target.files && e.target.files.length ? e.target.files[0].name : 'no-file'));
+    }
+
+    // (debug helper removed)
+
+    logoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        openEditorFor(file, 'logo');
+        e.target.value = ''; // Reset input
+    });
+
+    coverInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        openEditorFor(file, 'cover');
+        e.target.value = ''; // Reset input
+    });
+}
+
+function openEditorFor(file, type) {
+    if (!file) return;
+
+    // Validation rules (cover images should follow recommended formats + max size)
+    const ACCEPTED_FORMATS = ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'];
+    const MAX_FILE_SIZE_MB = 6; // 6 MB
+
+    if (type === 'cover') {
+        if (!ACCEPTED_FORMATS.includes(file.type)) {
+            showToast('error', 'Unsupported file type. Please use JPG, PNG, BMP or GIF.');
+            return;
+        }
+        if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+            showToast('error', `File too large. Maximum ${MAX_FILE_SIZE_MB} MB allowed.`);
+            return;
+        }
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const options = {
+            title: `Update ${type === 'logo' ? 'Logo' : 'Cover Photo'}`,
+            subtitle: 'Crop and adjust your image',
+            onSave: (blob) => {
+                const previewElement = document.getElementById(`${type}-image-preview`);
+                previewElement.src = URL.createObjectURL(blob);
+                if (type === 'logo') {
+                    newLogoFile = blob;
+                } else {
+                    newCoverFile = blob;
+                }
+            },
+            // Default controls layout: row 1 actions, row 2 ratios, row 3 final actions
+            controls: [
+                { zoom: true, rotate: true, flip: true, fit: true, reset: true },
+                { ratios: true },
+                { final: true }
+            ]
+        };
+
+        if (type === 'logo') {
+            options.initialAspectRatio = 1;
+            options.isCircle = true;
+            options.compression = { targetSizeKB: 100, minQuality: 0.7, format: 'image/jpeg' };
+            // logos don't need safe area
+            options.showSafeArea = false;
+        } else { // cover
+            options.initialAspectRatio = 16 / 9;
+            options.isCircle = false;
+            options.compression = { targetSizeKB: 300, minQuality: 0.7, format: 'image/jpeg' };
+            // For cover we show safe area overlay (YouTube style - full width, partial height visible)
+            options.showSafeArea = true;
+            options.safeAreaAspectRatio = 16 / 9;
+
+            // Pass YouTube-like recommendations so media editor can render the guideline correctly.
+            options.recommendedSize = { width: 2560, height: 1440 };
+            options.safeAreaPixels = { width: 1546, height: 423 };
+            options.acceptedFormats = ACCEPTED_FORMATS.slice();
+            options.maxFileSizeMB = MAX_FILE_SIZE_MB;
+
+            // Add guideline toggle button for cover
+            options.controls = [
+                { zoom: true, rotate: true, flip: true, fit: true, reset: true },
+                { guideline: true },  // Guideline toggle button
+                { ratios: true },
+                { final: true }
+            ];
+            // Pass current page cover container size so editor can simulate exact visible area
+            try {
+                const coverEl = document.querySelector('.cover-photo-container');
+                if (coverEl) {
+                    const rect = coverEl.getBoundingClientRect();
+                    options.pageCover = { width: Math.round(rect.width), height: Math.round(rect.height) };
+                }
+            } catch (e) { /* ignore if not on page */ }
+        }
+
+        window.openPhotoEditor(event.target.result, options);
+    };
+    reader.readAsDataURL(file);
+}
+
 function initializeFieldEditing(merchant) {
-    // --- Disable all fields first ---
-    const allEditableFields = document.querySelectorAll('input:not([type="time"]), textarea');
+    // --- Disable all fields first (but keep file inputs enabled so native pickers work) ---
+    const allEditableFields = document.querySelectorAll('input:not([type="time"]):not([type="file"]), textarea');
     allEditableFields.forEach(field => {
         field.disabled = true;
         // Store the initial value for cancellation
@@ -303,6 +454,47 @@ async function handleSubmit() {
         }
     }
 
+    try {
+        let newLogoUrl = merchantData.info.logo;
+        let newCoverUrl = merchantData.info.coverImage;
+        const uploadPromises = [];
+
+        if (newLogoFile) {
+            uploadPromises.push(
+                uploadToCloudinary(newLogoFile, {
+                    public_id: `assets/merchants/${merchantData.meta.merchantId}/logo`,
+                    overwrite: true,
+                    invalidate: true
+                }, 'image').then(result => {
+                    if (result && result.public_id) {
+                        newLogoUrl = result.public_id;
+                    } else {
+                        throw new Error('Logo upload failed.');
+                    }
+                })
+            );
+        }
+
+        if (newCoverFile) {
+            uploadPromises.push(
+                uploadToCloudinary(newCoverFile, {
+                    public_id: `assets/merchants/${merchantData.meta.merchantId}/cover`,
+                    overwrite: true,
+                    invalidate: true
+                }, 'image').then(result => {
+                    if (result && result.public_id) {
+                        newCoverUrl = result.public_id;
+                    } else {
+                        throw new Error('Cover image upload failed.');
+                    }
+                })
+            );
+        }
+
+        if (uploadPromises.length > 0) {
+            showToast('info', 'Uploading images...');
+            await Promise.all(uploadPromises);
+        }
     // --- NEW: Helper function to collect current form data in the same structure as merchantData ---
     const collectCurrentData = () => {
         const addressesArray = [{
@@ -386,7 +578,7 @@ async function handleSubmit() {
     if (!hasChanges && JSON.stringify(merchantData.addresses) !== JSON.stringify(currentDataForUpdate.addresses)) hasChanges = true;
     if (!hasChanges && JSON.stringify(merchantData.openingHours) !== JSON.stringify(currentDataForUpdate.openingHours)) hasChanges = true;
 
-    if (!hasChanges) {
+    if (!hasChanges && !newLogoFile && !newCoverFile) {
         showToast('info', 'No changes were made to the profile.');
         routeManager.switchView('merchant', `merchant-profile/${merchantId}`); // Navigate back without saving
         return;
@@ -397,6 +589,8 @@ async function handleSubmit() {
         'info.handle': document.getElementById('info-handle').value,
         'info.tagline': document.getElementById('info-tagline').value,
         'info.description': document.getElementById('info-description').value,
+        'info.logo': newLogoUrl,
+        'info.coverImage': newCoverUrl,
         
         // Replace the entire addresses array. This is the correct way.
         'addresses': addressesArray,
@@ -421,7 +615,7 @@ async function handleSubmit() {
         updatedData['info.handleUpdatedAt'] = new Date().toISOString();
     }
 
-    try {
+    
         // Use updateMerchant instead of updateUser
         await updateMerchant(merchantId, updatedData);
         showToast('success', 'Profile updated successfully!');
@@ -482,6 +676,7 @@ export async function init() {
     });
 
     setupOpeningHoursLogic();
+    setupImageEditing();
 
     // Initial setup
     currentStep = 1;
@@ -496,4 +691,6 @@ export function cleanup() {
     if (view) {
         view.removeAttribute('data-initialized');
     }
+    newLogoFile = null;
+    newCoverFile = null;
 }

@@ -1,4 +1,5 @@
 import { fetchAllMerchants, fetchAllStories } from '../../utils/data-manager.js';
+import { buildCloudinaryUrl } from '../../api/cloudinary.js';
 
   // State and Configuration
   const config = {
@@ -325,7 +326,7 @@ import { fetchAllMerchants, fetchAllStories } from '../../utils/data-manager.js'
     
     startX = e.touches[0].clientX;
     currentX = startX;
-    touchStartTime = Date.now();
+    touchStartTime = 0;
   }
 
   function handleTouchMove(e) {
@@ -678,7 +679,7 @@ import { fetchAllMerchants, fetchAllStories } from '../../utils/data-manager.js'
 
     // Update UI with merchant data
     storyName.textContent = currentMerchant.name;
-    storyModal.querySelector('.story-viewer-avatar').src = currentMerchant.logo; // Use real logo
+    storyModal.querySelector('.story-viewer-avatar').src = buildCloudinaryUrl(currentMerchant.logo); // Use real logo
 
     // Show the modal and start the first story
     storyModal.style.display = 'flex';

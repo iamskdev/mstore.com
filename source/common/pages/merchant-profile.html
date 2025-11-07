@@ -1,15 +1,16 @@
 <div class="merchant-profile-page">
 <header class="profile-header">
     <div class="cover-photo-container">
-        <img id="cover-photo" src="" alt="Cover Photo"
-            onerror="this.onerror=null; this.src='https://via.placeholder.com/800x180/f0f2f5/cccccc?text=Cover+Not+Found';">
+        <div id="cover-skeleton" class="skeleton skeleton-cover"></div>
+        <img id="cover-photo" alt="Cover Photo">
     </div>
     <div class="avatar-and-actions">
         <div class="profile-picture">
             <!-- This wrapper ensures both image and icon are stacked for easy toggling -->
             <div class="avatar-content-wrapper">
+                <div id="logo-skeleton" class="skeleton skeleton-logo"></div>
                 <i class="fas fa-user-circle" id="logo-placeholder-icon"></i>
-                <img id="merchant-logo" src="" alt="Merchant Logo">
+                <img id="merchant-logo" alt="Merchant Logo">
             </div>
         </div>
         <div class="profile-social-icons">
