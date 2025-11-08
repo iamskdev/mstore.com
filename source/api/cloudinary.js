@@ -137,3 +137,49 @@ export function buildCloudinaryUrl(publicId, options = {}, resource_type = 'imag
   // Bina transformations ke URL.
   return urlParts.join('/');
 }
+
+/**
+ * Asset type aur IDs ke aadhar par Cloudinary ke liye ek structured folder path ya poora public_id generate karta hai.
+ * Yeh asset paths ke liye "single source of truth" hai.
+ * @param {string} assetType - Asset ka prakar (e.g., 'MERCHANT_LOGO', 'ITEM_IMAGES_FOLDER').
+ * @param {object} ids - Path banane ke liye zaroori IDs (e.g., { merchantId, itemId }).
+ * @returns {string} Cloudinary folder path ya poora public_id.
+ * @throws {Error} Agar zaroori IDs nahi di gayi hon.
+ */
+export function getCloudinaryPath(assetType, ids = {}) {
+  const basePath = 'mstore/assets'; // Ek base path constant ka istemal.
+
+  switch (assetType) {
+    // --- Cases jo poora public_id return karte hain (single, overwritable assets ke liye) ---
+    case 'USER_AVATAR':
+      if (!ids.userId) throw new Error('User ID is required for USER_AVATAR');
+      return `${basePath}/users/${ids.userId}/avatars/avatar`; // 'avatar' fixed name
+
+    case 'MERCHANT_LOGO':
+      if (!ids.merchantId) throw new Error('Merchant ID is required for MERCHANT_LOGO');
+      return `${basePath}/merchants/${ids.merchantId}/logos/logo`; // 'logo' fixed name
+
+    case 'MERCHANT_COVER':
+      if (!ids.merchantId) throw new Error('Merchant ID is required for MERCHANT_COVER');
+      return `${basePath}/merchants/${ids.merchantId}/covers/cover`; // 'cover' fixed name
+
+    // --- Cases jo sirf FOLDER path return karte hain (asset collections ke liye) ---
+    case 'ITEM_IMAGES_FOLDER':
+      if (!ids.merchantId || !ids.itemId) throw new Error('Merchant and Item ID are required for ITEM_IMAGES_FOLDER');
+      return `${basePath}/merchants/${ids.merchantId}/items/${ids.itemId}`;
+    
+    case 'POST_IMAGES_FOLDER':
+      if (!ids.merchantId || !ids.postId) throw new Error('Merchant and Post ID are required for POST_IMAGES_FOLDER');
+      return `${basePath}/merchants/${ids.merchantId}/posts/${ids.postId}`;
+
+    case 'STORY_IMAGES_FOLDER':
+      if (!ids.merchantId) throw new Error('Merchant ID is required for STORY_IMAGES_FOLDER');
+      // Story images ko merchant ke hisab se group karna aam hai.
+      return `${basePath}/merchants/${ids.merchantId}/stories`;
+
+    default:
+      // Anjaan assetType ke liye warning dekar ek generic path return karein.
+      console.warn(`Unknown assetType: ${assetType}. Placing in uncategorized.`);
+      return `${basePath}/uncategorized`;
+  }
+}

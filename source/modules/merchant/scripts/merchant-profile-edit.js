@@ -1,7 +1,7 @@
 import { routeManager } from '../../../main.js';
 import { fetchMerchantById, localCache, updateMerchant, fetchAllMerchants } from '../../../utils/data-manager.js';
 import { showToast } from '../../../utils/toast.js';
-import { uploadToCloudinary, buildCloudinaryUrl } from '../../../api/cloudinary.js';
+import { uploadToCloudinary, buildCloudinaryUrl, getCloudinaryPath } from '../../../api/cloudinary.js';
 
 let currentStep = 1;
 let formSteps = [];
@@ -120,7 +120,7 @@ function setupImageEditing() {
     // Guard: ensure inputs exist before adding listeners.
     if (logoInput) {
         // Clicking the wrapper or the camera icon should both trigger the file chooser.
-        logoWrapper && logoWrapper.addEventListener('click', () => console.debug('logo wrapper clicked')); // native input overlays the wrapper
+        
         logoEditIcon && logoEditIcon.addEventListener('click', (ev) => {
             ev.stopPropagation();
             console.debug('logo edit icon clicked, triggering input');
@@ -131,7 +131,7 @@ function setupImageEditing() {
         logoInput.addEventListener('change', (e) => console.debug('logo input change event', e.target.files && e.target.files.length ? e.target.files[0].name : 'no-file'));
     }
     if (coverInput) {
-        coverWrapper && coverWrapper.addEventListener('click', () => console.debug('cover wrapper clicked')); // native input overlays the wrapper
+        
         coverEditIcon && coverEditIcon.addEventListener('click', (ev) => {
             ev.stopPropagation();
             console.debug('cover edit icon clicked, triggering input');
@@ -462,7 +462,7 @@ async function handleSubmit() {
         if (newLogoFile) {
             uploadPromises.push(
                 uploadToCloudinary(newLogoFile, {
-                    public_id: `assets/merchants/${merchantData.meta.merchantId}/logo`,
+                    public_id: getCloudinaryPath('MERCHANT_LOGO', { merchantId: merchantData.meta.merchantId }),
                     overwrite: true,
                     invalidate: true
                 }, 'image').then(result => {
@@ -478,7 +478,7 @@ async function handleSubmit() {
         if (newCoverFile) {
             uploadPromises.push(
                 uploadToCloudinary(newCoverFile, {
-                    public_id: `assets/merchants/${merchantData.meta.merchantId}/cover`,
+                    public_id: getCloudinaryPath('MERCHANT_COVER', { merchantId: merchantData.meta.merchantId }),
                     overwrite: true,
                     invalidate: true
                 }, 'image').then(result => {

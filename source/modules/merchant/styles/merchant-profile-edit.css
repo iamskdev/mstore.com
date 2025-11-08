@@ -517,20 +517,7 @@ textarea {
    and allow clickable edit icons to trigger the file picker. We keep them visually hidden but
    not completely removed from layout so some browsers (mobile) allow the file dialog to open. */
 .media-profile-container .image-input {
-    /* Make the native file input cover the image wrapper so native clicks open
-       the file picker reliably (works on mobile & desktop). Keep it invisible
-       but clickable. */
-    position: absolute;
-    inset: 0; /* top:0; right:0; bottom:0; left:0 */
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    border: 0;
-    background: transparent;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 5; /* sit above image but below visible edit icon (which has higher z-index) */
+    display: none;
 }
 
 /* Visible fallback button (label) that opens the file chooser as a real user gesture */

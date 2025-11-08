@@ -1,5 +1,5 @@
 import { fetchUserById, updateUser, localCache } from '../../utils/data-manager.js';
-import { uploadToCloudinary, buildCloudinaryUrl, deleteFromCloudinary } from '../../api/cloudinary.js';
+import { uploadToCloudinary, buildCloudinaryUrl, deleteFromCloudinary, getCloudinaryPath } from '../../api/cloudinary.js';
 import { showToast } from '../../utils/toast.js';
 import { routeManager } from '../../main.js';
 
@@ -440,24 +440,16 @@ async function saveProfile() {
             newAvatarUrl = ''; // Set avatar to empty string in Firestore
 
         } else if (newAvatarFile) {
-            // --- AVATAR UPLOAD LOGIC (existing) ---
+            // --- AVATAR UPLOAD LOGIC (REFACTORED) ---
             showToast('info', 'Uploading new profile picture...');
 
-            // --- NEW FOLDER STRUCTURE ---
-            // Use the username for a more descriptive public_id.
-            // The public_id will be clean, without a timestamp.
-            // Format: assets/users/avatars/USERNAME_profile_pic
-            const username = currentUser.info.username || currentUser.meta.userId;
-            const customPublicId = `assets/users/avatars/${username}_profile_pic`;
-
             const uploadOptions = {
-                public_id: customPublicId,
+                public_id: getCloudinaryPath('USER_AVATAR', { userId: currentUser.meta.userId }),
                 overwrite: true, // This will replace the old image with the new one.
                 invalidate: true // This tells the CDN to fetch the new version immediately.
             };
             const uploadResult = await uploadToCloudinary(newAvatarFile, uploadOptions, 'image');
-            // FIX: Store only the public_id, not the full URL.
-            // This allows us to use buildCloudinaryUrl for transformations later.
+            
             if (uploadResult && uploadResult.public_id) {
                 newAvatarUrl = uploadResult.public_id;
             } else {
