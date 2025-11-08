@@ -310,9 +310,9 @@
 
 .tabs-container {
     position: sticky;
-    top: var(--top-nav-height);
+    top: var(--top-height);
     /* Stick below the top nav */
-    background: var(--card-background);
+    background: var(--bg-primary);
     z-index: 10;
     border-bottom: 1px solid var(--border-color);
     border-top: 1px solid var(--border-color);

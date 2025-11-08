@@ -15,6 +15,13 @@
             <input type="file" id="logo-image-input" class="image-input" accept="image/*">
         </div>
     </div>
+    <div class="profile-actions top-edit-actions">
+        <div class="action-btn-container">
+            <button type="button" class="action-btn secondary" id="top-prev-btn" disabled>Previous</button>
+            <button type="button" class="action-btn primary" id="top-next-btn">Next</button>
+            <button type="submit" class="action-btn primary" id="top-submit-btn" style="display: none;">Submit</button>
+        </div>
+    </div>
     <!-- Debug helper (temporary) -->
     <!-- Progress Bar -->
     <div class="progress-bar">
@@ -23,12 +30,12 @@
         <div class="progress-step active" data-step="1"></div>
         <div class="progress-step" data-step="2"></div>
         <div class="progress-step" data-step="3"></div>
+        <div class="progress-step" data-step="4"></div>
+        <div class="progress-step" data-step="5"></div>
     </div>
 
     <form id="merchant-edit-form">
-
-
-        <!-- Step 1: Store Information -->
+        <!-- Step 1: Basic Store Information -->
         <div class="form-step form-step-active">
             <div class="input-group">
                 <label for="info-name">Business Name</label>
@@ -62,7 +69,7 @@
             </div>
         </div>
 
-        <!-- Step 2: Operations (Address, Timings, Payment, Delivery) -->
+        <!-- Step 2: Location and Contact -->
         <div class="form-step">
             <div class="form-section">
                 <h4 class="section-title">Store Address</h4>
@@ -88,6 +95,11 @@
                     </div>
                 </div>
             </div>
+            
+        </div>
+
+        <!-- Step 3: Operating Hours -->
+        <div class="form-step">
             <div class="form-section">
                 <div class="section-title-wrapper">
                     <h4 class="section-title">Opening Hours</h4>
@@ -113,6 +125,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Step 4: Services and Logistics -->
+        <div class="form-step">
             <div class="form-section" id="payment-delivery-section">
                 <div class="section-title-wrapper">
                     <h4 class="section-title">Payment & Delivery</h4>
@@ -133,7 +149,7 @@
             </div>
         </div>
 
-        <!-- Step 3: Legal & Social -->
+        <!-- Step 5: Legal & Social -->
         <div class="form-step">
             <div class="form-section">
                 <h4 class="section-title">Legal Information</h4>
@@ -187,8 +203,9 @@
 
         <!-- Navigation -->
         <div class="form-navigation">
-            <button type="button" class="btn btn-prev" disabled>Previous</button>
-            <button type="button" class="btn btn-next">Next</button>
+            <button type="button" class="action-btn secondary" id="bottom-prev-btn" disabled>Previous</button>
+            <button type="button" class="action-btn primary" id="bottom-next-btn">Next</button>
+            <button type="submit" class="action-btn primary" id="bottom-submit-btn" style="display: none;">Submit</button>
         </div>
     </form>
 </div>

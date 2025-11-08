@@ -12,15 +12,30 @@ let newLogoFile = null;
 let newCoverFile = null;
 
 function updateFormSteps() {
-    const prevBtn = document.querySelector('.btn-prev');
-    const nextBtn = document.querySelector('.form-navigation .btn-next');
-    const formNavigation = document.querySelector('.form-navigation');
+    const topPrevBtn = document.getElementById('top-prev-btn');
+    const topNextBtn = document.getElementById('top-next-btn');
+    const topSubmitBtn = document.getElementById('top-submit-btn');
+    const bottomPrevBtn = document.getElementById('bottom-prev-btn');
+    const bottomNextBtn = document.getElementById('bottom-next-btn');
+    const bottomSubmitBtn = document.getElementById('bottom-submit-btn');
 
     formSteps.forEach((step, index) => {
         step.classList.toggle('form-step-active', index + 1 === currentStep);
     });
-    prevBtn.disabled = currentStep === 1;
-    nextBtn.textContent = currentStep === formSteps.length ? 'Submit' : 'Next';
+
+    // Update Previous buttons
+    [topPrevBtn, bottomPrevBtn].forEach(btn => {
+        if (btn) btn.disabled = currentStep === 1;
+    });
+
+    // Update Next buttons and Submit buttons visibility
+    const isLastStep = currentStep === formSteps.length;
+    [topNextBtn, bottomNextBtn].forEach(btn => {
+        if (btn) btn.style.display = isLastStep ? 'none' : 'flex'; // Hide Next button on last step
+    });
+    [topSubmitBtn, bottomSubmitBtn].forEach(btn => {
+        if (btn) btn.style.display = isLastStep ? 'flex' : 'none'; // Show Submit button on last step
+    });
 }
 
 function updateProgressBar() {
@@ -653,27 +668,53 @@ export async function init() {
         showToast('error', 'Failed to load your business data.');
     }
 
-    const prevBtn = document.querySelector('.btn-prev');
-    const nextBtn = document.querySelector('.form-navigation .btn-next');
+    const topPrevBtn = document.getElementById('top-prev-btn');
+    const topNextBtn = document.getElementById('top-next-btn');
+    const topSubmitBtn = document.getElementById('top-submit-btn');
+    const bottomPrevBtn = document.getElementById('bottom-prev-btn');
+    const bottomNextBtn = document.getElementById('bottom-next-btn');
+    const bottomSubmitBtn = document.getElementById('bottom-submit-btn');
+
     formSteps = document.querySelectorAll('.form-step');
 
-    nextBtn.addEventListener('click', () => {
-        if (currentStep === formSteps.length) {
-            handleSubmit();
-        } else {
-            currentStep++;
-            updateFormSteps();
-            updateProgressBar();
-        }
+    // Event listeners for Next buttons
+    [topNextBtn, bottomNextBtn].forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentStep < formSteps.length) {
+                currentStep++;
+                updateFormSteps();
+                updateProgressBar();
+            }
+        });
     });
 
-    prevBtn.addEventListener('click', () => {
-        if (currentStep > 1) {
-            currentStep--;
-            updateFormSteps();
-            updateProgressBar();
-        }
+    // Event listeners for Previous buttons
+    [topPrevBtn, bottomPrevBtn].forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateFormSteps();
+                updateProgressBar();
+            }
+        });
     });
+
+    // Event listeners for Submit buttons (these will be type="submit" in HTML, so they'll trigger form submission)
+    // We just need to ensure they are visible/hidden correctly.
+    const merchantEditForm = document.getElementById('merchant-edit-form');
+    if (merchantEditForm) {
+        merchantEditForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent default form submission
+            await handleSubmit();
+        });
+    }
+
+    // Explicitly add click listener for the top submit button since it's outside the form
+    if (topSubmitBtn) {
+        topSubmitBtn.addEventListener('click', async () => {
+            await handleSubmit();
+        });
+    }
 
     setupOpeningHoursLogic();
     setupImageEditing();

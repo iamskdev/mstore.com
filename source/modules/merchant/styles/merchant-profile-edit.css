@@ -82,6 +82,7 @@
 .form-step {
     display: none;
     animation: fadeIn 0.5s;
+    padding-top: 1rem; /* Added consistent top padding for each step */
 }
 
 .form-step.form-step-active {
@@ -104,7 +105,7 @@
 /* NEW: Styles for sectioning within a step */
 .form-section {
     margin-bottom: 0.25rem; /* REDUCED: Further decreased margin to reduce gap between sections */
-    padding-top: 1rem; /* ADDED: Space above the section title */
+    padding-top: 0; /* Removed padding-top, now handled by .form-step */
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color);
 }
@@ -137,6 +138,11 @@
     align-items: center;
     position: relative; /* For the edit button positioning */
     margin-bottom: 1.5rem; /* This provides spacing for sections with an edit icon */
+}
+
+/* Add margin-top to the first input-group within a form-section to create space after the section title */
+.form-section .input-group:first-of-type {
+    margin-top: 1rem;
 }
 
 .input-group label {
@@ -518,6 +524,27 @@ textarea {
    not completely removed from layout so some browsers (mobile) allow the file dialog to open. */
 .media-profile-container .image-input {
     display: none;
+}
+
+.top-edit-actions {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    padding: 0 1rem; /* Match form padding */
+    margin-top: -70px; /* Adjust to position below cover image and to the right of logo */
+    position: relative; /* To allow z-index to work if needed */
+    z-index: 10; /* Ensure it's above other elements if needed */
+}
+
+.top-edit-actions .action-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px; /* Space between buttons */
+}
+
+.top-edit-actions .action-btn {
+    padding: 6px 10px; /* Smaller buttons for the top */
+    font-size: 10px;
 }
 
 /* Visible fallback button (label) that opens the file chooser as a real user gesture */
