@@ -1,3 +1,6 @@
+import { createListCard, initCardHelper } from '../../../templates/cards/card-helper.js';
+import { fetchAllItems } from '../../../utils/data-manager.js';
+
 let isInitialized = false;
 let eventListeners = []; // To keep track of added event listeners
 
@@ -7,11 +10,65 @@ function addManagedEventListener(element, type, listener, options) {
     eventListeners.push({ element, type, listener, options });
 }
 
-export function init() {
+export async function init() {
     const view = document.getElementById('merchant-add-view');
     if (!view || isInitialized) {
         return;
     }
+
+    // Initialize card helper
+    initCardHelper({}); // Pass an empty object for now, unitsData might not be directly relevant here
+
+    // --- NEW: Inventory Card Configuration ---
+    const inventoryCardConfig = {
+        fields: [
+            { selector: '.card-image', type: 'image', key: 'media.thumbnail', default: './localstore/images/default-product.jpg' },
+            { selector: '.card-title', key: 'info.name' },
+            { selector: '.selling-price', key: 'pricing.sellingPrice', formatter: (price) => `₹${price.toFixed(2)}` },
+            {
+                selector: '.max-price',
+                key: 'pricing.mrp',
+                formatter: (mrp, item) => item.pricing.mrp > item.pricing.sellingPrice ? `₹${mrp.toFixed(2)}` : '',
+                visible: (item) => item.pricing.mrp > item.pricing.sellingPrice
+            },
+            {
+                selector: '.card-discount',
+                visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
+                formatter: (value, item) => {
+                    const discount = ((item.pricing.mrp - item.pricing.sellingPrice) / item.pricing.mrp) * 100;
+                    return `${discount.toFixed(0)}% off`;
+                }
+            },
+            { selector: '.cost-price', key: 'pricing.costPrice', formatter: (price) => price ? `Cost: ₹${price.toFixed(2)}` : '', visible: (item) => item.pricing.costPrice > 0 },
+            { selector: '.stars', visible: false }, // Rating display removed as per request
+            { selector: '.stock-status', key: 'inventory.stockQty' } // This will be handled by createListCard's internal logic for stock/service status
+        ],
+        buttons: [
+            { label: (item) => item.meta.flags.isPublic ? 'Private' : 'Public', action: 'TOGGLE_VISIBILITY' }, // Public/Private button
+            { label: 'Edit', action: 'EDIT_ITEM' },
+            { label: 'View Details', action: 'VIEW_DETAILS' },
+            { label: 'Share me', action: 'SHARE_ITEM' }
+        ],
+        actionHandlers: {
+            TOGGLE_VISIBILITY: (item) => {
+                const newVisibility = !item.meta.flags.isPublic;
+                alert(`${item.info.name} is now ${newVisibility ? 'Public' : 'Private'}`);
+                // Implement actual logic to update item visibility
+            },
+            EDIT_ITEM: (item) => {
+                alert(`Edit item: ${item.info.name}`);
+                // Implement actual edit logic here
+            },
+            VIEW_DETAILS: (item) => {
+                alert(`View details for: ${item.info.name}`);
+                // Implement actual view details logic here
+            },
+            SHARE_ITEM: (item) => {
+                alert(`Share item: ${item.info.name}`);
+                // Implement actual share logic here
+            }
+        }
+    };
 
     console.log('🚀 Initializing Merchant Add View...');
 
@@ -100,37 +157,8 @@ export function init() {
         ]
     };
 
-    // --- NEW: Dummy Inventory Data ---
-    const dummyInventory = [
-        {
-            "meta": { "itemId": "ITM-INV-1", "type": "product" },
-            "info": { "name": "Parle-G Biscuit 80g" },
-            "pricing": { "sellingPrice": 10 },
-            "inventory": { "stockQty": 200, "lowStockThreshold": 20 },
-            "media": { "thumbnail": "./localstore/images/items/parleg-cup.jpg" }
-        },
-        {
-            "meta": { "itemId": "ITM-INV-2", "type": "product" },
-            "info": { "name": "Tata Salt 1KG" },
-            "pricing": { "sellingPrice": 25 },
-            "inventory": { "stockQty": 100, "lowStockThreshold": 10 },
-            "media": { "thumbnail": "./localstore/images/items/tata-salt.jpg" }
-        },
-        {
-            "meta": { "itemId": "ITM-INV-3", "type": "product" },
-            "info": { "name": "Surf Excel 500g" },
-            "pricing": { "sellingPrice": 65 },
-            "inventory": { "stockQty": 5, "lowStockThreshold": 10 }, // Low stock example
-            "media": { "thumbnail": "./localstore/images/items/surf-excel.jpg" }
-        },
-        {
-            "meta": { "itemId": "ITM-INV-4", "type": "service" },
-            "info": { "name": "Photo Print Service" },
-            "pricing": { "sellingPrice": 20 },
-            "inventory": { "stockQty": null }, // Service example
-            "media": { "thumbnail": "./localstore/images/items/photo-print.jpg" }
-        }
-    ];
+    // --- NEW: Fetch all inventory items ---
+    const allInventoryItems = await fetchAllItems();
 
     // --- NEW: Dummy Transaction Data & Rendering Logic ---
     const dummyTransactions = [
@@ -378,33 +406,14 @@ export function init() {
             return;
         }
 
-        const cardsHTML = filteredInventory.map(item => {
-            const { meta, info, pricing, inventory, media } = item;
+        container.innerHTML = ''; // Clear existing content
 
-            const isService = meta.type === 'service';
-            const stockQty = inventory.stockQty;
-            const lowStockThreshold = inventory.lowStockThreshold || 10;
-            const isLowStock = !isService && stockQty !== null && stockQty < lowStockThreshold;
-
-            const stockQtyDisplay = isService ? 'N/A' : (stockQty !== null ? stockQty : 'N/A');
-            const stockLabel = isService ? 'Service' : 'in stock';
-
-            return `
-                        <div class="content-card">
-                            <img src="${media.thumbnail || './localstore/images/default-product.jpg'}" alt="${info.name}" class="inventory-item-thumb">
-                            <div class="content-card-details">
-                                <div class="content-card-title">${info.name}</div>
-                                <div class="content-card-subtitle">Price: ₹${pricing.sellingPrice}</div>
-                            </div>
-                            <div class="inventory-stock">
-                                <div class="stock-qty ${isLowStock ? 'low-stock' : ''}">${stockQtyDisplay}</div>
-                                <div class="stock-label">${stockLabel}</div>
-                            </div>
-                        </div>
-                    `;
-        }).join('');
-
-        container.innerHTML = cardsHTML;
+        filteredInventory.forEach(item => {
+            const cardElement = createListCard(item, inventoryCardConfig);
+            if (cardElement) {
+                container.appendChild(cardElement);
+            }
+        });
     }
 
     // --- NEW: Listener for inventory filter buttons ---
@@ -412,7 +421,7 @@ export function init() {
         button.addEventListener('click', function () {
             const filter = this.dataset.inventoryFilter;
             if (filter !== 'advanced') {
-                renderInventory(dummyInventory, filter);
+            renderInventory(allInventoryItems, filter);
             }
         });
     });
@@ -603,7 +612,7 @@ export function init() {
         if (activeTabId === 'parties') {
             renderParties(); // Render with default 'all' filter
         } else if (activeTabId === 'inventory') {
-            renderInventory(dummyInventory); // Render with default 'all' filter
+            renderInventory(allInventoryItems); // Render with default 'all' filter
         }
 
 
@@ -1064,6 +1073,17 @@ export function cleanup() {
         }
     });
     eventListeners = []; // Clear the array
+
+    // --- NEW: Remove dynamically added card-helper elements ---
+    const styleElement = document.getElementById('card-list-component-styles');
+    if (styleElement) {
+        styleElement.remove();
+    }
+    const templateElement = document.getElementById('list-card-template');
+    if (templateElement) {
+        templateElement.remove();
+    }
+
     isInitialized = false;
     console.log('🧹 Merchant Add View Cleaned.');
 }

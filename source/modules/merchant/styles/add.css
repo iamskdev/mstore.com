@@ -407,6 +407,13 @@
     /* Add padding to sides and bottom */
 }
 
+/* NEW: Remove horizontal padding for inventory list container to make cards full width */
+.add-scrollable-content[data-tab="inventory"] .list-container {
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+}
+
 /* --- Floating Action Button (FAB) & Speed Dial --- */
 .fab-container {
     position: fixed;
