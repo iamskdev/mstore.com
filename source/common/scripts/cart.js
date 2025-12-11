@@ -17,163 +17,163 @@ let currentSort = "relevance"; // Default sort order
 let cart = {};
 // Local utility to format slug for display
 function _formatSlugForDisplay(slug = '') {
-    if (!slug) return '';
-    return slug
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+  if (!slug) return '';
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 // Local utility to get category info by ID
 async function getCategoryInfoByCategoryId(categoryId) {
-    if (!categoryId) return null;
-    const allCategories = await fetchAllCategories(); // FIX: Use cache, remove force=true
-    return allCategories.find(cat => cat.meta.categoryId === categoryId) || null;
+  if (!categoryId) return null;
+  const allCategories = await fetchAllCategories(); // FIX: Use cache, remove force=true
+  return allCategories.find(cat => cat.meta.categoryId === categoryId) || null;
 }
 
 // This function is exported to be used by the filter-helper
 export async function getGlobalFilterTabs() {
-    const cartItems = await getCartItemsManager();
+  const cartItems = await getCartItemsManager();
 
-    if (cartItems.length === 0) {
-        return []; // Return no tabs if cart is empty
-    }
-    
-    const customTabs = [{ label: 'All', filter: 'all' }];
+  if (cartItems.length === 0) {
+    return []; // Return no tabs if cart is empty
+  }
 
-    const hasProducts = cartItems.some(item => item.meta.type === 'product');
-    const hasServices = cartItems.some(item => item.meta.type === 'service');
+  const customTabs = [{ label: 'All', filter: 'all' }];
 
-    if (hasProducts) {
-        customTabs.push({ label: 'Products', filter: 'product' });
-    }
+  const hasProducts = cartItems.some(item => item.meta.type === 'product');
+  const hasServices = cartItems.some(item => item.meta.type === 'service');
 
-    if (hasServices) {
-        customTabs.push({ label: 'Services', filter: 'service' });
-    }
+  if (hasProducts) {
+    customTabs.push({ label: 'Products', filter: 'product' });
+  }
 
-    // Only add category-specific tabs if there are items in the cart
-    if (cartItems.length > 0) {
-        const categoryIdsInCart = new Set(cartItems.map(item => item.meta.links.categoryId));
-        for (const categoryId of categoryIdsInCart) {
-            const category = await getCategoryInfoByCategoryId(categoryId);
-            if (category && !customTabs.some(tab => tab.filter === category.meta.slug)) {
-                const hasItemsInThisCategory = cartItems.some(item => item.meta.links.categoryId === categoryId);
-                if (hasItemsInThisCategory) {
-                    customTabs.push({ label: _formatSlugForDisplay(category.meta.slug), filter: category.meta.slug });
-                }
-            }
+  if (hasServices) {
+    customTabs.push({ label: 'Services', filter: 'service' });
+  }
+
+  // Only add category-specific tabs if there are items in the cart
+  if (cartItems.length > 0) {
+    const categoryIdsInCart = new Set(cartItems.map(item => item.meta.links.categoryId));
+    for (const categoryId of categoryIdsInCart) {
+      const category = await getCategoryInfoByCategoryId(categoryId);
+      if (category && !customTabs.some(tab => tab.filter === category.meta.slug)) {
+        const hasItemsInThisCategory = cartItems.some(item => item.meta.links.categoryId === categoryId);
+        if (hasItemsInThisCategory) {
+          customTabs.push({ label: _formatSlugForDisplay(category.meta.slug), filter: category.meta.slug });
         }
+      }
     }
-    
-    return customTabs;
+  }
+
+  return customTabs;
 }
 
 // Configuration for cart list cards
 const cartrouteConfig = {
-    fields: [
-        { key: 'info.name', selector: '.card-title', visible: true },
-        { 
-            key: 'media.thumbnail', 
-            selector: '.card-image', 
-            type: 'image',
-            default: './localstore/images/default-product.jpg' 
-        },
-        { 
-            key: 'pricing.sellingPrice', 
-            selector: '.selling-price', 
-            visible: true,
-            formatter: (price, item) => `₹${(price * item.cart.qty).toFixed(2)}` 
-        },
-        { 
-            key: 'pricing.mrp', 
-            selector: '.max-price', 
-            visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
-            formatter: (mrp, item) => `₹${(mrp * item.cart.qty).toFixed(2)}`
-        },
-        { selector: '.cost-price', visible: false },
-        { key: 'analytics.rating', selector: '.stars', visible: true },
-        { key: 'stock.status', selector: '.stock-status', visible: true },
-        {
-            key: 'cart.note',
-            selector: '.card-note',
-            visible: true,
-            formatter: (note) => {
-                const displayText = note || 'Click to add a note';
-                return `<span class="note-label clickable">Note:</span> <span class="note-content">${displayText}</span>`;
-            }
-        },
-        { 
-            key: 'pricing.mrp',
-            selector: '.card-discount', 
-            visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
-            formatter: (mrp, item) => {
-                const sellingPrice = item.pricing.sellingPrice;
-                if (mrp > sellingPrice) {
-                    const discount = ((mrp - sellingPrice) / mrp) * 100;
-                    return `${discount.toFixed(0)}% off`;
-                }
-                return '';
-            }
-        },
-    ],
-    buttons: [
-        {
-            type: 'quantitySelector',
-            visible: (item) => item.meta.type === 'product',
-            action: 'UPDATE_CART_QUANTITY'
-        },
-        {
-            label: 'Select Date',
-            action: 'SELECT_SERVICE_DATE',
-            class: 'btn-secondary select-date-btn',
-            visible: (item) => item.meta.type === 'service'
-        },
-        { label: 'Request', action: 'REQUEST_ITEM', class: 'btn-primary', visible: true },
-        { label: 'Save for Later', action: 'SAVE_FOR_LATER', class: 'btn-secondary', visible: true },
-        { label: 'Remove', action: 'REMOVE_FROM_CART', class: 'btn-danger', visible: true }
-    ],
-    actionHandlers: {
-        'UPDATE_CART_QUANTITY': (item, newQuantity) => window.updateQty(item.meta.itemId, newQuantity),
-        'SELECT_SERVICE_DATE': (item, targetButton) => {
-            const dateInput = document.createElement('input');
-            dateInput.type = 'date';
-            dateInput.style.position = 'absolute';
-            dateInput.style.left = '-9999px'; // Hide it off-screen
-            dateInput.style.top = '-9999px';
-            dateInput.value = item.cart.selectedDate || ''; // Set initial value if exists
+  fields: [
+    { key: 'info.name', selector: '.card-title', visible: true },
+    {
+      key: 'media.thumbnail',
+      selector: '.card-image',
+      type: 'image',
+      default: './localstore/images/default-product.jpg'
+    },
+    {
+      key: 'pricing.sellingPrice',
+      selector: '.selling-price',
+      visible: true,
+      formatter: (price, item) => `₹${(price * item.cart.qty).toFixed(2)}`
+    },
+    {
+      key: 'pricing.mrp',
+      selector: '.max-price',
+      visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
+      formatter: (mrp, item) => `₹${(mrp * item.cart.qty).toFixed(2)}`
+    },
+    { selector: '.cost-price', visible: false },
+    { key: 'analytics.rating', selector: '.stars', visible: true },
+    { key: 'inventory.isAvailable', selector: '.stock-status', visible: true },
+    {
+      key: 'cart.note',
+      selector: '.card-note',
+      visible: true,
+      formatter: (note) => {
+        const displayText = note || 'Click to add a note';
+        return `<span class="note-label clickable">Note:</span> <span class="note-content">${displayText}</span>`;
+      }
+    },
+    {
+      key: 'pricing.mrp',
+      selector: '.card-discount',
+      visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
+      formatter: (mrp, item) => {
+        const sellingPrice = item.pricing.sellingPrice;
+        if (mrp > sellingPrice) {
+          const discount = ((mrp - sellingPrice) / mrp) * 100;
+          return `${discount.toFixed(0)}% off`;
+        }
+        return '';
+      }
+    },
+  ],
+  buttons: [
+    {
+      type: 'quantitySelector',
+      visible: (item) => item.meta.type === 'product',
+      action: 'UPDATE_CART_QUANTITY'
+    },
+    {
+      label: 'Select Date',
+      action: 'SELECT_SERVICE_DATE',
+      class: 'btn-secondary select-date-btn',
+      visible: (item) => item.meta.type === 'service'
+    },
+    { label: 'Request', action: 'REQUEST_ITEM', class: 'btn-primary', visible: true },
+    { label: 'Save for Later', action: 'SAVE_FOR_LATER', class: 'btn-secondary', visible: true },
+    { label: 'Remove', action: 'REMOVE_FROM_CART', class: 'btn-danger', visible: true }
+  ],
+  actionHandlers: {
+    'UPDATE_CART_QUANTITY': (item, newQuantity) => window.updateQty(item.meta.itemId, newQuantity),
+    'SELECT_SERVICE_DATE': (item, targetButton) => {
+      const dateInput = document.createElement('input');
+      dateInput.type = 'date';
+      dateInput.style.position = 'absolute';
+      dateInput.style.left = '-9999px'; // Hide it off-screen
+      dateInput.style.top = '-9999px';
+      dateInput.value = item.cart.selectedDate || ''; // Set initial value if exists
 
-            document.body.appendChild(dateInput);
+      document.body.appendChild(dateInput);
 
-            dateInput.onchange = (event) => {
-                const selectedDate = event.target.value;
-                if (selectedDate) {
-                    window.updateDate(item.meta.itemId, selectedDate);
-                    requestRender(); // Re-render to update the button label and total
-                }
-                document.body.removeChild(dateInput); // Clean up the hidden input
-            };
+      dateInput.onchange = (event) => {
+        const selectedDate = event.target.value;
+        if (selectedDate) {
+          window.updateDate(item.meta.itemId, selectedDate);
+          requestRender(); // Re-render to update the button label and total
+        }
+        document.body.removeChild(dateInput); // Clean up the hidden input
+      };
 
-            dateInput.click(); // Programmatically click to open date picker
-        },
-        'REQUEST_ITEM': (item) => console.log(`Requesting item: ${item.info.name}`),
-        'SAVE_FOR_LATER': (item) => {
-            // Remove from cart
-            window.removeItem(item.meta.itemId);
+      dateInput.click(); // Programmatically click to open date picker
+    },
+    'REQUEST_ITEM': (item) => console.log(`Requesting item: ${item.info.name}`),
+    'SAVE_FOR_LATER': (item) => {
+      // Remove from cart
+      window.removeItem(item.meta.itemId);
 
-            // Check if the item is already saved
-            const itemAlreadySaved = isItemSaved(item.meta.itemId);
+      // Check if the item is already saved
+      const itemAlreadySaved = isItemSaved(item.meta.itemId);
 
-            if (itemAlreadySaved) {
-                showToast('info', 'Item already in wishlist!'); // Item is already saved, show toast
-            } else {
-                // Add to saved items, preserving the note
-                toggleSavedItem(item.meta.itemId, item.cart.note); // Add to saved list
-                showToast('info', 'Item saved for later!'); // Show saved toast
-            }
-        },
-        'REMOVE_FROM_CART': (item) => window.removeItem(item.meta.itemId),
-    }
+      if (itemAlreadySaved) {
+        showToast('info', 'Item already in wishlist!'); // Item is already saved, show toast
+      } else {
+        // Add to saved items, preserving the note
+        toggleSavedItem(item.meta.itemId, item.cart.note); // Add to saved list
+        showToast('info', 'Item saved for later!'); // Show saved toast
+      }
+    },
+    'REMOVE_FROM_CART': (item) => window.removeItem(item.meta.itemId),
+  }
 };
 
 let renderTimeout;
@@ -183,14 +183,14 @@ let renderTimeout;
  * fire in quick succession (e.g., filter change and cart update).
  */
 function requestRender() {
-    // Clear any pending render request.
-    if (renderTimeout) {
-        clearTimeout(renderTimeout);
-    }
-    // Set a new render request to run after a short delay.
-    renderTimeout = setTimeout(() => {
-        rendercard();
-    }, 10); // A small 10ms delay is enough to batch rapid calls.
+  // Clear any pending render request.
+  if (renderTimeout) {
+    clearTimeout(renderTimeout);
+  }
+  // Set a new render request to run after a short delay.
+  renderTimeout = setTimeout(() => {
+    rendercard();
+  }, 10); // A small 10ms delay is enough to batch rapid calls.
 }
 
 async function rendercard() {
@@ -225,16 +225,16 @@ async function rendercard() {
 
   // Apply user-selected sort from the filter modal if it's not the default 'relevance'.
   if (currentSort && currentSort !== 'relevance') {
-      cart.items.sort((a, b) => {
-          const priceA = a.pricing.sellingPrice * a.cart.qty;
-          const priceB = b.pricing.sellingPrice * b.cart.qty;
-          switch (currentSort) {
-              case 'price-asc': return priceA - priceB;
-              case 'price-desc': return priceB - priceA;
-              case 'rating-desc': return (b.analytics?.rating || 0) - (a.analytics?.rating || 0);
-              default: return 0; // 'newest' is already handled by the default sort.
-          }
-      });
+    cart.items.sort((a, b) => {
+      const priceA = a.pricing.sellingPrice * a.cart.qty;
+      const priceB = b.pricing.sellingPrice * b.cart.qty;
+      switch (currentSort) {
+        case 'price-asc': return priceA - priceB;
+        case 'price-desc': return priceB - priceA;
+        case 'rating-desc': return (b.analytics?.rating || 0) - (a.analytics?.rating || 0);
+        default: return 0; // 'newest' is already handled by the default sort.
+      }
+    });
   }
 
   for (const item of cart.items) {
@@ -261,13 +261,13 @@ async function rendercard() {
 
         const noteElement = cardElement.querySelector('.note-label');
         if (noteElement) {
-            noteElement.addEventListener('click', () => {
-                const newNote = prompt('Edit your note for this item:', item.cart.note || '');
-                if (newNote !== null) {
-                    window.updateCartItemNote(item.meta.itemId, newNote);
-                    // The 'cartItemsChanged' event will trigger a re-render to show the updated note
-                }
-            });
+          noteElement.addEventListener('click', () => {
+            const newNote = prompt('Edit your note for this item:', item.cart.note || '');
+            if (newNote !== null) {
+              window.updateCartItemNote(item.meta.itemId, newNote);
+              // The 'cartItemsChanged' event will trigger a re-render to show the updated note
+            }
+          });
         }
       }
     }
@@ -279,62 +279,62 @@ async function rendercard() {
 
 // New function to update a single card's display without full re-render
 function updateCardDisplay(item) {
-    const cardElement = document.getElementById(`card-${item.meta.itemId}`);
-    if (cardElement) {
-        // Update quantity selector value
-        const qtySelect = cardElement.querySelector(`#qty-select-${item.meta.itemId}`);
-        if (qtySelect) {
-            qtySelect.value = item.cart.qty;
-        }
-
-        // Update selling price
-        const sellingPriceElement = cardElement.querySelector('.selling-price');
-        if (sellingPriceElement) {
-            const sellingPriceField = cartrouteConfig.fields.find(f => f.key === 'pricing.sellingPrice');
-            if (sellingPriceField && sellingPriceField.formatter) {
-                sellingPriceElement.innerText = sellingPriceField.formatter(item.pricing.sellingPrice, item);
-            }
-        }
-
-        // Update MRP (max price)
-        const maxPriceElement = cardElement.querySelector('.max-price');
-        const mrpField = cartrouteConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.max-price');
-        if (maxPriceElement) {
-            if (mrpField && mrpField.visible(item)) {
-                maxPriceElement.innerText = mrpField.formatter(item.pricing.mrp, item);
-                maxPriceElement.style.display = ''; // Ensure it's visible
-            } else {
-                maxPriceElement.style.display = 'none'; // Hide if not visible
-            }
-        }
-
-        // Update discount
-        const discountElement = cardElement.querySelector('.card-discount');
-        const discountField = cartrouteConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.card-discount');
-        if (discountElement) {
-            if (discountField && discountField.visible(item)) {
-                discountElement.innerText = discountField.formatter(item.pricing.mrp, item);
-                discountElement.style.display = ''; // Ensure it's visible
-            } else {
-                discountElement.style.display = 'none'; // Hide if not visible
-            }
-        }
-
-        // Update note
-        const noteContentElement = cardElement.querySelector('.card-note .note-content');
-        if (noteContentElement) {
-            const noteField = cartrouteConfig.fields.find(f => f.key === 'cart.note');
-            if (noteField && noteField.formatter) {
-                // Extract the display text from the formatter's output
-                const formattedHtml = noteField.formatter(item.cart.note);
-                const doc = parser.parseFromString(formattedHtml, 'text/html');
-                const extractedText = doc.querySelector('.note-content').textContent;
-                noteContentElement.textContent = extractedText;
-            } else {
-                noteContentElement.textContent = item.cart.note || 'Click to add a note';
-            }
-        }
+  const cardElement = document.getElementById(`card-${item.meta.itemId}`);
+  if (cardElement) {
+    // Update quantity selector value
+    const qtySelect = cardElement.querySelector(`#qty-select-${item.meta.itemId}`);
+    if (qtySelect) {
+      qtySelect.value = item.cart.qty;
     }
+
+    // Update selling price
+    const sellingPriceElement = cardElement.querySelector('.selling-price');
+    if (sellingPriceElement) {
+      const sellingPriceField = cartrouteConfig.fields.find(f => f.key === 'pricing.sellingPrice');
+      if (sellingPriceField && sellingPriceField.formatter) {
+        sellingPriceElement.innerText = sellingPriceField.formatter(item.pricing.sellingPrice, item);
+      }
+    }
+
+    // Update MRP (max price)
+    const maxPriceElement = cardElement.querySelector('.max-price');
+    const mrpField = cartrouteConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.max-price');
+    if (maxPriceElement) {
+      if (mrpField && mrpField.visible(item)) {
+        maxPriceElement.innerText = mrpField.formatter(item.pricing.mrp, item);
+        maxPriceElement.style.display = ''; // Ensure it's visible
+      } else {
+        maxPriceElement.style.display = 'none'; // Hide if not visible
+      }
+    }
+
+    // Update discount
+    const discountElement = cardElement.querySelector('.card-discount');
+    const discountField = cartrouteConfig.fields.find(f => f.key === 'pricing.mrp' && f.selector === '.card-discount');
+    if (discountElement) {
+      if (discountField && discountField.visible(item)) {
+        discountElement.innerText = discountField.formatter(item.pricing.mrp, item);
+        discountElement.style.display = ''; // Ensure it's visible
+      } else {
+        discountElement.style.display = 'none'; // Hide if not visible
+      }
+    }
+
+    // Update note
+    const noteContentElement = cardElement.querySelector('.card-note .note-content');
+    if (noteContentElement) {
+      const noteField = cartrouteConfig.fields.find(f => f.key === 'cart.note');
+      if (noteField && noteField.formatter) {
+        // Extract the display text from the formatter's output
+        const formattedHtml = noteField.formatter(item.cart.note);
+        const doc = parser.parseFromString(formattedHtml, 'text/html');
+        const extractedText = doc.querySelector('.note-content').textContent;
+        noteContentElement.textContent = extractedText;
+      } else {
+        noteContentElement.textContent = item.cart.note || 'Click to add a note';
+      }
+    }
+  }
 }
 
 /**
@@ -342,23 +342,23 @@ function updateCardDisplay(item) {
  * @returns {Promise<Array>} A promise that resolves to an array of filtered items.
  */
 async function getFilteredCartItems() {
-    const allCartItems = await getCartItemsManager();
-    if (currentFilter === 'all') {
-        return allCartItems;
-    }
-    if (currentFilter === 'product' || currentFilter === 'service') {
-        return allCartItems.filter(item => item.meta.type === currentFilter);
-    }
-    // Handle category slugs
-    const allCategories = await fetchAllCategories(true);
-    const categoryIdToFilter = allCategories.find(cat => cat.meta.slug === currentFilter)?.meta.categoryId;
-    if (categoryIdToFilter) {
-        return allCartItems.filter(item => item.meta.links.categoryId === categoryIdToFilter);
-    }
-    return allCartItems; // Fallback to all items if filter is unknown
+  const allCartItems = await getCartItemsManager();
+  if (currentFilter === 'all') {
+    return allCartItems;
+  }
+  if (currentFilter === 'product' || currentFilter === 'service') {
+    return allCartItems.filter(item => item.meta.type === currentFilter);
+  }
+  // Handle category slugs
+  const allCategories = await fetchAllCategories(true);
+  const categoryIdToFilter = allCategories.find(cat => cat.meta.slug === currentFilter)?.meta.categoryId;
+  if (categoryIdToFilter) {
+    return allCartItems.filter(item => item.meta.links.categoryId === categoryIdToFilter);
+  }
+  return allCartItems; // Fallback to all items if filter is unknown
 }
 
-window.updateQty = function(itemId, qty) {
+window.updateQty = function (itemId, qty) {
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "product");
   if (item) {
     item.cart.qty = parseInt(qty);
@@ -373,15 +373,15 @@ function updateCartTotalDisplay(itemsToTotal) {
   document.getElementById("cardTotal").innerText = total.toFixed(2);
 }
 
-window.updateDate = function(itemId, dateValue) {
+window.updateDate = function (itemId, dateValue) {
   const item = cart.items.find(i => i.meta.itemId === itemId && i.meta.type === "service");
   if (item) {
     item.cart.selectedDate = dateValue;
     saveCartToLocalStorage(cart.items, { type: 'update', item });
   }
-  }
+}
 
-window.removeItem = function(itemId) {
+window.removeItem = function (itemId) {
   const initialLength = cart.items.length;
   cart.items = cart.items.filter(i => i.meta.itemId !== itemId);
   if (cart.items.length < initialLength) {
@@ -407,9 +407,9 @@ export async function init() {
   await initCardHelper(null);
 
   const startShoppingBtn = document.getElementById('start-shopping-btn');
-  if(startShoppingBtn) {
+  if (startShoppingBtn) {
     startShoppingBtn.addEventListener('click', () => {
-        window.routeManager.switchView('guest', 'home');
+      window.routeManager.switchView('guest', 'home');
     });
   }
 
@@ -470,7 +470,7 @@ export async function init() {
             updateCartTotalDisplay(filteredItems);
           }
           break;
-     
+
         case 'remove':
           // The cart.items array is already updated. Check if it's now empty.
           if (cart.items.length === 0) {
@@ -503,10 +503,10 @@ export async function init() {
 }
 
 export function cleanup() {
-    // In the future, if any module-level event listeners are added (e.g., on `window`),
-    // they should be removed here to prevent memory leaks.
-    if (renderTimeout) {
-        clearTimeout(renderTimeout);
-    }
-    isCartInitialized = false; // Allow re-initialization
+  // In the future, if any module-level event listeners are added (e.g., on `window`),
+  // they should be removed here to prevent memory leaks.
+  if (renderTimeout) {
+    clearTimeout(renderTimeout);
+  }
+  isCartInitialized = false; // Allow re-initialization
 }

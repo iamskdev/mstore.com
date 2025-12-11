@@ -101,14 +101,14 @@ function renderProfile(merchantData) {
         console.log('[merchant-profile] 4a. Cover URL exists. Showing skeleton.');
         coverSkeleton.style.display = 'block';
         const fullCoverUrl = buildCloudinaryUrl(coverUrl);
-        
+
         coverImg.onload = function () {
             console.log('[merchant-profile] 4b. Cover image loaded successfully.');
             coverSkeleton.style.display = 'none';
             coverImg.style.opacity = '1'; /* Ensure image is visible */
             coverImg.style.visibility = 'visible'; /* Show the image */
         };
-        
+
         coverImg.onerror = function () {
             console.log('[merchant-profile] 4c. Cover image failed to load. Hiding broken image.');
             coverSkeleton.style.display = 'none';
@@ -116,7 +116,7 @@ function renderProfile(merchantData) {
             coverImg.style.visibility = 'hidden'; /* Hide broken icon */
             coverImg.style.backgroundColor = 'var(--bg-tertiary)';
         };
-        
+
         coverImg.src = fullCoverUrl;
     } else {
         console.log('[merchant-profile] 4a. Cover URL is null. Hiding skeleton.');
@@ -132,12 +132,12 @@ function renderProfile(merchantData) {
     logoPlaceholder.style.display = 'none';
     logoImg.style.display = 'none';
     logoImg.style.visibility = 'hidden'; /* Hide broken icon initially */
-    
+
     if (logoUrl) {
         console.log('[merchant-profile] 4. Path A: logoUrl exists. Converting to full URL.');
         const fullLogoUrl = buildCloudinaryUrl(logoUrl);
         console.log('[merchant-profile] 4b. Full logo URL:', fullLogoUrl);
-        
+
         // Set up onload (hide skeleton, show image)
         logoImg.onload = function () {
             console.log('[merchant-profile] 5. Logo image loaded successfully.');
@@ -146,7 +146,7 @@ function renderProfile(merchantData) {
             logoImg.style.display = 'block';
             logoImg.style.visibility = 'visible'; /* Show the loaded image */
         };
-        
+
         // Set up onerror (hide skeleton, show placeholder icon)
         logoImg.onerror = function () {
             console.log('[merchant-profile] 5a. Logo image failed to load. Showing placeholder icon.');
@@ -155,7 +155,7 @@ function renderProfile(merchantData) {
             logoImg.style.visibility = 'hidden'; /* Hide broken icon */
             logoPlaceholder.style.display = 'flex';
         };
-        
+
         // NOW set the src (triggers loading)
         logoImg.src = fullLogoUrl;
     } else {
@@ -940,7 +940,7 @@ export async function init(force = false) {
                 formatter: (mrp) => `₹${mrp.toFixed(2)}`
             },
             { key: 'analytics.rating', selector: '.stars', visible: true },
-            { key: 'inventory.stockQty', selector: '.stock-status', visible: true },
+            { key: 'inventory.isAvailable', selector: '.stock-status', visible: true },
         ],
         buttons: [
             { label: 'View Details', action: 'VIEW_DETAILS', class: 'btn-secondary', visible: true },

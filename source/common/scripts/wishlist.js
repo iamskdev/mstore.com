@@ -61,7 +61,7 @@ async function getSavedFilterTabs() {
             }
         }
     }
-    
+
     return customTabs;
 }
 
@@ -80,7 +80,7 @@ const savedrouteConfig = {
         { key: 'pricing.mrp', selector: '.max-price', visible: (item) => item.pricing.mrp > item.pricing.sellingPrice, formatter: (mrp) => `₹${mrp.toFixed(2)}` },
         { key: 'analytics.rating', selector: '.stars', visible: true },
         { key: 'pricing.costPrice', selector: '.cost-price', visible: false }, // Explicitly hide cost-price
-        { key: 'stock.status', selector: '.stock-status', visible: true },
+        { key: 'inventory.isAvailable', selector: '.stock-status', visible: true },
         {
             key: 'note',
             selector: '.card-note',
@@ -90,9 +90,9 @@ const savedrouteConfig = {
                 return `<span class="note-label clickable">Note:</span> <span class="note-content">${displayText}</span>`;
             }
         },
-        { 
+        {
             key: 'pricing.mrp',
-            selector: '.card-discount', 
+            selector: '.card-discount',
             visible: (item) => item.pricing.mrp > item.pricing.sellingPrice,
             formatter: (mrp, item) => {
                 const discount = ((mrp - item.pricing.sellingPrice) / mrp) * 100;
@@ -112,7 +112,7 @@ const savedrouteConfig = {
             action: 'ADD_TO_CART',
             class: 'btn-primary',
             visible: true,
-            
+
         },
         { label: 'Share Me', action: 'SHARE_ITEM', class: 'btn-secondary', visible: true },
         { label: 'Remove', action: 'REMOVE_ITEM', class: 'btn-danger', visible: true }
@@ -272,7 +272,7 @@ export async function init() {
     await initCardHelper();
 
     const startShoppingBtn = document.getElementById('start-shopping-btn');
-    if(startShoppingBtn) {
+    if (startShoppingBtn) {
         startShoppingBtn.addEventListener('click', () => {
             window.routeManager.switchView('guest', 'home');
         });
@@ -402,14 +402,14 @@ export async function init() {
                     const savedItem = getSavedItems().find(s => s.itemId === targetItemId);
                     // Combine item data with saved-specific properties like note and selectedDate
                     const itemToRender = { ...fullItem, note: savedItem?.note || '', cart: { selectedDate: savedItem?.selectedDate } };
-                    
+
                     // Create a new card element with the updated data
                     const updatedCard = createListCard(itemToRender, savedrouteConfig);
-                    
+
                     if (updatedCard) {
                         // Replace the old card with the new one
                         cardToUpdate.replaceWith(updatedCard);
-                        
+
                         // Re-attach event listeners for the updated card's note
                         const noteElement = updatedCard.querySelector('.note-label');
                         if (noteElement) {

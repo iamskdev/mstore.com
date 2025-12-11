@@ -56,7 +56,7 @@ export async function init(force = false) {
             return; // Stop execution if essential data fails
         }
     }
-    
+
     try {
         // Fetch stories separately. If it fails, the rest of the page can still render.
         stories = await fetchAllStories();
@@ -86,7 +86,7 @@ export async function init(force = false) {
         const currentUserRole = localCache.get('currentUserType');
         const currentUserId = localCache.get('currentUserId');
         let selfMerchantId = null; // To store the logged-in merchant's ID
-        
+
         // --- FIX: Correctly retrieve merchant ID for the logged-in user ---
         // The user object contains an array `merchantIds`. We should use the first one
         // for the "My Status" feature, as a user can own multiple businesses.
@@ -140,7 +140,7 @@ export async function init(force = false) {
         const getScore = (merchant) => {
             let score = 0;
             // --- FIX: Check for stories from the fetched stories data ---
-            const hasStory = stories.some(storyCollection => 
+            const hasStory = stories.some(storyCollection =>
                 storyCollection.meta.links.merchantId === merchant.meta.merchantId &&
                 storyCollection.stories?.some(s => s.status === 'active')
             );
@@ -165,7 +165,7 @@ export async function init(force = false) {
             // --- FIX: Use correct data structure from merchants.json (meta.info) ---
             const wrap = document.createElement('div');
             // --- FIX: Check for stories from the fetched stories data ---
-            const hasStory = stories.some(storyCollection => 
+            const hasStory = stories.some(storyCollection =>
                 storyCollection.meta.links.merchantId === m.meta.merchantId &&
                 storyCollection.stories?.some(s => s.status === 'active')
             );
@@ -214,7 +214,7 @@ export async function init(force = false) {
                 }
             },
             { key: 'analytics.rating', selector: '.stars', visible: true },
-            { key: 'stock.status', selector: '.stock-status', visible: true },
+            { key: 'inventory.isAvailable', selector: '.stock-status', visible: true },
             { selector: '.card-note', visible: false },
             { selector: '.cost-price', visible: false },
         ],
@@ -279,7 +279,7 @@ export async function init(force = false) {
             feedGrid.innerHTML = `<div style="color:var(--text-secondary);padding:20px;text-align:center">No items found</div>`;
             return;
         }
-        
+
         // --- FIX: Add the card creation logic back into the renderFeed function ---
         paginatedItems.forEach(it => {
             const cardElement = createListCard(it, commonCardConfig);
@@ -294,7 +294,7 @@ export async function init(force = false) {
         let related = items
             .filter(i => i.meta.links.merchantId === merchantId)
             .sort((a, b) => new Date(b.meta.createdOn) - new Date(a.meta.createdOn));
-        
+
         // --- FIX: Add filtering logic within the merchant's item list ---
         if (filterType === 'today') {
             const today = new Date();
@@ -304,7 +304,7 @@ export async function init(force = false) {
             // Note: 'post' and 'offers' logic might need refinement based on actual data structure
             related = related.filter(it => it.meta.type === filterType);
         }
-        
+
         if (related.length === 0) {
             merchantFeed.innerHTML = `<div style="color:var(--text-secondary);padding:20px;text-align:center">No products yet.</div>`;
         } else {
@@ -361,7 +361,7 @@ export async function init(force = false) {
         if (hasStory) {
             buttonsHTML += `<button class="popup-btn-story">View Story</button>`;
         }
-        
+
         // --- FIX: Move dismiss button to be after other buttons on the left ---
         buttonsHTML += `<button class="popup-btn-dismiss" aria-label="Close Actions">Not Now</button>`;
 
@@ -406,7 +406,7 @@ export async function init(force = false) {
         }
 
         // --- FIX: Restore the call to render the merchant's items ---
-        renderMerchantFeed(merchant.meta.merchantId); 
+        renderMerchantFeed(merchant.meta.merchantId);
 
         merchantPage.style.display = 'flex';
         defaultFeed.style.display = 'none';
@@ -462,7 +462,7 @@ export async function init(force = false) {
     }
 
     view.querySelectorAll('.segmented-controls button').forEach(btn => {
-        addManagedEventListener(btn, 'click', function() {
+        addManagedEventListener(btn, 'click', function () {
             const id = this.id;
 
             // Handle settings button separately as it doesn't change the filter

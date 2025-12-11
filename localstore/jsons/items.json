@@ -50,7 +50,8 @@
       "batchId": "BATCH001",
       "expiryDate": "2025-12-31",
       "lowStockThreshold": 20,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/parleg-cup.jpg",
@@ -148,7 +149,8 @@
       "batchId": "BATCH002",
       "expiryDate": null,
       "lowStockThreshold": 10,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/tata-salt.jpg",
@@ -239,7 +241,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": 10,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/mustard-oil.jpg",
@@ -329,7 +332,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": 10,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/surf-excel.jpg",
@@ -419,7 +423,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": 10,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/lux-soap.jpg",
@@ -512,7 +517,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": null,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/photo-print.jpg",
@@ -604,7 +610,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": null,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/xerox-bw.jpg",
@@ -696,7 +703,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": null,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/aadhaar-lamination.jpg",
@@ -788,7 +796,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": null,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/pan-card.jpg",
@@ -881,7 +890,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": null,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": null,
@@ -972,7 +982,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": 10,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/dabur-red.jpg",
@@ -1063,7 +1074,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": 20,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/colgate-paste.jpg",
@@ -1154,7 +1166,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": 20,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/good-day.jpg",
@@ -1245,7 +1258,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": 20,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/lijjat.jpg",
@@ -1335,7 +1349,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": 10,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/amul-butter.jpg",
@@ -1426,7 +1441,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": 20,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/redlabel-tea.jpg",
@@ -1518,7 +1534,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": null,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items/scan-document.jpg",
@@ -1610,7 +1627,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": null,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": null,
@@ -1702,7 +1720,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": null,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": "./localstore/images/items//passport-photo-studio.jpg",
@@ -1795,7 +1814,8 @@
       "batchId": null,
       "expiryDate": null,
       "lowStockThreshold": null,
-      "isLowStock": false
+      "isLowStock": false,
+      "isAvailable": true
     },
     "media": {
       "thumbnail": null,

@@ -88,7 +88,7 @@ export function createListCard(item, routeConfig) {
             const targetElement = cardElement.querySelector(field.selector);
             if (targetElement) {
                 const isVisible = typeof field.visible === 'function' ? field.visible(item) : (field.visible !== false);
-                
+
                 if (!isVisible) {
                     targetElement.style.display = 'none';
                     return;
@@ -126,27 +126,18 @@ export function createListCard(item, routeConfig) {
                 } else if (field.selector === '.stock-status') {
                     // Handle stock status specifically, replicating logic from createCardFromTemplate
                     let stockStatusText, stockStatusClass, stockIconClass;
+                    let addToCartText, addToCartDisabled; // These variables are declared but not used in this specific block.
 
-                    if (item.meta.type === 'service') {
-                        if (item.meta.flags.isActive) {
-                            stockStatusText = 'Available';
-                            stockStatusClass = 'in';
-                            stockIconClass = 'fas fa-check-circle';
-                        } else {
-                            stockStatusText = 'Unavailable';
-                            stockStatusClass = 'out';
-                            stockIconClass = 'fas fa-times-circle';
-                        }
-                    } else { // product
-                        if (item.inventory?.stockQty > 0) {
-                            stockStatusText = 'In Stock';
-                            stockStatusClass = 'in';
-                            stockIconClass = 'fas fa-check-circle';
-                        } else {
-                            stockStatusText = 'Out of Stock';
-                            stockStatusClass = 'out';
-                            stockIconClass = 'fas fa-exclamation-circle'; // Changed to exclamation for out of stock
-                        }
+                    if (item.inventory?.isAvailable) {
+                        stockStatusText = item.meta.type === 'service' ? 'Available' : 'In Stock';
+                        stockStatusClass = 'in';
+                        stockIconClass = 'fas fa-check-circle';
+                    } else {
+                        stockStatusText = item.meta.type === 'service' ? 'Unavailable' : 'Out of Stock';
+                        stockStatusClass = 'out';
+                        stockIconClass = 'fas fa-times-circle'; // Red cross for consistency
+                        addToCartText = 'Unavailable';
+                        addToCartDisabled = true;
                     }
                     targetElement.className = `stock-status ${stockStatusClass}`;
                     targetElement.innerHTML = `<i class="${stockIconClass}"></i> <span>${stockStatusText}</span>`;
@@ -180,7 +171,7 @@ export function createListCard(item, routeConfig) {
                 case 'staticText':
                     componentHtml = `<p>${component.options?.text || ''}</p>`;
                     break;
-                
+
                 case 'staticText':
                     componentHtml = `<p>${component.options?.text || ''}</p>`;
                     break;
@@ -278,7 +269,7 @@ export function createListCard(item, routeConfig) {
                         button.innerHTML = `<i class="${buttonConfig.icon}"></i> <span>${buttonConfig.label}</span>`;
                     }
                 }
-                
+
                 const isDisabled = typeof buttonConfig.disabled === 'function' ? buttonConfig.disabled(item) : (buttonConfig.disabled === true);
                 if (isDisabled) {
                     button.disabled = true;
@@ -356,6 +347,13 @@ export function createCardFromTemplate(item, isSkeleton = false) {
     const currentPrice = item.pricing?.sellingPrice;
 
     // Find the unit symbol
+    // Declare variables at the top of the function
+    let stockStatusText, stockStatusClass, stockIconClass;
+    let addToCartText = 'Add to Cart';
+    let addToCartDisabled = '';
+    let addToCartIconClass = 'fas fa-shopping-cart';
+
+    // Apply unit logic
     const unitInfo = unitsData[item.meta.unitId];
     let unitSymbol = '';
     if (unitInfo) {
@@ -374,43 +372,26 @@ export function createCardFromTemplate(item, isSkeleton = false) {
         }
     }
 
-    let stockStatusText, stockStatusClass, stockIconClass, addToCartDisabled, addToCartText, addToCartIconClass;
 
-    if (item.meta.type === 'service') {
-        if (item.meta.flags.isActive) {
-            stockStatusText = 'Available';
-            stockStatusClass = 'in';
-            stockIconClass = 'fas fa-check-circle';
-            addToCartText = 'Add to Cart';
-            addToCartIconClass = 'fas fa-shopping-cart';
-            addToCartDisabled = '';
-        } else {
-            stockStatusText = 'Unavailable';
-            stockStatusClass = 'out';
-            stockIconClass = 'fas fa-times-circle';
-            addToCartText = 'Unavailable';
-            addToCartIconClass = 'fas fa-exclamation-circle';
-            addToCartDisabled = 'disabled';
-        }
+    // --- STOCK STATUS LOGIC (Unified) ---
+    if (item.inventory?.isAvailable) {
+        stockStatusText = item.meta.type === 'service' ? 'Available' : 'In Stock';
+        stockStatusClass = 'in';
+        stockIconClass = 'fas fa-check-circle';
+        // Add to Cart logic for In Stock
+        addToCartText = 'Add to Cart';
+        addToCartDisabled = '';
+        addToCartIconClass = 'fas fa-shopping-cart';
+    } else {
+        stockStatusText = item.meta.type === 'service' ? 'Unavailable' : 'Out of Stock';
+        stockStatusClass = 'out';
+        stockIconClass = 'fas fa-times-circle'; // Red cross for consistency
+
+        // Add to Cart logic for Out of Stock
+        addToCartText = 'Unavailable'; // Or 'Notify Me' if that logic is added later
+        addToCartDisabled = true;
+        addToCartIconClass = 'fas fa-exclamation-circle';
     }
-    else {
-        if (item.inventory?.stockQty > 0) {
-            stockStatusText = 'In Stock';
-            stockStatusClass = 'in';
-            stockIconClass = 'fas fa-check-circle';
-            addToCartText = 'Add to Cart';
-            addToCartIconClass = 'fas fa-shopping-cart';
-            addToCartDisabled = '';
-        } else {
-            stockStatusText = 'Out of Stock';
-            stockStatusClass = 'out';
-            stockIconClass = 'fas fa-times-circle';
-            addToCartText = 'Out of Stock';
-            addToCartIconClass = 'fas fa-exclamation-circle';
-            addToCartDisabled = 'disabled';
-        }
-    }
-    
     // Determine rating class for color-coding
     const ratingValue = item.analytics?.rating || 0;
     let ratingClass;
@@ -438,7 +419,7 @@ export function createCardFromTemplate(item, isSkeleton = false) {
         RATING_CLASS: ratingClass, // Pass the class to the template
         NUM_REVIEWS: item.analytics?.numReviews || 0,
         RATING_VALUE: ratingValue.toFixed(1),
-        
+
         ADD_TO_CART_DISABLED: addToCartDisabled,
         ADD_TO_CART_ICON_CLASS: addToCartIconClass,
         ADD_TO_CART_TEXT: addToCartText,

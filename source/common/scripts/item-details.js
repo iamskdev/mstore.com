@@ -14,8 +14,8 @@ import { showFeedbackModal } from '../../partials/modals/feedback.js';
 
 // Module-level variable to hold the zoom cleanup function, preventing duplicate listeners.
 let eventListeners = [];
-let cleanupImageZoom = () => {};
-let cleanupDesktopZoom = () => {};
+let cleanupImageZoom = () => { };
+let cleanupDesktopZoom = () => { };
 
 /**
  * A helper function to safely replace a DOM element with its clone.
@@ -39,8 +39,8 @@ function replaceElement(elementId) {
 }
 
 function addManagedEventListener(element, type, listener, options) {
-    element.addEventListener(type, listener, options);
-    eventListeners.push({ element, type, listener, options });
+  element.addEventListener(type, listener, options);
+  eventListeners.push({ element, type, listener, options });
 }
 
 /**
@@ -49,21 +49,21 @@ function addManagedEventListener(element, type, listener, options) {
  * @returns {string} HTML string for star display.
  */
 function generateStarsHtml(rating) {
-    let starsHtml = '';
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  let starsHtml = '';
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 !== 0;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
-    for (let i = 0; i < fullStars; i++) {
-        starsHtml += '<span class="filled">★</span>';
-    }
-    if (hasHalfStar) {
-        starsHtml += '<span class="half">★</span>';
-    }
-    for (let i = 0; i < emptyStars; i++) {
-        starsHtml += '<span>★</span>';
-    }
-    return starsHtml;
+  for (let i = 0; i < fullStars; i++) {
+    starsHtml += '<span class="filled">★</span>';
+  }
+  if (hasHalfStar) {
+    starsHtml += '<span class="half">★</span>';
+  }
+  for (let i = 0; i < emptyStars; i++) {
+    starsHtml += '<span>★</span>';
+  }
+  return starsHtml;
 }
 
 /**
@@ -106,7 +106,7 @@ function displayItemDetails(item, scaleRef) {
   // --- Image and Thumbnails ---
   // Use gallery if available, otherwise fallback to thumbnail. Ensure it's always an array and filter out empty values.
   const images = (item.media?.gallery?.length > 0 ? item.media.gallery : [item.media?.thumbnail]).filter(Boolean);
-  
+
   // The path from the JSON data is the source of truth. Use it directly.
   const imageErrorPlaceholder = document.querySelector('.image-error-placeholder');
   mainImageEl.classList.remove('hidden');
@@ -181,7 +181,7 @@ function displayItemDetails(item, scaleRef) {
     };
 
     imageZoomContainer.addEventListener('touchstart', (e) => {
-            // Do not start a swipe if the image is zoomed or if it's a multi-touch gesture.
+      // Do not start a swipe if the image is zoomed or if it's a multi-touch gesture.
       if (scaleRef.scale > 1 || e.touches.length > 1) {
         touchStartX = 0; // Prevent swipe from starting
         return;
@@ -215,7 +215,7 @@ function displayItemDetails(item, scaleRef) {
   document.getElementById('item-price').textContent = item.pricing?.sellingPrice || 'N/A';
   document.getElementById('item-unit-label').textContent = `/ ${item.meta.unitId || 'item'}`;
   document.getElementById('item-description-text').textContent = item.info.description || '';
-  
+
   // --- Rating Stars ---
   const ratingEl = document.getElementById('item-rating');
   if (ratingEl) {
@@ -225,11 +225,11 @@ function displayItemDetails(item, scaleRef) {
     // Determine rating class for color-coding
     let ratingClass;
     if (ratingValue < 3) { // 1-2.9 stars -> Red
-        ratingClass = 'low-rating';
+      ratingClass = 'low-rating';
     } else if (ratingValue < 4) { // 3-3.9 stars -> Green
-        ratingClass = 'high-rating';
+      ratingClass = 'high-rating';
     } else { // 4-5 stars -> Yellow
-        ratingClass = 'medium-rating';
+      ratingClass = 'medium-rating';
     }
 
     // Clear old rating classes and add the new one
@@ -248,26 +248,15 @@ function displayItemDetails(item, scaleRef) {
   const stockStatusEl = document.getElementById('item-stock-status');
   let stockStatusText, stockStatusClass, stockIconClass;
 
-  if (isService) {
-      if (item.meta.flags.isActive) {
-          stockStatusText = 'Available';
-          stockStatusClass = 'in';
-          stockIconClass = 'fas fa-check-circle';
-      } else {
-          stockStatusText = 'Unavailable';
-          stockStatusClass = 'out';
-          stockIconClass = 'fas fa-times-circle';
-      }
-  } else { // product
-      if (item.inventory?.stockQty > 0) {
-          stockStatusText = 'In Stock';
-          stockStatusClass = 'in';
-          stockIconClass = 'fas fa-check-circle';
-      } else {
-          stockStatusText = 'Out of Stock';
-          stockStatusClass = 'out';
-          stockIconClass = 'fas fa-exclamation-circle';
-      }
+  // Unified Logic
+  if (item.inventory?.isAvailable) {
+    stockStatusText = isService ? 'Available' : 'In Stock';
+    stockStatusClass = 'in';
+    stockIconClass = 'fas fa-check-circle';
+  } else {
+    stockStatusText = isService ? 'Unavailable' : 'Out of Stock';
+    stockStatusClass = 'out';
+    stockIconClass = 'fas fa-times-circle';
   }
 
   if (stockStatusEl) {
@@ -283,7 +272,7 @@ function displayItemDetails(item, scaleRef) {
  */
 function setupActionButtons(item) {
   const isService = item.meta.type === 'service';
-  const inStock = item.inventory?.stockQty > 0 || (isService && item.meta.flags.isActive);
+  const inStock = item.inventory?.isAvailable;
 
   // --- Add to Cart Button ---
   const addToCartBtn = replaceElement('add-to-cart-btn');
@@ -326,7 +315,7 @@ function setupActionButtons(item) {
         // TODO: Replace with a more sophisticated UI element in the new component
         alert(message);
       }
-      
+
       sessionStorage.setItem('notificationList', JSON.stringify(notifications));
       updateNotifyButtonState(nowNotified);
     });
@@ -339,7 +328,7 @@ function setupActionButtons(item) {
     addManagedEventListener(addToCartBtn, 'click', () => {
       // Get the current state *before* toggling
       const wasInCart = isItemInCart(item.meta.itemId);
-      
+
       // Update the UI instantly for immediate feedback
       addToCartBtn.innerHTML = !wasInCart ? '<i class="fas fa-check"></i> Added to Cart' : '<i class="fas fa-shopping-cart"></i> Add to Cart';
 
@@ -411,7 +400,7 @@ export async function displayRelatedItems(currentItem) {
 
     // Fallback: If no related products in the same category, find ANY other available product.
     if (related.length < 1) {
-      related = items.filter(item => 
+      related = items.filter(item =>
         item && String(item.meta.itemId) !== String(currentitemId) && item.meta.type === 'product' && item.meta.flags.isActive === true
       );
     }
@@ -453,7 +442,7 @@ function shareItem() {
       title: itemTitle,
       text: itemDesc,
       url: shareUrl
-    }).catch(() => {});
+    }).catch(() => { });
   } else {
     // Fallback: copy link to clipboard
     navigator.clipboard?.writeText(shareUrl);
@@ -483,10 +472,10 @@ export async function init(force = false) { // Make the function async
 
   // Initialize search functionality for the header's search bar.
   initializeSearch();
-  
+
   // Shared state for mobile swipe and zoom logic, passed by reference.
   const scaleRef = { scale: 1 };
-  
+
   // --- NEW: Get item ID from route parameters ---
   const routeParams = window.routeManager.routeParams;
   const itemId = routeParams ? routeParams.id : null;
@@ -501,15 +490,15 @@ export async function init(force = false) { // Make the function async
     // Priority 1: Check if the item is the 'selectedItem' in sessionStorage
     const selectedItemStr = sessionStorage.getItem('selectedItem');
     if (selectedItemStr) {
-        const selectedItem = JSON.parse(selectedItemStr);
-        if (String(selectedItem.meta.itemId) === String(itemId)) {
-            item = selectedItem;
-        }
+      const selectedItem = JSON.parse(selectedItemStr);
+      if (String(selectedItem.meta.itemId) === String(itemId)) {
+        item = selectedItem;
+      }
     }
 
     // Priority 2: If not, check the 'allItems' cache in sessionStorage
     if (!item) {
-    const allItems = JSON.parse(sessionStorage.getItem('allItems') || '[]');
+      const allItems = JSON.parse(sessionStorage.getItem('allItems') || '[]');
       item = allItems.find(i => String(i.meta.itemId) === String(itemId));
     }
 
@@ -611,12 +600,12 @@ export async function init(force = false) { // Make the function async
 }
 
 export function cleanup() {
-    console.log('🧹 Cleaning up Item Details View...');
-    eventListeners.forEach(({ element, type, listener, options }) => {
-        element.removeEventListener(type, listener, options);
-    });
-    eventListeners = [];
-    // Clean up any existing zoom listeners.
-    if (cleanupImageZoom) cleanupImageZoom();
-    if (cleanupDesktopZoom) cleanupDesktopZoom();
+  console.log('🧹 Cleaning up Item Details View...');
+  eventListeners.forEach(({ element, type, listener, options }) => {
+    element.removeEventListener(type, listener, options);
+  });
+  eventListeners = [];
+  // Clean up any existing zoom listeners.
+  if (cleanupImageZoom) cleanupImageZoom();
+  if (cleanupDesktopZoom) cleanupDesktopZoom();
 }
