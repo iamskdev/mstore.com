@@ -45,7 +45,7 @@ export async function init() {
         ],
         buttons: [
             { label: (item) => item.meta.flags.isPublic ? 'Private' : 'Public', action: 'TOGGLE_VISIBILITY' }, // Public/Private button
-            { label: 'Edit', action: 'EDIT_ITEM' },
+            { label: 'Edit Item', action: 'EDIT_ITEM' },
             { label: 'View Details', action: 'VIEW_DETAILS' },
             { label: 'Share me', action: 'SHARE_ITEM' }
         ],
