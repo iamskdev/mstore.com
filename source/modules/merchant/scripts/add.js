@@ -421,7 +421,7 @@ export async function init() {
         button.addEventListener('click', function () {
             const filter = this.dataset.inventoryFilter;
             if (filter !== 'advanced') {
-            renderInventory(allInventoryItems, filter);
+                renderInventory(allInventoryItems, filter);
             }
         });
     });
@@ -571,9 +571,19 @@ export async function init() {
         if (optionItem) {
             const label = optionItem.querySelector('.fab-option-label').textContent;
             console.log(`Action clicked: ${label}`);
-            // Here you would trigger the actual action, e.g., opening a new form/view
-            alert(`Action: ${label}`);
-            toggleFabMenu(false);
+
+            // Handle Add Item action
+            if (label === 'Add Item') {
+                toggleFabMenu(false);
+                // Import routeManager dynamically
+                import('../../../main.js').then(({ routeManager }) => {
+                    routeManager.switchView('merchant', 'add-item');
+                });
+            } else {
+                // Other actions - show alert for now
+                alert(`Action: ${label}`);
+                toggleFabMenu(false);
+            }
         }
     });
 

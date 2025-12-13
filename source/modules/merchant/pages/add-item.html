@@ -1,0 +1,676 @@
+<!-- Header -->
+<div class="mstore-header">
+    <div class="mstore-header-back">←</div>
+    <div class="mstore-header-title">Add Item</div>
+    <div class="mstore-header-actions">
+        <div class="mstore-header-icon"><i class="fas fa-clipboard-list"></i></div>
+        <div class="mstore-header-icon"><i class="fas fa-cog"></i></div>
+    </div>
+</div>
+
+<!-- Content Wrapper -->
+<div class="mstore-content-wrapper">
+    <!-- Toggle Section -->
+    <div class="mstore-toggle-section">
+        <div class="mstore-toggle-group" id="toggleGroup">
+            <div class="mstore-toggle-slider-bg"></div>
+            <button class="mstore-toggle-btn active" id="productToggle">Product</button>
+            <button class="mstore-toggle-btn" id="serviceToggle">Service</button>
+        </div>
+        <div class="mstore-visibility-toggle">
+            <span>Public</span>
+            <label class="mstore-toggle-switch">
+                <input type="checkbox" id="visibilityToggle">
+                <span class="mstore-toggle-slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Form Content -->
+    <div class="mstore-content">
+        <div class="mstore-form-card">
+            <!-- Photo Upload Section -->
+            <div class="mstore-photo-section">
+                <div class="mstore-photo-grid">
+                    <div class="mstore-photo-item primary">
+                        <div class="mstore-photo-icon"><i class="fas fa-camera"></i></div>
+                        <div class="mstore-photo-label">Thumbnail</div>
+                    </div>
+                    <div class="mstore-photo-item" draggable="true">
+                        <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                        <div class="mstore-photo-label">Add Photo</div>
+                    </div>
+                    <div class="mstore-photo-item" draggable="true">
+                        <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                        <div class="mstore-photo-label">Add Photo</div>
+                    </div>
+                    <div class="mstore-photo-item" draggable="true">
+                        <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                        <div class="mstore-photo-label">Add Photo</div>
+                    </div>
+                    <div class="mstore-photo-item" draggable="true">
+                        <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                        <div class="mstore-photo-label">Add Photo</div>
+                    </div>
+                    <div class="mstore-photo-item" draggable="true">
+                        <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                        <div class="mstore-photo-label">Add Photo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item Name -->
+            <div class="mstore-form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label class="mstore-form-label required" style="margin-bottom: 0;">Item Name</label>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span id="itemStatusLabel" style="font-size: 12px; color: #6b7280;">In Stock</span>
+                        <label class="mstore-toggle-switch small">
+                            <input type="checkbox" id="itemStatusToggle" checked>
+                            <span class="mstore-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mstore-input-wrapper" style="margin-top: 0;">
+                    <input type="text" class="mstore-input" placeholder="Enter item name here">
+                </div>
+            </div>
+
+            <!-- Primary Unit & Secondary Unit -->
+            <div class="mstore-form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label class="mstore-form-label" style="margin-bottom: 0;">Primary Unit</label>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 12px; color: #6b7280;">Add Secondary unit?</span>
+                        <label class="mstore-toggle-switch small">
+                            <input type="checkbox" id="secondaryUnitToggle">
+                            <span class="mstore-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <input type="hidden" id="primaryUnit" value="">
+                <div class="mstore-combobox-wrapper" id="primaryUnitWrapper">
+                    <input type="text" class="mstore-combobox-input" id="primaryUnitInputDisplay"
+                        placeholder="Select or Type Unit" autocomplete="off">
+                    <div class="mstore-combobox-icon" id="primaryUnitIcon"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="12" height="12" viewBox="0 0 12 12" style="width: 12px; height: 12px;">
+                            <path fill="#6b7280" d="M6 9L1 4h10z" />
+                        </svg></div>
+                    <div class="mstore-combobox-dropdown" id="primaryUnitDropdown"></div>
+                </div>
+
+                <div class="mstore-expandable" id="secondaryUnitSection">
+                    <div style="margin-top: 24px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <label class="mstore-form-label" style="margin-bottom: 0;">Secondary Unit</label>
+                            <button type="button" id="conversionBadgeBtn" class="mstore-action-btn secondary"
+                                style="padding: 2px 10px; font-size: 11px; border-radius: 12px; min-height: 0; height: auto; display: none; border-style: dashed;">
+                                <span id="conversionBadgeText">1 Box = 10 pc</span>
+                                <i class="fas fa-pen" style="margin-left: 6px; font-size: 9px;"></i>
+                            </button>
+                        </div>
+                        <input type="hidden" id="secondaryUnit" value="">
+                        <!-- Hidden Conversion Input -->
+                        <input type="hidden" id="conversionInput">
+
+                        <div class="mstore-combobox-wrapper" id="secondaryUnitWrapper">
+                            <input type="text" class="mstore-combobox-input" id="secondaryUnitInputDisplay"
+                                placeholder="Select or Type Unit" autocomplete="off">
+                            <div class="mstore-combobox-icon" id="secondaryUnitIcon"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"
+                                    style="width: 12px; height: 12px;">
+                                    <path fill="#6b7280" d="M6 9L1 4h10z" />
+                                </svg></div>
+                            <div class="mstore-combobox-dropdown" id="secondaryUnitDropdown"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item Code -->
+            <!-- Item Code -->
+            <div class="mstore-form-group" style="margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label class="mstore-form-label" style="margin-bottom: 0;">Item Code</label>
+                    <div style="display: flex; gap: 6px;">
+                        <button class="mstore-action-btn secondary" id="assignCodeBtn"
+                            style="flex: 0 0 auto; padding: 4px 10px; font-size: 11px; border-radius: 16px; display: flex; align-items: center; gap: 3px;">
+                            <i class="fas fa-barcode" style="font-size: 10px;"></i> Assign Code
+                        </button>
+                        <button class="mstore-action-btn secondary" id="scanCodeBtn"
+                            style="flex: 0 0 auto; padding: 4px 10px; font-size: 11px; border-radius: 16px; display: flex; align-items: center; gap: 3px;">
+                            <i class="fas fa-camera" style="font-size: 10px;"></i> Scan Code
+                        </button>
+                    </div>
+                </div>
+                <div class="mstore-input-wrapper" style="margin-top: 0;">
+                    <input type="text" class="mstore-input" id="itemCodeInput" placeholder="Item code or Barcode">
+                </div>
+            </div>
+
+            <!-- Item Category (with Brand Toggle) -->
+            <div class="mstore-form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label class="mstore-form-label" style="margin-bottom: 0;">Item Category</label>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 12px; color: #6b7280;">Add Brand?</span>
+                        <label class="mstore-toggle-switch small">
+                            <input type="checkbox" id="brandToggle">
+                            <span class="mstore-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <input type="hidden" id="itemCategory" value="">
+                <div class="mstore-combobox-wrapper" id="categoryWrapper">
+                    <input type="text" class="mstore-combobox-input" id="categoryInputDisplay"
+                        placeholder="Select or Type Category" autocomplete="off">
+                    <div class="mstore-combobox-icon" id="categoryIcon"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="12" height="12" viewBox="0 0 12 12" style="width: 12px; height: 12px;">
+                            <path fill="#6b7280" d="M6 9L1 4h10z" />
+                        </svg></div>
+                    <div class="mstore-combobox-dropdown" id="categoryDropdown"></div>
+                </div>
+            </div>
+
+            <!-- Brand Field (Expandable) -->
+            <div class="mstore-expandable" id="brandSection">
+                <div class="mstore-form-group">
+                    <label class="mstore-form-label">Brand</label>
+                    <input type="hidden" id="itemBrand" value="">
+                    <div class="mstore-combobox-wrapper" id="brandWrapper">
+                        <input type="text" class="mstore-combobox-input" id="brandInputDisplay"
+                            placeholder="Select or Type Brand" autocomplete="off">
+                        <div class="mstore-combobox-icon" id="brandIcon"><svg xmlns="http://www.w3.org/2000/svg"
+                                width="12" height="12" viewBox="0 0 12 12" style="width: 12px; height: 12px;">
+                                <path fill="#6b7280" d="M6 9L1 4h10z" />
+                            </svg></div>
+                        <div class="mstore-combobox-dropdown" id="brandDropdown"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media Upload Modal -->
+            <div id="mediaUploadModal" class="mstore-selection-modal"
+                style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease;">
+                <div class="mstore-selection-container"
+                    style="width: 90%; max-width: 320px; height: auto; transform: scale(0.95); transition: transform 0.3s ease; border-radius: 16px; margin: auto; padding: 20px; position: relative; background: white; box-shadow: 0 5px 25px rgba(0,0,0,0.2);">
+                    <h3
+                        style="font-size: 18px; font-weight: 600; margin-bottom: 24px; color: #1f2937; text-align: center;">
+                        Choose Image Source</h3>
+                    <div style="display: flex; justify-content: space-around; margin-bottom: 24px; gap: 16px;">
+                        <button id="openCameraBtn" class="mstore-action-btn"
+                            style="flex-direction: column; align-items: center; justify-content: center; height: 100px; width: 100px; border: 1px solid #e5e7eb; background: #f9fafb; color: #374151; border-radius: 12px;">
+                            <i class="fas fa-camera" style="font-size: 32px; margin-bottom: 10px;"></i>
+                            <span style="font-weight: 500;">Camera</span>
+                        </button>
+                        <button id="openGalleryBtn" class="mstore-action-btn"
+                            style="flex-direction: column; align-items: center; justify-content: center; height: 100px; width: 100px; border: 1px solid #e5e7eb; background: #f9fafb; color: #374151; border-radius: 12px;">
+                            <i class="fas fa-images" style="font-size: 32px; margin-bottom: 10px;"></i>
+                            <span style="font-weight: 500;">Gallery</span>
+                        </button>
+                    </div>
+                    <input type="file" id="mediaInput" accept="image/*" style="display: none;">
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+                    <button id="closeMediaUploadModal" class="mstore-action-btn secondary"
+                        style="width: 100%; justify-content: center; padding: 12px;">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Custom Camera Modal -->
+            <div id="customCameraModal" class="mstore-selection-modal"
+                style="z-index: 20000; background: black; display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+
+                <div style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column;">
+                    <!-- Top Bar -->
+                    <div
+                        style="padding: 16px; display: flex; justify-content: space-between; align-items: center; color: white; background: rgba(0,0,0,0.4); position: absolute; top:0; left:0; right:0; z-index: 10;">
+                        <span style="font-size: 18px; font-weight: 500;">Take Photo</span>
+                        <button id="closeCameraModalBtn"
+                            style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;"><i
+                                class="fas fa-times"></i></button>
+                    </div>
+
+                    <!-- Video Feed -->
+                    <video id="cameraFeed" autoplay playsinline
+                        style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
+                    <canvas id="cameraCanvas" style="display: none;"></canvas>
+
+                    <!-- Bottom Controls -->
+                    <div
+                        style="position: absolute; bottom: 80px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 40px; z-index: 20001;">
+                        <button id="capturePhotoBtn"
+                            style="width: 80px; height: 80px; border-radius: 50%; background: white; border: 4px solid rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                            <div
+                                style="width: 62px; height: 62px; border-radius: 50%; background: white; border: 2px solid #333;">
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tags Section -->
+            <div class="mstore-form-group">
+                <label for="item-tags" class="mstore-form-label">Item Tags</label>
+                <div class="mstore-input-wrapper">
+                    <input type="text" class="mstore-input" id="item-tags" placeholder="e.g. snack, biscuit, chai-time">
+                </div>
+                <div id="tagsHelp" class="form-text" style="font-size: 12px; color: #6b7280; margin-top: 6px;">
+                    Use commas to separate different tags. Tags help customers find your product.
+                </div>
+            </div>
+
+            <!-- Description & Private Note -->
+            <!-- Description Section with Private Note Toggle -->
+            <div class="mstore-form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label class="mstore-form-label">Description</label>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 12px; color: #6b7280;">Private Note?</span>
+                        <label class="mstore-toggle-switch small">
+                            <input type="checkbox" id="privateNoteToggle">
+                            <span class="mstore-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <textarea class="mstore-textarea" id="publicDescription"
+                    placeholder="Enter public description..."></textarea>
+            </div>
+
+            <!-- Private Note Expandable Section -->
+            <div class="mstore-expandable" id="privateNoteSection">
+                <div class="mstore-form-group" style="margin-top: 0;">
+                    <label class="mstore-form-label" style="font-size: 13px; color: #6b7280; margin-bottom: 6px;">
+                        <i class="fas fa-lock" style="margin-right: 4px;"></i> Admin Note (Private)
+                    </label>
+                    <div class="mstore-input-wrapper">
+                        <textarea class="mstore-input" id="privateNote" style="min-height: 80px; resize: vertical;"
+                            placeholder="Add internal notes visible only to admin..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mstore-section-divider"></div>
+
+            <!-- Tab Section for Prices and Stock Management -->
+            <div class="mstore-tab-section">
+                <div class="mstore-tab-group">
+                    <button class="mstore-tab mstore-pricing-tab active" data-tab="pricing">Prices</button>
+                    <button class="mstore-tab mstore-stock-tab" data-tab="stock">Stock Management</button>
+                    <button class="mstore-tab mstore-more-tab" data-tab="more">More Details</button>
+                </div>
+            </div>
+
+            <!-- Pricing Tab Content -->
+            <div class="mstore-tab-content active" id="pricingTabContent">
+                <!-- Tax Included -->
+                <div class="mstore-checkbox-group" style="margin-top: 12px; margin-bottom: 24px;">
+                    <label class="mstore-checkbox-label">Tax included</label>
+                    <label class="mstore-toggle-switch">
+                        <input type="checkbox" id="taxIncludedToggle" checked>
+                        <span class="mstore-toggle-slider"></span>
+                    </label>
+                </div>
+                <!-- Purchase Price -->
+                <!-- Purchase Price -->
+                <div class="mstore-form-group" style="margin-top: 0; margin-bottom: 24px;">
+                    <div class="mstore-input-wrapper">
+                        <span class="mstore-notched-label">
+                            Purchase Price
+                            <span class="mstore-info-icon">i</span>
+                        </span>
+                        <div class="mstore-input-with-icon">
+                            <span class="mstore-input-icon">₹</span>
+                            <input type="number" class="mstore-input" placeholder="Enter purchase price">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selling Price -->
+                <div class="mstore-form-group" style="margin-bottom: 20px;">
+                    <div class="mstore-input-wrapper">
+                        <span class="mstore-notched-label">Selling Price</span>
+                        <div class="mstore-input-with-icon">
+                            <span class="mstore-input-icon">₹</span>
+                            <input type="number" class="mstore-input" placeholder="Enter selling price">
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Add MRP Toggle Row -->
+                <div class="mstore-checkbox-group">
+                    <label class="mstore-checkbox-label">Add MRP?</label>
+                    <label class="mstore-toggle-switch">
+                        <input type="checkbox" id="mrpToggle">
+                        <span class="mstore-toggle-slider"></span>
+                    </label>
+                </div>
+
+                <!-- Hidden MRP Section -->
+                <div class="mstore-expandable" id="mrpSection">
+                    <div class="mstore-form-group">
+                        <div class="mstore-input-wrapper">
+                            <span class="mstore-notched-label">MRP</span>
+                            <div class="mstore-input-with-icon">
+                                <span class="mstore-input-icon">₹</span>
+                                <input type="number" class="mstore-input" placeholder="Enter MRP">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Wholesale Price -->
+                <div class="mstore-checkbox-group">
+                    <label class="mstore-checkbox-label">Add Wholesale Price</label>
+                    <label class="mstore-toggle-switch">
+                        <input type="checkbox" id="wholesalePriceToggle">
+                        <span class="mstore-toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="mstore-expandable" id="wholesalePriceSection">
+                    <div class="mstore-form-group">
+                        <div class="mstore-input-wrapper">
+                            <span class="mstore-notched-label">Wholesale Price</span>
+                            <div class="mstore-input-with-icon">
+                                <span class="mstore-input-icon">₹</span>
+                                <input type="number" class="mstore-input" placeholder="Enter wholesale price">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stock Tab Content -->
+            <div class="mstore-tab-content" id="stockTabContent">
+                <!-- Enable Stock Tracking -->
+                <div class="mstore-checkbox-group">
+                    <label class="mstore-checkbox-label">Enable Stock Tracking</label>
+                    <label class="mstore-toggle-switch">
+                        <input type="checkbox" id="stockTrackingToggle" checked>
+                        <span class="mstore-toggle-slider"></span>
+                    </label>
+                </div>
+
+                <!-- Stock Details Section (Expandable) -->
+                <div class="mstore-expandable" id="stockDetailsSection">
+                    <!-- Opening Stock & Low Stock Alert -->
+                    <div class="mstore-row" style="margin-top: 20px;">
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">Opening Stock</span>
+                                <input type="number" class="mstore-input" placeholder="Enter count">
+                            </div>
+                        </div>
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">
+                                    Low Stock Alert
+                                    <span class="mstore-info-icon">i</span>
+                                </span>
+                                <input type="number" class="mstore-input" placeholder="Enter minimum count">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- As of Date (Functional) -->
+                    <div class="mstore-form-group">
+                        <div class="mstore-input-wrapper">
+                            <span class="mstore-notched-label">As of Date</span>
+                            <input type="date" class="mstore-input" id="asOfDateInput">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enable Detailed Tracking -->
+                <div class="mstore-checkbox-group">
+                    <label class="mstore-checkbox-label">Enable Detailed Tracking</label>
+                    <label class="mstore-toggle-switch">
+                        <input type="checkbox" id="detailedTrackingToggle">
+                        <span class="mstore-toggle-slider"></span>
+                    </label>
+                </div>
+
+                <!-- Detailed Tracking Section (Expandable) -->
+                <div class="mstore-expandable" id="detailedTrackingSection">
+                    <!-- Reorder Point & Maximum Stock -->
+                    <div class="mstore-row">
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">Reorder Quantity</span>
+                                <input type="number" class="mstore-input" placeholder="Qty to order">
+                            </div>
+                        </div>
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">Maximum Stock Level</span>
+                                <input type="number" class="mstore-input" placeholder="Enter max stock">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Stock Location -->
+                    <div class="mstore-form-group">
+                        <div class="mstore-input-wrapper">
+                            <span class="mstore-notched-label">Stock Location</span>
+                            <input type="text" class="mstore-input" placeholder="e.g., Warehouse A, Shelf B3">
+                        </div>
+                    </div>
+
+                    <!-- Batch/Lot Number & Expiry Date -->
+                    <div class="mstore-row">
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">Batch/Lot Number</span>
+                                <input type="text" class="mstore-input" placeholder="Enter batch number">
+                            </div>
+                        </div>
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">Expiry Date</span>
+                                <input type="date" class="mstore-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Details Tab Content -->
+            <div class="mstore-tab-content" id="moreTabContent">
+                <div class="mstore-form-group" style="margin-top: 20px;">
+                    <label class="mstore-form-label">Attributes</label>
+                    <div id="attributesContainer">
+                        <!-- Initial Attribute Row -->
+                        <!-- Initial Attribute Row -->
+                        <div class="mstore-row attribute-row"
+                            style="margin-bottom: 10px; align-items: center; gap: 8px; grid-template-columns: 1fr 1fr auto;">
+                            <div class="mstore-input-wrapper" style="margin-top: 0;">
+                                <input type="text" class="mstore-input" placeholder="Name (e.g. Color)">
+                            </div>
+                            <div class="mstore-input-wrapper" style="margin-top: 0;">
+                                <input type="text" class="mstore-input" placeholder="Value (e.g. Red)">
+                            </div>
+                            <button type="button" style="background: none; border: none; color: #9ca3af; padding: 4px;"
+                                disabled>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="mstore-link-btn" id="addAttributeBtn" style="margin-top: 0;">
+                        <span>+</span>
+                        <span>Add Attribute</span>
+                    </button>
+                </div>
+
+                <div class="mstore-section-divider"></div>
+
+                <!-- HSN and GST Section (Moved here) -->
+                <div class="mstore-row">
+                    <div class="mstore-form-group">
+                        <div class="mstore-input-wrapper">
+                            <span class="mstore-notched-label">HSN Code</span>
+                            <input type="text" class="mstore-input" placeholder="Enter HSN">
+                        </div>
+                    </div>
+                    <div class="mstore-form-group">
+                        <div class="mstore-input-wrapper">
+                            <span class="mstore-notched-label">GST Rate (%)</span>
+                            <select class="mstore-select" style="border: none;">
+                                <option value="0">0%</option>
+                                <option value="5">5%</option>
+                                <option value="12">12%</option>
+                                <option value="18">18%</option>
+                                <option value="28">28%</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Action Bar -->
+<div class="mstore-bottom-bar">
+    <button class="mstore-action-btn secondary">Cancel</button>
+    <button class="mstore-action-btn primary">Save Item</button>
+</div>
+
+<!-- Bottom Navigation Bar (Dummy for Integration) -->
+<div class="mstore-bottom-nav">
+    <a href="#" class="mstore-nav-item">
+        <div class="mstore-nav-icon"><i class="fas fa-home"></i></div>
+        <div class="mstore-nav-label">Home</div>
+    </a>
+    <a href="#" class="mstore-nav-item">
+        <div class="mstore-nav-icon"><i class="fas fa-box"></i></div>
+        <div class="mstore-nav-label">Products</div>
+    </a>
+    <a href="#" class="mstore-nav-item active">
+        <div class="mstore-nav-icon"><i class="fas fa-plus-circle"></i></div>
+        <div class="mstore-nav-label">Add Item</div>
+    </a>
+    <a href="#" class="mstore-nav-item">
+        <div class="mstore-nav-icon"><i class="fas fa-shopping-cart"></i></div>
+        <div class="mstore-nav-label">Orders</div>
+    </a>
+    <a href="#" class="mstore-nav-item">
+        <div class="mstore-nav-icon"><i class="fas fa-user"></i></div>
+        <div class="mstore-nav-label">Profile</div>
+    </a>
+</div>
+
+<!-- Scanner Modal -->
+<div id="scannerModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; flex-direction: column; justify-content: center; align-items: center;">
+    <div style="position: absolute; top: 20px; right: 20px; z-index: 2001;">
+        <button id="closeScannerBtn"
+            style="background: white; border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">
+            <i class="fas fa-times" style="font-size: 20px; color: #333;"></i>
+        </button>
+    </div>
+    <div id="reader" style="width: 100%; max-width: 400px;"></div>
+    <p style="color: white; margin-top: 20px;">Point camera at a barcode</p>
+</div>
+
+<div id="selectionModal" class="mstore-selection-modal">
+    <div class="mstore-selection-container">
+        <div class="mstore-selection-header">
+            <div class="mstore-modal-top-bar">
+                <h3 class="mstore-modal-title" id="modalTitle">Select</h3>
+                <button class="mstore-modal-back-btn" id="modalCloseActionBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mstore-search-wrapper">
+                <i class="fas fa-search mstore-search-icon-inside"></i>
+                <input type="text" class="mstore-selection-search" id="modalSearch" placeholder="Search...">
+            </div>
+        </div>
+        <div class="mstore-selection-list" id="modalList">
+            <!-- Options injected here -->
+        </div>
+    </div>
+</div>
+
+<!-- Conversion Edit Modal -->
+<div id="conversionModal" class="mstore-selection-modal"
+    style="z-index: 2200; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s;">
+    <!-- Overriding default container styles to be a centered box -->
+    <div class="mstore-selection-container"
+        style="width: 90%; max-width: 300px; height: auto; max-height: none; transform: scale(0.95); transition: transform 0.2s; border-radius: 12px; margin: auto; padding: 16px; position: relative; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+
+        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px; color: #1f2937;">Conversion Rate</h3>
+
+        <!-- Radio Option Styling -->
+        <div style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px;
+                border: 1px solid #3b82f6;
+                background: #eff6ff;
+                border-radius: 8px;
+                margin-bottom: 16px;
+            ">
+            <!-- Radio Circle -->
+            <div
+                style="flex-shrink: 0; width: 18px; height: 18px; border: 2px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%;"></div>
+            </div>
+
+            <!-- Text & Input Equation -->
+            <div
+                style="font-size: 13px; color: #374151; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px; line-height: 1.5;">
+                <span style="white-space: nowrap;">1 <span id="modalPrimaryUnitLabel"
+                        style="font-weight: 600;">Kilogram</span> = </span>
+                <!-- Inline Input -->
+                <input type="number" id="modalConversionInput" style="
+                            width: 50px;
+                            border: none;
+                            background: transparent;
+                            border-bottom: 1px solid #3b82f6;
+                            text-align: center;
+                            font-weight: 600;
+                            color: #1f2937;
+                            font-size: 13px;
+                            padding: 0 2px;
+                            border-radius: 0;
+                            outline: none;
+                        " placeholder="0">
+                <span id="modalSecondaryUnitLabel" style="white-space: nowrap;">Gram</span>
+            </div>
+        </div>
+
+        <!-- Compact Buttons: Force Flex Row -->
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="mstore-action-btn secondary" id="closeConversionModal"
+                style="flex: 1; justify-content: center; padding: 6px 14px; font-size: 12px;">Cancel</button>
+            <button class="mstore-action-btn primary" id="saveConversionModal"
+                style="flex: 1; justify-content: center; padding: 6px 14px; font-size: 12px;">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Create New Item Modal (Generic) -->
+    <div id="createItemModal" class="mstore-selection-modal"
+    style="z-index: 2200; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-overlay-dark); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s;">
+    <div class="mstore-selection-container"
+        style="width: 90%; max-width: 300px; height: auto; max-height: none; transform: scale(0.95); transition: transform 0.2s; border-radius: 12px; margin: auto; padding: 16px; position: relative; background: var(--bg-secondary); box-shadow: var(--shadow-elevation-large);">
+
+        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--text-primary);">Create New Category</h3>
+
+        <div class="mstore-input-wrapper" style="margin-bottom: 20px;">
+            <input type="text" id="newItemInput" class="mstore-input" style="border: none; padding: 12px 10px; color: var(--text-primary);"
+                placeholder="Enter category name" autofocus>
+        </div>
+
+        <!-- Compact Buttons: Force Flex Row -->
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="mstore-action-btn secondary" id="closeCreateItemModal"
+                style="flex: 1; justify-content: center; padding: 8px; font-size: 13px;">Cancel</button>
+            <button class="mstore-action-btn primary" id="saveCreateItemModal"
+                style="flex: 1; justify-content: center; padding: 8px; font-size: 13px;">Save</button>
+        </div>
+    </div>
+</div>

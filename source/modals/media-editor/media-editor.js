@@ -737,7 +737,7 @@ function updateSafeAreaFrame() {
 
     const cropRect = cropFrame.getBoundingClientRect();
 
-    // YouTube cover: full width with horizontal lines, reduced height with vertical margins
+    // Cover: full width with horizontal lines, reduced height with vertical margins
     // Left-right margins (20px) show mobile viewport cutoffs
     const horizontalMargin = 20; // px margin on left and right to show mobile cutoff
 

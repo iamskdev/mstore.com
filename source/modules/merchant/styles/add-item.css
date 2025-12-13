@@ -1,0 +1,997 @@
+﻿/* Production: Hide demo header - app ka header use hoga */
+.mstore-header {
+  display: none;
+}
+
+/* Production: Hide demo bottom nav - app ka bottom nav use hoga */
+.mstore-bottom-nav {
+  display: none !important;
+}
+
+/* Production: Adjust content wrapper for app layout */
+.mstore-content-wrapper {
+  padding-bottom: 110px; /* Space for action bar (40px) + app's bottom nav (60px) + buffer (10px) */
+  background: var(--bg-primary); /* Use theme background color */
+}
+
+.mstore-header-back {
+  color: var(--bg-secondary);
+  font-size: 24px;
+  cursor: pointer;
+  margin-right: 16px;
+  transition: transform 0.2s;
+}
+
+.mstore-header-back:hover {
+  transform: translateX(-3px);
+}
+
+.mstore-header-title {
+  color: var(--bg-secondary);
+  font-size: 20px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.mstore-header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.mstore-header-icon {
+  color: var(--bg-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.mstore-header-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Content Container */
+.mstore-content {
+  padding: 0;
+  max-width: 100%;
+}
+
+/* Toggle Section */
+.mstore-toggle-section {
+  background: var(--bg-secondary);
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mstore-toggle-group {
+  display: flex;
+  background: var(--bg-tertiary);
+  border-radius: 25px;
+  padding: 3px;
+  gap: 2px;
+  position: relative;
+  isolation: isolate;
+}
+
+.mstore-toggle-btn {
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 13px;
+  border-radius: 22px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex: 1 1 0px;
+  min-width: 80px;
+  z-index: 2;
+  position: relative;
+}
+
+.mstore-toggle-btn.active {
+  color: var(--accent-text);
+}
+
+.mstore-toggle-slider-bg {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 4px);
+  height: calc(100% - 6px);
+  background: var(--accent-primary);
+  border-radius: 22px;
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
+}
+
+.mstore-toggle-group.service-mode .mstore-toggle-slider-bg {
+  transform: translateX(calc(100% + 2px));
+}
+
+.mstore-visibility-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Form Card */
+.mstore-form-card {
+  background: var(--bg-secondary);
+  margin: 0;
+  padding: 12px;
+}
+
+/* Photo Upload Section */
+.mstore-photo-section {
+  margin-bottom: 24px;
+}
+
+.mstore-photo-grid {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.mstore-photo-item {
+  min-width: 50px;
+  width: 50px;
+  height: 50px;
+  border: 2px dashed var(--border-color);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: var(--bg-tertiary);
+}
+
+.mstore-photo-item:hover {
+  border-color: var(--accent-primary);
+  background: var(--bg-hover);
+}
+
+.mstore-photo-item.primary {
+  border-color: var(--accent-primary);
+  background: var(--bg-hover);
+}
+
+.mstore-photo-icon {
+  font-size: 18px;
+  color: var(--accent-primary);
+  margin-bottom: 2px;
+}
+
+.mstore-photo-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.mstore-photo-grid.drag-over {
+  border: 2px dashed var(--accent-primary);
+  background-color: var(--bg-hover);
+}
+
+.mstore-photo-label {
+  font-size: 8px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Form Group */
+.mstore-form-group {
+  margin-bottom: 20px;
+}
+
+.mstore-form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.mstore-form-label.required::after {
+  content: "*";
+  color: var(--accent-danger);
+  margin-left: 4px;
+}
+
+/* Notched Outline Input - Material Design Style */
+.mstore-input-wrapper {
+  position: relative;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  transition: all 0.3s;
+  margin-top: 8px;
+}
+
+.mstore-input-wrapper:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.mstore-input-wrapper:focus-within .mstore-notched-label {
+  color: var(--accent-primary);
+}
+
+/* Notched Label */
+.mstore-notched-label {
+  position: absolute;
+  top: -10px;
+  left: 12px;
+  background: var(--bg-secondary);
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.mstore-notched-label.required::after {
+  content: "*";
+  color: var(--accent-danger);
+  margin-left: 2px;
+}
+
+.mstore-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.mstore-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Input with Icon */
+.mstore-input-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mstore-input-icon {
+  color: var(--text-secondary);
+  font-size: 18px;
+  padding-left: 16px;
+}
+
+.mstore-input-with-icon .mstore-input {
+  padding-left: 0;
+}
+
+/* Select Dropdown */
+.mstore-select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 15px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='var(--text-secondary)' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.mstore-select:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.1);
+  outline: none;
+}
+
+/* Two Column Layout */
+.mstore-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+/* Checkbox Toggle */
+.mstore-checkbox-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.mstore-checkbox-label {
+  font-size: 15px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.mstore-toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+}
+
+/* Small Toggle Switch for compact layouts */
+.mstore-toggle-switch.small {
+  width: 38px;
+  height: 20px;
+}
+
+.mstore-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.mstore-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: 0.3s;
+  border-radius: 34px;
+}
+
+.mstore-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--bg-secondary);
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.mstore-toggle-switch.small .mstore-toggle-slider:before {
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+}
+
+.mstore-toggle-switch input:checked + .mstore-toggle-slider {
+  background-color: var(--accent-success);
+}
+
+.mstore-toggle-switch input:checked + .mstore-toggle-slider:before {
+  transform: translateX(22px);
+}
+
+.mstore-toggle-switch.small input:checked + .mstore-toggle-slider:before {
+  transform: translateX(18px);
+}
+
+/* Action Buttons */
+.mstore-action-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mstore-action-btn.primary {
+  background: var(--accent-primary);
+  color: var(--accent-text);
+}
+
+.mstore-action-btn.primary:hover {
+  background: var(--accent-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.3);
+}
+
+.mstore-action-btn.secondary {
+  background: transparent;
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+}
+
+.mstore-action-btn.secondary:hover {
+  background: var(--bg-hover);
+}
+
+/* Expandable Section */
+.mstore-expandable {
+  margin-top: 12px;
+  display: none;
+  animation: slideDown 0.3s ease-out;
+}
+
+.mstore-expandable.active {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Info Icon */
+.mstore-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--text-secondary);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: help;
+  margin-left: 4px;
+}
+
+/* Date Badge */
+.mstore-date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+/* Link Button */
+.mstore-link-btn {
+  color: var(--accent-primary);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s;
+}
+
+.mstore-link-btn:hover {
+  color: var(--accent-primary-hover);
+  gap: 8px;
+}
+
+/* Bottom Action Bar */
+.mstore-bottom-bar {
+  position: fixed;
+  bottom: 60px; /* Position above app's bottom nav (60px height) */
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  box-shadow: 0 -2px 8px var(--shadow-color);
+  z-index: 50;
+}
+
+.mstore-bottom-bar .mstore-action-btn {
+  flex: 0 0 auto;
+  justify-content: center;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Content Padding for Bottom Bar */
+.mstore-content-wrapper {
+  padding-bottom: 110px;
+  /* Minimized for compact action bar */
+}
+
+/* Textarea */
+.mstore-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: "Inter", sans-serif;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  resize: vertical;
+  min-height: 80px;
+  transition: all 0.3s;
+}
+
+.mstore-textarea:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.1);
+  outline: none;
+}
+
+.mstore-textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Section Divider */
+.mstore-section-divider {
+  height: 8px;
+  background: var(--bg-tertiary);
+  margin: 24px -12px;
+}
+
+/* Tab Section */
+.mstore-tab-section {
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 16px;
+}
+
+.mstore-tab-group {
+  display: flex;
+  gap: 24px;
+}
+
+.mstore-tab {
+  padding: 14px 0;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.mstore-tab.active {
+  color: var(--accent-danger);
+}
+
+.mstore-tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -8px;
+  right: -8px;
+  height: 2px;
+  background: var(--accent-danger);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .mstore-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Bottom Navigation Bar (Dummy for Integration) */
+.mstore-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -2px 8px var(--shadow-color);
+  z-index: 90;
+}
+
+.mstore-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--text-secondary);
+}
+
+.mstore-nav-item:hover {
+  background: var(--bg-hover);
+}
+
+.mstore-nav-item.active {
+  color: var(--accent-primary);
+}
+
+.mstore-nav-icon {
+  font-size: 22px;
+  transition: transform 0.2s;
+}
+
+.mstore-nav-item.active .mstore-nav-icon {
+  transform: scale(1.1);
+}
+
+.mstore-nav-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Adjust bottom bar to sit above navigation */
+.mstore-bottom-bar {
+  bottom: 60px;
+  /* Position above bottom nav */
+}
+
+/* Tab Content Visibility */
+.mstore-tab-content {
+  display: none;
+}
+
+.mstore-tab-content.active {
+  display: block;
+}
+
+/* Selection Modal */
+.mstore-selection-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-overlay-dark);
+  /* Dimmed background to show page content behind */
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.mstore-selection-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mstore-selection-container {
+  background: var(--bg-secondary);
+  width: 100%;
+  height: calc(100% - 120px);
+  /* Leave 120px at top */
+  position: absolute;
+  bottom: 0;
+  border-radius: 16px 16px 0 0;
+  /* Round top corners */
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-elevation-medium);
+}
+
+.mstore-selection-modal.active .mstore-selection-container {
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .mstore-selection-modal {
+    background: var(--bg-overlay-dark);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mstore-selection-container {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    max-height: 80vh;
+    border-radius: 12px;
+    transform: scale(0.9);
+    opacity: 0;
+    box-shadow: var(--shadow-elevation-large);
+  }
+
+  .mstore-selection-modal.active .mstore-selection-container {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.mstore-selection-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mstore-modal-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mstore-modal-back-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mstore-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.mstore-search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.mstore-search-icon-inside {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+.mstore-selection-search {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  /* Space for icon */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  background: var(--bg-tertiary);
+  transition: all 0.2s;
+  color: var(--text-primary);
+}
+
+.mstore-selection-search:focus {
+  border-color: var(--accent-primary);
+  background: var(--bg-secondary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.mstore-selection-close {
+  /* Hidden in new design as back button serves purpose, 
+               but kept in DOM if needed or for desktop 'x' */
+  display: none;
+}
+
+.mstore-selection-list {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 0;
+}
+
+.mstore-selection-option {
+  padding: 14px 20px;
+  font-size: 16px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--bg-hover);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mstore-selection-option:last-child {
+  border-bottom: none;
+}
+
+.mstore-selection-option:hover {
+  background: var(--bg-hover);
+}
+
+.mstore-checkbox-icon {
+  color: var(--border-color);
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+.mstore-checkbox-icon.checked {
+  color: var(--accent-primary);
+}
+
+.mstore-selection-group-title {
+  background: var(--bg-tertiary);
+  padding: 8px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mstore-selection-group-title > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.mstore-group-expand-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s ease;
+}
+
+.mstore-group-expand-btn:hover {
+  color: var(--text-primary);
+}
+
+.mstore-group-expand-btn i {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.mstore-group-options {
+  display: block;
+}
+
+/* Combobox Styles (Hybrid) */
+.mstore-combobox-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.mstore-combobox-input {
+  width: 100%;
+  padding: 14px 40px 14px 16px;
+  /* Space for icon */
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 15px;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.3s;
+  background: var(--bg-secondary);
+}
+
+.mstore-combobox-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.mstore-combobox-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-left: 1px solid transparent;
+  /* Optional separator */
+}
+
+.mstore-combobox-icon:hover {
+  color: var(--text-secondary);
+}
+
+.mstore-combobox-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1050;
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  display: none;
+}
+
+.mstore-combobox-dropdown.active {
+  display: block;
+}
+
+.mstore-combobox-option {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mstore-combobox-option:hover,
+.mstore-combobox-option.highlighted {
+  background: var(--bg-hover);
+}
+
+/* Date Input Styling to match Select */
+#asOfDateInput {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='var(--text-secondary)' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  cursor: pointer;
+}
+
+/* Hide native calendar icon but keep it clickable covering the input */
+#asOfDateInput::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}

@@ -93,7 +93,7 @@ const APP_SHELL_URLS = [
   './source/common/pages/merchant-profile.html',
   './source/common/styles/merchant-profile.css',
   './source/common/scripts/merchant-profile.js',
-  
+
   // Updates View
   './source/common/pages/updates.html',
   './source/common/styles/updates.css',
@@ -105,7 +105,12 @@ const APP_SHELL_URLS = [
   './source/modules/merchant/pages/add.html',
   './source/modules/merchant/styles/add.css',
   './source/modules/merchant/scripts/add.js',
-  
+
+  // Merchant Add Item View
+  './source/modules/merchant/pages/add-item.html',
+  './source/modules/merchant/styles/add-item.css',
+  './source/modules/merchant/scripts/add-item.js',
+
   // Merchant Profile Edit View
   './source/modules/merchant/pages/merchant-profile-edit.html',
   './source/modules/merchant/styles/merchant-profile-edit.css',
@@ -114,7 +119,7 @@ const APP_SHELL_URLS = [
   //Modals
   './source/modals/account-switcher.html',
   './source/modals/rating/rating-modal.html',
-  './source/modals/rating/rating-modal.js',  
+  './source/modals/rating/rating-modal.js',
   './source/modals/story-viewer/story-viewer.html',
   './source/modals/story-viewer/story-viewer.js',
 
@@ -141,18 +146,18 @@ const APP_SHELL_URLS = [
 ];
 
 async function getCacheName() {
-    if (dynamicCacheName) {
-        return dynamicCacheName;
-    }
-    try {
-        const response = await fetch('./source/settings/config.json');
-        const config = await response.json();
-        dynamicCacheName = `${config.app.name}_Cache_v${config.app.version}`;
-        return dynamicCacheName;
-    } catch (error) {
-        console.error('Failed to fetch config to generate cache name. Using a default.', error);
-        return 'mStore_Cache_v_default';
-    }
+  if (dynamicCacheName) {
+    return dynamicCacheName;
+  }
+  try {
+    const response = await fetch('./source/settings/config.json');
+    const config = await response.json();
+    dynamicCacheName = `${config.app.name}_Cache_v${config.app.version}`;
+    return dynamicCacheName;
+  } catch (error) {
+    console.error('Failed to fetch config to generate cache name. Using a default.', error);
+    return 'mStore_Cache_v_default';
+  }
 }
 
 // Helper to normalize URLs for caching
@@ -205,7 +210,7 @@ const fromCache = async (request) => {
     const cache = await caches.open(cacheName);
     const cached = await cache.match(normalizeUrl(request.url));
     if (cached) return cached;
-    
+
     const runtimeCache = await caches.open(RUNTIME_CACHE);
     return await runtimeCache.match(normalizeUrl(request.url));
   } catch (error) {
@@ -218,11 +223,11 @@ const fromNetwork = async (request, cacheName) => {
   try {
     const response = await fetch(request);
     const responseClone = response.clone();
-    
+
     if (cacheName && shouldCacheInRuntime(request)) {
       await addToCache(cacheName, request, responseClone);
     }
-    
+
     return response;
   } catch (error) {
     console.warn(`Network request failed: ${request.url}`, error);
@@ -233,7 +238,7 @@ const fromNetwork = async (request, cacheName) => {
 // --- Resilient Installation ---
 self.addEventListener('install', (event) => {
   console.log('Service Worker: Installing...');
-  
+
   event.waitUntil(
     (async () => {
       try {
@@ -257,7 +262,7 @@ self.addEventListener('install', (event) => {
         console.log('Service Worker: App Shell caching complete.');
         await self.skipWaiting();
       } catch (error) {
-         // This catch block will now primarily catch errors from caches.open or self.skipWaiting
+        // This catch block will now primarily catch errors from caches.open or self.skipWaiting
         console.error('Service Worker: Failed to open cache or skip waiting during install.', error);
       }
     })()
@@ -269,21 +274,21 @@ self.addEventListener('activate', (event) => {
   console.log('Service Worker: Activating...');
   event.waitUntil(
     (async () => {
-        const currentCacheName = await getCacheName();
-        console.log(`Service Worker activated. Using cache: ${currentCacheName}`);
-        const keys = await caches.keys();
-        await Promise.all(
-            keys.map(key => {
-                if (key !== currentCacheName && key !== RUNTIME_CACHE) {
-                    console.log('Deleting old cache:', key);
-                    return caches.delete(key);
-                }
-            })
-        );
-      
+      const currentCacheName = await getCacheName();
+      console.log(`Service Worker activated. Using cache: ${currentCacheName}`);
+      const keys = await caches.keys();
+      await Promise.all(
+        keys.map(key => {
+          if (key !== currentCacheName && key !== RUNTIME_CACHE) {
+            console.log('Deleting old cache:', key);
+            return caches.delete(key);
+          }
+        })
+      );
+
       const runtimeCache = await caches.open(RUNTIME_CACHE);
       const requests = await runtimeCache.keys();
-      
+
       await Promise.all(
         requests.map(async request => {
           const response = await runtimeCache.match(request);
@@ -298,7 +303,7 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-      
+
       await self.clients.claim();
       console.log('Service Worker: Activation completed');
     })().catch(err => {
@@ -323,7 +328,7 @@ self.addEventListener('message', async (event) => {
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  
+
   if (!isCacheable(request)) return;
 
   const isAppShellAsset = APP_SHELL_URLS.some(
@@ -340,7 +345,7 @@ self.addEventListener('fetch', (event) => {
         const cacheName = await getCacheName();
         const cached = await fromCache(request);
         if (cached) {
-          event.waitUntil(fromNetwork(request, cacheName).catch(() => {}));
+          event.waitUntil(fromNetwork(request, cacheName).catch(() => { }));
           return cached;
         }
         return fromNetwork(request, cacheName);

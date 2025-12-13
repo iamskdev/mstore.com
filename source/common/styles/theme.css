@@ -44,6 +44,8 @@
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.05);
+  --shadow-elevation-medium: 0 -4px 20px rgba(0, 0, 0, 0.15); /* For selection container bottom shadow */
+  --shadow-elevation-large: 0 10px 25px rgba(0, 0, 0, 0.2); /* For selection container modal shadow */
   --shadow-focus-primary: rgba(0, 123, 255, 0.2);
   --shadow-focus-secondary: rgba(40, 167, 69, 0.2);
   --shadow-focus-error: rgba(217, 48, 37, 0.2);
@@ -124,6 +126,8 @@ html.dark-mode {
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(255, 255, 255, 0.05); /* Changed to a light shadow for dark mode */
+  --shadow-elevation-medium: 0 -4px 20px rgba(255, 255, 255, 0.1); /* For selection container bottom shadow in dark mode */
+  --shadow-elevation-large: 0 10px 25px rgba(255, 255, 255, 0.15); /* For selection container modal shadow in dark mode */
   --shadow-focus-primary: rgba(68, 138, 255, 0.25);
   --shadow-focus-secondary: rgba(105, 240, 174, 0.25);
   --shadow-focus-error: rgba(255, 82, 82, 0.25);

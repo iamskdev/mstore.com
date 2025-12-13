@@ -50,12 +50,14 @@
     <button class="me-action-btn" id="rotateRightBtn" title="Rotate Right">
         <i class="fas fa-rotate-right"></i>
     </button>
-    <button class="me-action-btn" id="flipHorizontalBtn" title="Flip Horizontal"><i class="fas fa-right-left"></i></button>
+    <button class="me-action-btn" id="flipHorizontalBtn" title="Flip Horizontal"><i
+            class="fas fa-right-left"></i></button>
     <button class="me-action-btn" id="flipVerticalBtn" title="Flip Vertical"><i class="fas fa-up-down"></i></button>
     <button class="me-action-btn" id="fitBtn" title="Fit to Frame"><i class="fas fa-compress-arrows-alt"></i></button>
     <button class="me-action-btn" id="resetBtn" title="Reset"><i class="fas fa-undo"></i></button>
     <!-- Guideline toggle button -->
-    <button class="me-action-btn" id="guidelineToggleBtn" title="Toggle Guideline"><i class="fas fa-border-all"></i></button>
+    <button class="me-action-btn" id="guidelineToggleBtn" title="Toggle Guideline"><i
+            class="fas fa-border-all"></i></button>
     <button class="me-action-btn" id="circleCropBtn" title="Toggle Circle Crop">
         <i class="far fa-circle"></i>
     </button>
@@ -71,11 +73,14 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.75);
-        display: none; /* Hidden by default */
+        display: none;
+        /* Hidden by default */
         align-items: center;
         justify-content: center;
-        z-index: 10010; /* FIX: Increased z-index to be on top of other modals */
+        z-index: 10010;
+        /* FIX: Increased z-index to be on top of other modals */
     }
+
     .photo-editor-card:fullscreen {
         max-width: none;
         height: 100%;
@@ -87,12 +92,14 @@
         background: rgba(var(--bg-secondary-rgb), 0.95);
         backdrop-filter: blur(20px);
         border-radius: 0;
-        box-shadow: 
+        box-shadow:
             0 25px 50px rgba(0, 0, 0, 0.15),
             0 0 0 1px rgba(255, 255, 255, 0.1),
             inset 0 1px 0 rgba(255, 255, 255, 0.6);
         width: 100%;
         max-width: 420px;
+        max-height: 100vh;
+        /* FIX: Prevent card from exceeding viewport height */
         overflow: hidden;
         position: relative;
         display: flex;
@@ -112,13 +119,27 @@
     }
 
     @keyframes cardAppear {
-        from { opacity: 0; transform: translateY(30px) scale(0.95); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
 
     @keyframes shimmer {
-        0%, 100% { left: -100%; }
-        50% { left: 100%; }
+
+        0%,
+        100% {
+            left: -100%;
+        }
+
+        50% {
+            left: 100%;
+        }
     }
 
     .me-header {
@@ -142,10 +163,14 @@
         flex-grow: 1;
         position: relative;
         min-height: 300px;
+        max-height: calc(100vh - 200px);
+        /* FIX: Reserve space for header (~80px) and footer (~120px) */
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 15px;
+        overflow: auto;
+        /* FIX: Allow scrolling if image is very tall */
     }
 
     .me-preview-area {
@@ -156,6 +181,7 @@
         align-items: center;
         overflow: hidden;
     }
+
     .me-footer {
         padding: 15px 15px 10px;
         background: var(--bg-tertiary);
@@ -167,10 +193,11 @@
         position: relative;
         display: inline-block;
     }
+
     .me-image-crop-wrapper .me-preview-image {
         display: block;
     }
-    
+
     .me-preview-image {
         max-width: 100%;
         max-height: 100%;
@@ -187,6 +214,7 @@
     .me-image-crop-wrapper:empty {
         display: none;
     }
+
     .me-image-crop-wrapper:not(:empty) {
         display: inline-block;
     }
@@ -199,7 +227,7 @@
         display: none;
         pointer-events: none;
     }
-    
+
     .me-crop-frame.circle .me-circle-overlay {
         display: block;
     }
@@ -224,20 +252,28 @@
         position: absolute;
         top: 0;
         bottom: 0;
-        width: 1px; /* thinner vertical line */
+        width: 1px;
+        /* thinner vertical line */
         pointer-events: none;
         background-image: repeating-linear-gradient(180deg, var(--accent-primary) 0px, var(--accent-primary) 3px, transparent 3px, transparent 6px);
         z-index: 3;
     }
-    .me-safe-area-overlay::before { left: 20px; }
-    .me-safe-area-overlay::after { right: 20px; }
-    
+
+    .me-safe-area-overlay::before {
+        left: 20px;
+    }
+
+    .me-safe-area-overlay::after {
+        right: 20px;
+    }
+
     .me-crop-frame.with-safe-area .me-safe-area-overlay {
         display: block;
     }
 
     .me-safe-area-label {
-        display: none; /* Hide the label */
+        display: none;
+        /* Hide the label */
     }
 
     /* Measurement badges for safe area overlay - very small */
@@ -272,22 +308,73 @@
         background: rgba(var(--accent-primary-rgb), 0.5);
         border: 1px solid var(--accent-text);
     }
-    .me-crop-handle.top-left, .me-crop-handle.top-right, .me-crop-handle.bottom-left, .me-crop-handle.bottom-right {
+
+    .me-crop-handle.top-left,
+    .me-crop-handle.top-right,
+    .me-crop-handle.bottom-left,
+    .me-crop-handle.bottom-right {
         width: 12px;
         height: 12px;
         z-index: 2;
     }
-    .me-crop-handle.top, .me-crop-handle.bottom { width: 40%; height: 6px; left: 30%; z-index: 1; cursor: ns-resize; }
-    .me-crop-handle.left, .me-crop-handle.right { width: 6px; height: 40%; top: 30%; z-index: 1; cursor: ew-resize; }
 
-    .me-crop-handle.top-left { top: -6px; left: -6px; cursor: nwse-resize; }
-    .me-crop-handle.top-right { top: -6px; right: -6px; cursor: nesw-resize; }
-    .me-crop-handle.bottom-left { bottom: -6px; left: -6px; cursor: nesw-resize; }
-    .me-crop-handle.bottom-right { bottom: -6px; right: -6px; cursor: nwse-resize; }
-    .me-crop-handle.top { top: -3px; }
-    .me-crop-handle.bottom { bottom: -3px; }
-    .me-crop-handle.left { left: -3px; }
-    .me-crop-handle.right { right: -3px; }
+    .me-crop-handle.top,
+    .me-crop-handle.bottom {
+        width: 40%;
+        height: 6px;
+        left: 30%;
+        z-index: 1;
+        cursor: ns-resize;
+    }
+
+    .me-crop-handle.left,
+    .me-crop-handle.right {
+        width: 6px;
+        height: 40%;
+        top: 30%;
+        z-index: 1;
+        cursor: ew-resize;
+    }
+
+    .me-crop-handle.top-left {
+        top: -6px;
+        left: -6px;
+        cursor: nwse-resize;
+    }
+
+    .me-crop-handle.top-right {
+        top: -6px;
+        right: -6px;
+        cursor: nesw-resize;
+    }
+
+    .me-crop-handle.bottom-left {
+        bottom: -6px;
+        left: -6px;
+        cursor: nesw-resize;
+    }
+
+    .me-crop-handle.bottom-right {
+        bottom: -6px;
+        right: -6px;
+        cursor: nwse-resize;
+    }
+
+    .me-crop-handle.top {
+        top: -3px;
+    }
+
+    .me-crop-handle.bottom {
+        bottom: -3px;
+    }
+
+    .me-crop-handle.left {
+        left: -3px;
+    }
+
+    .me-crop-handle.right {
+        right: -3px;
+    }
 
     .me-crop-handle:hover {
         background: var(--accent-primary);
@@ -359,6 +446,7 @@
     .me-action-btn.success {
         color: var(--accent-success);
     }
+
     .me-action-btn.success:hover {
         background: rgba(var(--accent-success-rgb), 0.15);
         color: var(--accent-success);

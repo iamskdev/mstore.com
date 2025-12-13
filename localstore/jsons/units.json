@@ -21,21 +21,40 @@
         "symbol": "g",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Gram"
       },
       {
         "code": "kg",
         "symbol": "kg",
         "toBase": 1000,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Kilogram"
       },
       {
         "code": "mg",
         "symbol": "mg",
         "toBase": 0.001,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Milligram"
+      },
+      {
+        "code": "lb",
+        "symbol": "lb",
+        "toBase": 453.592,
+        "isBaseUnit": false,
+        "isPopular": true,
+        "title": "Pound"
+      },
+      {
+        "code": "oz",
+        "symbol": "oz",
+        "toBase": 28.3495,
+        "isBaseUnit": false,
+        "isPopular": true,
+        "title": "Ounce"
       }
     ]
   },
@@ -61,21 +80,40 @@
         "symbol": "ml",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Milliliter"
       },
       {
         "code": "l",
         "symbol": "l",
         "toBase": 1000,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Liter"
       },
       {
         "code": "cl",
         "symbol": "cl",
         "toBase": 10,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Centiliter"
+      },
+      {
+        "code": "gal",
+        "symbol": "gal",
+        "toBase": 3785.41,
+        "isBaseUnit": false,
+        "isPopular": true,
+        "title": "Gallon"
+      },
+      {
+        "code": "pt",
+        "symbol": "pt",
+        "toBase": 473.176,
+        "isBaseUnit": false,
+        "isPopular": false,
+        "title": "Pint"
       }
     ]
   },
@@ -101,21 +139,48 @@
         "symbol": "cm",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Centimeter"
       },
       {
         "code": "m",
         "symbol": "m",
         "toBase": 100,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Meter"
       },
       {
         "code": "mm",
         "symbol": "mm",
         "toBase": 0.1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Millimeter"
+      },
+      {
+        "code": "in",
+        "symbol": "in",
+        "toBase": 2.54,
+        "isBaseUnit": false,
+        "isPopular": true,
+        "title": "Inch"
+      },
+      {
+        "code": "ft",
+        "symbol": "ft",
+        "toBase": 30.48,
+        "isBaseUnit": false,
+        "isPopular": true,
+        "title": "Foot"
+      },
+      {
+        "code": "yd",
+        "symbol": "yd",
+        "toBase": 91.44,
+        "isBaseUnit": false,
+        "isPopular": false,
+        "title": "Yard"
       }
     ]
   },
@@ -141,21 +206,48 @@
         "symbol": "m²",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Square Meter"
       },
       {
         "code": "cm2",
         "symbol": "cm²",
         "toBase": 0.0001,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "cm2"
       },
       {
         "code": "km2",
         "symbol": "km²",
         "toBase": 1000000,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "km2"
+      },
+      {
+        "code": "sqft",
+        "symbol": "ft²",
+        "toBase": 0.092903,
+        "isBaseUnit": false,
+        "isPopular": true,
+        "title": "Square Foot"
+      },
+      {
+        "code": "sqin",
+        "symbol": "in²",
+        "toBase": 0.00064516,
+        "isBaseUnit": false,
+        "isPopular": false,
+        "title": "Square Inch"
+      },
+      {
+        "code": "acre",
+        "symbol": "ac",
+        "toBase": 4046.86,
+        "isBaseUnit": false,
+        "isPopular": false,
+        "title": "Acre"
       }
     ]
   },
@@ -181,21 +273,24 @@
         "symbol": "s",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Second"
       },
       {
         "code": "min",
         "symbol": "min",
         "toBase": 60,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Minute"
       },
       {
         "code": "h",
         "symbol": "h",
         "toBase": 3600,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Hour"
       }
     ]
   },
@@ -221,21 +316,24 @@
         "symbol": "$",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "USD"
       },
       {
         "code": "EUR",
         "symbol": "€",
         "toBase": 1.2,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "EUR"
       },
       {
         "code": "INR",
         "symbol": "₹",
         "toBase": 0.013,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "INR"
       }
     ]
   },
@@ -261,21 +359,24 @@
         "symbol": "°C",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Coulomb"
       },
       {
         "code": "F",
         "symbol": "°F",
         "toBase": 0.5556,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Fahrenheit"
       },
       {
         "code": "K",
         "symbol": "K",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "K"
       }
     ]
   },
@@ -301,21 +402,24 @@
         "symbol": "km/h",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Kilometer per hour"
       },
       {
         "code": "m/s",
         "symbol": "m/s",
         "toBase": 3.6,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Meter per second"
       },
       {
         "code": "mph",
         "symbol": "mph",
         "toBase": 1.60934,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Miles per hour"
       }
     ]
   },
@@ -341,21 +445,24 @@
         "symbol": "MB",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Megabyte"
       },
       {
         "code": "GB",
         "symbol": "GB",
         "toBase": 1024,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Gigabyte"
       },
       {
         "code": "KB",
         "symbol": "KB",
         "toBase": 0.001,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Kilobyte"
       }
     ]
   },
@@ -381,21 +488,24 @@
         "symbol": "W",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Watt"
       },
       {
         "code": "kW",
         "symbol": "kW",
         "toBase": 1000,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Kilowatt"
       },
       {
         "code": "MW",
         "symbol": "MW",
         "toBase": 1000000,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "MW"
       }
     ]
   },
@@ -421,21 +531,24 @@
         "symbol": "Pa",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Pascal"
       },
       {
         "code": "kPa",
         "symbol": "kPa",
         "toBase": 1000,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "kPa"
       },
       {
         "code": "bar",
         "symbol": "bar",
         "toBase": 100000,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "bar"
       }
     ]
   },
@@ -461,21 +574,24 @@
         "symbol": "Hz",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Hertz"
       },
       {
         "code": "kHz",
         "symbol": "kHz",
         "toBase": 1000,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "kHz"
       },
       {
         "code": "MHz",
         "symbol": "MHz",
         "toBase": 1000000,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "MHz"
       }
     ]
   },
@@ -501,21 +617,24 @@
         "symbol": "rad",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Radian"
       },
       {
         "code": "deg",
         "symbol": "°",
         "toBase": 0.0174533,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Degree"
       },
       {
         "code": "grad",
         "symbol": "grad",
         "toBase": 0.01570796,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "grad"
       }
     ]
   },
@@ -541,21 +660,24 @@
         "symbol": "l/s",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Liters per second"
       },
       {
         "code": "m3/h",
         "symbol": "m³/h",
         "toBase": 0.27778,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "m3/h"
       },
       {
         "code": "gal/min",
         "symbol": "gal/min",
         "toBase": 0.06309,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "gal/min"
       }
     ]
   },
@@ -581,21 +703,24 @@
         "symbol": "lx",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Lux"
       },
       {
         "code": "fc",
         "symbol": "fc",
         "toBase": 10.764,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "fc"
       },
       {
         "code": "cd/m2",
         "symbol": "cd/m²",
         "toBase": 0.092903,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "cd/m2"
       }
     ]
   },
@@ -621,21 +746,24 @@
         "symbol": "Wb",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Weber"
       },
       {
         "code": "T",
         "symbol": "T",
         "toBase": 1000000,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "T"
       },
       {
         "code": "mWb",
         "symbol": "mWb",
         "toBase": 0.001,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "mWb"
       }
     ]
   },
@@ -661,21 +789,24 @@
         "symbol": "C",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Coulomb"
       },
       {
         "code": "mC",
         "symbol": "mC",
         "toBase": 0.001,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "mC"
       },
       {
         "code": "kC",
         "symbol": "kC",
         "toBase": 1000,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "kC"
       }
     ]
   },
@@ -721,7 +852,8 @@
         "symbol": "km",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Kilometre"
       },
       {
         "code": "mile",
@@ -732,7 +864,8 @@
         "symbol": "mi",
         "toBase": 1.60934,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Mile"
       },
       {
         "code": "trip",
@@ -743,7 +876,8 @@
         "symbol": "trip",
         "toBase": 0,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Trip"
       },
       {
         "code": "load_ton",
@@ -754,7 +888,8 @@
         "symbol": "t",
         "toBase": 0,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Load (Ton)"
       },
       {
         "code": "delivery_slot",
@@ -765,7 +900,8 @@
         "symbol": "dslot",
         "toBase": 0,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Delivery Slot"
       }
     ],
     "audit": {
@@ -818,7 +954,8 @@
         "symbol": "kWh",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Kilowatt Hour"
       },
       {
         "code": "unit",
@@ -829,7 +966,8 @@
         "symbol": "u",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Electricity Unit"
       },
       {
         "code": "litre",
@@ -840,7 +978,8 @@
         "symbol": "L",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Litre (Water)"
       },
       {
         "code": "cubic_meter",
@@ -851,7 +990,8 @@
         "symbol": "m³",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Cubic Meter (Gas)"
       },
       {
         "code": "gb",
@@ -862,7 +1002,8 @@
         "symbol": "GB",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Gigabyte (Internet Data)"
       }
     ],
     "audit": {
@@ -913,7 +1054,8 @@
         "symbol": "d",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Day"
       },
       {
         "code": "week",
@@ -924,7 +1066,8 @@
         "symbol": "wk",
         "toBase": 7,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Week"
       },
       {
         "code": "month",
@@ -935,7 +1078,8 @@
         "symbol": "mo",
         "toBase": 30,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Month"
       },
       {
         "code": "quarter",
@@ -946,7 +1090,8 @@
         "symbol": "qtr",
         "toBase": 90,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Quarter (3 Months)"
       },
       {
         "code": "year",
@@ -957,7 +1102,8 @@
         "symbol": "yr",
         "toBase": 365,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Year"
       }
     ],
     "audit": {
@@ -1010,7 +1156,8 @@
         "symbol": "m²",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Square Meter"
       },
       {
         "code": "sqft",
@@ -1021,7 +1168,8 @@
         "symbol": "ft²",
         "toBase": 0.092903,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Square Foot"
       },
       {
         "code": "cubic_meter",
@@ -1032,7 +1180,8 @@
         "symbol": "m³",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Cubic Meter"
       },
       {
         "code": "running_meter",
@@ -1043,7 +1192,8 @@
         "symbol": "rm",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Running Meter"
       },
       {
         "code": "lot",
@@ -1054,7 +1204,8 @@
         "symbol": "lot",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Lot (Project Package)"
       }
     ],
     "audit": {
@@ -1106,7 +1257,8 @@
         "symbol": "h",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Hour"
       },
       {
         "code": "session",
@@ -1117,7 +1269,8 @@
         "symbol": "sess",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Session"
       },
       {
         "code": "day",
@@ -1128,7 +1281,8 @@
         "symbol": "d",
         "toBase": 24,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Day"
       },
       {
         "code": "week",
@@ -1139,7 +1293,8 @@
         "symbol": "wk",
         "toBase": 168,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Week"
       },
       {
         "code": "course",
@@ -1150,7 +1305,8 @@
         "symbol": "course",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Course Package"
       }
     ],
     "audit": {
@@ -1202,7 +1358,8 @@
         "symbol": "tkt",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Ticket"
       },
       {
         "code": "seat",
@@ -1213,7 +1370,8 @@
         "symbol": "seat",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Seat"
       },
       {
         "code": "table",
@@ -1224,7 +1382,8 @@
         "symbol": "tbl",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Table"
       },
       {
         "code": "pass",
@@ -1235,7 +1394,8 @@
         "symbol": "pass",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "General Pass"
       },
       {
         "code": "vip_pass",
@@ -1246,7 +1406,8 @@
         "symbol": "VIP",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "VIP Pass"
       }
     ],
     "audit": {
@@ -1278,21 +1439,24 @@
         "symbol": "pc",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "pc"
       },
       {
         "code": "dozen",
         "symbol": "dz",
         "toBase": 12,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "dozen"
       },
       {
         "code": "gross",
         "symbol": "grs",
         "toBase": 144,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "gross"
       }
     ]
   },
@@ -1318,21 +1482,24 @@
         "symbol": "/hr",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "hour"
       },
       {
         "code": "day",
         "symbol": "/day",
         "toBase": 24,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "day"
       },
       {
         "code": "job",
         "symbol": "/job",
         "toBase": 0,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "job"
       }
     ]
   },
@@ -1358,21 +1525,24 @@
         "symbol": "ctn",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "carton"
       },
       {
         "code": "bundle",
         "symbol": "bndl",
         "toBase": 0,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "bundle"
       },
       {
         "code": "roll",
         "symbol": "roll",
         "toBase": 0,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "roll"
       }
     ]
   },
@@ -1417,7 +1587,8 @@
         "symbol": "lot",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Lot"
       },
       {
         "code": "bundle",
@@ -1428,7 +1599,8 @@
         "symbol": "bndl",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Bundle"
       },
       {
         "code": "carton",
@@ -1439,7 +1611,8 @@
         "symbol": "ctn",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Carton"
       }
     ],
     "audit": {
@@ -1489,7 +1662,8 @@
         "symbol": "₹",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Rupee"
       },
       {
         "code": "pct",
@@ -1500,7 +1674,8 @@
         "symbol": "%",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Percent"
       }
     ],
     "audit": {
@@ -1550,7 +1725,8 @@
         "symbol": "/mo",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Per Month"
       },
       {
         "code": "quarter",
@@ -1561,7 +1737,8 @@
         "symbol": "/qtr",
         "toBase": 3,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Per Quarter"
       },
       {
         "code": "year",
@@ -1572,7 +1749,8 @@
         "symbol": "/yr",
         "toBase": 12,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Per Year"
       }
     ],
     "audit": {
@@ -1623,7 +1801,8 @@
         "symbol": "/km",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Per Kilometer"
       },
       {
         "code": "per_kg",
@@ -1634,7 +1813,8 @@
         "symbol": "/kg",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Per Kilogram"
       },
       {
         "code": "flat_rate",
@@ -1645,7 +1825,8 @@
         "symbol": "flat",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Flat Rate"
       }
     ],
     "audit": {
@@ -1695,7 +1876,8 @@
         "symbol": "≤10",
         "toBase": 10,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Up to 10 pcs"
       },
       {
         "code": "11_50",
@@ -1706,7 +1888,8 @@
         "symbol": "11-50",
         "toBase": 50,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "11 to 50 pcs"
       },
       {
         "code": "51_plus",
@@ -1717,7 +1900,8 @@
         "symbol": "51+",
         "toBase": 100,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "51+ pcs"
       }
     ],
     "audit": {
@@ -1767,7 +1951,8 @@
         "symbol": "/mo",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Monthly Installment"
       },
       {
         "code": "quarterly",
@@ -1778,7 +1963,8 @@
         "symbol": "/qtr",
         "toBase": 3,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Quarterly Installment"
       },
       {
         "code": "yearly",
@@ -1789,7 +1975,8 @@
         "symbol": "/yr",
         "toBase": 12,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Yearly Installment"
       }
     ],
     "audit": {
@@ -1839,7 +2026,8 @@
         "symbol": "/hr",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Per Hour"
       },
       {
         "code": "day",
@@ -1850,7 +2038,8 @@
         "symbol": "/day",
         "toBase": 24,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Per Day"
       },
       {
         "code": "week",
@@ -1861,7 +2050,8 @@
         "symbol": "/wk",
         "toBase": 168,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Per Week"
       }
     ],
     "audit": {
@@ -1911,7 +2101,8 @@
         "symbol": "local",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Local Area"
       },
       {
         "code": "city",
@@ -1922,7 +2113,8 @@
         "symbol": "city",
         "toBase": 10,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "City"
       },
       {
         "code": "state",
@@ -1933,7 +2125,8 @@
         "symbol": "state",
         "toBase": 50,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "State"
       },
       {
         "code": "country",
@@ -1944,7 +2137,8 @@
         "symbol": "country",
         "toBase": 500,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Country"
       }
     ],
     "audit": {
@@ -1996,7 +2190,8 @@
         "symbol": "SKU",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Stock Keeping Unit"
       },
       {
         "code": "batch",
@@ -2007,7 +2202,8 @@
         "symbol": "BATCH",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Batch Number"
       },
       {
         "code": "lot",
@@ -2018,7 +2214,8 @@
         "symbol": "LOT",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Lot Number"
       },
       {
         "code": "serial",
@@ -2029,7 +2226,8 @@
         "symbol": "SERIAL",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Serial Number"
       }
     ],
     "audit": {
@@ -2079,7 +2277,8 @@
         "symbol": "/job",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Per Job"
       },
       {
         "code": "photo",
@@ -2090,7 +2289,8 @@
         "symbol": "/photo",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Per Photo"
       },
       {
         "code": "design",
@@ -2101,7 +2301,8 @@
         "symbol": "/design",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Per Design"
       },
       {
         "code": "hour_worked",
@@ -2112,7 +2313,8 @@
         "symbol": "/hr_work",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Per Hour Worked"
       }
     ],
     "audit": {
@@ -2164,7 +2366,8 @@
         "symbol": "pack",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Pack"
       },
       {
         "code": "box",
@@ -2175,7 +2378,8 @@
         "symbol": "box",
         "toBase": 10,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Box"
       },
       {
         "code": "carton",
@@ -2186,7 +2390,8 @@
         "symbol": "ctn",
         "toBase": 20,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Carton"
       },
       {
         "code": "crate",
@@ -2197,7 +2402,8 @@
         "symbol": "crate",
         "toBase": 50,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Crate"
       }
     ],
     "audit": {
@@ -2249,7 +2455,8 @@
         "symbol": "doc",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Document"
       },
       {
         "code": "contract",
@@ -2260,7 +2467,8 @@
         "symbol": "contract",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Contract"
       },
       {
         "code": "invoice",
@@ -2271,7 +2479,8 @@
         "symbol": "inv",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Invoice"
       },
       {
         "code": "certificate",
@@ -2282,7 +2491,8 @@
         "symbol": "cert",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Certificate"
       }
     ],
     "audit": {
@@ -2333,7 +2543,8 @@
         "symbol": "tkt",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Ticket"
       },
       {
         "code": "pass",
@@ -2344,7 +2555,8 @@
         "symbol": "pass",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Pass"
       },
       {
         "code": "entry",
@@ -2355,7 +2567,8 @@
         "symbol": "entry",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Entry"
       },
       {
         "code": "seat",
@@ -2366,7 +2579,8 @@
         "symbol": "seat",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Seat Booking"
       }
     ],
     "audit": {
@@ -2418,7 +2632,8 @@
         "symbol": "mo",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Month"
       },
       {
         "code": "quarter",
@@ -2429,7 +2644,8 @@
         "symbol": "qtr",
         "toBase": 3,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Quarter"
       },
       {
         "code": "half_year",
@@ -2440,7 +2656,8 @@
         "symbol": "hy",
         "toBase": 6,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Half Year"
       },
       {
         "code": "year",
@@ -2451,7 +2668,8 @@
         "symbol": "yr",
         "toBase": 12,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Year"
       }
     ],
     "audit": {
@@ -2502,7 +2720,8 @@
         "symbol": "bxgy",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Buy X Get Y"
       },
       {
         "code": "combo_pack",
@@ -2513,7 +2732,8 @@
         "symbol": "combo",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Combo Pack"
       },
       {
         "code": "discount_pack",
@@ -2524,7 +2744,8 @@
         "symbol": "disc",
         "toBase": 1,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Discount Pack"
       }
     ],
     "audit": {
@@ -2576,7 +2797,8 @@
         "symbol": "hr",
         "toBase": 1,
         "isBaseUnit": true,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Hour"
       },
       {
         "code": "day",
@@ -2587,7 +2809,8 @@
         "symbol": "day",
         "toBase": 24,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Day"
       },
       {
         "code": "week",
@@ -2598,7 +2821,8 @@
         "symbol": "wk",
         "toBase": 168,
         "isBaseUnit": false,
-        "isPopular": false
+        "isPopular": false,
+        "title": "Week"
       },
       {
         "code": "month",
@@ -2609,7 +2833,8 @@
         "symbol": "mo",
         "toBase": 720,
         "isBaseUnit": false,
-        "isPopular": true
+        "isPopular": true,
+        "title": "Month"
       }
     ],
     "audit": {
@@ -2618,5 +2843,59 @@
       "updatedAt": "2025-08-06T18:34:00Z",
       "updatedBy": "ADMIN"
     }
+  },
+  {
+    "meta": {
+      "unitId": "UNT-1765509290821-QTY",
+      "type": "quantity",
+      "version": 1,
+      "flags": {
+        "isActive": true,
+        "isDeleted": false,
+        "isDefault": true,
+        "isCustom": false
+      },
+      "system": "global",
+      "baseUnitCode": "PCS",
+      "conversionMode": "relative",
+      "displayOrder": 0
+    },
+    "subunits": [
+      {
+        "code": "PCS",
+        "symbol": "pcs",
+        "title": "Pieces",
+        "toBase": 1,
+        "isBaseUnit": true
+      },
+      {
+        "code": "BOX",
+        "symbol": "box",
+        "title": "Box",
+        "toBase": 0,
+        "isBaseUnit": false
+      },
+      {
+        "code": "PKT",
+        "symbol": "pkt",
+        "title": "Packet",
+        "toBase": 0,
+        "isBaseUnit": false
+      },
+      {
+        "code": "BAG",
+        "symbol": "bag",
+        "title": "Bag",
+        "toBase": 0,
+        "isBaseUnit": false
+      },
+      {
+        "code": "DOZ",
+        "symbol": "doz",
+        "title": "Dozen",
+        "toBase": 12,
+        "isBaseUnit": false
+      }
+    ]
   }
 ]
