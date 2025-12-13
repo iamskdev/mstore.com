@@ -291,6 +291,9 @@
   background-repeat: no-repeat;
   background-position: right 16px center;
   padding-right: 40px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .mstore-select:focus {

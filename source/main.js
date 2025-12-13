@@ -70,10 +70,26 @@ class RouteManager {
     let config = this.routeConfig[this.currentRole]?.[this.currentView];
 
     if (!config) {
-      // Try an exact match in commonViews first.
-      config = this.routeConfig.commonViews?.[this.currentView];
+      // Try parameterized route matching in role-specific config first
+      if (this.routeConfig[this.currentRole]) {
+        const viewParts = this.currentView.split('/');
+        const roleViewMatch = Object.keys(this.routeConfig[this.currentRole]).find(key => {
+          const keyParts = key.split('/');
+          if (keyParts.length !== viewParts.length) return false;
+          return keyParts.every((part, i) => part.startsWith(':') || part === viewParts[i]);
+        });
+
+        if (roleViewMatch) {
+          config = this.routeConfig[this.currentRole][roleViewMatch];
+        }
+      }
+
+      // If still not found, try an exact match in commonViews
+      if (!config) {
+        config = this.routeConfig.commonViews?.[this.currentView];
+      }
       
-      // If still not found, it might be a parameterized route.
+      // If still not found, it might be a parameterized route in commonViews.
       if (!config) {
         const viewParts = this.currentView.split('/');
         const commonViewMatch = Object.keys(this.routeConfig.commonViews).find(key => {
@@ -90,6 +106,14 @@ class RouteManager {
       }
     }
     config = config || {}; // Ensure config is at least an empty object
+    
+    // Resolve title function if it exists
+    if (typeof config.title === 'function' && this.routeParams) {
+      config = { ...config, title: config.title(this.routeParams) };
+    } else if (typeof config.title === 'function') {
+      config = { ...config, title: config.title({}) };
+    }
+    
     const state = { role: this.currentRole, view: this.currentView, config: config };
     this.subscribers.forEach(callback => callback(state));
   }
@@ -104,10 +128,26 @@ class RouteManager {
     let config = this.routeConfig[this.currentRole]?.[this.currentView];
 
     if (!config) {
-      // Try an exact match in commonViews first.
-      config = this.routeConfig.commonViews?.[this.currentView];
+      // Try parameterized route matching in role-specific config first
+      if (this.routeConfig[this.currentRole]) {
+        const viewParts = this.currentView.split('/');
+        const roleViewMatch = Object.keys(this.routeConfig[this.currentRole]).find(key => {
+          const keyParts = key.split('/');
+          if (keyParts.length !== viewParts.length) return false;
+          return keyParts.every((part, i) => part.startsWith(':') || part === viewParts[i]);
+        });
 
-      // If still not found, it might be a parameterized route.
+        if (roleViewMatch) {
+          config = this.routeConfig[this.currentRole][roleViewMatch];
+        }
+      }
+
+      // If still not found, try an exact match in commonViews first.
+      if (!config) {
+        config = this.routeConfig.commonViews?.[this.currentView];
+      }
+
+      // If still not found, it might be a parameterized route in commonViews.
       if (!config) {
         const viewParts = this.currentView.split('/');
         const commonViewMatch = Object.keys(this.routeConfig.commonViews).find(key => {
@@ -123,6 +163,14 @@ class RouteManager {
       }
     }
     config = config || {}; // Ensure config is at least an empty object.
+    
+    // Resolve title function if it exists
+    if (typeof config.title === 'function' && this.routeParams) {
+      config = { ...config, title: config.title(this.routeParams) };
+    } else if (typeof config.title === 'function') {
+      config = { ...config, title: config.title({}) };
+    }
+    
     const state = { role: this.currentRole, view: this.currentView, config: config };
     return state;
   }
@@ -188,40 +236,71 @@ class RouteManager {
 
     let config;
     let routeParams = {};
+    // Reset routeParams at the start of each switch
+    this.routeParams = {};
 
     // First, check for a direct match in the role-specific config
     if (this.routeConfig[role] && this.routeConfig[role][viewId]) {
       config = this.routeConfig[role][viewId];
     } else {
-      // If not found, check for a parameterized route in commonViews
-      const commonViewMatch = Object.keys(this.routeConfig.commonViews).find(key => {
-        const keyParts = key.split('/');
-        const viewIdParts = viewId.split('/');
-        if (keyParts.length !== viewIdParts.length) {
-          return false;
-        }
-
-        let isMatch = true;
-        for (let i = 0; i < keyParts.length; i++) {
-          if (keyParts[i].startsWith(':')) {
-            const paramName = keyParts[i].substring(1);
-            routeParams[paramName] = viewIdParts[i];
-          } else if (keyParts[i] !== viewIdParts[i]) {
-            isMatch = false;
-            break;
+      // If not found, check for a parameterized route in role-specific config first
+      let roleViewMatch = null;
+      if (this.routeConfig[role]) {
+        roleViewMatch = Object.keys(this.routeConfig[role]).find(key => {
+          const keyParts = key.split('/');
+          const viewIdParts = viewId.split('/');
+          if (keyParts.length !== viewIdParts.length) {
+            return false;
           }
-        }
-        return isMatch;
-      });
 
-      if (commonViewMatch) {
-        config = this.routeConfig.commonViews[commonViewMatch];
+          let isMatch = true;
+          for (let i = 0; i < keyParts.length; i++) {
+            if (keyParts[i].startsWith(':')) {
+              const paramName = keyParts[i].substring(1);
+              routeParams[paramName] = viewIdParts[i];
+            } else if (keyParts[i] !== viewIdParts[i]) {
+              isMatch = false;
+              break;
+            }
+          }
+          return isMatch;
+        });
+      }
+
+      if (roleViewMatch) {
+        config = this.routeConfig[role][roleViewMatch];
         this.routeParams = routeParams; // Store params for the view to access
       } else {
-        console.warn(`routeManager: Invalid role "${role}" or view "${viewId}". Falling back to default.`);
-        role = 'guest'; // Safe fallback role
-        viewId = this.defaultViews[role];
-        config = this.routeConfig[role][viewId];
+        // If still not found, check for a parameterized route in commonViews
+        const commonViewMatch = Object.keys(this.routeConfig.commonViews).find(key => {
+          const keyParts = key.split('/');
+          const viewIdParts = viewId.split('/');
+          if (keyParts.length !== viewIdParts.length) {
+            return false;
+          }
+
+          let isMatch = true;
+          for (let i = 0; i < keyParts.length; i++) {
+            if (keyParts[i].startsWith(':')) {
+              const paramName = keyParts[i].substring(1);
+              routeParams[paramName] = viewIdParts[i];
+            } else if (keyParts[i] !== viewIdParts[i]) {
+              isMatch = false;
+              break;
+            }
+          }
+          return isMatch;
+        });
+
+        if (commonViewMatch) {
+          config = this.routeConfig.commonViews[commonViewMatch];
+          this.routeParams = routeParams; // Store params for the view to access
+        } else {
+          console.warn(`routeManager: Invalid role "${role}" or view "${viewId}". Falling back to default.`);
+          role = 'guest'; // Safe fallback role
+          viewId = this.defaultViews[role];
+          config = this.routeConfig[role][viewId];
+        }
       }
     }
 
@@ -261,9 +340,14 @@ class RouteManager {
     }
     
     // --- NEW: Explicitly hide all view containers before switching ---
+    // This ensures no views remain visible when switching, fixing the blank page issue on refresh
     document.querySelectorAll('.page-view-area').forEach(element => {
       element.style.display = 'none'; // Explicitly hide
       element.classList.remove('view-active'); // Also remove the class
+      // Clear innerHTML to prevent stale content from showing
+      if (element.id !== resolvedConfig.id) {
+        element.innerHTML = '';
+      }
     });
     // --- END NEW ---
 
@@ -457,8 +541,10 @@ class RouteManager {
         if (module.init && typeof module.init === 'function') {
           this.currentModule = module; // Store the loaded module
           console.log(`routeManager: Calling init() for ${config.id}`);
-          // Pass a 'force' flag to the init function to bypass initialization checks.
-          module.init(true); // Pass true to force re-initialization
+          // Pass routeParams if available, along with force flag
+          const initParams = this.routeParams || {};
+          // Always pass both parameters - init functions can handle extra params
+          module.init(true, initParams); // Pass force flag and params
           console.log(`routeManager: Successfully initialized JS for ${config.id}`);
         } else {
           console.warn(`routeManager: init() function not found or not a function in ${config.id} at ${jsPath}.`);
@@ -568,6 +654,12 @@ class RouteManager {
 
   async init() {
       this.loadedViews.clear(); // Clear loaded views on init to ensure fresh content load
+      
+    // --- FIX: Hide all views on init to prevent blank page issue ---
+    document.querySelectorAll('.page-view-area').forEach(element => {
+      element.style.display = 'none';
+      element.classList.remove('view-active');
+    });
   
     // --- STEP 1: CRITICAL - Synchronize Auth State First ---
     // This is the most important step to prevent the "logout on refresh" bug.

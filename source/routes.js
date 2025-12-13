@@ -42,7 +42,16 @@ const routeConfig = {
       path: './source/modules/merchant/pages/add-item.html',
       cssPath: './source/modules/merchant/styles/add-item.css',
       jsPath: './source/modules/merchant/scripts/add-item.js',
-      title: 'Add Item',
+      title: (params) => (params?.itemId ? 'Edit Item' : 'Add Item'),
+      isMainTab: false,
+      dataDependencies: ['categories', 'brands', 'units']
+    },
+    'add-item/:itemId': {
+      id: 'merchant-add-item-view',
+      path: './source/modules/merchant/pages/add-item.html',
+      cssPath: './source/modules/merchant/styles/add-item.css',
+      jsPath: './source/modules/merchant/scripts/add-item.js',
+      title: (params) => (params?.itemId ? 'Edit Item' : 'Add Item'),
       isMainTab: false,
       dataDependencies: ['categories', 'brands', 'units']
     },

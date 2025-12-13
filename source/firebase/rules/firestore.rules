@@ -40,14 +40,18 @@ service cloud.firestore {
         return isRequestingUser(request.resource.data.auth.provider.uid);
     }
 
+
     /**
-     * Check karta hai ki user us document ka malik hai jo ek custom user ID (e.g., USR-...) ke through link hai.
-     * Yeh `users` collection se user ka auth UID nikal kar tulna karta hai.
-     * Yeh 'accounts', 'logs', 'orders' jaise collections ke liye istemal hota hai.
+     * Check karta hai ki user us merchant ka malik hai jo ek merchant ID (e.g., MRC-...) ke through link hai.
+     * Yeh pehle merchant document se userId nikalta hai, phir user document se auth UID nikal kar tulna karta hai.
+     * Yeh 'items' collection ke liye istemal hota hai.
      */
-    function isOwnerOfLinkedDoc(customUserId) {
-      return isRequestingUser(get(/databases/$(database)/documents/users/$(customUserId)).data.auth.provider.uid);
+    function isOwnerOfMerchant(merchantId) {
+      let merchantData = get(/databases/$(database)/documents/merchants/$(merchantId)).data;
+      let userId = merchantData.meta.links.userId;
+      return isRequestingUser(get(/databases/$(database)/documents/users/$(userId)).data.auth.provider.uid);
     }
+
 
     // ===================================================================
     // --- PUBLIC COLLECTIONS (सार्वजनिक संग्रह) ---
@@ -57,7 +61,10 @@ service cloud.firestore {
     // ===================================================================
     match /items/{itemId} {
       allow read: if true;
-      allow write: if isAdmin();
+      // Merchants can create/update items that belong to them, admins can do everything
+      allow create: if isOwnerOfMerchant(request.resource.data.meta.links.merchantId) || isAdmin();
+      allow update: if isOwnerOfMerchant(resource.data.meta.links.merchantId) || isAdmin();
+      allow delete: if isAdmin();
     }
     match /categories/{categoryId} {
       allow read: if true;

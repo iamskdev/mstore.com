@@ -1,5 +1,5 @@
 import { createListCard, initCardHelper } from '../../../templates/cards/card-helper.js';
-import { fetchAllItems } from '../../../utils/data-manager.js';
+import { fetchAllItems, localCache } from '../../../utils/data-manager.js';
 
 let isInitialized = false;
 let eventListeners = []; // To keep track of added event listeners
@@ -44,20 +44,23 @@ export async function init() {
             { selector: '.stock-status', key: 'inventory.stockQty' } // This will be handled by createListCard's internal logic for stock/service status
         ],
         buttons: [
-            { label: (item) => item.meta.flags.isPublic ? 'Private' : 'Public', action: 'TOGGLE_VISIBILITY' }, // Public/Private button
-            { label: 'Edit Item', action: 'EDIT_ITEM' },
+            { label: (item) => item.meta.visibility === 'public' ? 'Public' : 'Private', action: 'TOGGLE_VISIBILITY' }, // Public/Private button
+            { label: 'Update Item', action: 'EDIT_ITEM' },
             { label: 'View Details', action: 'VIEW_DETAILS' },
             { label: 'Share me', action: 'SHARE_ITEM' }
         ],
         actionHandlers: {
             TOGGLE_VISIBILITY: (item) => {
-                const newVisibility = !item.meta.flags.isPublic;
-                alert(`${item.info.name} is now ${newVisibility ? 'Public' : 'Private'}`);
+                const newVisibility = item.meta.visibility === 'public' ? 'private' : 'public';
+                alert(`${item.info.name} is now ${newVisibility}`);
                 // Implement actual logic to update item visibility
             },
             EDIT_ITEM: (item) => {
-                alert(`Edit item: ${item.info.name}`);
                 // Implement actual edit logic here
+                // Navigate to the add-item page with the item's ID
+                import('../../../main.js').then(({ routeManager }) => {
+                    routeManager.switchView('merchant', `add-item/${item.meta.itemId}`);
+                });
             },
             VIEW_DETAILS: (item) => {
                 alert(`View details for: ${item.info.name}`);
@@ -158,7 +161,14 @@ export async function init() {
     };
 
     // --- NEW: Fetch all inventory items ---
-    const allInventoryItems = await fetchAllItems();
+    let allInventoryItems = await fetchAllItems();
+    
+    // Sort items by createdAt descending (newest first)
+    allInventoryItems.sort((a, b) => {
+        const dateA = new Date(a.audit?.createdAt || 0);
+        const dateB = new Date(b.audit?.createdAt || 0);
+        return dateB - dateA; // Descending order
+    });
 
     // --- NEW: Dummy Transaction Data & Rendering Logic ---
     const dummyTransactions = [
@@ -401,6 +411,13 @@ export async function init() {
             filteredInventory = inventory.filter(item => item.meta.type === filter);
         }
 
+        // Sort by createdAt descending (newest first) if not already sorted
+        filteredInventory.sort((a, b) => {
+            const dateA = new Date(a.audit?.createdAt || 0);
+            const dateB = new Date(b.audit?.createdAt || 0);
+            return dateB - dateA; // Descending order
+        });
+
         if (filteredInventory.length === 0) {
             container.innerHTML = `<div class="placeholder-content" style="padding-top: 20px;"><i class="fas fa-boxes"></i><p>No items found for this filter.</p></div>`;
             return;
@@ -414,6 +431,9 @@ export async function init() {
                 container.appendChild(cardElement);
             }
         });
+        
+        // Store filtered inventory in memory for later use
+        localCache.set('lastFilteredInventory', filteredInventory);
     }
 
     // --- NEW: Listener for inventory filter buttons ---
