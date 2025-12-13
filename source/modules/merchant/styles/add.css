@@ -156,7 +156,7 @@
 }
 
 .transaction-financials .amount.due {
-    color: var(--accent-warning, #ffc107);
+    color: var(--accent-warning);
 }
 
 .transaction-financials .text-right {
@@ -373,7 +373,7 @@
 
 .filter-btn.active {
     background-color: var(--accent-primary);
-    color: white;
+    color: var(--accent-text);
     border-color: var(--accent-primary);
 }
 
@@ -427,7 +427,7 @@
     height: 50px;
     border-radius: 50%;
     background-color: var(--accent-primary);
-    color: white;
+    color: var(--accent-text);
     border: none;
     display: grid;
     place-items: center;
@@ -520,7 +520,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: var(--bg-overlay-dark);
     backdrop-filter: blur(2px);
     opacity: 0;
     pointer-events: none;
@@ -541,7 +541,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: var(--bg-overlay-dark);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease;
@@ -616,7 +616,7 @@
 /* NEW: Style for the active (selected) preset button */
 .date-filter-btn.active {
     background-color: var(--accent-primary);
-    color: white;
+    color: var(--accent-text);
     border-color: var(--accent-primary);
 }
 
@@ -688,7 +688,7 @@
 
 .date-filter-actions .date-filter-btn.primary {
     background-color: var(--accent-primary);
-    color: white;
+    color: var(--accent-text);
     border-color: var(--accent-primary);
 }
 

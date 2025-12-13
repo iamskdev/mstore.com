@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Item - mStore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <!-- Media Editor Loader for Demo -->
+    <script>
+        // Fetch and inject media editor for demo usage
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('../source/modals/media-editor/media-editor.html');
+                const html = await response.text();
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                // Load media editor JS
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.textContent = `
+                    import { initMediaEditor } from '../source/modals/media-editor/media-editor.js';
+                    initMediaEditor();
+                    console.log('✅ Media Editor loaded for demo');
+                `;
+                document.body.appendChild(script);
+            } catch (error) {
+                console.error('Failed to load media editor:', error);
+            }
+        });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .mstore-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .mstore-header-back {
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 16px;
+            transition: transform 0.2s;
+        }
+
+        .mstore-header-back:hover {
+            transform: translateX(-3px);
+        }
+
+        .mstore-header-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .mstore-header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .mstore-header-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .mstore-header-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Content Container */
+        .mstore-content {
+            padding: 0;
+            max-width: 100%;
+        }
+
+        /* Toggle Section */
+        .mstore-toggle-section {
+            background: white;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .mstore-toggle-group {
+            display: flex;
+            background: #e5e7eb;
+            border-radius: 25px;
+            padding: 3px;
+            gap: 2px;
+            position: relative;
+            isolation: isolate;
+        }
+
+        .mstore-toggle-btn {
+            padding: 8px 0;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 13px;
+            border-radius: 22px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1 1 0px;
+            min-width: 80px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .mstore-toggle-btn.active {
+            color: white;
+            /* background: #3b82f6; Removed background for swipe effect */
+        }
+
+        .mstore-toggle-slider-bg {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: calc(50% - 4px);
+            height: calc(100% - 6px);
+            background: #3b82f6;
+            border-radius: 22px;
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(0);
+        }
+
+        .mstore-toggle-group.service-mode .mstore-toggle-slider-bg {
+            transform: translateX(calc(100% + 2px));
+        }
+
+        .mstore-visibility-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Form Card */
+        .mstore-form-card {
+            background: white;
+            margin: 0;
+            padding: 12px;
+        }
+
+        /* Photo Upload Section */
+        .mstore-photo-section {
+            margin-bottom: 24px;
+        }
+
+        .mstore-photo-grid {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px 0;
+        }
+
+        .mstore-photo-item {
+            min-width: 50px;
+            width: 50px;
+            height: 50px;
+            border: 2px dashed #d1d5db;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f9fafb;
+        }
+
+        .mstore-photo-item:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .mstore-photo-item.primary {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .mstore-photo-icon {
+            font-size: 18px;
+            color: #3b82f6;
+            margin-bottom: 2px;
+        }
+
+        .mstore-photo-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .mstore-photo-grid.drag-over {
+            border: 2px dashed #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .mstore-photo-label {
+            font-size: 8px;
+            color: #6b7280;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Form Group */
+        .mstore-form-group {
+            margin-bottom: 20px;
+        }
+
+        .mstore-form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .mstore-form-label.required::after {
+            content: '*';
+            color: #ef4444;
+            margin-left: 4px;
+        }
+
+        /* Notched Outline Input - Material Design Style */
+        .mstore-input-wrapper {
+            position: relative;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .mstore-input-wrapper:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .mstore-input-wrapper:focus-within .mstore-notched-label {
+            color: #3b82f6;
+        }
+
+        /* Notched Label */
+        .mstore-notched-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: white;
+            padding: 0 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .mstore-notched-label.required::after {
+            content: '*';
+            color: #ef4444;
+            margin-left: 2px;
+        }
+
+        .mstore-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            background: transparent;
+            color: #1f2937;
+        }
+
+        .mstore-input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* Input with Icon */
+        .mstore-input-with-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mstore-input-icon {
+            color: #6b7280;
+            font-size: 18px;
+            padding-left: 16px;
+        }
+
+        .mstore-input-with-icon .mstore-input {
+            padding-left: 0;
+        }
+
+        /* Select Dropdown */
+        .mstore-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+            background: white;
+            color: #1f2937;
+            cursor: pointer;
+            transition: all 0.3s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .mstore-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+
+        /* Two Column Layout */
+        .mstore-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+        }
+
+        /* Checkbox Toggle */
+        .mstore-checkbox-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+        }
+
+        .mstore-checkbox-label {
+            font-size: 15px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .mstore-toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+
+        /* Small Toggle Switch for compact layouts */
+        .mstore-toggle-switch.small {
+            width: 38px;
+            height: 20px;
+        }
+
+        .mstore-toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .mstore-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #d1d5db;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .mstore-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .mstore-toggle-switch.small .mstore-toggle-slider:before {
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+        }
+
+        .mstore-toggle-switch input:checked+.mstore-toggle-slider {
+            background-color: #10b981;
+        }
+
+        .mstore-toggle-switch input:checked+.mstore-toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        .mstore-toggle-switch.small input:checked+.mstore-toggle-slider:before {
+            transform: translateX(18px);
+        }
+
+        /* Action Buttons */
+        .mstore-action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mstore-action-btn.primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .mstore-action-btn.primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .mstore-action-btn.secondary {
+            background: transparent;
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        .mstore-action-btn.secondary:hover {
+            background: #eff6ff;
+        }
+
+        /* Expandable Section */
+        .mstore-expandable {
+            margin-top: 12px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .mstore-expandable.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* Info Icon */
+        .mstore-info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid #6b7280;
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: help;
+            margin-left: 4px;
+        }
+
+        /* Date Badge */
+        .mstore-date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #eff6ff;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #3b82f6;
+            font-weight: 500;
+        }
+
+        /* Link Button */
+        .mstore-link-btn {
+            color: #3b82f6;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .mstore-link-btn:hover {
+            color: #2563eb;
+            gap: 8px;
+        }
+
+        /* Bottom Action Bar */
+        .mstore-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .mstore-bottom-bar .mstore-action-btn {
+            flex: 0 0 auto;
+            justify-content: center;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Content Padding for Bottom Bar */
+        .mstore-content-wrapper {
+            padding-bottom: 110px;
+            /* Minimized for compact action bar */
+        }
+
+        /* Textarea */
+        .mstore-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: #1f2937;
+            resize: vertical;
+            min-height: 80px;
+            transition: all 0.3s;
+        }
+
+        .mstore-textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+
+        .mstore-textarea::placeholder {
+            color: #9ca3af;
+        }
+
+        /* Section Divider */
+        .mstore-section-divider {
+            height: 8px;
+            background: #f5f7fa;
+            margin: 24px -12px;
+        }
+
+        /* Tab Section */
+        .mstore-tab-section {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 16px;
+        }
+
+        .mstore-tab-group {
+            display: flex;
+            gap: 24px;
+        }
+
+        .mstore-tab {
+            padding: 14px 0;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .mstore-tab.active {
+            color: #ef4444;
+        }
+
+        .mstore-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -8px;
+            right: -8px;
+            height: 2px;
+            background: #ef4444;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .mstore-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Bottom Navigation Bar (Dummy for Integration) */
+        .mstore-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+            z-index: 90;
+        }
+
+        .mstore-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            flex: 1;
+            padding: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #6b7280;
+        }
+
+        .mstore-nav-item:hover {
+            background: #f9fafb;
+        }
+
+        .mstore-nav-item.active {
+            color: #3b82f6;
+        }
+
+        .mstore-nav-icon {
+            font-size: 22px;
+            transition: transform 0.2s;
+        }
+
+        .mstore-nav-item.active .mstore-nav-icon {
+            transform: scale(1.1);
+        }
+
+        .mstore-nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Adjust bottom bar to sit above navigation */
+        .mstore-bottom-bar {
+            bottom: 60px;
+            /* Position above bottom nav */
+        }
+
+        /* Tab Content Visibility */
+        .mstore-tab-content {
+            display: none;
+        }
+
+        .mstore-tab-content.active {
+            display: block;
+        }
+
+        /* Selection Modal */
+        .mstore-selection-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            /* Dimmed background to show page content behind */
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .mstore-selection-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mstore-selection-container {
+            background: white;
+            width: 100%;
+            height: calc(100% - 120px);
+            /* Leave 120px at top */
+            position: absolute;
+            bottom: 0;
+            border-radius: 16px 16px 0 0;
+            /* Round top corners */
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .mstore-selection-modal.active .mstore-selection-container {
+            transform: translateY(0);
+        }
+
+        @media (min-width: 768px) {
+            .mstore-selection-modal {
+                background: rgba(0, 0, 0, 0.5);
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mstore-selection-container {
+                position: relative;
+                width: 400px;
+                height: 600px;
+                max-height: 80vh;
+                border-radius: 12px;
+                transform: scale(0.9);
+                opacity: 0;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            }
+
+            .mstore-selection-modal.active .mstore-selection-container {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .mstore-selection-header {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .mstore-modal-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .mstore-modal-back-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #374151;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mstore-modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            flex: 1;
+        }
+
+        .mstore-search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .mstore-search-icon-inside {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .mstore-selection-search {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            /* Space for icon */
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            background: #f9fafb;
+            transition: all 0.2s;
+        }
+
+        .mstore-selection-search:focus {
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        .mstore-selection-close {
+            /* Hidden in new design as back button serves purpose, 
+               but kept in DOM if needed or for desktop 'x' */
+            display: none;
+        }
+
+        .mstore-selection-list {
+            overflow-y: auto;
+            flex: 1;
+            padding: 8px 0;
+        }
+
+        .mstore-selection-option {
+            padding: 14px 20px;
+            font-size: 16px;
+            color: #374151;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mstore-selection-option:last-child {
+            border-bottom: none;
+        }
+
+        .mstore-selection-option:hover {
+            background: #f3f4f6;
+        }
+
+        .mstore-checkbox-icon {
+            color: #d1d5db;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .mstore-checkbox-icon.checked {
+            color: #3b82f6;
+        }
+
+        .mstore-selection-group-title {
+            background: #f9fafb;
+            padding: 8px 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+        }
+
+        /* Combobox Styles (Hybrid) */
+        .mstore-combobox-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .mstore-combobox-input {
+            width: 100%;
+            padding: 14px 40px 14px 16px;
+            /* Space for icon */
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #1f2937;
+            outline: none;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .mstore-combobox-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        .mstore-combobox-icon {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6b7280;
+            border-left: 1px solid transparent;
+            /* Optional separator */
+        }
+
+        .mstore-combobox-icon:hover {
+            color: #374151;
+        }
+
+        .mstore-combobox-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1050;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .mstore-combobox-dropdown.active {
+            display: block;
+        }
+
+        .mstore-combobox-option {
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .mstore-combobox-option:hover,
+        .mstore-combobox-option.highlighted {
+            background: #f3f4f6;
+        }
+
+        /* Date Input Styling to match Select */
+        #asOfDateInput {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            cursor: pointer;
+        }
+
+        /* Hide native calendar icon but keep it clickable covering the input */
+        #asOfDateInput::-webkit-calendar-picker-indicator {
+            opacity: 0;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="mstore-header">
+        <div class="mstore-header-back">←</div>
+        <div class="mstore-header-title">Add Item</div>
+        <div class="mstore-header-actions">
+            <div class="mstore-header-icon"><i class="fas fa-clipboard-list"></i></div>
+            <div class="mstore-header-icon"><i class="fas fa-cog"></i></div>
+        </div>
+    </div>
+
+    <!-- Content Wrapper -->
+    <div class="mstore-content-wrapper">
+        <!-- Toggle Section -->
+        <div class="mstore-toggle-section">
+            <div class="mstore-toggle-group" id="toggleGroup">
+                <div class="mstore-toggle-slider-bg"></div>
+                <button class="mstore-toggle-btn active" id="productToggle">Product</button>
+                <button class="mstore-toggle-btn" id="serviceToggle">Service</button>
+            </div>
+            <div class="mstore-visibility-toggle">
+                <span>Public</span>
+                <label class="mstore-toggle-switch">
+                    <input type="checkbox" id="visibilityToggle">
+                    <span class="mstore-toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Form Content -->
+        <div class="mstore-content">
+            <div class="mstore-form-card">
+                <!-- Photo Upload Section -->
+                <div class="mstore-photo-section">
+                    <div class="mstore-photo-grid">
+                        <div class="mstore-photo-item primary">
+                            <div class="mstore-photo-icon"><i class="fas fa-camera"></i></div>
+                            <div class="mstore-photo-label">Thumbnail</div>
+                        </div>
+                        <div class="mstore-photo-item" draggable="true">
+                            <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                            <div class="mstore-photo-label">Add Photo</div>
+                        </div>
+                        <div class="mstore-photo-item" draggable="true">
+                            <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                            <div class="mstore-photo-label">Add Photo</div>
+                        </div>
+                        <div class="mstore-photo-item" draggable="true">
+                            <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                            <div class="mstore-photo-label">Add Photo</div>
+                        </div>
+                        <div class="mstore-photo-item" draggable="true">
+                            <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                            <div class="mstore-photo-label">Add Photo</div>
+                        </div>
+                        <div class="mstore-photo-item" draggable="true">
+                            <div class="mstore-photo-icon"><i class="fas fa-plus"></i></div>
+                            <div class="mstore-photo-label">Add Photo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item Name -->
+                <div class="mstore-form-group">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label class="mstore-form-label required" style="margin-bottom: 0;">Item Name</label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span id="itemStatusLabel" style="font-size: 12px; color: #6b7280;">In Stock</span>
+                            <label class="mstore-toggle-switch small">
+                                <input type="checkbox" id="itemStatusToggle" checked>
+                                <span class="mstore-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mstore-input-wrapper" style="margin-top: 0;">
+                        <input type="text" class="mstore-input" placeholder="Enter item name here">
+                    </div>
+                </div>
+
+                <!-- Primary Unit & Secondary Unit -->
+                <div class="mstore-form-group">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label class="mstore-form-label" style="margin-bottom: 0;">Primary Unit</label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 12px; color: #6b7280;">Add Secondary unit?</span>
+                            <label class="mstore-toggle-switch small">
+                                <input type="checkbox" id="secondaryUnitToggle">
+                                <span class="mstore-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="primaryUnit" value="">
+                    <div class="mstore-combobox-wrapper" id="primaryUnitWrapper">
+                        <input type="text" class="mstore-combobox-input" id="primaryUnitInputDisplay"
+                            placeholder="Select or Type Unit" autocomplete="off">
+                        <div class="mstore-combobox-icon" id="primaryUnitIcon"><svg xmlns="http://www.w3.org/2000/svg"
+                                width="12" height="12" viewBox="0 0 12 12" style="width: 12px; height: 12px;">
+                                <path fill="#6b7280" d="M6 9L1 4h10z" />
+                            </svg></div>
+                        <div class="mstore-combobox-dropdown" id="primaryUnitDropdown"></div>
+                    </div>
+
+                    <div class="mstore-expandable" id="secondaryUnitSection">
+                        <div style="margin-top: 24px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label class="mstore-form-label" style="margin-bottom: 0;">Secondary Unit</label>
+                                <button type="button" id="conversionBadgeBtn" class="mstore-action-btn secondary"
+                                    style="padding: 2px 10px; font-size: 11px; border-radius: 12px; min-height: 0; height: auto; display: none; border-style: dashed;">
+                                    <span id="conversionBadgeText">1 Box = 10 pc</span>
+                                    <i class="fas fa-pen" style="margin-left: 6px; font-size: 9px;"></i>
+                                </button>
+                            </div>
+                            <input type="hidden" id="secondaryUnit" value="">
+                            <!-- Hidden Conversion Input -->
+                            <input type="hidden" id="conversionInput">
+
+                            <div class="mstore-combobox-wrapper" id="secondaryUnitWrapper">
+                                <input type="text" class="mstore-combobox-input" id="secondaryUnitInputDisplay"
+                                    placeholder="Select or Type Unit" autocomplete="off">
+                                <div class="mstore-combobox-icon" id="secondaryUnitIcon"><svg
+                                        xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"
+                                        style="width: 12px; height: 12px;">
+                                        <path fill="#6b7280" d="M6 9L1 4h10z" />
+                                    </svg></div>
+                                <div class="mstore-combobox-dropdown" id="secondaryUnitDropdown"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item Code -->
+                <!-- Item Code -->
+                <div class="mstore-form-group" style="margin-top: 20px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label class="mstore-form-label" style="margin-bottom: 0;">Item Code</label>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="mstore-action-btn secondary" id="assignCodeBtn"
+                                style="flex: 0 0 auto; padding: 4px 10px; font-size: 11px; border-radius: 16px; display: flex; align-items: center; gap: 3px;">
+                                <i class="fas fa-barcode" style="font-size: 10px;"></i> Assign Code
+                            </button>
+                            <button class="mstore-action-btn secondary" id="scanCodeBtn"
+                                style="flex: 0 0 auto; padding: 4px 10px; font-size: 11px; border-radius: 16px; display: flex; align-items: center; gap: 3px;">
+                                <i class="fas fa-camera" style="font-size: 10px;"></i> Scan Code
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mstore-input-wrapper" style="margin-top: 0;">
+                        <input type="text" class="mstore-input" id="itemCodeInput" placeholder="Item code or Barcode">
+                    </div>
+                </div>
+
+                <!-- Item Category (with Brand Toggle) -->
+                <div class="mstore-form-group">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label class="mstore-form-label" style="margin-bottom: 0;">Item Category</label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 12px; color: #6b7280;">Add Brand?</span>
+                            <label class="mstore-toggle-switch small">
+                                <input type="checkbox" id="brandToggle">
+                                <span class="mstore-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="itemCategory" value="">
+                    <div class="mstore-combobox-wrapper" id="categoryWrapper">
+                        <input type="text" class="mstore-combobox-input" id="categoryInputDisplay"
+                            placeholder="Select or Type Category" autocomplete="off">
+                        <div class="mstore-combobox-icon" id="categoryIcon"><svg xmlns="http://www.w3.org/2000/svg"
+                                width="12" height="12" viewBox="0 0 12 12" style="width: 12px; height: 12px;">
+                                <path fill="#6b7280" d="M6 9L1 4h10z" />
+                            </svg></div>
+                        <div class="mstore-combobox-dropdown" id="categoryDropdown"></div>
+                    </div>
+                </div>
+
+                <!-- Brand Field (Expandable) -->
+                <div class="mstore-expandable" id="brandSection">
+                    <div class="mstore-form-group">
+                        <label class="mstore-form-label">Brand</label>
+                        <input type="hidden" id="itemBrand" value="">
+                        <div class="mstore-combobox-wrapper" id="brandWrapper">
+                            <input type="text" class="mstore-combobox-input" id="brandInputDisplay"
+                                placeholder="Select or Type Brand" autocomplete="off">
+                            <div class="mstore-combobox-icon" id="brandIcon"><svg xmlns="http://www.w3.org/2000/svg"
+                                    width="12" height="12" viewBox="0 0 12 12" style="width: 12px; height: 12px;">
+                                    <path fill="#6b7280" d="M6 9L1 4h10z" />
+                                </svg></div>
+                            <div class="mstore-combobox-dropdown" id="brandDropdown"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media Upload Modal -->
+                <div id="mediaUploadModal" class="mstore-selection-modal"
+                    style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease;">
+                    <div class="mstore-selection-container"
+                        style="width: 90%; max-width: 320px; height: auto; transform: scale(0.95); transition: transform 0.3s ease; border-radius: 16px; margin: auto; padding: 20px; position: relative; background: white; box-shadow: 0 5px 25px rgba(0,0,0,0.2);">
+                        <h3
+                            style="font-size: 18px; font-weight: 600; margin-bottom: 24px; color: #1f2937; text-align: center;">
+                            Choose Image Source</h3>
+                        <div style="display: flex; justify-content: space-around; margin-bottom: 24px; gap: 16px;">
+                            <button id="openCameraBtn" class="mstore-action-btn"
+                                style="flex-direction: column; align-items: center; justify-content: center; height: 100px; width: 100px; border: 1px solid #e5e7eb; background: #f9fafb; color: #374151; border-radius: 12px;">
+                                <i class="fas fa-camera" style="font-size: 32px; margin-bottom: 10px;"></i>
+                                <span style="font-weight: 500;">Camera</span>
+                            </button>
+                            <button id="openGalleryBtn" class="mstore-action-btn"
+                                style="flex-direction: column; align-items: center; justify-content: center; height: 100px; width: 100px; border: 1px solid #e5e7eb; background: #f9fafb; color: #374151; border-radius: 12px;">
+                                <i class="fas fa-images" style="font-size: 32px; margin-bottom: 10px;"></i>
+                                <span style="font-weight: 500;">Gallery</span>
+                            </button>
+                        </div>
+                        <input type="file" id="mediaInput" accept="image/*" style="display: none;">
+                        <input type="file" id="cameraInput" accept="image/*" capture="environment"
+                            style="display: none;">
+                        <button id="closeMediaUploadModal" class="mstore-action-btn secondary"
+                            style="width: 100%; justify-content: center; padding: 12px;">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- Custom Camera Modal -->
+                <div id="customCameraModal" class="mstore-selection-modal"
+                    style="z-index: 20000; background: black; display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+
+                    <div style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column;">
+                        <!-- Top Bar -->
+                        <div
+                            style="padding: 16px; display: flex; justify-content: space-between; align-items: center; color: white; background: rgba(0,0,0,0.4); position: absolute; top:0; left:0; right:0; z-index: 10;">
+                            <span style="font-size: 18px; font-weight: 500;">Take Photo</span>
+                            <button id="closeCameraModalBtn"
+                                style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;"><i
+                                    class="fas fa-times"></i></button>
+                        </div>
+
+                        <!-- Video Feed -->
+                        <video id="cameraFeed" autoplay playsinline
+                            style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
+                        <canvas id="cameraCanvas" style="display: none;"></canvas>
+
+                        <!-- Bottom Controls -->
+                        <div
+                            style="position: absolute; bottom: 80px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 40px; z-index: 20001;">
+                            <button id="capturePhotoBtn"
+                                style="width: 80px; height: 80px; border-radius: 50%; background: white; border: 4px solid rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                                <div
+                                    style="width: 62px; height: 62px; border-radius: 50%; background: white; border: 2px solid #333;">
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tags Section -->
+                <div class="mstore-form-group">
+                    <label for="item-tags" class="mstore-form-label">Item Tags</label>
+                    <div class="mstore-input-wrapper">
+                        <input type="text" class="mstore-input" id="item-tags"
+                            placeholder="e.g. snack, biscuit, chai-time">
+                    </div>
+                    <div id="tagsHelp" class="form-text" style="font-size: 12px; color: #6b7280; margin-top: 6px;">
+                        Use commas to separate different tags. Tags help customers find your product.
+                    </div>
+                </div>
+
+                <!-- Private Note (Admin Only) -->
+                <!-- Description & Private Note -->
+                <!-- Description Section -->
+                <div class="mstore-form-group">
+                    <label class="mstore-form-label">Description</label>
+                    <textarea class="mstore-textarea" placeholder="Enter public description..."></textarea>
+                </div>
+
+                <div class="mstore-section-divider"></div>
+
+                <!-- Private Note Toggle and Section -->
+                <div class="mstore-checkbox-group">
+                    <label class="mstore-checkbox-label">Add Private Note? (Admin Only)</label>
+                    <label class="mstore-toggle-switch">
+                        <input type="checkbox" id="privateNoteToggle">
+                        <span class="mstore-toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="mstore-expandable" id="privateNoteSection">
+                    <div class="mstore-form-group">
+                        <div class="mstore-input-wrapper">
+                            <textarea class="mstore-input" style="min-height: 80px; resize: vertical;"
+                                placeholder="Add internal notes visible only to admin..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mstore-section-divider"></div>
+
+                <!-- Tab Section for Prices and Stock Management -->
+                <div class="mstore-tab-section">
+                    <div class="mstore-tab-group">
+                        <button class="mstore-tab mstore-pricing-tab active" data-tab="pricing">Prices</button>
+                        <button class="mstore-tab mstore-stock-tab" data-tab="stock">Stock Management</button>
+                        <button class="mstore-tab mstore-more-tab" data-tab="more">More Details</button>
+                    </div>
+                </div>
+
+                <!-- Pricing Tab Content -->
+                <div class="mstore-tab-content active" id="pricingTabContent">
+                    <!-- Tax Included -->
+                    <div class="mstore-checkbox-group" style="margin-top: 12px; margin-bottom: 24px;">
+                        <label class="mstore-checkbox-label">Tax included</label>
+                        <label class="mstore-toggle-switch">
+                            <input type="checkbox" id="taxIncludedToggle" checked>
+                            <span class="mstore-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <!-- Purchase Price -->
+                    <!-- Purchase Price -->
+                    <div class="mstore-form-group" style="margin-top: 0; margin-bottom: 24px;">
+                        <div class="mstore-input-wrapper">
+                            <span class="mstore-notched-label">
+                                Purchase Price
+                                <span class="mstore-info-icon">i</span>
+                            </span>
+                            <div class="mstore-input-with-icon">
+                                <span class="mstore-input-icon">₹</span>
+                                <input type="number" class="mstore-input" placeholder="Enter purchase price">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selling Price -->
+                    <div class="mstore-form-group" style="margin-bottom: 20px;">
+                        <div class="mstore-input-wrapper">
+                            <span class="mstore-notched-label">Selling Price</span>
+                            <div class="mstore-input-with-icon">
+                                <span class="mstore-input-icon">₹</span>
+                                <input type="number" class="mstore-input" placeholder="Enter selling price">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Add MRP Toggle Row -->
+                    <div class="mstore-checkbox-group">
+                        <label class="mstore-checkbox-label">Add MRP?</label>
+                        <label class="mstore-toggle-switch">
+                            <input type="checkbox" id="mrpToggle">
+                            <span class="mstore-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Hidden MRP Section -->
+                    <div class="mstore-expandable" id="mrpSection">
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">MRP</span>
+                                <div class="mstore-input-with-icon">
+                                    <span class="mstore-input-icon">₹</span>
+                                    <input type="number" class="mstore-input" placeholder="Enter MRP">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Wholesale Price -->
+                    <div class="mstore-checkbox-group">
+                        <label class="mstore-checkbox-label">Add Wholesale Price</label>
+                        <label class="mstore-toggle-switch">
+                            <input type="checkbox" id="wholesalePriceToggle">
+                            <span class="mstore-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="mstore-expandable" id="wholesalePriceSection">
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">Wholesale Price</span>
+                                <div class="mstore-input-with-icon">
+                                    <span class="mstore-input-icon">₹</span>
+                                    <input type="number" class="mstore-input" placeholder="Enter wholesale price">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Tab Content -->
+                <div class="mstore-tab-content" id="stockTabContent">
+                    <!-- Enable Stock Tracking -->
+                    <div class="mstore-checkbox-group">
+                        <label class="mstore-checkbox-label">Enable Stock Tracking</label>
+                        <label class="mstore-toggle-switch">
+                            <input type="checkbox" id="stockTrackingToggle" checked>
+                            <span class="mstore-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Stock Details Section (Expandable) -->
+                    <div class="mstore-expandable" id="stockDetailsSection">
+                        <!-- Opening Stock & Low Stock Alert -->
+                        <div class="mstore-row" style="margin-top: 20px;">
+                            <div class="mstore-form-group">
+                                <div class="mstore-input-wrapper">
+                                    <span class="mstore-notched-label">Opening Stock</span>
+                                    <input type="number" class="mstore-input" placeholder="Enter count">
+                                </div>
+                            </div>
+                            <div class="mstore-form-group">
+                                <div class="mstore-input-wrapper">
+                                    <span class="mstore-notched-label">
+                                        Low Stock Alert
+                                        <span class="mstore-info-icon">i</span>
+                                    </span>
+                                    <input type="number" class="mstore-input" placeholder="Enter minimum count">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- As of Date (Functional) -->
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">As of Date</span>
+                                <input type="date" class="mstore-input" id="asOfDateInput">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enable Detailed Tracking -->
+                    <div class="mstore-checkbox-group">
+                        <label class="mstore-checkbox-label">Enable Detailed Tracking</label>
+                        <label class="mstore-toggle-switch">
+                            <input type="checkbox" id="detailedTrackingToggle">
+                            <span class="mstore-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Detailed Tracking Section (Expandable) -->
+                    <div class="mstore-expandable" id="detailedTrackingSection">
+                        <!-- Reorder Point & Maximum Stock -->
+                        <div class="mstore-row">
+                            <div class="mstore-form-group">
+                                <div class="mstore-input-wrapper">
+                                    <span class="mstore-notched-label">Reorder Quantity</span>
+                                    <input type="number" class="mstore-input" placeholder="Qty to order">
+                                </div>
+                            </div>
+                            <div class="mstore-form-group">
+                                <div class="mstore-input-wrapper">
+                                    <span class="mstore-notched-label">Maximum Stock Level</span>
+                                    <input type="number" class="mstore-input" placeholder="Enter max stock">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Stock Location -->
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">Stock Location</span>
+                                <input type="text" class="mstore-input" placeholder="e.g., Warehouse A, Shelf B3">
+                            </div>
+                        </div>
+
+                        <!-- Batch/Lot Number & Expiry Date -->
+                        <div class="mstore-row">
+                            <div class="mstore-form-group">
+                                <div class="mstore-input-wrapper">
+                                    <span class="mstore-notched-label">Batch/Lot Number</span>
+                                    <input type="text" class="mstore-input" placeholder="Enter batch number">
+                                </div>
+                            </div>
+                            <div class="mstore-form-group">
+                                <div class="mstore-input-wrapper">
+                                    <span class="mstore-notched-label">Expiry Date</span>
+                                    <input type="date" class="mstore-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More Details Tab Content -->
+                <div class="mstore-tab-content" id="moreTabContent">
+                    <div class="mstore-form-group" style="margin-top: 20px;">
+                        <label class="mstore-form-label">Attributes</label>
+                        <div id="attributesContainer">
+                            <!-- Initial Attribute Row -->
+                            <!-- Initial Attribute Row -->
+                            <div class="mstore-row attribute-row"
+                                style="margin-bottom: 10px; align-items: center; gap: 8px; grid-template-columns: 1fr 1fr auto;">
+                                <div class="mstore-input-wrapper" style="margin-top: 0;">
+                                    <input type="text" class="mstore-input" placeholder="Name (e.g. Color)">
+                                </div>
+                                <div class="mstore-input-wrapper" style="margin-top: 0;">
+                                    <input type="text" class="mstore-input" placeholder="Value (e.g. Red)">
+                                </div>
+                                <button type="button"
+                                    style="background: none; border: none; color: #9ca3af; padding: 4px;" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="mstore-link-btn" id="addAttributeBtn" style="margin-top: 0;">
+                            <span>+</span>
+                            <span>Add Attribute</span>
+                        </button>
+                    </div>
+
+                    <div class="mstore-section-divider"></div>
+
+                    <!-- HSN and GST Section (Moved here) -->
+                    <div class="mstore-row">
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">HSN Code</span>
+                                <input type="text" class="mstore-input" placeholder="Enter HSN">
+                            </div>
+                        </div>
+                        <div class="mstore-form-group">
+                            <div class="mstore-input-wrapper">
+                                <span class="mstore-notched-label">GST Rate (%)</span>
+                                <select class="mstore-select" style="border: none;">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="12">12%</option>
+                                    <option value="18">18%</option>
+                                    <option value="28">28%</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Action Bar -->
+    <div class="mstore-bottom-bar">
+        <button class="mstore-action-btn secondary">Cancel</button>
+        <button class="mstore-action-btn primary">Save Item</button>
+    </div>
+
+    <!-- Bottom Navigation Bar (Dummy for Integration) -->
+    <div class="mstore-bottom-nav">
+        <a href="#" class="mstore-nav-item">
+            <div class="mstore-nav-icon"><i class="fas fa-home"></i></div>
+            <div class="mstore-nav-label">Home</div>
+        </a>
+        <a href="#" class="mstore-nav-item">
+            <div class="mstore-nav-icon"><i class="fas fa-box"></i></div>
+            <div class="mstore-nav-label">Products</div>
+        </a>
+        <a href="#" class="mstore-nav-item active">
+            <div class="mstore-nav-icon"><i class="fas fa-plus-circle"></i></div>
+            <div class="mstore-nav-label">Add Item</div>
+        </a>
+        <a href="#" class="mstore-nav-item">
+            <div class="mstore-nav-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="mstore-nav-label">Orders</div>
+        </a>
+        <a href="#" class="mstore-nav-item">
+            <div class="mstore-nav-icon"><i class="fas fa-user"></i></div>
+            <div class="mstore-nav-label">Profile</div>
+        </a>
+    </div>
+
+    <!-- Scanner Modal -->
+    <div id="scannerModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; flex-direction: column; justify-content: center; align-items: center;">
+        <div style="position: absolute; top: 20px; right: 20px; z-index: 2001;">
+            <button id="closeScannerBtn"
+                style="background: white; border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">
+                <i class="fas fa-times" style="font-size: 20px; color: #333;"></i>
+            </button>
+        </div>
+        <div id="reader" style="width: 100%; max-width: 400px;"></div>
+        <p style="color: white; margin-top: 20px;">Point camera at a barcode</p>
+    </div>
+
+    <div id="selectionModal" class="mstore-selection-modal">
+        <div class="mstore-selection-container">
+            <div class="mstore-selection-header">
+                <div class="mstore-modal-top-bar">
+                    <h3 class="mstore-modal-title" id="modalTitle">Select</h3>
+                    <button class="mstore-modal-back-btn" id="modalCloseActionBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mstore-search-wrapper">
+                    <i class="fas fa-search mstore-search-icon-inside"></i>
+                    <input type="text" class="mstore-selection-search" id="modalSearch" placeholder="Search...">
+                </div>
+            </div>
+            <div class="mstore-selection-list" id="modalList">
+                <!-- Options injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Conversion Edit Modal -->
+    <div id="conversionModal" class="mstore-selection-modal"
+        style="z-index: 2200; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s;">
+        <!-- Overriding default container styles to be a centered box -->
+        <div class="mstore-selection-container"
+            style="width: 90%; max-width: 300px; height: auto; max-height: none; transform: scale(0.95); transition: transform 0.2s; border-radius: 12px; margin: auto; padding: 16px; position: relative; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+
+            <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px; color: #1f2937;">Conversion Rate</h3>
+
+            <!-- Radio Option Styling -->
+            <div style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px;
+                border: 1px solid #3b82f6;
+                background: #eff6ff;
+                border-radius: 8px;
+                margin-bottom: 16px;
+            ">
+                <!-- Radio Circle -->
+                <div
+                    style="flex-shrink: 0; width: 18px; height: 18px; border: 2px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%;"></div>
+                </div>
+
+                <!-- Text & Input Equation -->
+                <div
+                    style="font-size: 13px; color: #374151; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px; line-height: 1.5;">
+                    <span style="white-space: nowrap;">1 <span id="modalPrimaryUnitLabel"
+                            style="font-weight: 600;">Kilogram</span> = </span>
+                    <!-- Inline Input -->
+                    <input type="number" id="modalConversionInput" style="
+                            width: 50px;
+                            border: none;
+                            background: transparent;
+                            border-bottom: 1px solid #3b82f6;
+                            text-align: center;
+                            font-weight: 600;
+                            color: #1f2937;
+                            font-size: 13px;
+                            padding: 0 2px;
+                            border-radius: 0;
+                            outline: none;
+                        " placeholder="0">
+                    <span id="modalSecondaryUnitLabel" style="white-space: nowrap;">Gram</span>
+                </div>
+            </div>
+
+            <!-- Compact Buttons: Force Flex Row -->
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <button class="mstore-action-btn secondary" id="closeConversionModal"
+                    style="flex: 1; justify-content: center; padding: 6px 14px; font-size: 12px;">Cancel</button>
+                <button class="mstore-action-btn primary" id="saveConversionModal"
+                    style="flex: 1; justify-content: center; padding: 6px 14px; font-size: 12px;">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create New Item Modal (Generic) -->
+    <div id="createItemModal" class="mstore-selection-modal"
+        style="z-index: 2200; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s;">
+        <div class="mstore-selection-container"
+            style="width: 90%; max-width: 300px; height: auto; max-height: none; transform: scale(0.95); transition: transform 0.2s; border-radius: 12px; margin: auto; padding: 16px; position: relative; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+
+            <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #1f2937;">Create New Category</h3>
+
+            <div class="mstore-input-wrapper" style="margin-bottom: 20px;">
+                <input type="text" id="newItemInput" class="mstore-input" style="border: none; padding: 12px 10px;"
+                    placeholder="Enter category name" autofocus>
+            </div>
+
+            <!-- Compact Buttons: Force Flex Row -->
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <button class="mstore-action-btn secondary" id="closeCreateItemModal"
+                    style="flex: 1; justify-content: center; padding: 8px; font-size: 13px;">Cancel</button>
+                <button class="mstore-action-btn primary" id="saveCreateItemModal"
+                    style="flex: 1; justify-content: center; padding: 8px; font-size: 13px;">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product/Service Toggle
+        const productToggle = document.getElementById('productToggle');
+        const serviceToggle = document.getElementById('serviceToggle');
+        const toggleGroup = document.getElementById('toggleGroup');
+
+        productToggle.addEventListener('click', () => {
+            productToggle.classList.add('active');
+            serviceToggle.classList.remove('active');
+            toggleGroup.classList.remove('service-mode');
+            updateItemStatusUI();
+        });
+
+        serviceToggle.addEventListener('click', () => {
+            serviceToggle.classList.add('active');
+            productToggle.classList.remove('active');
+            toggleGroup.classList.add('service-mode');
+            updateItemStatusUI();
+        });
+
+        // Item Status Toggle Logic
+        const itemStatusToggle = document.getElementById('itemStatusToggle');
+        const itemStatusLabel = document.getElementById('itemStatusLabel');
+
+        function updateItemStatusUI() {
+            const isService = serviceToggle.classList.contains('active');
+            const isChecked = itemStatusToggle.checked;
+
+            if (isService) {
+                itemStatusLabel.textContent = isChecked ? 'Available' : 'Unavailable';
+                itemStatusLabel.style.color = isChecked ? '#10b981' : '#ef4444'; // Green / Red
+            } else {
+                itemStatusLabel.textContent = isChecked ? 'In Stock' : 'Out of Stock';
+                itemStatusLabel.style.color = isChecked ? '#10b981' : '#ef4444'; // Green / Red
+            }
+        }
+
+        itemStatusToggle.addEventListener('change', updateItemStatusUI);
+
+        // Initialize Status UI
+        updateItemStatusUI();
+
+        // Secondary Unit Toggle
+        const secondaryUnitToggle = document.getElementById('secondaryUnitToggle');
+        const secondaryUnitSection = document.getElementById('secondaryUnitSection');
+
+        secondaryUnitToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                secondaryUnitSection.classList.add('active');
+            } else {
+                secondaryUnitSection.classList.remove('active');
+            }
+        });
+
+        // Wholesale Price Toggle
+        const wholesalePriceToggle = document.getElementById('wholesalePriceToggle');
+        const wholesalePriceSection = document.getElementById('wholesalePriceSection');
+
+        wholesalePriceToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                wholesalePriceSection.classList.add('active');
+            } else {
+                wholesalePriceSection.classList.remove('active');
+            }
+        });
+
+
+
+        // Tab Switching for Pricing, Stock, and More Details
+        const tabs = document.querySelectorAll('.mstore-tab');
+        const pricingContent = document.getElementById('pricingTabContent');
+        const stockContent = document.getElementById('stockTabContent');
+        const moreContent = document.getElementById('moreTabContent');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                // Hide all tab contents
+                pricingContent.classList.remove('active');
+                stockContent.classList.remove('active');
+                moreContent.classList.remove('active');
+
+                // Show target content
+                const tabName = tab.getAttribute('data-tab');
+                if (tabName === 'pricing') {
+                    pricingContent.classList.add('active');
+                } else if (tabName === 'stock') {
+                    stockContent.classList.add('active');
+                } else if (tabName === 'more') {
+                    moreContent.classList.add('active');
+                }
+            });
+        });
+
+        // Brand Toggle Logic
+        const brandToggle = document.getElementById('brandToggle');
+        const brandSection = document.getElementById('brandSection');
+
+        brandToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                brandSection.classList.add('active');
+            } else {
+                brandSection.classList.remove('active');
+            }
+        });
+
+        // Detailed Tracking Toggle
+        const detailedTrackingToggle = document.getElementById('detailedTrackingToggle');
+        const detailedTrackingSection = document.getElementById('detailedTrackingSection');
+
+        detailedTrackingToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                detailedTrackingSection.classList.add('active');
+            } else {
+                detailedTrackingSection.classList.remove('active');
+            }
+        });
+
+        // Initialize As of Date with today's date
+        const asOfDateInput = document.getElementById('asOfDateInput');
+        const today = new Date().toISOString().split('T')[0];
+        asOfDateInput.value = today;
+
+        // Dynamic Attributes Logic
+        const attributesContainer = document.getElementById('attributesContainer');
+        const addAttributeBtn = document.getElementById('addAttributeBtn');
+
+        addAttributeBtn.addEventListener('click', () => {
+            const lastAttributeRow = attributesContainer.querySelector('.attribute-row:last-child');
+            if (lastAttributeRow) {
+                const inputs = lastAttributeRow.querySelectorAll('input');
+                const nameInput = inputs[0];
+                const valueInput = inputs[1];
+
+                if (nameInput.value.trim() === '' || valueInput.value.trim() === '') {
+                    // Optional: Shake animation or border color to indicate fields are required
+                    lastAttributeRow.style.animation = 'shake 0.5s';
+                    setTimeout(() => lastAttributeRow.style.animation = '', 500);
+                    return; // Don't add a new row if the last one is empty
+                }
+            }
+
+            const newRow = document.createElement('div');
+            newRow.className = 'mstore-row attribute-row';
+            newRow.style.marginBottom = '10px';
+            newRow.style.alignItems = 'center';
+            newRow.style.gap = '8px';
+            newRow.style.gridTemplateColumns = '1fr 1fr auto';
+
+            newRow.innerHTML = `
+                <div class="mstore-input-wrapper" style="margin-top: 0;">
+                    <input type="text" class="mstore-input" placeholder="Name">
+                </div>
+                <div class="mstore-input-wrapper" style="margin-top: 0;">
+                    <input type="text" class="mstore-input" placeholder="Value">
+                </div>
+                <button type="button" class="delete-attr-btn" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 4px;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+
+            attributesContainer.appendChild(newRow);
+        });
+
+        attributesContainer.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-attr-btn')) {
+                e.target.closest('.attribute-row').remove();
+            }
+        });
+
+        // Assign Code Functionality
+        const assignCodeBtn = document.getElementById('assignCodeBtn');
+        const itemCodeInput = document.getElementById('itemCodeInput');
+
+        assignCodeBtn.addEventListener('click', () => {
+            // Generate unique code: PREFIX + TIMESTAMP + RANDOM
+            const prefix = 'ITM';
+            const timestamp = Date.now().toString().slice(-6); // Last 6 digits
+            const random = Math.random().toString(36).substring(2, 6).toUpperCase(); // 4 random chars
+            const generatedCode = `${prefix}-${timestamp}-${random}`;
+
+            // Set the generated code to input
+            itemCodeInput.value = generatedCode;
+
+            // Optional: Add a brief highlight effect
+            itemCodeInput.style.background = '#dbeafe';
+            setTimeout(() => {
+                itemCodeInput.style.background = '';
+            }, 500);
+        });
+
+        // Private Note Toggle
+        const privateNoteToggle = document.getElementById('privateNoteToggle');
+        const privateNoteSection = document.getElementById('privateNoteSection');
+
+        privateNoteToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                privateNoteSection.classList.add('active');
+            } else {
+                privateNoteSection.classList.remove('active');
+            }
+        });
+
+        // MRP Toggle Logic
+        const mrpToggle = document.getElementById('mrpToggle');
+        const mrpSection = document.getElementById('mrpSection');
+
+        mrpToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                mrpSection.classList.add('active');
+            } else {
+                mrpSection.classList.remove('active');
+            }
+        });
+
+        // --- Barcode Scanner Logic ---
+        const scanCodeBtn = document.getElementById('scanCodeBtn');
+        const scannerModal = document.getElementById('scannerModal');
+        const closeScannerBtn = document.getElementById('closeScannerBtn');
+        let html5QrCode;
+
+        scanCodeBtn.addEventListener('click', () => {
+            // Show Modal
+            scannerModal.style.display = 'flex';
+
+            // Initialize Scanner
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("reader");
+            }
+
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            // Start Camera
+            html5QrCode.start(
+                { facingMode: "environment" },
+                config,
+                (decodedText, decodedResult) => {
+                    // Success
+                    itemCodeInput.value = decodedText;
+
+                    // Feedback
+                    itemCodeInput.style.background = '#d1fae5'; // Light green
+                    setTimeout(() => itemCodeInput.style.background = '', 500);
+
+                    // Stop and Close
+                    stopScanner();
+                },
+                (errorMessage) => {
+                    // Parse error, ignore common read errors
+                }
+            ).catch(err => {
+                console.error("Error starting scanner", err);
+                alert("Could not start camera. Please ensure camera permissions are allowed.");
+                scannerModal.style.display = 'none';
+            });
+        });
+
+        closeScannerBtn.addEventListener('click', () => {
+            stopScanner();
+        });
+
+        function stopScanner() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => {
+                    scannerModal.style.display = 'none';
+                }).catch(err => {
+                    console.error("Failed to stop scanner", err);
+                    scannerModal.style.display = 'none';
+                });
+            } else {
+                scannerModal.style.display = 'none';
+            }
+        }
+
+        // --- Stock Logic Integration ---
+        const stockTrackingToggle = document.getElementById('stockTrackingToggle');
+        const stockDetailsSection = document.getElementById('stockDetailsSection');
+        const openingStockInput = document.querySelector('#stockDetailsSection input[placeholder="Enter count"]');
+        let openingStockEl = openingStockInput; // Use the more specific selector
+
+        function handleStockTrackingToggle() {
+            if (stockTrackingToggle.checked) {
+                stockDetailsSection.classList.add('active');
+            } else {
+                stockDetailsSection.classList.remove('active');
+            }
+        }
+
+        function syncStockStatus() {
+            // Only sync if Stock Tracking is ON and NOT in Service mode
+            if (stockTrackingToggle.checked && !serviceToggle.classList.contains('active') && openingStockEl) {
+                const qty = parseInt(openingStockEl.value) || 0;
+                if (qty > 0) {
+                    itemStatusToggle.checked = true;
+                } else {
+                    itemStatusToggle.checked = false;
+                }
+                updateItemStatusUI();
+            }
+        }
+
+        // Listen for Tracking Toggle Change
+        stockTrackingToggle.addEventListener('change', () => {
+            handleStockTrackingToggle();
+            syncStockStatus();
+        });
+
+        // Initialize on page load
+        handleStockTrackingToggle();
+
+        // Listen for Quantity Change
+        if (openingStockEl) {
+            openingStockEl.addEventListener('input', syncStockStatus);
+        }
+
+        // Hook into Service/Product toggle to reset/re-evaluate
+        // (Existing listener at line 1172/1179 handles UI text, but we might want to re-trigger sync)
+
+        // Add ID to Opening Stock Input for future safety in the DOM
+        if (openingStockEl) openingStockEl.id = 'openingStockInput';
+
+        // Initial Setup
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUnits();
+        });
+
+        // Global Units Data
+        let allUnitsGlobal = [];
+
+        // Elements
+        const primaryUnitInput = document.getElementById('primaryUnit');
+        const primaryUnitDisplay = document.getElementById('primaryUnitInputDisplay');
+        const primaryUnitIcon = document.getElementById('primaryUnitIcon');
+        const primaryUnitDropdown = document.getElementById('primaryUnitDropdown');
+
+        const secondaryUnitInput = document.getElementById('secondaryUnit');
+        const secondaryUnitDisplay = document.getElementById('secondaryUnitInputDisplay');
+        const secondaryUnitIcon = document.getElementById('secondaryUnitIcon');
+        const secondaryUnitDropdown = document.getElementById('secondaryUnitDropdown');
+
+        const conversionInput = document.getElementById('conversionInput');
+
+        // Modal Elements
+        const selectionModal = document.getElementById('selectionModal');
+        const modalSearch = document.getElementById('modalSearch');
+        const modalList = document.getElementById('modalList');
+        const modalClose = document.getElementById('modalClose');
+
+        // Modal State
+        let currentCallback = null;
+        let currentOptions = [];
+
+        function loadUnits() {
+            console.log('Fetching units from ../localstore/jsons/units.json...');
+            fetch('../localstore/jsons/units.json')
+                .then(response => response.json())
+                .then(data => {
+                    populateUnitsGlobal(data);
+                })
+                .catch(error => {
+                    console.error('Error loading units:', error);
+                    alert("Error loading units.json");
+                });
+        }
+
+
+        function populateUnitsGlobal(data) {
+            allUnitsGlobal = [];
+            data.forEach(group => {
+                group.subunits.forEach(unit => {
+                    allUnitsGlobal.push({ ...unit, type: group.meta.type, displayName: unit.title || unit.code });
+                });
+            });
+        }
+
+        // --- Hybrid Combobox Logic ---
+
+        function setupCombobox(inputEl, iconEl, dropdownEl, hiddenInputEl, onSelectCallback, config = {}) {
+
+            const title = config.title || 'Select Option';
+            const enableCreate = config.enableCreate || false;
+            const multiSelect = config.multiSelect || false;
+
+            // 1. Icon Click -> Open Full Modal
+
+            iconEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Determine options source based on Config or default to Units
+                const sourceData = config.data || allUnitsGlobal;
+
+                // Get currently selected codes from hidden input
+                const currentVal = hiddenInputEl.value || '';
+                const initialSelection = currentVal ? currentVal.split(',') : [];
+
+                openSelectionModal(sourceData, (selected) => {
+                    selectUnit(selected, inputEl, hiddenInputEl, onSelectCallback);
+                }, title, enableCreate, multiSelect, initialSelection);
+            });
+
+            // Make Input Click also open the modal
+            inputEl.addEventListener('click', (e) => {
+                e.preventDefault();
+                inputEl.blur();
+                const sourceData = config.data || allUnitsGlobal;
+
+                const currentVal = hiddenInputEl.value || '';
+                const initialSelection = currentVal ? currentVal.split(',') : [];
+
+                openSelectionModal(sourceData, (selected) => {
+                    selectUnit(selected, inputEl, hiddenInputEl, onSelectCallback);
+                }, title, enableCreate, multiSelect, initialSelection);
+            });
+
+            // 2. Input Typing -> Filter Mini Dropdown
+            inputEl.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const sourceData = config.data || allUnitsGlobal;
+
+                if (!term) {
+                    dropdownEl.classList.remove('active');
+                    return;
+                }
+
+                const filtered = sourceData.filter(opt => {
+                    const label = (opt.displayName || opt.label || opt.value).toLowerCase();
+                    const code = (opt.code || '').toLowerCase();
+                    return label.includes(term) || code.includes(term);
+                });
+
+                renderMiniDropdown(filtered, dropdownEl, (selected) => {
+                    selectUnit(selected, inputEl, hiddenInputEl, onSelectCallback);
+                    dropdownEl.classList.remove('active');
+                });
+
+                if (filtered.length > 0) {
+                    dropdownEl.classList.add('active');
+                } else {
+                    dropdownEl.classList.remove('active');
+                }
+            });
+
+            // 3. Blur -> Hide Mini Dropdown (Delayed to allow click)
+            inputEl.addEventListener('blur', () => {
+                setTimeout(() => {
+                    dropdownEl.classList.remove('active');
+                }, 200);
+            });
+        }
+
+        // --- Photo Upload Logic (Moved from inside setupCombobox) ---
+        (function initPhotoUpload() {
+            const photoGrid = document.querySelector('.mstore-photo-grid');
+            const mediaUploadModal = document.getElementById('mediaUploadModal');
+            const closeMediaUploadModal = document.getElementById('closeMediaUploadModal');
+
+            const openCameraBtn = document.getElementById('openCameraBtn');
+            const openGalleryBtn = document.getElementById('openGalleryBtn');
+            const mediaInput = document.getElementById('mediaInput');
+            const cameraInput = document.getElementById('cameraInput');
+
+            // Custom Camera Elements
+            const customCameraModal = document.getElementById('customCameraModal');
+            const cameraFeed = document.getElementById('cameraFeed');
+            const capturePhotoBtn = document.getElementById('capturePhotoBtn');
+            const closeCameraModalBtn = document.getElementById('closeCameraModalBtn');
+            const cameraCanvas = document.getElementById('cameraCanvas');
+
+            let activePhotoSlot = null;
+            let currentStream = null;
+
+            function showMediaModal(slot) {
+                activePhotoSlot = slot;
+                if (!mediaUploadModal) return;
+
+                mediaUploadModal.classList.add('active'); // Vital for desktop CSS visibility
+                mediaUploadModal.style.display = 'flex';
+                requestAnimationFrame(() => {
+                    mediaUploadModal.style.opacity = '1';
+                    mediaUploadModal.style.visibility = 'visible';
+                    const container = mediaUploadModal.querySelector('.mstore-selection-container');
+                    if (container) {
+                        container.style.transform = 'scale(1)';
+                        container.style.opacity = '1'; // Ensure opacity is 1
+                    }
+                });
+            }
+
+            function hideMediaModal() {
+                if (!mediaUploadModal) return;
+
+                mediaUploadModal.classList.remove('active');
+                mediaUploadModal.style.opacity = '0';
+                const container = mediaUploadModal.querySelector('.mstore-selection-container');
+                if (container) container.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    mediaUploadModal.style.visibility = 'hidden';
+                    mediaUploadModal.style.display = 'none';
+                }, 300);
+            }
+
+            // --- Custom Camera Functions ---
+            function openCameraStream() {
+                console.log("DEBUG: openCameraStream called");
+                if (!customCameraModal) {
+                    console.error("DEBUG: customCameraModal not found");
+                    return;
+                }
+
+                // Hide Selection Modal first
+                mediaUploadModal.classList.remove('active'); // CSS class toggle
+                mediaUploadModal.style.visibility = 'hidden';
+                mediaUploadModal.style.opacity = '0';
+                mediaUploadModal.style.display = 'none'; // Force hide
+
+                // Show Camera Modal
+                customCameraModal.classList.add('active'); // Add active class if any CSS depends on it
+                customCameraModal.style.display = 'block'; // Force block first
+                customCameraModal.style.visibility = 'visible';
+                customCameraModal.style.opacity = '1';
+
+                // Ensure it's fixed and covers screen (inline styles usually handle this, but re-enforcing)
+                customCameraModal.style.position = 'fixed';
+                customCameraModal.style.top = '0';
+                customCameraModal.style.left = '0';
+                customCameraModal.style.zIndex = '20000';
+
+                // Constraints
+                const constraints = {
+                    video: {
+                        facingMode: { ideal: "environment" }, // Use ideal so it works on Laptop (Webcam) too
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    },
+                    audio: false
+                };
+
+                console.log("DEBUG: Calling getUserMedia with constraints", constraints);
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then(stream => {
+                        console.log("DEBUG: getUserMedia success, stream obtained");
+                        currentStream = stream;
+                        cameraFeed.srcObject = stream;
+
+                        // Play video explicitly
+                        cameraFeed.onloadedmetadata = () => {
+                            cameraFeed.play().catch(e => console.error("DEBUG: Play failed", e));
+                        };
+                    })
+                    .catch(err => {
+                        console.error("DEBUG: Camera access failed:", err);
+
+                        // User Feedback
+                        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                            alert("Camera permission was denied. Please allow camera access in your browser settings to use the in-app camera.\n\nOpening system file picker instead.");
+                        } else if (err.name === 'NotFoundError') {
+                            alert("No camera device found. Opening system file picker instead.");
+                        } else {
+                            alert("Camera error: " + err.message + "\nOpening system file picker instead.");
+                        }
+
+                        // Fallback to native input if permission denied or error
+                        stopCameraStream();
+                        if (cameraInput) {
+                            // Restore selection modal slightly so fallback doesn't feel jarring? 
+                            // Actually just Trigger Input.
+                            cameraInput.click();
+                        } else {
+                            alert("Camera not accessible.");
+                        }
+                    });
+            }
+
+            function stopCameraStream() {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                    currentStream = null;
+                }
+                if (cameraFeed) cameraFeed.srcObject = null;
+                if (customCameraModal) customCameraModal.style.display = 'none';
+
+                // If we didn't capture, we should probably respawn the selection modal? 
+                // But for "Close" button, yes.
+            }
+
+            function capturePhoto() {
+                console.log("DEBUG: capturePhoto called");
+                if (!currentStream || !cameraFeed || !activePhotoSlot) {
+                    console.warn("DEBUG: capturePhoto failed preconditions", {
+                        stream: !!currentStream,
+                        feed: !!cameraFeed,
+                        slot: !!activePhotoSlot
+                    });
+                    return;
+                }
+
+                // Set canvas dimensions to match video
+                // VideoWidth might be 0 if not ready, check readyState
+                if (cameraFeed.readyState === cameraFeed.HAVE_ENOUGH_DATA) {
+                    cameraCanvas.width = cameraFeed.videoWidth;
+                    cameraCanvas.height = cameraFeed.videoHeight;
+
+                    const ctx = cameraCanvas.getContext('2d');
+                    ctx.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
+
+                    // Convert to data URL
+                    const dataUrl = cameraCanvas.toDataURL('image/jpeg', 0.85);
+
+                    // Stop camera and open media editor
+                    stopCameraStream();
+                    openMediaEditor(dataUrl);
+                } else {
+                    console.log("DEBUG: Camera feed not ready");
+                }
+            }
+
+            function applyPhoto(src) {
+                if (!activePhotoSlot) return;
+                activePhotoSlot.innerHTML = '';
+
+                const img = document.createElement('img');
+                img.src = src;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '6px';
+                activePhotoSlot.appendChild(img);
+                activePhotoSlot.setAttribute('draggable', 'true');
+                activePhotoSlot.style.borderStyle = 'solid';
+                activePhotoSlot.style.border = 'none';
+
+                if (activePhotoSlot.classList.contains('primary')) {
+                    activePhotoSlot.style.border = '2px solid #3b82f6';
+                }
+            }
+
+            // Listeners
+            if (photoGrid) {
+                photoGrid.addEventListener('click', (e) => {
+                    const photoItem = e.target.closest('.mstore-photo-item');
+                    if (photoItem) {
+                        showMediaModal(photoItem);
+                    }
+                });
+            }
+
+            if (closeMediaUploadModal) closeMediaUploadModal.addEventListener('click', hideMediaModal);
+
+            if (mediaUploadModal) {
+                mediaUploadModal.addEventListener('click', (e) => {
+                    if (e.target.id === 'mediaUploadModal') hideMediaModal();
+                });
+            }
+
+            if (openGalleryBtn && mediaInput) {
+                openGalleryBtn.addEventListener('click', () => {
+                    mediaInput.click();
+                });
+            }
+
+            if (openCameraBtn) {
+                openCameraBtn.addEventListener('click', () => {
+                    console.log("DEBUG: Camera button clicked");
+                    // Start Camera Flow
+                    // Check if Secure Context or Localhost
+                    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        console.log("DEBUG: Calling openCameraStream");
+                        openCameraStream();
+                    } else {
+                        console.warn("DEBUG: navigator.mediaDevices not supported, fallback to input");
+                        // Fallback
+                        if (cameraInput) cameraInput.click();
+                    }
+                });
+            }
+
+            // Custom Camera Controls
+            if (closeCameraModalBtn) {
+                closeCameraModalBtn.addEventListener('click', () => {
+                    stopCameraStream();
+                    // Re-show selection modal? Or just close?
+                    // User probably wants to go back to selection if they cancelled camera
+                    // But for simplicity, let's just close camera.
+                    // If we want to reshow:
+                    // mediaUploadModal.style.opacity = '1';
+                });
+            }
+
+            if (capturePhotoBtn) {
+                capturePhotoBtn.addEventListener('click', capturePhoto);
+            }
+
+            function handleFileSelect(e) {
+                console.log("DEBUG: handleFileSelect", e.target.id);
+                if (e.target.files && e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    console.log("DEBUG: File selected", file.name);
+                    if (file && activePhotoSlot) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            // Open media editor instead of directly applying
+                            openMediaEditor(event.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+                e.target.value = '';
+            }
+
+            // Open media editor with product-specific configuration
+            function openMediaEditor(imageSrc) {
+                if (!window.openPhotoEditor) {
+                    console.error('Media editor not loaded yet');
+                    // Fallback: apply directly without editing
+                    applyPhoto(imageSrc);
+                    hideMediaModal();
+                    return;
+                }
+
+                // Hide the camera/gallery selection modal
+                hideMediaModal();
+
+                window.openPhotoEditor(imageSrc, {
+                    title: 'Edit Product Photo',
+                    subtitle: 'Crop and adjust your image',
+                    aspectRatios: [
+                        { label: '1:1', value: 1 },
+                        { label: '4:3', value: 4 / 3 },
+                        { label: '16:9', value: 16 / 9 },
+                        { label: 'Free', value: null }
+                    ],
+                    initialAspectRatio: 1,
+                    controls: [
+                        { ratios: true },
+                        { zoom: true, rotate: true, flip: true },
+                        { fit: true, reset: true, final: true }
+                    ],
+                    compression: {
+                        targetSizeKB: 150,
+                        minQuality: 0.7,
+                        format: 'image/jpeg'
+                    },
+                    onSave: (blob) => {
+                        // Convert blob to data URL and apply to photo slot
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            applyPhoto(e.target.result);
+                        };
+                        reader.readAsDataURL(blob);
+                    }
+                });
+            }
+
+            if (mediaInput) mediaInput.addEventListener('change', handleFileSelect);
+            if (cameraInput) cameraInput.addEventListener('change', handleFileSelect);
+
+        })();
+
+        // --- Category & Brand Data ---
+        const allCategoriesGlobal = [
+            { code: 'electronics', displayName: 'Electronics', type: 'Standard' },
+            { code: 'clothing', displayName: 'Clothing', type: 'Standard' },
+            { code: 'food', displayName: 'Food & Beverages', type: 'Standard' },
+            { code: 'furniture', displayName: 'Furniture', type: 'Standard' }
+        ];
+
+        const allBrandsGlobal = [
+            { code: 'local', displayName: 'Local', type: 'Common' },
+            { code: 'brand1', displayName: 'Brand A', type: 'Premium' },
+            { code: 'brand2', displayName: 'Brand B', type: 'Premium' }
+        ];
+
+        // --- Init Elements for Category & Brand ---
+        const categoryInput = document.getElementById('itemCategory');
+        const categoryDisplay = document.getElementById('categoryInputDisplay');
+        const categoryIcon = document.getElementById('categoryIcon');
+        const categoryDropdown = document.getElementById('categoryDropdown');
+
+        const brandInput = document.getElementById('itemBrand');
+        const brandDisplay = document.getElementById('brandInputDisplay');
+        const brandIcon = document.getElementById('brandIcon');
+        const brandDropdown = document.getElementById('brandDropdown');
+
+        setupCombobox(categoryDisplay, categoryIcon, categoryDropdown, categoryInput, null, {
+            title: 'Select Category',
+            data: allCategoriesGlobal,
+            enableCreate: true,
+            multiSelect: true
+        });
+
+        setupCombobox(brandDisplay, brandIcon, brandDropdown, brandInput, null, {
+            title: 'Select Brand',
+            data: allBrandsGlobal,
+            enableCreate: false,
+            multiSelect: false
+        });
+
+        function renderMiniDropdown(options, container, onSelect) {
+            container.innerHTML = '';
+            // Limit to 5 results for mini dropdown
+            const limit = options.slice(0, 5);
+
+            limit.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'mstore-combobox-option';
+                div.textContent = `${opt.displayName} (${opt.symbol})`;
+                div.addEventListener('click', () => onSelect(opt));
+                container.appendChild(div);
+            });
+        }
+
+        function selectUnit(unit, inputEl, hiddenInputEl, callback) {
+            // Handle Multi-Select Array
+            if (Array.isArray(unit)) {
+                // Multi-select
+                const displays = unit.map(u => {
+                    let d = u.displayName || u.label || u.value;
+                    if (u.symbol) d += ` (${u.symbol})`;
+                    return d;
+                }).join(', ');
+
+                const codes = unit.map(u => u.code).join(',');
+
+                inputEl.value = displays;
+                hiddenInputEl.value = codes;
+            } else {
+                // Single select
+                let display = unit.displayName || unit.label || unit.value;
+                if (unit.symbol) display += ` (${unit.symbol})`;
+
+                inputEl.value = display;
+                hiddenInputEl.value = unit.code;
+            }
+            if (callback) callback();
+        }
+
+        // Initialize Comboboxes
+        // Wait for units to load? Logic handles empty list gracefully.
+
+        setupCombobox(primaryUnitDisplay, primaryUnitIcon, primaryUnitDropdown, primaryUnitInput, handlePrimaryUnitChange);
+        setupCombobox(secondaryUnitDisplay, secondaryUnitIcon, secondaryUnitDropdown, secondaryUnitInput, handleSecondaryUnitChange);
+
+        // --- Modal Logic (Updated) ---
+        const modalTitle = document.getElementById('modalTitle');
+
+        let currentCreateCallback = null;
+        let currentSelectedCodes = new Set();
+        let currentMultiSelectMode = false;
+
+        function openSelectionModal(options, onSelect, titleText = 'Select Option', enableCreate = false, multiSelect = false, initialSelection = []) {
+            currentOptions = options;
+            currentCallback = onSelect;
+            currentMultiSelectMode = multiSelect;
+
+            // Initialize selection state
+            currentSelectedCodes = new Set(initialSelection);
+
+            modalTitle.textContent = titleText;
+            renderModalOptions(options, enableCreate);
+
+            selectionModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Lock background scroll
+
+            // Push history state to handle back button
+            history.pushState({ mstoreModalOpen: true }, "");
+
+            modalSearch.value = '';
+        }
+
+        function closeSelectionModal() {
+            // Check if we have history state to pop
+            if (history.state && history.state.mstoreModalOpen) {
+                history.back(); // This will trigger popstate, which closes the modal
+            } else {
+                // Fallback if no state
+                hideModalUI();
+            }
+        }
+
+        function hideModalUI() {
+            selectionModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore background scroll
+            currentCallback = null;
+        }
+
+        // Handle Browser Back Button
+        window.addEventListener('popstate', (event) => {
+            // If we are navigating back, and modal is active, close it
+            if (selectionModal.classList.contains('active')) {
+                hideModalUI();
+            }
+        });
+
+        function renderModalOptions(options, enableCreate = false) {
+            modalList.innerHTML = '';
+
+            // Optional: Add "Create New" Button at the top
+            if (enableCreate) {
+                const createBtn = document.createElement('div');
+                createBtn.className = 'mstore-selection-option';
+                createBtn.style.color = '#3b82f6';
+                createBtn.style.fontWeight = '500';
+                // Updated Alignment: Text Left, Icon Right (fa-plus-circle)
+                createBtn.innerHTML = `<span>Create New Category</span> <i class="fas fa-plus-circle"></i>`;
+                createBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent bubbling selection logic
+                    openCreateItemModal();
+                });
+                modalList.appendChild(createBtn);
+            }
+
+            // Group by type if available
+            const grouped = options.reduce((acc, opt) => {
+                const type = opt.type ? (opt.type.charAt(0).toUpperCase() + opt.type.slice(1).replace(/_/g, ' ')) : 'Others';
+                if (!acc[type]) acc[type] = [];
+                acc[type].push(opt);
+                return acc;
+            }, {});
+
+            for (const type in grouped) {
+                // Only show group title if there are actually groups (don't show "Others" if it's the only one)
+                if (Object.keys(grouped).length > 1 || type !== 'Others') {
+                    const title = document.createElement('div');
+                    title.className = 'mstore-selection-group-title';
+                    title.textContent = type;
+                    modalList.appendChild(title);
+                }
+
+                grouped[type].forEach(opt => {
+                    const row = document.createElement('div');
+                    row.className = 'mstore-selection-option';
+
+                    // Label logic
+                    let label = opt.displayName || opt.label || opt.value;
+                    if (opt.symbol) label += ` (${opt.symbol})`;
+
+                    const isChecked = currentSelectedCodes.has(opt.code);
+
+                    // Render Layout: Label Left, Checkbox/Icon Right
+                    // If MultiSelect -> Show Checkbox
+                    // If Single -> Maybe show Check if selected? Or nothing.
+
+                    const iconHtml = currentMultiSelectMode
+                        ? `<i class="fas ${isChecked ? 'fa-check-square' : 'fa-square'} mstore-checkbox-icon ${isChecked ? 'checked' : ''}"></i>`
+                        : (isChecked ? `<i class="fas fa-check" style="color: #3b82f6;"></i>` : '');
+
+                    row.innerHTML = `<span>${label}</span> ${iconHtml}`;
+
+                    row.addEventListener('click', () => {
+                        if (currentMultiSelectMode) {
+                            // Toggle Logic
+                            if (currentSelectedCodes.has(opt.code)) {
+                                currentSelectedCodes.delete(opt.code);
+                            } else {
+                                currentSelectedCodes.add(opt.code);
+                            }
+
+                            // Trigger Callback with full array
+                            const selectedObjects = currentOptions.filter(o => currentSelectedCodes.has(o.code));
+                            if (currentCallback) currentCallback(selectedObjects);
+
+                            // Re-render this row or whole list? Re-rendering whole list is safer/easier
+                            renderModalOptions(currentOptions, enableCreate);
+                        } else {
+                            // Single Select
+                            if (currentCallback) currentCallback(opt);
+                            closeSelectionModal();
+                        }
+                    });
+                    modalList.appendChild(row);
+                });
+            }
+        }
+
+        // Search Filter (Modal)
+        modalSearch.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = currentOptions.filter(opt => {
+                const label = (opt.displayName || opt.label || opt.value).toLowerCase();
+                const code = (opt.code || '').toLowerCase();
+                return label.includes(term) || code.includes(term);
+            });
+            renderModalOptions(filtered);
+        });
+
+        // Back button closes modal
+        const modalCloseActionBtn = document.getElementById('modalCloseActionBtn');
+        if (modalCloseActionBtn) {
+            modalCloseActionBtn.addEventListener('click', closeSelectionModal);
+        }
+
+        // Also allow clicking outside to close (Optional, but good UX)
+        selectionModal.addEventListener('click', (e) => {
+            if (e.target === selectionModal) {
+                closeSelectionModal();
+            }
+        });
+
+        // --- Unit Selection Logic ---
+
+        // Update calls to openSelectionModal with Titles
+        function handlePrimaryUnitChange() {
+            const primaryCode = primaryUnitInput.value;
+            if (!primaryCode) return;
+
+            // Smart Default Logic for Secondary
+            const primaryUnitObj = allUnitsGlobal.find(u => u.code === primaryCode);
+            if (primaryUnitObj) {
+                // Try to find a default secondary
+                let defaultSecondary = null;
+
+                // 1. Piece if container
+                if (['wholesale_packaging', 'lot_bundle', 'item_count'].includes(primaryUnitObj.type)) {
+                    defaultSecondary = allUnitsGlobal.find(u => u.code === 'pc' || u.code === 'pcs');
+                }
+
+                // 2. Different unit of same type
+                if (!defaultSecondary) {
+                    defaultSecondary = allUnitsGlobal.find(u => u.type === primaryUnitObj.type && u.code !== primaryCode);
+                }
+
+                if (defaultSecondary) {
+                    // Auto set Custom Trigger (Hybrid Input)
+                    secondaryUnitInput.value = defaultSecondary.code;
+                    secondaryUnitDisplay.value = `${defaultSecondary.displayName} (${defaultSecondary.symbol})`;
+                }
+            }
+
+            calculateConversionFactor();
+            updateConversionDisplay();
+        }
+
+        function handleSecondaryUnitChange() {
+            calculateConversionFactor();
+            updateConversionDisplay();
+        }
+
+        function calculateConversionFactor() {
+            const pCode = primaryUnitInput.value;
+            const sCode = secondaryUnitInput.value;
+
+            if (!pCode || !sCode) return;
+
+            const pUnit = allUnitsGlobal.find(u => u.code === pCode);
+            const sUnit = allUnitsGlobal.find(u => u.code === sCode);
+
+            if (pUnit && sUnit && pUnit.type === sUnit.type) {
+                const factor = pUnit.toBase / sUnit.toBase;
+                const cleanFactor = parseFloat(factor.toPrecision(10));
+                conversionInput.value = cleanFactor;
+            }
+        }
+
+        function updateConversionDisplay() {
+            const pCode = primaryUnitInput.value;
+            const sCode = secondaryUnitInput.value;
+            const factor = conversionInput.value;
+
+            const pUnit = allUnitsGlobal.find(u => u.code === pCode);
+            const sUnit = allUnitsGlobal.find(u => u.code === sCode);
+
+            const pSym = pUnit ? pUnit.symbol : pCode;
+            const sSym = sUnit ? sUnit.symbol : sCode;
+
+            const badgeBtn = document.getElementById('conversionBadgeBtn');
+            const badgeText = document.getElementById('conversionBadgeText');
+
+            if (badgeBtn && badgeText) {
+                if (factor && pCode && sCode) {
+                    badgeText.textContent = `1 ${pSym} = ${factor} ${sSym}`;
+                    badgeBtn.style.display = 'inline-flex';
+                    badgeBtn.style.alignItems = 'center';
+                } else {
+                    badgeBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // --- Create New Item Modal Logic ---
+        const createItemModal = document.getElementById('createItemModal');
+        const newItemInput = document.getElementById('newItemInput');
+        const closeCreateItemBtn = document.getElementById('closeCreateItemModal');
+        const saveCreateItemBtn = document.getElementById('saveCreateItemModal');
+
+        function openCreateItemModal() {
+            createItemModal.style.visibility = 'visible';
+            createItemModal.style.opacity = '1';
+            newItemInput.value = '';
+            setTimeout(() => newItemInput.focus(), 100);
+        }
+
+        function closeCreateItemUI() {
+            createItemModal.style.opacity = '0';
+            setTimeout(() => {
+                createItemModal.style.visibility = 'hidden';
+            }, 300);
+        }
+
+        if (closeCreateItemBtn) {
+            closeCreateItemBtn.addEventListener('click', closeCreateItemUI);
+        }
+
+        if (saveCreateItemBtn) {
+            saveCreateItemBtn.addEventListener('click', () => {
+                const newName = newItemInput.value.trim();
+                if (!newName) return; // Simple validation
+
+                const newCode = newName.toLowerCase().replace(/\s+/g, '_');
+
+                const newObj = { displayName: newName, code: newCode, type: 'Custom' };
+
+                // Add to Global List
+                allCategoriesGlobal.push(newObj);
+
+                // Add to Current Options context
+                if (!currentOptions.find(o => o.code === newCode)) {
+                    currentOptions.push(newObj);
+                }
+
+                if (currentMultiSelectMode) {
+                    // Auto-select
+                    currentSelectedCodes.add(newCode);
+
+                    // Re-calculate selected objects
+                    const selectedObjects = currentOptions.filter(o => currentSelectedCodes.has(o.code));
+
+                    if (currentCallback) currentCallback(selectedObjects);
+
+                    // Refresh the modal list options
+                    renderModalOptions(currentOptions, true);
+                } else {
+                    // Single select
+                    if (currentCallback) currentCallback(newObj);
+                    closeSelectionModal();
+                }
+
+                closeCreateItemUI();
+            });
+        }
+
+        // --- Conversion Modal Logic ---
+        const conversionBadgeBtn = document.getElementById('conversionBadgeBtn');
+        const conversionModal = document.getElementById('conversionModal');
+        const closeConversionModal = document.getElementById('closeConversionModal');
+        const saveConversionModal = document.getElementById('saveConversionModal');
+        const modalConversionInput = document.getElementById('modalConversionInput');
+        const modalPrimaryUnitLabel = document.getElementById('modalPrimaryUnitLabel');
+        const modalSecondaryUnitLabel = document.getElementById('modalSecondaryUnitLabel');
+
+        if (conversionBadgeBtn) {
+            conversionBadgeBtn.addEventListener('click', () => {
+                const pCode = primaryUnitInput.value;
+                const sCode = secondaryUnitInput.value;
+                const pUnit = allUnitsGlobal.find(u => u.code === pCode);
+                const sUnit = allUnitsGlobal.find(u => u.code === sCode);
+
+                // Use Full Display Names for the modal logic as requested
+                const pName = pUnit ? pUnit.displayName : (pCode || 'Unit');
+                const sName = sUnit ? sUnit.displayName : (sCode || 'Unit');
+
+                // Update Labels
+                if (modalPrimaryUnitLabel) modalPrimaryUnitLabel.textContent = pName;
+                if (modalSecondaryUnitLabel) modalSecondaryUnitLabel.textContent = sName;
+
+                modalConversionInput.value = conversionInput.value;
+
+                // Show modal 
+                conversionModal.classList.add('active');
+                conversionModal.style.visibility = 'visible';
+                conversionModal.style.opacity = '1';
+
+                // Focus input after a small delay
+                setTimeout(() => modalConversionInput.focus(), 100);
+            });
+        }
+
+        if (closeConversionModal) {
+            closeConversionModal.addEventListener('click', () => {
+                conversionModal.classList.remove('active');
+                conversionModal.style.visibility = 'hidden';
+                conversionModal.style.opacity = '0';
+            });
+        }
+
+        if (saveConversionModal) {
+            saveConversionModal.addEventListener('click', () => {
+                const newVal = modalConversionInput.value;
+                if (newVal && newVal > 0) {
+                    conversionInput.value = newVal;
+                    updateConversionDisplay();
+                }
+                conversionModal.classList.remove('active');
+                conversionModal.style.visibility = 'hidden';
+                conversionModal.style.opacity = '0';
+            });
+        }
+
+        if (conversionInput) {
+            conversionInput.addEventListener('input', updateConversionDisplay);
+        }
+
+        // --- Drag and Drop Photo Reordering ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const photoGrid = document.querySelector('.mstore-photo-grid');
+            if (!photoGrid) return;
+
+            photoGrid.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('mstore-photo-item') && !e.target.classList.contains('primary')) {
+                    setTimeout(() => e.target.classList.add('dragging'), 0);
+                }
+            });
+
+            photoGrid.addEventListener('dragend', (e) => {
+                if (e.target.classList.contains('dragging')) {
+                    e.target.classList.remove('dragging');
+                }
+            });
+
+            photoGrid.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const draggingItem = photoGrid.querySelector('.dragging');
+                if (!draggingItem) return;
+
+                const afterElement = getDragAfterElement(photoGrid, e.clientX);
+
+                if (afterElement == null) {
+                    photoGrid.appendChild(draggingItem);
+                } else {
+                    photoGrid.insertBefore(draggingItem, afterElement);
+                }
+            });
+
+            function getDragAfterElement(container, x) {
+                const draggableElements = [...container.querySelectorAll('.mstore-photo-item:not(.primary):not(.dragging)')];
+
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = x - box.left - box.width / 2;
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
+            }
+        });
+
+        // --- Redundant photo logic removed ---
+    </script>
+
+</body>
+
+</html>

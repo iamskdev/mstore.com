@@ -21,7 +21,8 @@
         "brandId": "BRD-20251002-175016-016-PQRS",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174001-001-ASDF"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Parle G Biscuit 80g",
@@ -43,7 +44,8 @@
       "costPrice": 8,
       "sellingPrice": 10,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 200,
@@ -121,7 +123,8 @@
         "brandId": "BRD-20251002-175005-005-EFGH",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174001-001-ASDF"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Tata Salt 1KG",
@@ -142,7 +145,8 @@
       "costPrice": 20,
       "sellingPrice": 25,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 100,
@@ -213,7 +217,8 @@
         "brandId": "BRD-20251002-175002-002-BCDE",
         "unitId": "UNT-20251002-174502-002-FGHJ",
         "categoryId": "ICT-20251002-174001-001-ASDF"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Fortune Mustard Oil 1L",
@@ -234,7 +239,8 @@
       "costPrice": 135,
       "sellingPrice": 150,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 80,
@@ -305,7 +311,8 @@
         "brandId": "BRD-20251002-175103-063-KLMN",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174006-006-WXYZ"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Surf Excel Quick Wash 500g",
@@ -325,7 +332,8 @@
       "costPrice": 58,
       "sellingPrice": 65,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 100,
@@ -396,7 +404,8 @@
         "brandId": "BRD-20251002-175101-061-IJKL",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174005-005-STUV"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Lux Bathing Soap 100g",
@@ -416,7 +425,8 @@
       "costPrice": 24,
       "sellingPrice": 28,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 150,
@@ -486,7 +496,8 @@
         "merchantId": "MRC-20251002-170602-401-ASDF",
         "unitId": "UNT-20251002-174536-036-ASDF",
         "categoryId": "ICT-20251002-174011-011-QRST"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Photo Print (Glossy)",
@@ -510,7 +521,8 @@
       "costPrice": 15,
       "sellingPrice": 20,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": null,
@@ -580,7 +592,8 @@
         "merchantId": "MRC-20251002-170602-401-ASDF",
         "unitId": "UNT-20251002-174505-005-TYUI",
         "categoryId": "ICT-20251002-174011-011-QRST"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Xerox Copy (B/W)",
@@ -603,7 +616,8 @@
       "costPrice": 1.5,
       "sellingPrice": 2,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": null,
@@ -673,7 +687,8 @@
         "merchantId": "MRC-20251002-170604-402-FGHJ",
         "unitId": "UNT-20251002-174538-038-LPOK",
         "categoryId": "ICT-20251002-174011-011-QRST"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Lamination Aadhar Card",
@@ -696,7 +711,8 @@
       "costPrice": 10,
       "sellingPrice": 15,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": null,
@@ -766,7 +782,8 @@
         "merchantId": "MRC-20251002-170604-402-FGHJ",
         "unitId": "UNT-20251002-174538-038-LPOK",
         "categoryId": "ICT-20251002-174011-011-QRST"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "PAN Card Apply Service",
@@ -789,7 +806,8 @@
       "costPrice": 100,
       "sellingPrice": 120,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": null,
@@ -859,7 +877,8 @@
         "merchantId": "MRC-20251002-170604-402-FGHJ",
         "unitId": "UNT-20251002-174536-036-ASDF",
         "categoryId": "ICT-20251002-174011-011-QRST"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Online Form Fill (Govt Jobs)",
@@ -883,7 +902,8 @@
       "costPrice": 40,
       "sellingPrice": 50,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": null,
@@ -954,7 +974,8 @@
         "brandId": "BRD-20251002-175017-017-QRST",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174005-005-STUV"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Dabur Red Toothpaste 200g",
@@ -975,7 +996,8 @@
       "costPrice": 80,
       "sellingPrice": 95,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 90,
@@ -1046,7 +1068,8 @@
         "brandId": "BRD-20251002-175026-026-ZABC",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174005-005-STUV"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Colgate Tooth Paste",
@@ -1067,7 +1090,8 @@
       "costPrice": 20,
       "sellingPrice": 25,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 200,
@@ -1138,7 +1162,8 @@
         "brandId": "BRD-20251002-175111-071-STUV",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174001-001-ASDF"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Good Day Cashew Cookies 200g",
@@ -1159,7 +1184,8 @@
       "costPrice": 30,
       "sellingPrice": 35,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 150,
@@ -1230,7 +1256,8 @@
         "brandId": "BRD-20251002-175021-021-UVWX",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174001-001-ASDF"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Lijjat Papad 200g",
@@ -1251,7 +1278,8 @@
       "costPrice": 50,
       "sellingPrice": 60,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 80,
@@ -1322,7 +1350,8 @@
         "brandId": "BRD-20251002-175001-001-ABCD",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174001-001-ASDF"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Amul Butter 500g",
@@ -1342,7 +1371,8 @@
       "costPrice": 250,
       "sellingPrice": 270,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 60,
@@ -1413,7 +1443,8 @@
         "brandId": "BRD-20251002-175057-057-EFGH",
         "unitId": "UNT-20251002-174501-001-ASDF",
         "categoryId": "ICT-20251002-174001-001-ASDF"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Brooke Bond Red Label Tea 500g",
@@ -1434,7 +1465,8 @@
       "costPrice": 230,
       "sellingPrice": 250,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": 90,
@@ -1504,7 +1536,8 @@
         "merchantId": "MRC-20251002-170602-401-ASDF",
         "unitId": "UNT-20251002-174538-038-LPOK",
         "categoryId": "ICT-20251002-174011-011-QRST"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Document Scanning",
@@ -1527,7 +1560,8 @@
       "costPrice": 3,
       "sellingPrice": 5,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": null,
@@ -1597,7 +1631,8 @@
         "merchantId": "MRC-20251002-170602-401-ASDF",
         "unitId": "UNT-20251002-174505-005-TYUI",
         "categoryId": "ICT-20251002-174011-011-QRST"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Color Print A4",
@@ -1620,7 +1655,8 @@
       "costPrice": 7,
       "sellingPrice": 10,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": null,
@@ -1690,7 +1726,8 @@
         "merchantId": "MRC-20251002-170604-402-FGHJ",
         "unitId": "UNT-20251002-174536-036-ASDF",
         "categoryId": "ICT-20251002-174011-011-QRST"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Photograph Studio - Passport Size",
@@ -1713,7 +1750,8 @@
       "costPrice": 80,
       "sellingPrice": 100,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": null,
@@ -1783,7 +1821,8 @@
         "merchantId": "MRC-20251002-170604-402-FGHJ",
         "unitId": "UNT-20251002-174536-036-ASDF",
         "categoryId": "ICT-20251002-174011-011-QRST"
-      }
+      },
+      "visibility": "public"
     },
     "info": {
       "name": "Resume Making Service",
@@ -1807,7 +1846,8 @@
       "costPrice": 120,
       "sellingPrice": 150,
       "currency": "INR",
-      "discounts": []
+      "discounts": [],
+      "wholesalePrice": null
     },
     "inventory": {
       "stockQty": null,

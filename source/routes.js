@@ -37,6 +37,15 @@ const routeConfig = {
       isMainTab: true,
       dataDependencies: []
     },
+    'add-item': {
+      id: 'merchant-add-item-view',
+      path: './source/modules/merchant/pages/add-item.html',
+      cssPath: './source/modules/merchant/styles/add-item.css',
+      jsPath: './source/modules/merchant/scripts/add-item.js',
+      title: 'Add Item',
+      isMainTab: false,
+      dataDependencies: ['categories', 'brands', 'units']
+    },
     'profile-edit': {
       id: 'merchant-profile-edit-view',
       path: './source/modules/merchant/pages/merchant-profile-edit.html',
