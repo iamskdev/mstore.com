@@ -111,6 +111,16 @@ const APP_SHELL_URLS = [
   './source/modules/merchant/styles/add-item.css',
   './source/modules/merchant/scripts/add-item.js',
 
+  // Item Helper Modules
+  './source/modules/merchant/scripts/item-helper/index.js',
+  './source/modules/merchant/scripts/item-helper/item-data-manager.js',
+  './source/modules/merchant/scripts/item-helper/item-db-operations.js',
+  './source/modules/merchant/scripts/item-helper/item-event-manager.js',
+  './source/modules/merchant/scripts/item-helper/item-form-manager.js',
+  './source/modules/merchant/scripts/item-helper/item-media-handler.js',
+  './source/modules/merchant/scripts/item-helper/item-ui-components.js',
+  './source/modules/merchant/scripts/item-helper/item-validator.js',
+
   // Merchant Profile Edit View
   './source/modules/merchant/pages/merchant-profile-edit.html',
   './source/modules/merchant/styles/merchant-profile-edit.css',
@@ -122,6 +132,8 @@ const APP_SHELL_URLS = [
   './source/modals/rating/rating-modal.js',
   './source/modals/story-viewer/story-viewer.html',
   './source/modals/story-viewer/story-viewer.js',
+  './source/modals/dropdown/dropdown-list.html',
+  './source/modals/dropdown/dropdown-list.js',
 
   // Chat feature
   './source/common/pages/chat.html',

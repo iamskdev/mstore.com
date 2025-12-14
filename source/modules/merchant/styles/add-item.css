@@ -1,4 +1,4 @@
-﻿/* Production: Hide demo header - app ka header use hoga */
+/* Production: Hide demo header - app ka header use hoga */
 .mstore-header {
   display: none;
 }
@@ -393,7 +393,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 6px;
 }
@@ -428,6 +428,15 @@
 
 .mstore-expandable.active {
   display: block;
+}
+
+#secondaryUnitSection {
+  position: relative;
+  min-height: 40px;
+}
+
+#secondaryUnitSection.active .mstore-btn-conversion-badge {
+  display: inline-flex !important;
 }
 
 @keyframes slideDown {
@@ -466,7 +475,7 @@
 
 /* Info Icon */
 .mstore-info-icon {
-  display: inline-flex;
+  display: none;
   align-items: center;
   justify-content: center;
   width: 16px;
@@ -482,7 +491,7 @@
 
 /* Date Badge */
 .mstore-date-badge {
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
@@ -919,6 +928,24 @@
   outline: none;
   transition: all 0.3s;
   background: var(--bg-secondary);
+  overflow-x: auto;
+  white-space: nowrap;
+  text-overflow: clip;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.mstore-combobox-input::-webkit-scrollbar {
+  height: 4px;
+}
+
+.mstore-combobox-input::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mstore-combobox-input::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 2px;
 }
 
 .mstore-combobox-input:focus {
@@ -998,3 +1025,578 @@
   width: 100%;
   height: 100%;
 }
+
+/* Form Group Headers */
+.mstore-form-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.mstore-form-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mstore-status-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.mstore-margin-top-0 {
+  margin-top: 0;
+}
+
+.mstore-margin-top-20 {
+  margin-top: 20px;
+}
+
+.mstore-margin-top-24 {
+  margin-top: 24px;
+}
+
+/* SVG Icons */
+.mstore-svg-icon {
+  width: 12px;
+  height: 12px;
+}
+
+/* Button Customizations */
+.mstore-btn-assign-code {
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.mstore-btn-scan-code {
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.mstore-btn-conversion-badge {
+  padding: 4px 12px;
+  font-size: 11px;
+  border-radius: 12px;
+  min-height: 0;
+  height: auto;
+  display: none !important;
+  border-style: dashed;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(var(--accent-primary-rgb), 0.1);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+
+.mstore-btn-conversion-badge:hover {
+  background: var(--accent-primary);
+  color: var(--accent-text);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.mstore-conversion-badge-icon {
+  margin-left: 6px;
+  font-size: 9px;
+}
+
+.mstore-code-buttons-container {
+  display: flex;
+  gap: 6px;
+}
+
+.mstore-code-btn-icon {
+  font-size: 10px;
+}
+
+.mstore-media-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.mstore-media-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.mstore-media-label {
+  font-weight: 500;
+}
+
+.mstore-hidden-input {
+  display: none;
+}
+
+.mstore-media-cancel-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 12px;
+}
+
+.mstore-camera-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mstore-camera-title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.mstore-camera-close-btn {
+  background: none;
+  border: none;
+  color: var(--accent-text);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.mstore-camera-feed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+.mstore-camera-canvas {
+  display: none;
+}
+
+.mstore-private-note-label {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.mstore-private-note-icon {
+  margin-right: 4px;
+}
+
+.mstore-private-note-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.mstore-tax-toggle-group {
+  margin-top: 12px;
+  margin-bottom: 24px;
+}
+
+.mstore-purchase-price-group {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.mstore-selling-price-group {
+  margin-bottom: 20px;
+}
+
+.mstore-sku-group {
+  margin-top: 0;
+}
+
+.mstore-no-margin-top {
+  margin-top: 0;
+}
+
+.mstore-stock-row {
+  margin-top: 20px;
+}
+
+.mstore-attribute-delete-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  padding: 4px;
+}
+
+.mstore-add-attribute-btn {
+  margin-top: 0;
+}
+
+.mstore-gst-select {
+  border: none;
+}
+
+.mstore-scanner-close-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2001;
+}
+
+.mstore-scanner-close-btn {
+  background: var(--bg-secondary);
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.mstore-scanner-close-icon {
+  font-size: 20px;
+  color: var(--text-primary);
+}
+
+.mstore-scanner-reader {
+  width: 100%;
+  max-width: 400px;
+}
+
+.mstore-scanner-text {
+  color: var(--accent-text);
+  margin-top: 20px;
+}
+
+.mstore-conversion-text,
+.mstore-unit-label {
+  white-space: nowrap;
+}
+
+.mstore-unit-label {
+  font-weight: 600;
+}
+
+.mstore-create-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.mstore-create-input-wrapper {
+  margin-bottom: 20px;
+}
+
+.mstore-create-input {
+  border: none;
+  padding: 12px 10px;
+  color: var(--text-primary);
+}
+
+.mstore-conversion-modal-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+/* Attribute Rows */
+.mstore-attribute-row {
+  margin-bottom: 10px;
+  align-items: center;
+  gap: 8px;
+  grid-template-columns: 1fr 1fr auto;
+}
+
+/* Modal Styles */
+.mstore-modal-media-upload {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.mstore-modal-container-media {
+  width: 90%;
+  max-width: 320px;
+  height: auto;
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+  border-radius: 16px;
+  margin: auto;
+  padding: 20px;
+  position: relative;
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-elevation-large);
+}
+
+.mstore-modal-camera {
+  z-index: 20000;
+  background: black;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mstore-camera-top-bar {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--accent-text);
+  background: var(--bg-overlay-dark);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.mstore-camera-controls {
+  position: absolute;
+  bottom: 80px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  z-index: 20001;
+}
+
+.mstore-camera-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 4px solid rgba(255,255,255,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.mstore-camera-btn-inner {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 2px solid var(--text-primary);
+}
+
+.mstore-scanner-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  z-index: 2000;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.mstore-conversion-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10010; /* Higher than drawer and story viewer */
+  background: var(--bg-overlay-dark);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s;
+}
+
+.mstore-conversion-modal.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+
+.mstore-conversion-container {
+  width: 90%;
+  max-width: 300px;
+  height: auto;
+  max-height: none;
+  transform: scale(0.95);
+  transition: transform 0.2s;
+  border-radius: 12px;
+  margin: auto;
+  padding: 16px;
+  position: relative;
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-elevation-large);
+}
+
+.mstore-create-item-modal {
+  z-index: 4000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-overlay-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mstore-create-item-modal.active,
+.mstore-create-item-modal[style*="opacity: 1"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mstore-create-item-container {
+  width: 90%;
+  max-width: 300px;
+  height: auto;
+  max-height: none;
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
+  border-radius: 12px;
+  margin: auto;
+  padding: 16px;
+  position: relative;
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-elevation-large);
+}
+
+.mstore-create-item-modal.active .mstore-create-item-container,
+.mstore-create-item-modal[style*="opacity: 1"] .mstore-create-item-container {
+  transform: scale(1);
+}
+
+.mstore-radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #3b82f6;
+  background: #eff6ff;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.mstore-radio-circle {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mstore-radio-circle-inner {
+  width: 10px;
+  height: 10px;
+  background: #3b82f6;
+  border-radius: 50%;
+}
+
+.mstore-conversion-equation {
+  font-size: 13px;
+  color: #374151;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+  line-height: 1.5;
+}
+
+.mstore-conversion-input {
+  width: 50px;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid #3b82f6;
+  text-align: center;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 13px;
+  padding: 0 2px;
+  border-radius: 0;
+  outline: none;
+}
+
+.mstore-modal-actions-compact {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.mstore-modal-btn-compact {
+  flex: 1;
+  justify-content: center;
+  padding: 6px 14px;
+  font-size: 12px;
+}
+
+.mstore-modal-btn-create-compact {
+  flex: 1;
+  justify-content: center;
+  padding: 8px;
+  font-size: 13px;
+}
+
+/* Form Text */
+.mstore-form-text {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* Media Source Buttons */
+.mstore-media-source-btn {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  width: 100px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-radius: 12px;
+}
+
+.mstore-media-grid {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
