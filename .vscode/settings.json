@@ -8,6 +8,10 @@
   "chat.tools.terminal.blockDetectedFileWrites": "outsideWorkspace",
   "terminal.integrated.shellIntegration.showCommandGuide": true,
   "terminal.integrated.allowMnemonics": false,
+  "task.problemMatchers.neverPrompt": true,
+  "task.autoDetect": "off",
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.enablePersistentSessions": true,
   "terminal.integrated.automationProfile.windows": {
     
   },

@@ -51,36 +51,85 @@
       }
     },
     {
+      "label": "Set Emulator Config",
+      "type": "shell",
+      "command": "node tools/scripts/set-emulator.js",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Firebase Emulators",
+      "type": "shell",
+      "command": "npx firebase emulators:start",
+      "dependsOn": ["Set Emulator Config"],
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Upload Data",
       "type": "npm",
       "script": "upload",
-      "dependsOn": ["Run Emulators"],
+      "dependsOn": ["Firebase Emulators"],
       "presentation": {
-        "group": "devGroup"
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false
       }
     },
     {
-      "label": "Open Emulator UI",
+      "label": "Open Firebase UI",
       "type": "npm",
       "script": "open:ui",
-      "dependsOn": ["Run Emulators"],
+      "dependsOn": ["Firebase Emulators"],
       "presentation": {
-        "reveal": "never"
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false
       }
     },
     {
-      "label": "Start Dev Environment",
+      "label": "Live Server",
+      "type": "npm",
+      "script": "start",
+      "dependsOn": ["Firebase Emulators"],
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Development Environment",
       "dependsOn": [
-        "Run Emulators",
-        "Run Live Server",
+        "Set Emulator Config",
+        "Firebase Emulators",
         "Upload Data",
-        "Open Emulator UI"
+        "Open Firebase UI",
+        "Live Server"
       ],
+      "dependsOrder": "sequence",
       "group": {
         "kind": "build",
         "isDefault": true
-      },
-      "problemMatcher": []
+      }
     }
   ]
 }
