@@ -208,6 +208,10 @@ export function initializeTopNavigation() {
                 // If not searching, but in a manual override state (like from updates.js),
                 // dispatch an event to let the view handle the back action.
                 window.dispatchEvent(new CustomEvent('handleManualBack'));
+            } else if (routeManager.currentView === 'merchant-add-item-view') {
+                // Special case: For add-item views, navigate to the main add view instead of history.back()
+                console.log('Back button clicked on add-item view, navigating to add view');
+                routeManager.switchView('merchant', 'add');
             } else {
                 // Otherwise, its job is to go back in history.
                 window.history.back();

@@ -44,7 +44,38 @@ export async function init(force = false, params = {}) {
     // Check for itemId in parameters for edit mode
     currentItemId = params.itemId || null;
     const formTitle = document.getElementById('addItemFormTitle');
-    const submitButton = document.getElementById('submitItemBtn');
+    let submitButton = document.getElementById('submitItemBtn');
+
+    // Set initial button text based on edit mode
+    const isEditMode = !!currentItemId;
+    const initialButtonText = isEditMode ? 'Update Item' : 'Save Item';
+
+    // If button is corrupted, recreate it
+    if (!submitButton || submitButton.tagName !== 'BUTTON') {
+        console.warn('Submit button is corrupted, recreating...');
+        const bottomBar = document.querySelector('.mstore-bottom-bar');
+        if (bottomBar) {
+            // Remove any corrupted elements
+            const existingButtons = bottomBar.querySelectorAll('button');
+            existingButtons.forEach(btn => {
+                if (btn.id === 'submitItemBtn' || (!btn.id && btn.classList.contains('primary'))) {
+                    btn.remove();
+                }
+            });
+
+            // Create new button
+            const newButton = document.createElement('button');
+            newButton.className = 'mstore-action-btn primary';
+            newButton.id = 'submitItemBtn';
+            newButton.type = 'button';
+            newButton.textContent = initialButtonText;
+            bottomBar.appendChild(newButton);
+            submitButton = newButton;
+        }
+    } else {
+        // Update existing button text
+        submitButton.textContent = initialButtonText;
+    }
 
     if (currentItemId) {
         console.log(`💡 Edit mode: Fetching item with ID: ${currentItemId}`);
@@ -53,7 +84,6 @@ export async function init(force = false, params = {}) {
             if (currentEditItem) {
                 console.log('Fetched item for editing:', currentEditItem);
                 if (formTitle) formTitle.textContent = 'Update Item';
-                if (submitButton) submitButton.textContent = 'Update Item';
                 ItemFormManager.populateForm(currentEditItem, dataManager);
             } else {
                 console.warn(`Item with ID ${currentItemId} not found.`);
@@ -75,14 +105,13 @@ export async function init(force = false, params = {}) {
         // Clear form for new item
         ItemFormManager.clearForm();
         if (formTitle) formTitle.textContent = 'Add Item';
-        if (submitButton) submitButton.textContent = 'Save Item';
     }
 
     // Load data first, then initialize components
     await dataManager.loadAllData();
-    ItemUIComponents.initializeAllComponents();
+    await ItemUIComponents.initializeAllComponents();
     ItemMediaHandler.initializePhotoUpload();
-    eventManager = ItemEventManager.initializeEventHandlers(dataManager, ItemFormManager);
+    eventManager = ItemEventManager.initializeEventHandlers(dataManager, ItemFormManager, currentItemId);
 
     initialized = true;
     console.log('✅ Add Item module initialized');

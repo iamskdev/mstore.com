@@ -151,6 +151,10 @@ const APP_SHELL_URLS = [
   './source/modals/otp-verification-modal.html',
   './source/modals/otp-verification-modal.js',
 
+  // QR Scanner Modal
+  './source/modals/scan-barcode/qr-scanner.html',
+  './source/modals/scan-barcode/qr-scanner.js',
+
   // Third-party Libraries
   'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.esm.js',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',

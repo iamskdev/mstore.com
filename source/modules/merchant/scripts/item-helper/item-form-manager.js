@@ -2,6 +2,9 @@
  * Item Form Manager - Handles form population, data collection, and form operations
  */
 
+import { ItemMediaHandler } from './item-media-handler.js';
+import { buildCloudinaryUrl } from '../../../../api/cloudinary.js';
+
 export class ItemFormManager {
     /**
      * Populates the form fields with existing item data for editing.
@@ -130,17 +133,16 @@ export class ItemFormManager {
         // Stock Tracking Toggle - Enable if editing existing item or has inventory data
         const stockTrackingToggle = document.getElementById("stockTrackingToggle");
         if (stockTrackingToggle) {
-            // Enable stock tracking if editing existing item or if there are existing inventory values
-            const isEditingExisting = window.currentItemId !== null;
-            const hasInventoryData = item.inventory?.stockQty !== undefined ||
-                                    item.inventory?.lowStockThreshold !== undefined ||
-                                    item.inventory?.reorderQuantity !== undefined ||
-                                    item.inventory?.maxStockLevel !== undefined ||
-                                    item.inventory?.stockLocation ||
-                                    item.inventory?.batchId ||
-                                    item.inventory?.expiryDate;
+            // Enable stock tracking if item has inventory data
+            const hasExistingInventory = item.inventory?.stockQty !== undefined ||
+                                        item.inventory?.lowStockThreshold !== undefined ||
+                                        item.inventory?.reorderQuantity !== undefined ||
+                                        item.inventory?.maxStockLevel !== undefined ||
+                                        item.inventory?.stockLocation ||
+                                        item.inventory?.batchId ||
+                                        item.inventory?.expiryDate;
 
-            stockTrackingToggle.checked = isEditingExisting || hasInventoryData;
+            stockTrackingToggle.checked = hasExistingInventory;
             stockTrackingToggle.dispatchEvent(new Event('change')); // Trigger event to show section
         }
 
@@ -404,15 +406,12 @@ export class ItemFormManager {
      * Collects media data (thumbnail and gallery)
      */
     static collectMediaData() {
-        const photoGrid = document.querySelector('.mstore-photo-grid');
-        if (!photoGrid) return {};
-
-        const primaryPhoto = photoGrid.querySelector('.mstore-photo-item.primary img');
-        const galleryPhotos = Array.from(photoGrid.querySelectorAll('.mstore-photo-item:not(.primary) img'));
+        // Get uploaded images data from ItemMediaHandler
+        const uploadedImages = ItemMediaHandler.getUploadedImages();
 
         return {
-            thumbnail: primaryPhoto?.src || undefined,
-            gallery: galleryPhotos.map(img => img.src).filter(src => src)
+            thumbnail: uploadedImages.thumbnail?.publicId || null,
+            gallery: uploadedImages.gallery.map(img => img.publicId).filter(id => id) || []
         };
     }
 
@@ -432,7 +431,9 @@ export class ItemFormManager {
         const primaryPhotoItem = photoGrid.querySelector(".mstore-photo-item.primary");
         if (primaryPhotoItem) {
             if (media?.thumbnail) {
-                primaryPhotoItem.innerHTML = `<img src="${media.thumbnail}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">`;
+                // Convert public_id to URL using Cloudinary
+                const thumbnailUrl = buildCloudinaryUrl(media.thumbnail);
+                primaryPhotoItem.innerHTML = `<img src="${thumbnailUrl}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">`;
                 primaryPhotoItem.style.border = "2px solid #3b82f6";
             } else {
                 primaryPhotoItem.innerHTML = `
@@ -445,10 +446,12 @@ export class ItemFormManager {
 
         // Initialize gallery photos (up to 4 additional photos)
         if (media?.gallery && Array.isArray(media.gallery)) {
-            media.gallery.slice(0, 4).forEach((photoSrc, index) => {
+            media.gallery.slice(0, 4).forEach((photoPublicId, index) => {
                 const photoItem = document.createElement("div");
                 photoItem.className = "mstore-photo-item";
-                photoItem.innerHTML = `<img src="${photoSrc}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">`;
+                // Convert public_id to URL using Cloudinary
+                const photoUrl = buildCloudinaryUrl(photoPublicId);
+                photoItem.innerHTML = `<img src="${photoUrl}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">`;
                 photoGrid.appendChild(photoItem);
             });
         }

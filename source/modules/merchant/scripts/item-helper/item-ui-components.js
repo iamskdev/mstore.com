@@ -2,11 +2,14 @@
  * Item UI Components - Handles all UI interactions and components
  */
 
+// QR Scanner will be available globally via window.QRScanner
+// It loads itself dynamically to avoid import path issues
+
 export class ItemUIComponents {
     /**
      * Initialize all UI components
      */
-    static initializeAllComponents() {
+    static async initializeAllComponents() {
         this.initializeBackButton();
         this.initializeProductServiceToggle();
         this.initializeSecondaryUnitToggle();
@@ -19,7 +22,7 @@ export class ItemUIComponents {
         this.initializeAssignCodeFunctionality();
         this.initializePrivateNoteToggle();
         this.initializeMRPToggle();
-        this.initializeBarcodeScanner();
+        await this.initializeBarcodeScanner();
         this.initializeStockLogic();
         this.initializeDateInputs();
     }
@@ -28,16 +31,9 @@ export class ItemUIComponents {
      * Initialize back button handler
      */
     static initializeBackButton() {
-        const headerBack = document.querySelector(".mstore-header-back");
-        if (headerBack) {
-            headerBack.addEventListener("click", () => {
-                if (window.routeManager) {
-                    window.routeManager.switchView('merchant', 'add');
-                } else {
-                    window.history.back();
-                }
-            });
-        }
+        // Note: Back button is now handled by the top navigation's view-back-btn
+        // This method is kept for compatibility but uses the top navigation back button
+        console.log("Back button initialization - using top navigation back button");
     }
 
     /**
@@ -122,6 +118,15 @@ export class ItemUIComponents {
                     if (badgeText && !badgeText.textContent.includes("=")) {
                         badgeText.textContent = "Set Conversion";
                     }
+
+                    // Force check badge visibility after activation
+                    setTimeout(() => {
+                        const badgeBtn = document.getElementById("conversionBadgeBtn");
+                        if (badgeBtn) {
+                            console.log("📍 Badge visibility after toggle:", window.getComputedStyle(badgeBtn).display);
+                            console.log("📍 Badge classes after toggle:", badgeBtn.className);
+                        }
+                    }, 100);
                 } else {
                     secondaryUnitSection.classList.remove("active");
                     console.log("❌ Secondary section deactivated, classes:", secondaryUnitSection.className);
@@ -153,109 +158,226 @@ export class ItemUIComponents {
      * Initialize Conversion Badge Modal
      */
     static initializeConversionBadgeModal() {
-        // Add a small delay to ensure DOM is fully loaded
-        setTimeout(() => {
+        console.log("🔧 Initializing conversion badge modal...");
+
+        // Simple approach: wait for modal to be available
+        const initModal = () => {
             const conversionBadgeBtn = document.getElementById("conversionBadgeBtn");
-            const conversionModal = document.getElementById("conversionModal");
-            const closeConversionModal = document.getElementById("closeConversionModal");
-            const saveConversionModal = document.getElementById("saveConversionModal");
-            const modalConversionInput = document.getElementById("modalConversionInput");
-            const modalPrimaryUnitLabel = document.getElementById("modalPrimaryUnitLabel");
-            const modalSecondaryUnitLabel = document.getElementById("modalSecondaryUnitLabel");
+            let conversionModal = document.getElementById("conversionModal");
+
+            // Try to find modal in current view if not found globally
+            if (!conversionModal) {
+                const currentView = document.querySelector('.page-view-area.view-active');
+                if (currentView) {
+                    conversionModal = currentView.querySelector("#conversionModal");
+                }
+            }
+
+            console.log("Badge element:", conversionBadgeBtn);
+            console.log("Modal element:", conversionModal);
+            console.log("Current view:", document.querySelector('.page-view-area.view-active'));
+
+            // If still not found after several attempts, create the modal
+            if (!conversionModal) {
+                console.log("🔧 Creating modal manually since it's not found in DOM");
+                const modalHTML = `
+                    <div id="conversionModal" class="mstore-conversion-modal">
+                        <div class="mstore-conversion-container">
+                            <h3 class="mstore-conversion-modal-title">Conversion Rate</h3>
+                            <div class="mstore-radio-option">
+                                <div class="mstore-radio-circle">
+                                    <div class="mstore-radio-circle-inner"></div>
+                                </div>
+                                <div class="mstore-conversion-equation">
+                                    <span class="mstore-conversion-text">1 <span id="modalPrimaryUnitLabel" class="mstore-unit-label">Unit</span> = </span>
+                                    <input type="number" id="modalConversionInput" class="mstore-conversion-input" placeholder="0">
+                                    <span id="modalSecondaryUnitLabel" class="mstore-unit-label">Unit</span>
+                                </div>
+                            </div>
+                            <div class="mstore-modal-actions-compact">
+                                <button class="mstore-action-btn secondary mstore-modal-btn-compact" id="closeConversionModal">Cancel</button>
+                                <button class="mstore-action-btn primary mstore-modal-btn-compact" id="saveConversionModal">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Append to body
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                conversionModal = document.getElementById("conversionModal");
+                console.log("✅ Modal created manually:", conversionModal);
+            }
+
+            if (!conversionModal) {
+                console.log("⚠️ Modal still not ready, retrying...");
+                setTimeout(initModal, 200);
+                return;
+            }
 
             if (conversionBadgeBtn && conversionModal) {
-                // Add a visual indicator that the badge is clickable
+                console.log("✅ Setting up modal handlers");
+
+                // Add visual indicator
                 conversionBadgeBtn.style.cursor = 'pointer';
-                conversionBadgeBtn.style.userSelect = 'none';
-            // Show modal on badge click
-            conversionBadgeBtn.addEventListener("click", (e) => {
-                // Check if secondary unit section is active
-                const secondarySection = document.getElementById("secondaryUnitSection");
-                if (!secondarySection || !secondarySection.classList.contains("active")) {
-                    return;
-                }
 
-                // Import dataManager dynamically to get unit data
-                import('./item-data-manager.js').then(({ ItemDataManager }) => {
-                    const dataManager = new ItemDataManager();
-                    const primaryUnitValue = document.getElementById("primaryUnit")?.value;
-                    const secondaryUnitValue = document.getElementById("secondaryUnit")?.value;
+                // Get modal elements
+                const closeConversionModal = document.getElementById("closeConversionModal");
+                const saveConversionModal = document.getElementById("saveConversionModal");
+                const modalConversionInput = document.getElementById("modalConversionInput");
+                const modalPrimaryUnitLabel = document.getElementById("modalPrimaryUnitLabel");
+                const modalSecondaryUnitLabel = document.getElementById("modalSecondaryUnitLabel");
 
-                    const primaryUnit = dataManager.getUnits().find(u => u.code === primaryUnitValue);
-                    const secondaryUnit = dataManager.getUnits().find(u => u.code === secondaryUnitValue);
+                // Badge click handler
+                conversionBadgeBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    console.log("🎯 Badge clicked");
 
-                    // Update modal labels
-                    if (modalPrimaryUnitLabel) {
-                        modalPrimaryUnitLabel.textContent = primaryUnit ? primaryUnit.title || primaryUnit.name : primaryUnitValue || "Primary Unit";
-                    }
-                    if (modalSecondaryUnitLabel) {
-                        modalSecondaryUnitLabel.textContent = secondaryUnit ? secondaryUnit.title || secondaryUnit.name : secondaryUnitValue || "Secondary Unit";
+                    // Check if secondary unit section is active
+                    const secondarySection = document.getElementById("secondaryUnitSection");
+                    if (!secondarySection || !secondarySection.classList.contains("active")) {
+                        console.log("❌ Secondary section not active");
+                        return;
                     }
 
-                    // Pre-fill existing conversion value
-                    const existingConversion = document.getElementById("conversionInput")?.value;
+                    // Update modal labels with current units
+                    if (modalPrimaryUnitLabel && modalSecondaryUnitLabel) {
+                        const primaryUnitValue = document.getElementById("primaryUnit")?.value;
+                        const secondaryUnitValue = document.getElementById("secondaryUnit")?.value;
+
+                        modalPrimaryUnitLabel.textContent = primaryUnitValue || "Unit";
+                        modalSecondaryUnitLabel.textContent = secondaryUnitValue || "Unit";
+                    }
+
+                    // Set current conversion value
                     if (modalConversionInput) {
-                        modalConversionInput.value = existingConversion || "";
+                        const existingConversion = document.getElementById("conversionInput")?.value;
+                        modalConversionInput.value = existingConversion || "1";
                     }
 
-                        // Show modal
-                        conversionModal.classList.add("active");
+                    // Show modal
+                    conversionModal.classList.add("active");
+                    conversionModal.style.display = "flex";
+                    conversionModal.style.opacity = "1";
+                    conversionModal.style.visibility = "visible";
+                    console.log("✅ Modal opened");
 
-                        // Focus on input
-                        if (modalConversionInput) {
-                            setTimeout(() => {
-                                modalConversionInput.focus();
-                                modalConversionInput.select();
-                            }, 100);
-                        }
+                    // Focus on input
+                    if (modalConversionInput) {
+                        setTimeout(() => {
+                            modalConversionInput.focus();
+                            modalConversionInput.select();
+                        }, 100);
+                    }
                 });
-            });
-        }
 
-        // Close modal events
-        if (closeConversionModal) {
-            closeConversionModal.addEventListener("click", () => {
-                conversionModal.classList.remove("active");
-            });
-        }
+                // Close modal handlers
+                if (closeConversionModal) {
+                    closeConversionModal.addEventListener("click", () => {
+                        conversionModal.classList.remove("active");
+                        conversionModal.style.display = "none";
+                        conversionModal.style.opacity = "0";
+                        conversionModal.style.visibility = "hidden";
+                        console.log("❌ Modal closed via cancel button");
+                    });
+                }
 
-        // Save conversion
-        if (saveConversionModal && modalConversionInput) {
-            saveConversionModal.addEventListener("click", () => {
-                const conversionValue = modalConversionInput.value;
-                if (conversionValue && conversionValue > 0) {
-                    // Update hidden conversion input
-                    const conversionInput = document.getElementById("conversionInput");
-                    if (conversionInput) {
-                        conversionInput.value = conversionValue;
+                if (saveConversionModal) {
+                    saveConversionModal.addEventListener("click", () => {
+                        if (modalConversionInput) {
+                            const conversionValue = modalConversionInput.value;
+                            if (conversionValue && parseFloat(conversionValue) > 0) {
+                                // Update hidden conversion input
+                                const conversionInput = document.getElementById("conversionInput");
+                                if (conversionInput) {
+                                    conversionInput.value = conversionValue;
+                                }
+
+                                // Update badge text
+                                const badgeText = document.getElementById("conversionBadgeText");
+                                if (badgeText && modalPrimaryUnitLabel && modalSecondaryUnitLabel) {
+                                    const roundedValue = Math.round(parseFloat(conversionValue) * 10000) / 10000;
+                                    badgeText.textContent = `1 ${modalPrimaryUnitLabel.textContent} = ${roundedValue} ${modalSecondaryUnitLabel.textContent}`;
+                                }
+
+                                console.log("💾 Conversion saved:", conversionValue);
+                            }
+                        }
+
+                        // Close modal
+                        conversionModal.classList.remove("active");
+                        conversionModal.style.display = "none";
+                        conversionModal.style.opacity = "0";
+                        conversionModal.style.visibility = "hidden";
+                        console.log("✅ Modal closed via save button");
+                    });
+                }
+
+                // Click outside to close
+                conversionModal.addEventListener("click", (e) => {
+                    if (e.target === conversionModal) {
+                        conversionModal.classList.remove("active");
+                        conversionModal.style.display = "none";
+                        conversionModal.style.opacity = "0";
+                        conversionModal.style.visibility = "hidden";
+                        console.log("🎯 Modal closed via outside click");
                     }
+                });
+            }
+        };
 
-                    // Update badge text
-                    const badgeText = document.getElementById("conversionBadgeText");
-                    const modalPrimaryUnitLabel = document.getElementById("modalPrimaryUnitLabel");
-                    const modalSecondaryUnitLabel = document.getElementById("modalSecondaryUnitLabel");
+        // Start initialization
+        initModal();
 
-                    if (badgeText && modalPrimaryUnitLabel && modalSecondaryUnitLabel) {
-                        // Round the saved value for display
-                        const roundedValue = Math.round(parseFloat(conversionValue) * 10000) / 10000;
-                        badgeText.textContent = `1 ${modalPrimaryUnitLabel.textContent} = ${roundedValue} ${modalSecondaryUnitLabel.textContent}`;
-                    }
+        // Keyboard shortcut for testing
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                console.log("🎯 Manual modal trigger via keyboard shortcut");
+                const modal = document.getElementById("conversionModal");
+                if (modal) {
+                    modal.classList.add("active");
+                    modal.style.display = "flex";
+                    modal.style.opacity = "1";
+                    modal.style.visibility = "visible";
+                }
+            }
+        });
+    }
 
-                    // Close modal
-                    conversionModal.classList.remove("active");
+    /**
+     * Initialize Brand Toggle
+     */
+    static initializeBrandToggle() {
+        const brandToggle = document.getElementById("brandToggle");
+        const brandSection = document.getElementById("brandSection");
+
+        if (brandToggle && brandSection) {
+            brandToggle.addEventListener("change", (e) => {
+                if (e.target.checked) {
+                    brandSection.classList.add("active");
+                } else {
+                    brandSection.classList.remove("active");
                 }
             });
         }
+    }
 
-        // Close on outside click
-        if (conversionModal) {
-            conversionModal.addEventListener("click", (e) => {
-                if (e.target === conversionModal) {
-                    conversionModal.classList.remove("active");
+    /**
+     * Initialize Detailed Tracking Toggle
+     */
+    static initializeDetailedTrackingToggle() {
+        const detailedTrackingToggle = document.getElementById("detailedTrackingToggle");
+        const detailedTrackingSection = document.getElementById("detailedTrackingSection");
+
+        if (detailedTrackingToggle && detailedTrackingSection) {
+            detailedTrackingToggle.addEventListener("change", (e) => {
+                if (e.target.checked) {
+                    detailedTrackingSection.classList.add("active");
+                } else {
+                    detailedTrackingSection.classList.remove("active");
                 }
             });
         }
-        }, 100); // Small delay to ensure DOM is loaded
     }
 
     /**
@@ -448,81 +570,101 @@ export class ItemUIComponents {
     /**
      * Initialize Barcode Scanner
      */
-    static initializeBarcodeScanner() {
+    static async initializeBarcodeScanner() {
         const scanCodeBtn = document.getElementById("scanCodeBtn");
-        const scannerModal = document.getElementById("scannerModal");
-        const closeScannerBtn = document.getElementById("closeScannerBtn");
         const itemCodeInput = document.getElementById("itemCodeInput");
 
-        if (!scanCodeBtn || !scannerModal || !itemCodeInput) return;
+        if (!scanCodeBtn || !itemCodeInput) return;
 
-        let html5QrCode;
-
-        scanCodeBtn.addEventListener("click", () => {
-            // Show Modal
-            scannerModal.style.display = "flex";
-
-            // Initialize Scanner
-            if (!html5QrCode) {
-                html5QrCode = new Html5Qrcode("reader");
+        // Load QR Scanner dynamically if not already loaded
+        if (!window.QRScanner) {
+            try {
+                console.log('📥 Loading QR Scanner...');
+                await this.loadQRScannerScript();
+                console.log('✅ QR Scanner loaded');
+            } catch (error) {
+                console.error('❌ Failed to load QR Scanner:', error);
+                return;
             }
+        }
 
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        // Initialize QR Scanner
+        this.qrScanner = new window.QRScanner({
+            onScanSuccess: (decodedText, decodedResult) => {
+                console.log('✅ QR code scanned successfully:', decodedText);
 
-            // Start Camera
-            html5QrCode
-                .start(
-                    { facingMode: "environment" },
-                    config,
-                    (decodedText, decodedResult) => {
-                        // Success
-                        itemCodeInput.value = decodedText;
+                // Set the scanned value to input
+                itemCodeInput.value = decodedText;
 
-                        // Feedback
-                        itemCodeInput.style.background = "#d1fae5"; // Light green
-                        setTimeout(() => (itemCodeInput.style.background = ""), 500);
+                // Visual feedback
+                itemCodeInput.style.background = "#d1fae5"; // Light green
+                itemCodeInput.style.borderColor = "#10b981";
+                setTimeout(() => {
+                    itemCodeInput.style.background = "";
+                    itemCodeInput.style.borderColor = "";
+                }, 1000);
 
-                        // Stop and Close
-                        this.stopScanner(html5QrCode, scannerModal);
-                    },
-                    (errorMessage) => {
-                        // Parse error, ignore common read errors
-                    }
-                )
-                .catch((err) => {
-                    console.error("Error starting scanner", err);
-                    alert(
-                        "Could not start camera. Please ensure camera permissions are allowed."
-                    );
-                    scannerModal.style.display = "none";
-                });
+                // Show success toast if available
+                if (window.showToast) {
+                    window.showToast('QR Code scanned successfully!', 'success');
+                }
+            },
+            onScanError: (error) => {
+                console.error('❌ QR scan error:', error);
+                if (window.showToast) {
+                    window.showToast('Failed to scan QR code. Please try again.', 'error');
+                }
+            },
+            onClose: () => {
+                console.log('📱 QR Scanner closed');
+            },
+            onManualEntry: () => {
+                console.log('📝 Manual entry requested');
+                // Focus on input field
+                itemCodeInput.focus();
+            }
         });
 
-        if (closeScannerBtn) {
-            closeScannerBtn.addEventListener("click", () => {
-                this.stopScanner(html5QrCode, scannerModal);
-            });
-        }
+        // Add click event to scan button
+        scanCodeBtn.addEventListener("click", async () => {
+            try {
+                await this.qrScanner.show();
+            } catch (error) {
+                console.error('❌ Failed to show QR scanner:', error);
+                alert('Unable to start QR scanner. Please check camera permissions.');
+            }
+        });
     }
 
     /**
-     * Stop barcode scanner
+     * Load QR Scanner script dynamically
      */
-    static stopScanner(html5QrCode, scannerModal) {
-        if (html5QrCode && html5QrCode.isScanning) {
-            html5QrCode
-                .stop()
-                .then(() => {
-                    if (scannerModal) scannerModal.style.display = "none";
-                })
-                .catch((err) => {
-                    console.error("Failed to stop scanner", err);
-                    if (scannerModal) scannerModal.style.display = "none";
-                });
-        } else {
-            if (scannerModal) scannerModal.style.display = "none";
-        }
+    static loadQRScannerScript() {
+        return new Promise((resolve, reject) => {
+            // Check if already loaded
+            if (window.QRScanner) {
+                resolve();
+                return;
+            }
+
+            // Create script element
+            const script = document.createElement('script');
+            script.src = '/source/modals/scan-barcode/qr-scanner.js';
+            script.type = 'module';
+            script.onload = () => {
+                console.log('✅ QR Scanner script loaded');
+                resolve();
+            };
+            script.onerror = (error) => {
+                console.error('❌ Failed to load QR Scanner script:', error);
+                reject(error);
+            };
+
+            // Append to head
+            document.head.appendChild(script);
+        });
     }
+
 
     /**
      * Initialize Stock Logic

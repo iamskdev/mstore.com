@@ -1,9 +1,9 @@
 <!-- Content Wrapper -->
-<div class="mstore-content-wrapper">
+<div class="item-form-wrapper">
     <!-- Toggle Section -->
     <div class="mstore-toggle-section">
         <div class="mstore-toggle-group" id="toggleGroup">
-            <div class="mstore-toggle-slider-bg"></div>
+            <div class="small-toggle-slider-bg"></div>
             <button class="mstore-toggle-btn active" id="productToggle">Product</button>
             <button class="mstore-toggle-btn" id="serviceToggle">Service</button>
         </div>
@@ -11,13 +11,13 @@
             <span>Public</span>
             <label class="mstore-toggle-switch">
                 <input type="checkbox" id="visibilityToggle">
-                <span class="mstore-toggle-slider"></span>
+                <span class="small-toggle-slider"></span>
             </label>
         </div>
     </div>
 
     <!-- Form Content -->
-    <div class="mstore-content">
+    <div class="item-content">
         <div class="mstore-form-card">
             <!-- Photo Upload Section -->
             <div class="mstore-photo-section">
@@ -57,7 +57,7 @@
                         <span id="itemStatusLabel" class="mstore-status-label">In Stock</span>
                         <label class="mstore-toggle-switch small">
                             <input type="checkbox" id="itemStatusToggle" checked>
-                            <span class="mstore-toggle-slider"></span>
+                            <span class="small-toggle-slider"></span>
                         </label>
                     </div>
                 </div>
@@ -71,10 +71,10 @@
                 <div class="mstore-form-group-header">
                     <label class="mstore-form-label">Primary Unit</label>
                     <div class="mstore-form-group-toggle">
-                        <span class="mstore-status-label">Add Secondary unit?</span>
+                        <span class="mstore-status-label">Add Secondary Unit?</span>
                         <label class="mstore-toggle-switch small">
                             <input type="checkbox" id="secondaryUnitToggle">
-                            <span class="mstore-toggle-slider"></span>
+                            <span class="small-toggle-slider"></span>
                         </label>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                     <div class="mstore-combobox-dropdown" id="primaryUnitDropdown"></div>
                 </div>
 
-                <div class="mstore-expandable" id="secondaryUnitSection">
+                <div class="expandable-sections" id="secondaryUnitSection">
                     <button type="button" id="conversionBadgeBtn" class="mstore-action-btn secondary mstore-btn-conversion-badge">
                         <span id="conversionBadgeText">1 Box = 10 pc</span>
                         <i class="fas fa-pen mstore-conversion-badge-icon"></i>
@@ -142,7 +142,7 @@
                         <span class="mstore-status-label">Add Brand?</span>
                         <label class="mstore-toggle-switch small">
                             <input type="checkbox" id="brandToggle">
-                            <span class="mstore-toggle-slider"></span>
+                            <span class="small-toggle-slider"></span>
                         </label>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
             </div>
 
             <!-- Brand Field (Expandable) -->
-            <div class="mstore-expandable" id="brandSection">
+            <div class="expandable-sections" id="brandSection">
                 <div class="mstore-form-group">
                     <label class="mstore-form-label">Brand</label>
                     <input type="hidden" id="itemBrand" value="">
@@ -239,7 +239,7 @@
                         <span class="mstore-status-label">Private Note?</span>
                         <label class="mstore-toggle-switch small">
                             <input type="checkbox" id="privateNoteToggle">
-                            <span class="mstore-toggle-slider"></span>
+                            <span class="small-toggle-slider"></span>
                         </label>
                     </div>
                 </div>
@@ -248,7 +248,7 @@
             </div>
 
             <!-- Private Note Expandable Section -->
-            <div class="mstore-expandable" id="privateNoteSection">
+            <div class="expandable-sections" id="privateNoteSection">
                 <div class="mstore-form-group mstore-margin-top-0">
                     <label class="mstore-form-label mstore-private-note-label">
                         <i class="fas fa-lock mstore-private-note-icon"></i> Admin Note (Private)
@@ -263,8 +263,8 @@
             <div class="mstore-section-divider"></div>
 
             <!-- Tab Section for Prices and Stock Management -->
-            <div class="mstore-tab-section">
-                <div class="mstore-tab-group">
+            <div class="item-tab-section">
+                <div class="item-tab-group">
                     <button class="mstore-tab mstore-pricing-tab active" data-tab="pricing">Prices</button>
                     <button class="mstore-tab mstore-stock-tab" data-tab="stock">Stocks</button>
                     <button class="mstore-tab mstore-more-tab" data-tab="more">More Details</button>
@@ -278,7 +278,7 @@
                     <label class="mstore-checkbox-label">Tax included</label>
                     <label class="mstore-toggle-switch">
                         <input type="checkbox" id="taxIncludedToggle" checked>
-                        <span class="mstore-toggle-slider"></span>
+                        <span class="small-toggle-slider"></span>
                     </label>
                 </div>
                 <!-- Purchase Price -->
@@ -313,12 +313,12 @@
                     <label class="mstore-checkbox-label">Add MRP?</label>
                     <label class="mstore-toggle-switch">
                         <input type="checkbox" id="mrpToggle">
-                        <span class="mstore-toggle-slider"></span>
+                        <span class="small-toggle-slider"></span>
                     </label>
                 </div>
 
                 <!-- Hidden MRP Section -->
-                <div class="mstore-expandable" id="mrpSection">
+                <div class="expandable-sections" id="mrpSection">
                     <div class="mstore-form-group">
                         <div class="mstore-input-wrapper">
                             <span class="mstore-notched-label">MRP</span>
@@ -335,11 +335,11 @@
                     <label class="mstore-checkbox-label">Add Wholesale Price</label>
                     <label class="mstore-toggle-switch">
                         <input type="checkbox" id="wholesalePriceToggle">
-                        <span class="mstore-toggle-slider"></span>
+                        <span class="small-toggle-slider"></span>
                     </label>
                 </div>
 
-                <div class="mstore-expandable" id="wholesalePriceSection">
+                <div class="expandable-sections" id="wholesalePriceSection">
                     <div class="mstore-form-group">
                         <div class="mstore-input-wrapper">
                             <span class="mstore-notched-label">Wholesale Price</span>
@@ -359,16 +359,16 @@
                     <label class="mstore-checkbox-label">Enable Stock Tracking</label>
                     <label class="mstore-toggle-switch">
                         <input type="checkbox" id="stockTrackingToggle" checked>
-                        <span class="mstore-toggle-slider"></span>
+                        <span class="small-toggle-slider"></span>
                     </label>
                 </div>
 
                 <!-- Stock Details Section (Expandable) -->
-                <div class="mstore-expandable" id="stockDetailsSection">
+                <div class="expandable-sections" id="stockDetailsSection">
                     <!-- Item SKU -->
                     <div class="mstore-form-group mstore-sku-group">
-                        <label class="mstore-form-label">SKU</label>
-                        <div class="mstore-input-wrapper mstore-no-margin-top">
+                        <div class="mstore-input-wrapper">
+                            <span class="mstore-notched-label">SKU</span>
                             <input type="text" class="mstore-input" id="itemSkuInput" placeholder="Enter Stock Keeping Unit (SKU)">
                         </div>
                     </div>
@@ -405,12 +405,12 @@
                     <label class="mstore-checkbox-label">Enable Detailed Tracking</label>
                     <label class="mstore-toggle-switch">
                         <input type="checkbox" id="detailedTrackingToggle">
-                        <span class="mstore-toggle-slider"></span>
+                        <span class="small-toggle-slider"></span>
                     </label>
                 </div>
 
                 <!-- Detailed Tracking Section (Expandable) -->
-                <div class="mstore-expandable" id="detailedTrackingSection">
+                <div class="expandable-sections" id="detailedTrackingSection">
                     <!-- Reorder Point & Maximum Stock -->
                     <div class="mstore-row">
                         <div class="mstore-form-group">
@@ -507,20 +507,10 @@
 <!-- Bottom Action Bar -->
 <div class="mstore-bottom-bar">
     <button class="mstore-action-btn secondary">Cancel</button>
-    <button class="mstore-action-btn primary" id="submitItemBtn">Save Item</button>
+    <button class="mstore-action-btn primary" id="submitItemBtn" type="button">Save Item</button>
 </div>
 
 
-<!-- Scanner Modal -->
-<div id="scannerModal" class="mstore-scanner-modal">
-    <div class="mstore-scanner-close-container">
-        <button id="closeScannerBtn" class="mstore-scanner-close-btn">
-            <i class="fas fa-times mstore-scanner-close-icon"></i>
-        </button>
-    </div>
-    <div id="reader" class="mstore-scanner-reader"></div>
-    <p class="mstore-scanner-text">Point camera at a barcode</p>
-</div>
 
 <div id="selectionModal" class="mstore-selection-modal">
     <div class="mstore-selection-container">
@@ -572,8 +562,32 @@
     </div>
 </div>
 
-<!-- Create New Item Modal (Generic) -->
-<div id="createItemModal" class="mstore-create-item-modal">
+    <!-- Photo Action Modal (Replace/Delete) -->
+    <div id="photoActionModal" class="mstore-photo-action-modal">
+        <div class="mstore-photo-action-container">
+            <div class="mstore-photo-action-header">
+                <div class="mstore-photo-action-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3 class="mstore-photo-action-title">Photo Options</h3>
+                <p class="mstore-photo-action-subtitle">Choose what you want to do with this photo</p>
+            </div>
+
+            <div class="mstore-photo-action-buttons">
+                <button class="mstore-action-btn primary" id="replacePhotoBtn">
+                    <i class="fas fa-camera"></i>
+                    Replace Photo
+                </button>
+                <button class="mstore-action-btn mstore-photo-delete-btn" id="deletePhotoBtn">
+                    <i class="fas fa-trash"></i>
+                    Delete Photo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create New Item Modal (Generic) -->
+    <div id="createItemModal" class="mstore-create-item-modal">
     <div class="mstore-create-item-container">
         <h3 class="mstore-create-modal-title">Create New Category</h3>
 

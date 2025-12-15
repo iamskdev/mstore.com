@@ -115,22 +115,26 @@ export class ItemDataManager {
         console.log("Raw categories data:", categories);
         this.allCategoriesGlobal = [];
 
-        categories.forEach((category, index) => {
-            // Handle both Firebase structure and local JSON structure
-            const meta = category.meta || category;
+        // Create the same category tabs as the filter bar (excluding 'all', 'product', 'service')
+        const activeCategories = categories.filter(cat => {
+            const meta = cat.meta || cat;
             const flags = meta.flags || {};
+            return flags.isActive !== false && flags.isDeleted !== true;
+        });
 
-            // Only include active, non-deleted categories
-            if (flags.isActive !== false && flags.isDeleted !== true) {
+        // Add main category tabs (same as filter bar)
+        activeCategories.forEach(cat => {
+            const meta = cat.meta || cat;
+            if (meta.slug) {
                 const categoryObj = {
-                    code: meta.categoryId || category.categoryId,
-                    displayName: meta.name || meta.slug || category.seo?.title || meta.categoryId || category.name,
-                    type: flags.isCustom ? "Custom" : "Standard",
-                    icon: meta.icon || category.icon,
-                    isPopular: flags.isPopular || false,
-                    displayOrder: meta.displayOrder || category.displayOrder || 999
+                    code: meta.categoryId || cat.categoryId,
+                    displayName: this.formatSlugForDisplay(meta.slug),
+                    type: "Category",
+                    icon: meta.icon || cat.icon,
+                    isPopular: meta.flags?.isPopular || false,
+                    displayOrder: meta.displayOrder || cat.displayOrder || 999,
+                    slug: meta.slug
                 };
-
                 this.allCategoriesGlobal.push(categoryObj);
             }
         });
@@ -153,6 +157,17 @@ export class ItemDataManager {
     }
 
     /**
+     * Format slug for display (same as filter bar)
+     */
+    formatSlugForDisplay(slug = '') {
+        if (!slug) return '';
+        return slug
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    /**
      * Setup category combobox after categories are loaded
      */
     setupCategoryCombobox() {
@@ -170,62 +185,8 @@ export class ItemDataManager {
                     categoryDropdown,
                     categoryInput,
                     (selectedCategories) => {
-                        // Callback after category selection (multi-select)
-                        console.log("Category selection callback called with:", selectedCategories);
-                        console.log("Number of categories:", selectedCategories?.length || 0);
-                        
-                        // Wait a bit to ensure DOM is ready
-                        setTimeout(() => {
-                            // Get the display and input elements again to ensure they exist
-                            const displayEl = document.getElementById("categoryInputDisplay");
-                            const inputEl = document.getElementById("itemCategory");
-                            
-                            console.log("Looking for elements - displayEl:", !!displayEl, "inputEl:", !!inputEl);
-                            
-                            if (!displayEl || !inputEl) {
-                                console.error("Category display elements not found");
-                                console.log("Available elements:", {
-                                    categoryInputDisplay: !!document.getElementById("categoryInputDisplay"),
-                                    itemCategory: !!document.getElementById("itemCategory")
-                                });
-                                return;
-                            }
-                            
-                            if (Array.isArray(selectedCategories) && selectedCategories.length > 0) {
-                                // Update display with selected categories - show all names joined with commas (like demo)
-                                const displays = selectedCategories.map(cat => {
-                                    let d = cat.displayName || cat.label || cat.code || '';
-                                    if (cat.symbol) d += ` (${cat.symbol})`;
-                                    return d;
-                                }).filter(Boolean).join(', ');
-                                
-                                // Remove readonly attribute if it exists
-                                if (displayEl.hasAttribute('readonly')) {
-                                    displayEl.removeAttribute('readonly');
-                                }
-                                
-                                // Set the value directly on the input element
-                                displayEl.value = displays;
-                                
-                                // Update hidden input with comma-separated codes
-                                const codes = selectedCategories.map(cat => cat.code || cat.value).filter(Boolean);
-                                inputEl.value = codes.join(',');
-                                
-                                // Trigger input event to ensure UI updates
-                                displayEl.dispatchEvent(new Event('input', { bubbles: true }));
-                                displayEl.dispatchEvent(new Event('change', { bubbles: true }));
-                                
-                                console.log("Categories updated - Display:", displays, "Codes:", codes);
-                                console.log("Display element value after update:", displayEl.value);
-                                console.log("Display element:", displayEl);
-                            } else {
-                                // No categories selected
-                                displayEl.value = '';
-                                inputEl.value = '';
-                                displayEl.dispatchEvent(new Event('input', { bubbles: true }));
-                                console.log("Categories cleared");
-                            }
-                        }, 100);
+                        // Callback after category selection - selectUnit already handled UI updates
+                        console.log("Categories selected:", selectedCategories);
                     },
                     {
                         title: "Select Category",
@@ -415,7 +376,7 @@ export class ItemDataManager {
             console.log("New category created:", newCategory);
 
             // Show success message
-            showToast('Category created successfully!', 'success');
+            showToast('success', '✅ Category created successfully!', 3000);
 
             // Update dropdown modal if it's open
             if (dropdownModalInstance) {
@@ -460,7 +421,7 @@ export class ItemDataManager {
 
         } catch (error) {
             console.error("Error creating new category:", error);
-            showToast('Failed to create category', 'error');
+            showToast('error', '❌ Please try again.', 4000);
         }
     }
 
@@ -496,8 +457,13 @@ export class ItemDataManager {
                 options,
                 title,
                 (selected) => {
+                    // Map selected options back to original sourceData format
+                    const selectedOriginal = selected.map(sel =>
+                        sourceData.find(orig => (orig.code || orig.value) === (sel.code || sel.value))
+                    ).filter(Boolean);
+
                     // Handle both single and multi-select
-                    const selectedData = multiSelect ? selected : selected;
+                    const selectedData = multiSelect ? selectedOriginal : selectedOriginal[0];
                     this.selectUnit(selectedData, inputEl, hiddenInputEl, onSelectCallback);
                 },
                 {
@@ -538,8 +504,13 @@ export class ItemDataManager {
                 options,
                 title,
                 (selected) => {
+                    // Map selected options back to original sourceData format
+                    const selectedOriginal = selected.map(sel =>
+                        sourceData.find(orig => (orig.code || orig.value) === (sel.code || sel.value))
+                    ).filter(Boolean);
+
                     // Handle both single and multi-select
-                    const selectedData = multiSelect ? selected : selected;
+                    const selectedData = multiSelect ? selectedOriginal : selectedOriginal[0];
                     this.selectUnit(selectedData, inputEl, hiddenInputEl, onSelectCallback);
                 },
                 {
@@ -591,9 +562,27 @@ export class ItemDataManager {
     selectUnit(unit, inputEl, hiddenInputEl, callback) {
         if (!unit) return;
 
-        const display = unit.displayName || unit.label || unit.code || '';
-        inputEl.value = display;
-        hiddenInputEl.value = unit.code;
+        // Handle Multi-Select Array (like categories)
+        if (Array.isArray(unit)) {
+            // Multi-select - join all selected items
+            const displays = unit.map(u => {
+                let d = u.displayName || u.label || u.value || u.code || '';
+                if (u.symbol) d += ` (${u.symbol})`;
+                return d;
+            }).filter(Boolean).join(', ');
+
+            const codes = unit.map(u => u.code || u.value).filter(Boolean).join(',');
+
+            inputEl.value = displays;
+            hiddenInputEl.value = codes;
+        } else {
+            // Single select (like units)
+            let display = unit.displayName || unit.label || unit.value || unit.code || '';
+            if (unit.symbol) display += ` (${unit.symbol})`;
+
+            inputEl.value = display;
+            hiddenInputEl.value = unit.code || unit.value;
+        }
         if (callback) callback();
     }
 
@@ -823,7 +812,15 @@ export class ItemDataManager {
         // Import dropdownModal dynamically to avoid circular dependencies
         import('../../../../modals/dropdown/dropdown-list.js').then(({ dropdownModal }) => {
             // Setup primary unit combobox
+            console.log("🔧 Checking primary unit elements...");
+            console.log("Primary unit input:", document.getElementById('primaryUnit'));
+            console.log("Primary unit display:", document.getElementById('primaryUnitInputDisplay'));
+            console.log("Primary unit icon:", document.getElementById('primaryUnitIcon'));
+            console.log("Primary unit dropdown:", document.getElementById('primaryUnitDropdown'));
+
             if (primaryUnitInput && primaryUnitDisplay && primaryUnitIcon && primaryUnitDropdown) {
+                console.log("✅ Setting up primary unit combobox");
+                console.log("Primary unit display element:", primaryUnitDisplay);
                 const dataManager = this; // Store reference to dataManager
                 this.setupCombobox(
                     primaryUnitDisplay,
@@ -832,6 +829,7 @@ export class ItemDataManager {
                     primaryUnitInput,
                     () => {
                         console.log("Primary unit selected:", primaryUnitInput.value);
+                        console.log("Primary unit display:", primaryUnitDisplay.value);
                         console.log("Units data available:", !!dataManager.allUnitsGlobal, "Length:", dataManager.allUnitsGlobal?.length);
 
                         // Auto-suggest secondary unit if none is selected

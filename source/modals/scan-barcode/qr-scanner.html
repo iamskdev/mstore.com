@@ -1,0 +1,421 @@
+<!-- QR Code Scanner Modal - Reusable Component -->
+<div id="qrScannerModal" class="qr-scanner-modal">
+    <!-- Header with close button -->
+    <div class="qr-scanner-header">
+        <h3 class="qr-scanner-title">Scan QR Code</h3>
+        <button id="qrScannerCloseBtn" class="qr-scanner-close-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Scanner Container -->
+    <div class="qr-scanner-container">
+        <div id="qrScannerReader" class="qr-scanner-reader">
+            <!-- Scanner Frame Overlay -->
+            <div class="qr-scanner-frame">
+                <div class="qr-scanner-corner qr-scanner-corner-tl"></div>
+                <div class="qr-scanner-corner qr-scanner-corner-tr"></div>
+                <div class="qr-scanner-corner qr-scanner-corner-bl"></div>
+                <div class="qr-scanner-corner qr-scanner-corner-br"></div>
+                <div class="qr-scanner-line"></div>
+            </div>
+
+            <!-- Status Messages -->
+            <div class="qr-scanner-status">
+                <div id="qrScannerLoading" class="qr-scanner-loading">
+                    <div class="qr-scanner-spinner"></div>
+                    <p>Starting camera...</p>
+                </div>
+                <div id="qrScannerError" class="qr-scanner-error" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p id="qrScannerErrorText">Camera access denied</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="qr-scanner-instructions">
+            <p class="qr-scanner-main-text">Position QR code within the frame</p>
+            <p class="qr-scanner-sub-text">The scanner will automatically detect and scan</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="qr-scanner-actions">
+            <button id="qrScannerRetryBtn" class="qr-scanner-btn qr-scanner-btn-secondary" style="display: none;">
+                <i class="fas fa-redo"></i>
+                Retry
+            </button>
+            <button id="qrScannerManualBtn" class="qr-scanner-btn qr-scanner-btn-primary">
+                <i class="fas fa-keyboard"></i>
+                Enter Manually
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* QR Scanner Modal */
+.qr-scanner-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 10000;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.qr-scanner-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* Header */
+.qr-scanner-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 10001;
+}
+
+.qr-scanner-title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.qr-scanner-close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.qr-scanner-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* Scanner Container */
+.qr-scanner-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Scanner Reader */
+.qr-scanner-reader {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Scanner Frame */
+.qr-scanner-frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: 280px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.qr-scanner-corner {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 3px solid #00ff88;
+    z-index: 2;
+}
+
+.qr-scanner-corner-tl {
+    top: -3px;
+    left: -3px;
+    border-right: none;
+    border-bottom: none;
+    border-top-left-radius: 12px;
+}
+
+.qr-scanner-corner-tr {
+    top: -3px;
+    right: -3px;
+    border-left: none;
+    border-bottom: none;
+    border-top-right-radius: 12px;
+}
+
+.qr-scanner-corner-bl {
+    bottom: -3px;
+    left: -3px;
+    border-right: none;
+    border-top: none;
+    border-bottom-left-radius: 12px;
+}
+
+.qr-scanner-corner-br {
+    bottom: -3px;
+    right: -3px;
+    border-left: none;
+    border-top: none;
+    border-bottom-right-radius: 12px;
+}
+
+.qr-scanner-line {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00ff88, transparent);
+    animation: qrScanLine 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes qrScanLine {
+    0% {
+        top: -3px;
+        opacity: 1;
+    }
+    50% {
+        top: calc(100% - 2px + 3px);
+        opacity: 1;
+    }
+    100% {
+        top: -3px;
+        opacity: 1;
+    }
+}
+
+@keyframes qrPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+.qr-scanner-corner-tl,
+.qr-scanner-corner-tr,
+.qr-scanner-corner-bl,
+.qr-scanner-corner-br {
+    animation: qrPulse 2s ease-in-out infinite;
+}
+
+.qr-scanner-corner-tr {
+    animation-delay: 0.5s;
+}
+
+.qr-scanner-corner-bl {
+    animation-delay: 1s;
+}
+
+.qr-scanner-corner-br {
+    animation-delay: 1.5s;
+}
+
+/* Status Messages */
+.qr-scanner-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    text-align: center;
+    color: #fff;
+}
+
+.qr-scanner-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.qr-scanner-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #00ff88;
+    border-radius: 50%;
+    animation: qrSpin 1s linear infinite;
+}
+
+@keyframes qrSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.qr-scanner-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #ff6b6b;
+}
+
+.qr-scanner-error i {
+    font-size: 48px;
+}
+
+/* Instructions */
+.qr-scanner-instructions {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: #fff;
+    z-index: 4;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 12px 24px;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.qr-scanner-main-text {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.qr-scanner-sub-text {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Action Buttons */
+.qr-scanner-actions {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    z-index: 4;
+}
+
+.qr-scanner-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.qr-scanner-btn-primary {
+    background: #00ff88;
+    color: #000;
+    border: 1px solid #00ff88;
+}
+
+.qr-scanner-btn-primary:hover {
+    background: #00cc6a;
+    transform: translateY(-2px);
+}
+
+.qr-scanner-btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.qr-scanner-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .qr-scanner-header {
+        height: 50px;
+        padding: 0 15px;
+    }
+
+    .qr-scanner-title {
+        font-size: 16px;
+    }
+
+    .qr-scanner-close-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .qr-scanner-frame {
+        width: 240px;
+        height: 240px;
+    }
+
+    .qr-scanner-corner {
+        width: 35px;
+        height: 35px;
+    }
+
+    .qr-scanner-instructions {
+        bottom: 100px;
+        padding: 10px 20px;
+    }
+
+    .qr-scanner-main-text {
+        font-size: 15px;
+    }
+
+    .qr-scanner-sub-text {
+        font-size: 13px;
+    }
+
+    .qr-scanner-actions {
+        bottom: 30px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .qr-scanner-btn {
+        padding: 10px 18px;
+        font-size: 13px;
+    }
+}
+</style>

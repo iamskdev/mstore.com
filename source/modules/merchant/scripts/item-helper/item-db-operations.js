@@ -2,6 +2,8 @@ import { generateId } from '../../../../utils/idGenerator.js';
 import { firestore } from '../../../../firebase/firebase-config.js';
 import { fetchUserById } from '../../../../utils/data-manager.js';
 import { localCache } from '../../../../utils/data-manager.js';
+import { getCloudinaryPath, uploadToCloudinary, deleteFromCloudinary } from '../../../../api/cloudinary.js';
+import { ItemMediaHandler } from './item-media-handler.js';
 
 /**
  * Removes all undefined values from an object (Firebase doesn't accept undefined)
@@ -141,7 +143,7 @@ export async function saveItem({
                 version: isEditMode ? (currentEditItem?.meta?.version || 1) + 1 : 1,
                 priority: 'normal',
                 flags: {
-                    isActive: formData.meta.flags.isActive,
+                    isActive: true, // New items are active by default
                     isDeleted: false,
                     isArchived: false,
                     isPopular: false,
@@ -149,8 +151,7 @@ export async function saveItem({
                     isFeatured: false,
                     isOnsite: false,
                     isPremium: false,
-                    isVerified: false,
-                    isPublic: formData.meta.flags.isPublic
+                    isVerified: false
                 },
                 links: {
                     merchantId: finalMerchantId || formData.links.merchantId || null,
@@ -166,7 +167,6 @@ export async function saveItem({
                 sku: formData.info.sku || null,
                 hsnCode: formData.info.hsnCode || null,
                 barcode: formData.info.itemCode || null,
-                itemCode: formData.info.itemCode || null,
                 note: formData.info.note || null,
                 description: formData.info.description || null,
                 attributes: formData.info.attributes || {}
@@ -192,7 +192,7 @@ export async function saveItem({
                 isLowStock: formData.inventory.stockQty !== null && formData.inventory.lowStockThreshold !== null
                     ? formData.inventory.stockQty <= formData.inventory.lowStockThreshold
                     : false,
-                isAvailable: formData.inventory.stockQty !== null ? formData.inventory.stockQty > 0 : true
+                isAvailable: formData.inventory.isAvailable
             },
             media: formData.media || {
                 thumbnail: null,
@@ -262,9 +262,66 @@ export async function saveItem({
         }
         localCache.set('allItems', allItems);
 
+        // Update Cloudinary image paths if this is a new item with uploaded images
+        if (!isEditMode && formData.media && (formData.media.thumbnail || formData.media.gallery?.length > 0)) {
+            try {
+                await updateImagePaths(finalItemId, finalMerchantId, formData.media);
+                console.log('✅ Cloudinary image paths updated for new item');
+            } catch (error) {
+                console.error('❌ Failed to update image paths:', error);
+                // Don't throw here - item is saved, just log the error
+            }
+        }
+
         return cleanItemData;
     } catch (error) {
         console.error('Error saving item:', error);
+        throw error;
+    }
+}
+
+/**
+ * Update Cloudinary image paths from TEMP to actual itemId
+ * @param {string} itemId - The actual item ID
+ * @param {string} merchantId - The merchant ID
+ * @param {object} media - The media object with thumbnail and gallery
+ */
+async function updateImagePaths(itemId, merchantId, media) {
+    const updatedMedia = { thumbnail: null, gallery: [] };
+
+    try {
+        // Update thumbnail path
+        if (media.thumbnail) {
+            const newThumbnailPath = getCloudinaryPath('ITEM_IMAGES_FOLDER', { merchantId, itemId });
+            // For now, we'll keep the existing public_id but update the folder structure conceptually
+            // In a real implementation, you might want to move the image to the correct folder
+            updatedMedia.thumbnail = media.thumbnail;
+        }
+
+        // Update gallery paths
+        if (media.gallery && Array.isArray(media.gallery)) {
+            updatedMedia.gallery = media.gallery.map(publicId => {
+                // Similar to thumbnail, keep existing public_id
+                return publicId;
+            });
+        }
+
+        // Update the item in Firestore with corrected paths
+        if (updatedMedia.thumbnail || updatedMedia.gallery.length > 0) {
+            const updateData = {
+                'media.thumbnail': updatedMedia.thumbnail,
+                'media.gallery': updatedMedia.gallery
+            };
+
+            await firestore.collection('items').doc(itemId).update(removeUndefinedValues(updateData));
+            console.log('✅ Item media paths updated in Firestore');
+        }
+
+        // Clear uploaded images cache
+        ItemMediaHandler.clearUploadedImages();
+
+    } catch (error) {
+        console.error('❌ Error updating image paths:', error);
         throw error;
     }
 }

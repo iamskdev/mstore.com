@@ -3,19 +3,21 @@
  */
 
 import { showToast } from '../../../../utils/toast.js';
+import { saveItem } from './item-db-operations.js';
 
 export class ItemEventManager {
-    constructor(dataManager, formManager) {
+    constructor(dataManager, formManager, currentItemId = null) {
         this.dataManager = dataManager;
         this.formManager = formManager;
+        this.currentItemId = currentItemId;
         this.eventListeners = [];
     }
 
     /**
      * Initialize form submission and other event handlers
      */
-    static initializeEventHandlers(dataManager, formManager) {
-        const manager = new ItemEventManager(dataManager, formManager);
+    static initializeEventHandlers(dataManager, formManager, currentItemId = null) {
+        const manager = new ItemEventManager(dataManager, formManager, currentItemId);
         manager.setupFormSubmission();
         manager.setupGlobalEventHandlers();
         return manager;
@@ -26,10 +28,21 @@ export class ItemEventManager {
      */
     setupFormSubmission() {
         const submitItemBtn = document.getElementById('submitItemBtn');
-        if (submitItemBtn) {
+        if (submitItemBtn && submitItemBtn.tagName === 'BUTTON') {
             this.addTrackedListener(submitItemBtn, 'click', async () => {
                 console.log('Submit button clicked');
                 await this.handleFormSubmission();
+            });
+        } else {
+            console.warn('Submit button not found or corrupted during event setup');
+        }
+
+        // Setup cancel button handler
+        const cancelBtn = document.querySelector('.mstore-bottom-bar .mstore-action-btn.secondary');
+        if (cancelBtn) {
+            this.addTrackedListener(cancelBtn, 'click', () => {
+                console.log('Cancel button clicked');
+                this.handleCancel();
             });
         }
     }
@@ -38,7 +51,7 @@ export class ItemEventManager {
      * Handle form submission
      */
     async handleFormSubmission() {
-        const isEditMode = window.currentItemId !== null;
+        const isEditMode = this.currentItemId !== null;
         console.log(isEditMode ? 'Updating item...' : 'Creating new item...');
 
         try {
@@ -52,22 +65,47 @@ export class ItemEventManager {
 
             console.log('Form data collected:', formData);
 
-            // Here you would typically save the data using your data manager
-            // For now, just show success message
-            const successMessage = isEditMode ? 'Item updated successfully!' : 'Item created successfully!';
-            showToast(successMessage, 'success');
+            // Save the item to Firebase
+            const savedItem = await saveItem({
+                formData,
+                itemId: isEditMode ? this.currentItemId : null,
+                currentEditItem: isEditMode ? window.currentEditItem : null,
+                isEditMode
+            });
 
-            // Optionally navigate back or to item details
+            console.log('Item saved successfully:', savedItem);
+
+            // Show success message and keep form open until toast completes
+            const successMessage = isEditMode
+                ? '✅ Item updated successfully!'
+                : '✅ Item created successfully!';
+            showToast('success', successMessage, 3000);
+
+            // Navigate back immediately after showing toast
             if (window.routeManager) {
-                // Navigate to appropriate page
                 setTimeout(() => {
-                    window.routeManager.switchView('merchant', 'dashboard');
-                }, 1500);
+                    window.routeManager.switchView('merchant', 'add');
+                }, 0); // Immediate navigation
             }
 
         } catch (error) {
             console.error('Error saving item:', error);
-            showToast('Failed to save item. Please try again.', 'error');
+            showToast('error', '❌ Please try again.', 4000);
+        }
+    }
+
+    /**
+     * Handle cancel button click
+     */
+    handleCancel() {
+        console.log('Handling cancel action');
+
+        // Navigate back to dashboard
+        if (window.routeManager) {
+            window.routeManager.switchView('merchant', 'dashboard');
+        } else {
+            // Fallback: use browser back
+            window.history.back();
         }
     }
 

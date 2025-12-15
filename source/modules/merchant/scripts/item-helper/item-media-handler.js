@@ -2,17 +2,48 @@
  * Item Media Handler - Handles camera, gallery, and photo upload functionality
  */
 
+import { uploadToCloudinary, getCloudinaryPath, deleteFromCloudinary, buildCloudinaryUrl } from '../../../../api/cloudinary.js';
+import { localCache } from '../../../../utils/data-manager.js';
+
 export class ItemMediaHandler {
+    static instance = null;
+
     constructor() {
         this.activePhotoSlot = null;
         this.currentStream = null;
         this.html5QrCode = null; // For barcode scanner
+        this.uploadedImages = {
+            thumbnail: null, // { publicId, url, file }
+            gallery: [] // Array of { publicId, url, file }
+        };
+        ItemMediaHandler.instance = this;
+    }
+
+    /**
+     * Get uploaded images data for form submission
+     */
+    static getUploadedImages() {
+        return this.instance ? this.instance.uploadedImages : { thumbnail: null, gallery: [] };
+    }
+
+    /**
+     * Clear all uploaded images
+     */
+    static clearUploadedImages() {
+        if (this.instance) {
+            this.instance.uploadedImages = { thumbnail: null, gallery: [] };
+        }
     }
 
     /**
      * Initialize photo upload functionality
      */
     static initializePhotoUpload() {
+        // Create instance if not exists
+        if (!this.instance) {
+            new ItemMediaHandler();
+        }
+
         const photoGrid = document.querySelector(".mstore-photo-grid");
         const mediaUploadModal = document.getElementById("mediaUploadModal");
         const closeMediaUploadModal = document.getElementById("closeMediaUploadModal");
@@ -31,21 +62,39 @@ export class ItemMediaHandler {
 
         let activePhotoSlot = null;
         let currentStream = null;
+        let photoForAction = null; // For photo action modal
 
         const showMediaModal = (slot) => {
+            console.log("showMediaModal called with slot:", slot);
             activePhotoSlot = slot;
-            if (!mediaUploadModal) return;
 
-            mediaUploadModal.classList.add("active"); // Vital for desktop CSS visibility
-            mediaUploadModal.style.display = "flex";
+            // Try to get the modal, either from cached reference or dynamic lookup
+            let modal = mediaUploadModal || document.getElementById("mediaUploadModal");
+            console.log("Using modal:", modal);
+
+            if (!modal) {
+                console.error("Media upload modal not found!");
+                return;
+            }
+
+            console.log("Resetting media modal state...");
+            // Reset modal state first to ensure clean state
+            modal.classList.remove("active");
+            modal.style.display = "none";
+            modal.style.opacity = "0";
+            modal.style.visibility = "hidden";
+
+            // Force reflow
+            modal.offsetHeight;
+
+            console.log("Showing media modal...");
+            // Now show it
+            modal.classList.add("active");
+            modal.style.display = "flex";
             requestAnimationFrame(() => {
-                mediaUploadModal.style.opacity = "1";
-                mediaUploadModal.style.visibility = "visible";
-                const container = mediaUploadModal.querySelector(".mstore-selection-container");
-                if (container) {
-                    container.style.transform = "scale(1)";
-                    container.style.opacity = "1"; // Ensure opacity is 1
-                }
+                modal.style.opacity = "1";
+                modal.style.visibility = "visible";
+                console.log("Media modal should now be visible");
             });
         };
 
@@ -189,45 +238,318 @@ export class ItemMediaHandler {
             }
         };
 
-        const applyPhoto = (src) => {
+        const applyPhoto = async (src, isBlob = false) => {
             if (!activePhotoSlot) return;
-            activePhotoSlot.innerHTML = "";
 
-            const img = document.createElement("img");
-            img.src = src;
-            img.style.width = "100%";
-            img.style.height = "100%";
-            img.style.objectFit = "cover";
-            img.style.borderRadius = "6px";
-            activePhotoSlot.appendChild(img);
-            activePhotoSlot.setAttribute("draggable", "true");
-            activePhotoSlot.style.borderStyle = "solid";
-            activePhotoSlot.style.border = "none";
+            const instance = ItemMediaHandler.instance;
+            if (!instance) return;
 
-            if (activePhotoSlot.classList.contains("primary")) {
-                activePhotoSlot.style.border = "2px solid #3b82f6";
+            // Show loading state
+            activePhotoSlot.innerHTML = `
+                <div class="mstore-photo-loading">
+                    <div class="mstore-spinner"></div>
+                    <span>Uploading...</span>
+                </div>
+            `;
+
+            try {
+                let fileToUpload;
+
+                if (isBlob) {
+                    // src is a blob URL, convert to file
+                    const response = await fetch(src);
+                    const blob = await response.blob();
+                    fileToUpload = new File([blob], `photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
+                } else if (src instanceof File) {
+                    fileToUpload = src;
+                } else {
+                    // src is a data URL, convert to blob then file
+                    const response = await fetch(src);
+                    const blob = await response.blob();
+                    fileToUpload = new File([blob], `photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
+                }
+
+                // Get merchant ID for Cloudinary path
+                const merchantId = localCache.get('currentMerchantId');
+                if (!merchantId) {
+                    throw new Error('Merchant ID not found. Please ensure you are logged in as a merchant.');
+                }
+
+                // Determine if this is thumbnail or gallery
+                const isPrimary = activePhotoSlot.classList.contains("primary");
+                const imageType = isPrimary ? 'thumbnail' : 'gallery';
+
+                // Generate Cloudinary path
+                const folderPath = getCloudinaryPath('ITEM_IMAGES_FOLDER', {
+                    merchantId: merchantId,
+                    itemId: `temp-${Date.now()}` // Use a temporary unique identifier
+                });
+
+                // Upload to Cloudinary
+                console.log(`Uploading ${imageType} image to Cloudinary...`);
+                const uploadResult = await uploadToCloudinary(fileToUpload, {
+                    folder: folderPath,
+                    public_id: `${imageType}-${Date.now()}`, // Unique ID for this upload
+                    overwrite: false
+                }, 'image');
+
+                if (!uploadResult || !uploadResult.public_id) {
+                    throw new Error('Image upload failed');
+                }
+
+                // Store the uploaded image data
+                const imageData = {
+                    publicId: uploadResult.public_id,
+                    url: buildCloudinaryUrl(uploadResult.public_id),
+                    file: fileToUpload
+                };
+
+                // Initialize uploadedImages if not exists
+                if (!instance.uploadedImages) {
+                    instance.uploadedImages = { thumbnail: null, gallery: [] };
+                }
+
+                if (isPrimary) {
+                    // Replace existing thumbnail
+                    if (instance.uploadedImages.thumbnail) {
+                        // Delete old thumbnail from Cloudinary (don't await to avoid blocking)
+                        deleteFromCloudinary(instance.uploadedImages.thumbnail.publicId).catch(console.error);
+                    }
+                    instance.uploadedImages.thumbnail = imageData;
+                } else {
+                    // Add to gallery (limit to 4 images)
+                    if (instance.uploadedImages.gallery.length >= 4) {
+                        // Remove oldest gallery image
+                        const oldestImage = instance.uploadedImages.gallery.shift();
+                        if (oldestImage) {
+                            // Delete old image from Cloudinary (don't await to avoid blocking)
+                            deleteFromCloudinary(oldestImage.publicId).catch(console.error);
+                        }
+                    }
+                    instance.uploadedImages.gallery.push(imageData);
+                }
+
+                // Update UI with uploaded image
+                activePhotoSlot.innerHTML = "";
+
+                const img = document.createElement("img");
+                img.src = imageData.url; // Use Cloudinary URL
+                img.style.width = "100%";
+                img.style.height = "100%";
+                img.style.objectFit = "cover";
+                img.style.borderRadius = "6px";
+                activePhotoSlot.appendChild(img);
+
+                activePhotoSlot.setAttribute("draggable", "true");
+                activePhotoSlot.style.borderStyle = "solid";
+                activePhotoSlot.style.border = "none";
+
+                if (activePhotoSlot.classList.contains("primary")) {
+                    activePhotoSlot.style.border = "2px solid #3b82f6";
+                }
+
+                console.log(`✅ ${imageType} image uploaded successfully:`, uploadResult.public_id);
+
+            } catch (error) {
+                console.error('❌ Image upload failed:', error);
+
+                // Show error state
+                activePhotoSlot.innerHTML = `
+                    <div class="mstore-photo-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Upload failed</span>
+                    </div>
+                `;
+
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    const isPrimary = activePhotoSlot.classList.contains("primary");
+                    activePhotoSlot.innerHTML = `
+                        <div class="mstore-photo-icon"><i class="fas fa-${isPrimary ? 'camera' : 'plus'}"></i></div>
+                        <div class="mstore-photo-label">${isPrimary ? 'Thumbnail' : 'Add Photo'}</div>
+                    `;
+                }, 3000);
             }
         };
 
-        const openMediaEditor = (dataUrl) => {
-            if (window.openPhotoEditor) {
-                window.openPhotoEditor(dataUrl, {
-                    title: "Edit Photo",
-                    subtitle: "Crop and adjust your photo",
-                    footer: "Save Photo",
-                    aspectRatio: null, // Allow free form
-                    compression: "100-500KB",
-                    onSave: (editedImageData) => {
-                        applyPhoto(editedImageData);
-                    },
-                    onCancel: () => {
-                        // Optional: Handle cancel
+        const removePhoto = (photoSlot) => {
+            // Clear the photo and restore the empty state
+            const isPrimary = photoSlot.classList.contains("primary");
+            photoSlot.innerHTML = `
+                <div class="mstore-photo-icon"><i class="fas fa-${isPrimary ? 'camera' : 'plus'}"></i></div>
+                <div class="mstore-photo-label">${isPrimary ? 'Thumbnail' : 'Add Photo'}</div>
+            `;
+
+            // Reset all styles to match empty state
+            photoSlot.style.border = "";
+            photoSlot.style.borderStyle = "";
+            photoSlot.style.background = "";
+            photoSlot.removeAttribute("draggable");
+            photoSlot.removeAttribute("style"); // Remove all inline styles
+        };
+
+        // Photo action modal functions
+        const showPhotoActionModal = (photoSlot) => {
+            photoForAction = photoSlot;
+
+            // Check if modal already exists
+            let modal = document.getElementById("photoActionModal");
+            if (!modal) {
+                // Create modal dynamically
+                modal = document.createElement("div");
+                modal.id = "photoActionModal";
+                modal.className = "mstore-photo-action-modal";
+                modal.innerHTML = `
+                    <div class="mstore-photo-action-container">
+                        <div class="mstore-photo-action-header">
+                            <div class="mstore-photo-action-icon">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <h3 class="mstore-photo-action-title">Photo Options</h3>
+                            <p class="mstore-photo-action-subtitle">Choose what you want to do with this photo</p>
+                        </div>
+
+                        <div class="mstore-photo-action-buttons">
+                            <button class="mstore-action-btn primary" id="replacePhotoBtn">
+                                <i class="fas fa-camera"></i>
+                                Replace Photo
+                            </button>
+                            <button class="mstore-action-btn mstore-photo-delete-btn" id="deletePhotoBtn">
+                                <i class="fas fa-trash"></i>
+                                Delete Photo
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Add click handler to close modal when clicking background
+                modal.addEventListener("click", (e) => {
+                    if (e.target === modal) {
+                        hidePhotoActionModal();
                     }
                 });
-            } else {
-                // Fallback if media editor not available
-                applyPhoto(dataUrl);
             }
+
+            // Always re-attach event listeners to ensure they have current photoForAction
+            const replaceBtn = modal.querySelector("#replacePhotoBtn");
+            const deleteBtn = modal.querySelector("#deletePhotoBtn");
+
+            console.log("Setting up button events for:", photoForAction);
+
+            // Clone buttons to remove existing event listeners and add fresh ones
+            if (replaceBtn) {
+                const newReplaceBtn = replaceBtn.cloneNode(true);
+                replaceBtn.parentNode.replaceChild(newReplaceBtn, replaceBtn);
+
+                const handleReplace = (e) => {
+                    console.log("Replace button activated");
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Capture photoForAction before hiding modal (it gets reset to null)
+                    const currentPhotoSlot = photoForAction;
+                    console.log("Captured photoForAction:", currentPhotoSlot);
+
+                    hidePhotoActionModal();
+
+                    if (currentPhotoSlot) {
+                        console.log("Scheduling media modal show");
+                        // Delay to ensure action modal is fully hidden
+                        setTimeout(() => {
+                            showMediaModal(currentPhotoSlot);
+                        }, 300);
+                    } else {
+                        console.log("No photoForAction available");
+                    }
+                };
+
+                newReplaceBtn.addEventListener("click", handleReplace);
+                newReplaceBtn.addEventListener("touchend", handleReplace);
+                console.log("Replace button events attached");
+            } else {
+                console.log("Replace button not found");
+            }
+
+            if (deleteBtn) {
+                const newDeleteBtn = deleteBtn.cloneNode(true);
+                deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+
+                const handleDelete = (e) => {
+                    console.log("Delete button activated");
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Capture photoForAction before hiding modal
+                    const currentPhotoSlot = photoForAction;
+                    console.log("Captured photoForAction for delete:", currentPhotoSlot);
+
+                    if (currentPhotoSlot) {
+                        removePhoto(currentPhotoSlot);
+                    }
+                    hidePhotoActionModal();
+                };
+
+                newDeleteBtn.addEventListener("click", handleDelete);
+                newDeleteBtn.addEventListener("touchend", handleDelete);
+                console.log("Delete button events attached");
+            } else {
+                console.log("Delete button not found");
+            }
+
+            modal.classList.add("active");
+        };
+
+        const hidePhotoActionModal = () => {
+            const modal = document.getElementById("photoActionModal");
+            if (modal) {
+                modal.classList.remove("active");
+            }
+            photoForAction = null;
+        };
+
+
+        const openMediaEditor = (imageSrc) => {
+            if (!window.openPhotoEditor) {
+                console.error('Media editor not loaded yet');
+                // Fallback: apply directly without editing
+                applyPhoto(imageSrc);
+                hideMediaModal();
+                return;
+            }
+
+            // Hide the camera/gallery selection modal
+            hideMediaModal();
+
+            window.openPhotoEditor(imageSrc, {
+                title: 'Edit Product Photo',
+                subtitle: 'Crop and adjust your image',
+                aspectRatios: [
+                    { label: '1:1', value: 1 },
+                    { label: '4:3', value: 4 / 3 },
+                    { label: '16:9', value: 16 / 9 },
+                    { label: 'Free', value: null }
+                ],
+                initialAspectRatio: 1,
+                controls: [
+                    { ratios: true },
+                    { zoom: true, rotate: true, flip: true },
+                    { fit: true, reset: true, final: true }
+                ],
+                compression: {
+                    targetSizeKB: 150,
+                    minQuality: 0.7,
+                    format: 'image/jpeg'
+                },
+                onSave: (blob) => {
+                    // Convert blob to data URL and apply to photo slot
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        applyPhoto(e.target.result);
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            });
         };
 
         const handleFileSelect = (e) => {
@@ -260,42 +582,101 @@ export class ItemMediaHandler {
         };
 
         const handleMultipleFileSelect = (e) => {
-            console.log("DEBUG: handleMultipleFileSelect", e.target.id);
+            console.log("DEBUG: handleMultipleFileSelect", e.target.id, "activePhotoSlot:", activePhotoSlot);
             if (e.target.files && e.target.files.length > 0) {
                 const files = Array.from(e.target.files);
                 const photoGrid = document.querySelector(".mstore-photo-grid");
                 if (!photoGrid) return;
 
-                let slotIndex = 0;
-                const photoSlots = Array.from(photoGrid.querySelectorAll(".mstore-photo-item"));
+                // If replacing a specific photo (activePhotoSlot is set and only one file)
+                if (activePhotoSlot && files.length === 1) {
+                    console.log("Replacing photo in specific slot:", activePhotoSlot);
+                    const file = files[0];
 
-                files.forEach((file, index) => {
-                    if (slotIndex >= photoSlots.length) {
-                        console.warn("Maximum 5 images allowed");
+                    // Check file size (limit to 10MB)
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert("File size too large. Please select a file smaller than 10MB.");
+                        e.target.value = "";
                         return;
                     }
 
                     const reader = new FileReader();
                     reader.onload = (event) => {
-                        const slot = photoSlots[slotIndex];
-                        if (slot) {
-                            activePhotoSlot = slot;
-                            openMediaEditor(event.target.result);
-                            slotIndex++;
-                        }
+                        // Use the activePhotoSlot for replacement
+                        applyPhoto(event.target.result);
+                        // Close the media modal after applying the photo
+                        hideMediaModal();
                     };
                     reader.readAsDataURL(file);
-                });
+                } else {
+                    // Multiple files or no specific slot - use empty slots
+                    const photoSlots = Array.from(photoGrid.querySelectorAll(".mstore-photo-item"));
+                    let fileIndex = 0;
+
+                    // Find available slots (empty ones)
+                    const availableSlots = photoSlots.filter(slot => !slot.querySelector("img"));
+
+                    if (availableSlots.length === 0) {
+                        alert("All photo slots are filled. Remove an existing photo to add a new one.");
+                        return;
+                    }
+
+                    files.forEach((file) => {
+                        if (fileIndex >= availableSlots.length) {
+                            console.warn("No more available slots for additional images");
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            const slot = availableSlots[fileIndex];
+                            if (slot) {
+                                activePhotoSlot = slot;
+                                openMediaEditor(event.target.result);
+                                fileIndex++;
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
             }
             e.target.value = "";
         };
 
-        // Event Listeners
+        // Event Listeners - Use event delegation for robustness
         if (photoGrid) {
+            // Use event delegation to handle clicks on photo items (works even when items are recreated)
             photoGrid.addEventListener("click", (e) => {
                 const photoItem = e.target.closest(".mstore-photo-item");
-                if (photoItem) {
-                    showMediaModal(photoItem);
+                if (!photoItem) return;
+
+                console.log("Photo item clicked, has image:", !!photoItem.querySelector("img"));
+                e.stopPropagation(); // Prevent event bubbling issues
+
+                const photoSlots = Array.from(photoGrid.querySelectorAll(".mstore-photo-item"));
+                const hasEmptySlots = photoSlots.some(slot => !slot.querySelector("img"));
+                console.log("Has empty slots:", hasEmptySlots);
+
+                if (hasEmptySlots) {
+                    // If there are empty slots available
+                    if (!photoItem.querySelector("img")) {
+                        // Clicked slot is empty, use it
+                        console.log("Showing media modal for empty slot");
+                        showMediaModal(photoItem);
+                    } else {
+                        // Clicked slot has image, show action modal
+                        console.log("Showing action modal for filled slot");
+                        showPhotoActionModal(photoItem);
+                    }
+                } else {
+                    // All slots are filled - show action modal for the clicked slot
+                    if (photoItem.querySelector("img")) {
+                        console.log("All filled, showing action modal");
+                        showPhotoActionModal(photoItem);
+                    } else {
+                        // This shouldn't happen if hasEmptySlots is false, but just in case
+                        alert("Maximum 5 photos allowed. Remove an existing photo to add a new one.");
+                    }
                 }
             });
         }
