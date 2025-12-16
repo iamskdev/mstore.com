@@ -297,7 +297,7 @@ export class ItemFormManager {
         if (itemStatusToggle) itemStatusToggle.checked = true;
 
         const stockTrackingToggle = document.getElementById("stockTrackingToggle");
-        if (stockTrackingToggle) stockTrackingToggle.checked = true;
+        if (stockTrackingToggle) stockTrackingToggle.checked = false;
 
         // Reset product/service toggle
         const productToggle = document.getElementById("productToggle");

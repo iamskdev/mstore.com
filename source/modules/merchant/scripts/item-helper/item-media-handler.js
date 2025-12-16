@@ -16,7 +16,88 @@ export class ItemMediaHandler {
             thumbnail: null, // { publicId, url, file }
             gallery: [] // Array of { publicId, url, file }
         };
+        this.openModals = new Set(); // Track open modals
+        this.setupMobileBackNavigation();
         ItemMediaHandler.instance = this;
+    }
+
+    /**
+     * Setup mobile back navigation handling
+     */
+    setupMobileBackNavigation() {
+        // Handle mobile back button to close modals instead of navigating away
+        const handlePopState = (e) => {
+            // Check if any modals are open
+            if (ItemMediaHandler.instance.openModals.size > 0) {
+                e.preventDefault();
+                // Close the most recently opened modal
+                const modalToClose = Array.from(ItemMediaHandler.instance.openModals).pop();
+                if (modalToClose === 'mediaModal') {
+                    ItemMediaHandler.instance.closeMediaModal();
+                } else if (modalToClose === 'cameraModal') {
+                    ItemMediaHandler.instance.closeCameraModal();
+                } else if (modalToClose === 'photoActionModal') {
+                    ItemMediaHandler.instance.closePhotoActionModal();
+                }
+                // Prevent the default back navigation
+                window.history.pushState(null, '', window.location.href);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+    }
+
+    /**
+     * Close media modal (called from mobile back navigation)
+     */
+    closeMediaModal() {
+        const modal = document.getElementById("mediaUploadModal");
+        if (modal) {
+            // Restore background scrolling
+            document.body.style.overflow = '';
+            ItemMediaHandler.instance.openModals.delete('mediaModal');
+
+            modal.classList.remove("active");
+            modal.style.opacity = "0";
+            const container = modal.querySelector(".mstore-selection-container");
+            if (container) container.style.transform = "scale(0.95)";
+            setTimeout(() => {
+                modal.style.visibility = "hidden";
+                modal.style.display = "none";
+            }, 300);
+        }
+    }
+
+    /**
+     * Close camera modal (called from mobile back navigation)
+     */
+    closeCameraModal() {
+        const modal = document.getElementById("customCameraModal");
+        if (modal) {
+            // Stop camera stream if active
+            if (this.currentStream) {
+                this.currentStream.getTracks().forEach((track) => track.stop());
+                this.currentStream = null;
+            }
+            // Restore background scrolling
+            document.body.style.overflow = '';
+            ItemMediaHandler.instance.openModals.delete('cameraModal');
+
+            modal.style.display = "none";
+        }
+    }
+
+    /**
+     * Close photo action modal (called from mobile back navigation)
+     */
+    closePhotoActionModal() {
+        const modal = document.getElementById("photoActionModal");
+        if (modal) {
+            modal.classList.remove("active");
+            // Restore background scrolling
+            document.body.style.overflow = '';
+            ItemMediaHandler.instance.openModals.delete('photoActionModal');
+        }
     }
 
     /**
@@ -88,6 +169,10 @@ export class ItemMediaHandler {
             modal.offsetHeight;
 
             console.log("Showing media modal...");
+            // Prevent background scrolling and interaction
+            document.body.style.overflow = 'hidden';
+            ItemMediaHandler.instance.openModals.add('mediaModal');
+
             // Now show it
             modal.classList.add("active");
             modal.style.display = "flex";
@@ -100,6 +185,10 @@ export class ItemMediaHandler {
 
         const hideMediaModal = () => {
             if (!mediaUploadModal) return;
+
+            // Restore background scrolling
+            document.body.style.overflow = '';
+            ItemMediaHandler.instance.openModals.delete('mediaModal');
 
             mediaUploadModal.classList.remove("active");
             mediaUploadModal.style.opacity = "0";
@@ -130,6 +219,10 @@ export class ItemMediaHandler {
             customCameraModal.style.display = "block"; // Force block first
             customCameraModal.style.visibility = "visible";
             customCameraModal.style.opacity = "1";
+
+            // Prevent background scrolling and interaction
+            document.body.style.overflow = 'hidden';
+            ItemMediaHandler.instance.openModals.add('cameraModal');
 
             // Ensure it's fixed and covers screen (inline styles usually handle this, but re-enforcing)
             customCameraModal.style.position = "fixed";
@@ -201,7 +294,12 @@ export class ItemMediaHandler {
                 currentStream = null;
             }
             if (cameraFeed) cameraFeed.srcObject = null;
-            if (customCameraModal) customCameraModal.style.display = "none";
+            if (customCameraModal) {
+                customCameraModal.style.display = "none";
+                // Restore background scrolling
+                document.body.style.overflow = '';
+                ItemMediaHandler.instance.openModals.delete('cameraModal');
+            }
 
             // If we didn't capture, we should probably respawn the selection modal?
             // But for "Close" button, yes.
@@ -402,9 +500,9 @@ export class ItemMediaHandler {
                 modal.innerHTML = `
                     <div class="mstore-photo-action-container">
                         <div class="mstore-photo-action-header">
-                            <div class="mstore-photo-action-icon">
-                                <i class="fas fa-camera"></i>
-                            </div>
+                            <button id="closePhotoActionModal" class="mstore-photo-action-close-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
                             <h3 class="mstore-photo-action-title">Photo Options</h3>
                             <p class="mstore-photo-action-subtitle">Choose what you want to do with this photo</p>
                         </div>
@@ -434,6 +532,7 @@ export class ItemMediaHandler {
             // Always re-attach event listeners to ensure they have current photoForAction
             const replaceBtn = modal.querySelector("#replacePhotoBtn");
             const deleteBtn = modal.querySelector("#deletePhotoBtn");
+            const closeBtn = modal.querySelector("#closePhotoActionModal");
 
             console.log("Setting up button events for:", photoForAction);
 
@@ -497,13 +596,33 @@ export class ItemMediaHandler {
                 console.log("Delete button not found");
             }
 
+            if (closeBtn) {
+                const handleClose = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    hidePhotoActionModal();
+                };
+
+                closeBtn.addEventListener("click", handleClose);
+                closeBtn.addEventListener("touchend", handleClose);
+                console.log("Close button events attached");
+            } else {
+                console.log("Close button not found");
+            }
+
             modal.classList.add("active");
+            // Prevent background scrolling and track modal state
+            document.body.style.overflow = 'hidden';
+            ItemMediaHandler.instance.openModals.add('photoActionModal');
         };
 
         const hidePhotoActionModal = () => {
             const modal = document.getElementById("photoActionModal");
             if (modal) {
                 modal.classList.remove("active");
+                // Restore background scrolling and remove from tracking
+                document.body.style.overflow = '';
+                ItemMediaHandler.instance.openModals.delete('photoActionModal');
             }
             photoForAction = null;
         };
@@ -602,10 +721,8 @@ export class ItemMediaHandler {
 
                     const reader = new FileReader();
                     reader.onload = (event) => {
-                        // Use the activePhotoSlot for replacement
-                        applyPhoto(event.target.result);
-                        // Close the media modal after applying the photo
-                        hideMediaModal();
+                        // Open media editor instead of directly applying
+                        openMediaEditor(event.target.result);
                     };
                     reader.readAsDataURL(file);
                 } else {

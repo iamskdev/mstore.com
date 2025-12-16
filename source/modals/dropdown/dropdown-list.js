@@ -24,6 +24,7 @@ class DropdownModal {
         this.enableCreate = false;
         this.enableGrouping = false;
         this.collapsedGroups = new Set(); // Track collapsed groups
+        this.isModalOpen = false; // Track modal state for back navigation
     }
 
     /**
@@ -99,6 +100,9 @@ class DropdownModal {
                 }
             });
         }
+
+        // Setup mobile back navigation handling
+        this.handleMobileBackNavigation();
 
         this.isInitialized = true;
     }
@@ -280,6 +284,7 @@ class DropdownModal {
         if (this.modal) {
             this.modal.classList.add('active');
             document.body.style.overflow = 'hidden'; // Lock background scroll
+            this.isModalOpen = true;
             console.log('🔍 Modal shown with active class');
 
             // Debug: Check if styles are applied
@@ -306,6 +311,28 @@ class DropdownModal {
         }
         this.filterText = '';
         this.selectedValues.clear();
+        this.isModalOpen = false;
+    }
+
+    /**
+     * Handle mobile back navigation
+     */
+    handleMobileBackNavigation() {
+        // Handle mobile back button to close modal instead of navigating away
+        const handlePopState = (e) => {
+            if (this.isModalOpen) {
+                e.preventDefault();
+                this.hide();
+                // Prevent the default back navigation by pushing state back
+                window.history.pushState(null, '', window.location.href);
+            }
+        };
+
+        // Add the event listener
+        window.addEventListener('popstate', handlePopState);
+
+        // Store reference to remove listener later if needed
+        this._popStateHandler = handlePopState;
     }
 
     /**

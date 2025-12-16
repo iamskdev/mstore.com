@@ -513,11 +513,11 @@ export class ItemUIComponents {
         if (!assignCodeBtn || !itemCodeInput) return;
 
         assignCodeBtn.addEventListener("click", () => {
-            // Generate unique code: PREFIX + TIMESTAMP + RANDOM
-            const prefix = "ITM";
+            // Generate numeric barcode-standard code (EAN-13 like format)
+            // 13 digits: timestamp (6) + random (7) for uniqueness
             const timestamp = Date.now().toString().slice(-6); // Last 6 digits
-            const random = Math.random().toString(36).substring(2, 6).toUpperCase(); // 4 random chars
-            const generatedCode = `${prefix}-${timestamp}-${random}`;
+            const random = Math.floor(Math.random() * 9999999).toString().padStart(7, '0'); // 7 random digits
+            const generatedCode = timestamp + random; // 13 digits total
 
             // Set the generated code to input
             itemCodeInput.value = generatedCode;
@@ -624,6 +624,9 @@ export class ItemUIComponents {
                 itemCodeInput.focus();
             }
         });
+
+        // Initialize the scanner
+        await this.qrScanner.init();
 
         // Add click event to scan button
         scanCodeBtn.addEventListener("click", async () => {

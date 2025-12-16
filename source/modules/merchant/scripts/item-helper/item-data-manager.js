@@ -54,6 +54,7 @@ export class ItemDataManager {
                 unit.subunits.forEach((subunit) => {
                     const unitObj = {
                         ...subunit,
+                        code: subunit.code || subunit.id || subunit.name || subunit.title,
                         type: unit.meta?.type || 'unknown',
                         displayName: subunit.title || subunit.name || subunit.code,
                     };
@@ -63,6 +64,7 @@ export class ItemDataManager {
                 // Firebase flat structure
                 const unitObj = {
                     ...unit,
+                    code: unit.code || unit.id || unit.name || unit.title,
                     displayName: unit.title || unit.name || unit.code,
                 };
                 this.allUnitsGlobal.push(unitObj);
@@ -126,14 +128,20 @@ export class ItemDataManager {
         activeCategories.forEach(cat => {
             const meta = cat.meta || cat;
             if (meta.slug) {
+                // Determine if this is a standard (system) or custom category
+                // Standard categories typically have predefined slugs or flags
+                const isStandard = meta.flags?.isSystem || meta.flags?.isStandard ||
+                                 ['electronics', 'clothing', 'food', 'books', 'home', 'sports', 'beauty', 'automotive', 'health', 'toys'].includes(meta.slug);
+
                 const categoryObj = {
                     code: meta.categoryId || cat.categoryId,
                     displayName: this.formatSlugForDisplay(meta.slug),
-                    type: "Category",
+                    type: isStandard ? "Standard" : "Custom",
                     icon: meta.icon || cat.icon,
                     isPopular: meta.flags?.isPopular || false,
                     displayOrder: meta.displayOrder || cat.displayOrder || 999,
-                    slug: meta.slug
+                    slug: meta.slug,
+                    group: isStandard ? "Standard" : "Custom"
                 };
                 this.allCategoriesGlobal.push(categoryObj);
             }
@@ -193,11 +201,12 @@ export class ItemDataManager {
                         data: this.allCategoriesGlobal,
                         enableCreate: true,
                         multiSelect: true,
+                        enableGrouping: true,
                         onAddNew: async (params) => {
                             // Handle opening custom modal for category creation
                             const searchText = typeof params === 'string' ? params : (params?.searchText || '');
                             const modalInstance = typeof params === 'object' ? params?.dropdownModal : null;
-                            
+
                             // Open the custom createItemModal
                             this.openCreateItemModal(searchText, modalInstance);
                         }
@@ -457,8 +466,11 @@ export class ItemDataManager {
                 options,
                 title,
                 (selected) => {
+                    // Handle both single object (single-select) and array (multi-select)
+                    const selectedArray = Array.isArray(selected) ? selected : [selected];
+
                     // Map selected options back to original sourceData format
-                    const selectedOriginal = selected.map(sel =>
+                    const selectedOriginal = selectedArray.map(sel =>
                         sourceData.find(orig => (orig.code || orig.value) === (sel.code || sel.value))
                     ).filter(Boolean);
 
@@ -504,8 +516,11 @@ export class ItemDataManager {
                 options,
                 title,
                 (selected) => {
+                    // Handle both single object (single-select) and array (multi-select)
+                    const selectedArray = Array.isArray(selected) ? selected : [selected];
+
                     // Map selected options back to original sourceData format
-                    const selectedOriginal = selected.map(sel =>
+                    const selectedOriginal = selectedArray.map(sel =>
                         sourceData.find(orig => (orig.code || orig.value) === (sel.code || sel.value))
                     ).filter(Boolean);
 
@@ -732,10 +747,35 @@ export class ItemDataManager {
         console.log('Same type units:', sameTypeUnits);
 
         // Find the base unit of this category (toBase = 1)
-        const baseUnit = sameTypeUnits.find(unit => unit.toBase === 1);
-        if (baseUnit && baseUnit.code !== primaryUnitCode) {
-            console.log('Suggesting base unit:', baseUnit.code);
-            return baseUnit.code;
+        // Use loose equality to handle string "1" or number 1
+        const baseUnits = sameTypeUnits.filter(unit => unit.toBase == 1 && unit.toBase > 0);
+
+        // Prefer base units that are not the primary unit
+        let suggestedUnit = baseUnits.find(unit => unit.code !== primaryUnitCode);
+
+        // If no other base unit, use any base unit (even if it's the primary - though this shouldn't happen)
+        if (!suggestedUnit && baseUnits.length > 0) {
+            suggestedUnit = baseUnits[0];
+        }
+
+        if (suggestedUnit) {
+            console.log('Suggesting base unit:', suggestedUnit.code);
+            return suggestedUnit.code;
+        }
+
+        // If no base units defined, look for units with the smallest toBase value (most base-like)
+        if (sameTypeUnits.length > 1) {
+            const sortedByToBase = sameTypeUnits
+                .filter(unit => unit.toBase > 0)
+                .sort((a, b) => a.toBase - b.toBase);
+
+            if (sortedByToBase.length > 0) {
+                suggestedUnit = sortedByToBase.find(unit => unit.code !== primaryUnitCode) || sortedByToBase[0];
+                if (suggestedUnit) {
+                    console.log('Suggesting smallest toBase unit:', suggestedUnit.code, 'toBase:', suggestedUnit.toBase);
+                    return suggestedUnit.code;
+                }
+            }
         }
 
         // Otherwise, suggest the first popular unit that's not the primary unit

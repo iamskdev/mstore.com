@@ -100,9 +100,9 @@ export class ItemEventManager {
     handleCancel() {
         console.log('Handling cancel action');
 
-        // Navigate back to dashboard
+        // Navigate back to merchant home/add view
         if (window.routeManager) {
-            window.routeManager.switchView('merchant', 'dashboard');
+            window.routeManager.switchView('merchant', 'add');
         } else {
             // Fallback: use browser back
             window.history.back();

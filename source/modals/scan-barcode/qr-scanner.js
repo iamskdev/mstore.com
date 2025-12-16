@@ -20,6 +20,7 @@ class QRScanner {
         this.isScanning = false;
         this.modalElement = null;
         this.readerElement = null;
+        this.flashlightEnabled = false;
 
         this.init();
     }
@@ -139,7 +140,8 @@ class QRScanner {
     setupEventListeners() {
         const closeBtn = document.getElementById('qrScannerCloseBtn');
         const retryBtn = document.getElementById('qrScannerRetryBtn');
-        const manualBtn = document.getElementById('qrScannerManualBtn');
+        const assignBtn = document.getElementById('qrScannerAssignBtn');
+        const flashBtn = document.getElementById('qrScannerFlashBtn');
 
         if (closeBtn) {
             closeBtn.addEventListener('click', () => this.close());
@@ -149,11 +151,15 @@ class QRScanner {
             retryBtn.addEventListener('click', () => this.retry());
         }
 
-        if (manualBtn) {
-            manualBtn.addEventListener('click', () => {
+        if (assignBtn) {
+            assignBtn.addEventListener('click', () => {
                 this.close();
-                this.options.onManualEntry();
+                this.options.onManualEntry(); // Reuse the same callback for assign code
             });
+        }
+
+        if (flashBtn) {
+            flashBtn.addEventListener('click', () => this.toggleFlashlight());
         }
 
         // Close on background click
@@ -174,6 +180,73 @@ class QRScanner {
     }
 
     /**
+     * Start the scanning line animation immediately
+     */
+    startScanLineAnimation() {
+        const scanLine = document.querySelector('.qr-scanner-line');
+        if (scanLine) {
+            // Force animation restart by removing and re-adding the class
+            scanLine.style.animation = 'none';
+            scanLine.offsetHeight; // Trigger reflow
+            scanLine.style.animation = 'qrScanLine 2s ease-in-out infinite';
+        }
+    }
+
+    /**
+     * Update the instruction text dynamically
+     */
+    updateInstructions(mainText, subText) {
+        const mainTextEl = document.querySelector('.qr-scanner-main-text');
+        const subTextEl = document.querySelector('.qr-scanner-sub-text');
+
+        if (mainTextEl) mainTextEl.textContent = mainText;
+        if (subTextEl) subTextEl.textContent = subText;
+    }
+
+    /**
+     * Toggle flashlight on/off
+     */
+    async toggleFlashlight() {
+        if (!this.isScanning || !this.html5QrCode) {
+            console.log('⚠️ Cannot toggle flashlight - scanner not active');
+            return;
+        }
+
+        try {
+            const flashBtn = document.getElementById('qrScannerFlashBtn');
+            const icon = flashBtn ? flashBtn.querySelector('i') : null;
+
+            if (this.flashlightEnabled) {
+                // Turn off flashlight
+                await this.html5QrCode.setTorch(false);
+                this.flashlightEnabled = false;
+
+                if (flashBtn) flashBtn.classList.remove('active');
+                if (icon) icon.className = 'fas fa-bolt';
+
+                console.log('🔦 Flashlight turned OFF');
+            } else {
+                // Turn on flashlight
+                await this.html5QrCode.setTorch(true);
+                this.flashlightEnabled = true;
+
+                if (flashBtn) flashBtn.classList.add('active');
+                if (icon) icon.className = 'fas fa-bolt';
+
+                console.log('🔦 Flashlight turned ON');
+            }
+        } catch (error) {
+            console.error('❌ Failed to toggle flashlight:', error);
+            // Show user-friendly message
+            if (error.message.includes('not supported')) {
+                alert('Flashlight not supported on this device');
+            } else {
+                alert('Failed to toggle flashlight');
+            }
+        }
+    }
+
+    /**
      * Show the scanner modal
      */
     async show() {
@@ -183,14 +256,23 @@ class QRScanner {
 
         console.log('📱 Showing QR Scanner modal...');
 
-        // Show modal
+        // Show modal immediately with rectangle visible
         this.modalElement.classList.add('active');
+
+        // Start the scanning line animation immediately for instant feedback
+        this.startScanLineAnimation();
+
+        // Update instructions to show ready state
+        this.updateInstructions('Scan QR Code', 'Position code in the rectangle');
 
         console.log('✅ Modal classes:', this.modalElement.className);
         console.log('✅ Modal computed style:', window.getComputedStyle(this.modalElement).display);
 
-        // Start scanning
-        await this.startScanning();
+        // Start scanning immediately without delay
+        this.startScanning().catch(error => {
+            console.error('❌ Failed to start scanning:', error);
+            this.showError(error.message);
+        });
     }
 
     /**
@@ -199,6 +281,24 @@ class QRScanner {
     async close() {
         await this.stopScanning();
         this.modalElement.classList.remove('active');
+
+        // Stop the scanning line animation
+        const scanLine = document.querySelector('.qr-scanner-line');
+        if (scanLine) {
+            scanLine.style.animation = 'none';
+        }
+
+        // Turn off flashlight if it was on
+        if (this.flashlightEnabled) {
+            this.flashlightEnabled = false;
+            const flashBtn = document.getElementById('qrScannerFlashBtn');
+            if (flashBtn) {
+                flashBtn.classList.remove('active');
+                const icon = flashBtn.querySelector('i');
+                if (icon) icon.className = 'fas fa-bolt';
+            }
+        }
+
         this.options.onClose();
     }
 
@@ -206,55 +306,58 @@ class QRScanner {
      * Start the scanning process
      */
     async startScanning() {
-        try {
-            this.showLoading();
+        // Don't show loading initially - rectangle is already visible
+        // this.showLoading();
 
-            // Check if Html5Qrcode is available
-            if (typeof Html5Qrcode === 'undefined') {
-                throw new Error('Html5Qrcode library not loaded');
+        // Check if Html5Qrcode is available
+        if (typeof Html5Qrcode === 'undefined') {
+            console.error('❌ Html5Qrcode library not loaded');
+            this.showError('Scanner library not loaded');
+            return;
+        }
+
+        // Create scanner instance
+        this.html5QrCode = new Html5Qrcode('qrScannerReader');
+
+        // Configure scanner with mobile-friendly settings
+        const config = {
+            fps: this.options.fps,
+            qrbox: this.options.qrbox,
+            aspectRatio: 2.0, // Changed to horizontal (width/height = 2:1)
+            disableFlip: false,
+            supportedScanTypes: ["qr_code"],
+            experimentalFeatures: {
+                useBarCodeDetectorIfSupported: true
             }
+        };
 
-            // Create scanner instance
-            this.html5QrCode = new Html5Qrcode('qrScannerReader');
+        console.log('🚀 Starting QR scanner...');
 
-            // Configure scanner
-            const config = {
-                fps: this.options.fps,
-                qrbox: this.options.qrbox,
-                aspectRatio: 1.0,
-                disableFlip: false,
-                videoConstraints: {
-                    facingMode: "environment"
-                }
-            };
-
-            console.log('🚀 Starting QR scanner...');
-
-            // Start scanning
-            await this.html5QrCode.start(
-                { facingMode: "environment" },
-                config,
-                (decodedText, decodedResult) => {
-                    console.log('✅ QR code scanned:', decodedText);
-                    this.onScanSuccess(decodedText, decodedResult);
-                },
-                (errorMessage) => {
-                    // Ignore common scanning errors
-                    console.log('📝 Scanner status:', errorMessage);
-                }
-            );
-
+        // Start scanning and return the promise for proper error handling
+        return this.html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText, decodedResult) => {
+                console.log('✅ QR code scanned:', decodedText);
+                this.onScanSuccess(decodedText, decodedResult);
+            },
+            (errorMessage) => {
+                // Ignore common scanning errors
+                console.log('📝 Scanner status:', errorMessage);
+            }
+        ).then(() => {
             this.isScanning = true;
-            this.hideLoading();
+            // Don't hide loading since it wasn't shown initially
             this.hideError();
-
+            // Update instructions to indicate camera is ready
+            this.updateInstructions('Ready to scan', 'Position QR code and scan automatically');
             console.log('✅ QR scanner started successfully');
-
-        } catch (error) {
+        }).catch((error) => {
             console.error('❌ Failed to start scanning:', error);
             this.showError(error.message);
             this.options.onScanError(error);
-        }
+            throw error; // Re-throw to maintain promise chain
+        });
     }
 
     /**

@@ -23,6 +23,7 @@ let lastScale = 1;
 let showSafeArea = false;
 let safeAreaAspectRatio = null;
 let guidelineMode = 'safe'; // modes: 'safe' | 'mobile' | 'desktop'
+let isModalOpen = false; // Track modal state for back navigation
 
 // DOM Elements (will be populated by initMediaEditor)
 let modal, previewContainer, previewImage, cropFrame;
@@ -51,15 +52,38 @@ function openPhotoEditor(imageSrc, options) {
     applyEditorConfiguration(options);
     document.documentElement.style.overflow = 'hidden'; // Prevent body scroll
     modal.style.display = 'flex';
+    isModalOpen = true;
     loadImage(imageSrc);
+
+    // Setup mobile back navigation handling
+    setupMobileBackNavigation();
 }
 
 function closeModal() {
     if (modal) {
         document.documentElement.style.overflow = ''; // Restore body scroll
         modal.style.display = 'none';
+        isModalOpen = false;
         onSaveCallback = null; // Clear the callback
     }
+}
+
+/**
+ * Setup mobile back navigation handling
+ */
+function setupMobileBackNavigation() {
+    const handlePopState = (e) => {
+        if (isModalOpen) {
+            e.preventDefault();
+            closeModal();
+            // Prevent the default back navigation
+            window.history.pushState(null, '', window.location.href);
+        }
+    };
+
+    // Add the event listener (remove any existing one first)
+    window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('popstate', handlePopState);
 }
 
 async function applyAndSaveCrop(compressionOptions) {

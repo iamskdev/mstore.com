@@ -243,6 +243,23 @@
   width: 100%;
 }
 
+.mstore-photo-action-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.mstore-photo-action-close-btn:hover {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
 .mstore-photo-delete-btn {
   background: var(--accent-danger) !important;
   color: var(--accent-text) !important;
