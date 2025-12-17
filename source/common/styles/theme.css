@@ -36,6 +36,8 @@
 
   /* --- 4. Borders & States --- */
   --border-color: #e0e0e0;
+  --card-border: 1px solid #e0e0e0; /* Border for cards and form elements */
+  --card-radius: 8px; /* Border radius for cards */
   --error-color: #d93025;
   --bg-skeleton: #e0e0e0;
   --bg-skeleton-shimmer: #f0f0f0;
@@ -118,6 +120,8 @@ html.dark-mode {
 
   /* --- 4. Borders & States --- */
   --border-color: #333333;
+  --card-border: 1px solid #333333; /* Border for cards and form elements */
+  --card-radius: 8px; /* Border radius for cards */
   --error-color: #ff5252;
   --bg-skeleton: #2a2a3b;
   --bg-skeleton-shimmer: #3a3b4c;

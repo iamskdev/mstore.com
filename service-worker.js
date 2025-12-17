@@ -126,6 +126,16 @@ const APP_SHELL_URLS = [
   './source/modules/merchant/styles/merchant-profile-edit.css',
   './source/modules/merchant/scripts/merchant-profile-edit.js',
 
+  // Merchant Invoice Module
+  './source/modules/merchant/invoices/add-invoice.html',
+  './source/modules/merchant/invoices/styles/add-invoice.css',
+  './source/modules/merchant/invoices/scripts/add-invoice.js',
+  './source/modules/merchant/invoices/instant-add-item.html',
+  './source/modules/merchant/invoices/scripts/instant-add-item.js',
+  './source/modules/merchant/invoices/scripts/invoice-db-operation.js',
+  './source/modules/merchant/invoices/scripts/invoice-ui-component.js',
+  './source/modules/merchant/invoices/scripts/invoice-event-manager.js',
+
   //Modals
   './source/modals/account-switcher.html',
   './source/modals/rating/rating-modal.html',

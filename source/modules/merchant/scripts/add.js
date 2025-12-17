@@ -132,6 +132,9 @@ export async function init() {
 
 
         ],
+        invoices: [
+            { label: 'View Invoices', icon: 'fa-solid fa-list' },
+        ],
         // REVISED: Reordered inventory actions as per user request
         inventory: [
             { label: 'Add Bulk Items', icon: 'fa-solid fa-boxes-stacked' },
@@ -599,7 +602,43 @@ export async function init() {
                 import('../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-item');
                 });
-            } else {
+            }
+            // Handle Invoice actions
+            else if (label === 'View Invoices') {
+                toggleFabMenu(false);
+                // TODO: Navigate to invoices list view
+                alert('View Invoices - Coming Soon!');
+            }
+            // Handle Transaction actions - redirect to invoice creation with type
+            else if (label === 'Sale') {
+                toggleFabMenu(false);
+                // Store the type in sessionStorage before navigation
+                sessionStorage.setItem('invoiceType', 'sale');
+                import('../../../main.js').then(({ routeManager }) => {
+                    routeManager.switchView('merchant', 'add-invoice');
+                });
+            }
+            else if (label === 'Purchase') {
+                toggleFabMenu(false);
+                // Store the type in sessionStorage before navigation
+                sessionStorage.setItem('invoiceType', 'purchase');
+                import('../../../main.js').then(({ routeManager }) => {
+                    routeManager.switchView('merchant', 'add-invoice');
+                });
+            }
+            else if (label === 'Payment In') {
+                toggleFabMenu(false);
+                import('../../../main.js').then(({ routeManager }) => {
+                    routeManager.switchView('merchant', 'add-invoice');
+                });
+            }
+            else if (label === 'Payment Out') {
+                toggleFabMenu(false);
+                import('../../../main.js').then(({ routeManager }) => {
+                    routeManager.switchView('merchant', 'add-invoice');
+                });
+            }
+            else {
                 // Other actions - show alert for now
                 alert(`Action: ${label}`);
                 toggleFabMenu(false);

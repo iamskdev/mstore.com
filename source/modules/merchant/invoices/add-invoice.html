@@ -1,0 +1,241 @@
+<main class="invoice-content">
+  <!-- Invoice meta row like Vyapar screenshot -->
+  <section class="invoice-card invoice-invoice-card">
+    <div class="invoice-grid">
+      <div class="invoice-col">
+        <div class="invoice-pill-label">Invoice No.</div>
+        <div class="pill-value">
+          <span>116</span>
+          <span class="pill-arrow"><i class="fas fa-chevron-down"></i></span>
+        </div>
+      </div>
+      <div class="invoice-col">
+        <div class="pill-label">Date</div>
+        <div class="pill-value">
+          <span>16/12/2025</span>
+          <span class="pill-arrow"><i class="fas fa-chevron-down"></i></span>
+        </div>
+      </div>
+      <div class="invoice-col">
+        <div class="pill-label">Time</div>
+        <div class="pill-value">
+          <span>02:26 PM</span>
+          <span class="pill-arrow"><i class="fas fa-chevron-down"></i></span>
+        </div>
+      </div>
+    </div>
+    <hr class="invoice-divider" />
+  </section>
+
+  <section class="invoice-card">
+    <div class="invoice-field invoice-notched-field">
+      <label class="invoice-label" for="invoice-demo-customer"
+        >Customer Name <span style="color: var(--accent-danger)">*</span></label
+      >
+      <input
+        class="invoice-input"
+        id="invoice-demo-customer"
+        placeholder="Enter customer name"
+      />
+    </div>
+    <div class="invoice-field invoice-notched-field" style="margin-top: 18px">
+      <label class="invoice-label" for="invoice-demo-phone">Phone Number</label>
+      <input
+        class="invoice-input"
+        id="invoice-demo-phone"
+        placeholder="Enter phone number"
+      />
+    </div>
+  </section>
+
+  <section
+    class="invoice-card section-collapsible"
+    id="invoice-demo-items-section"
+  >
+    <div class="section-header">
+      <div class="section-pill">Included Items</div>
+      <button
+        class="toggle-btn"
+        id="invoice-demo-toggle-items"
+        aria-label="Toggle included items"
+      >
+        <span class="toggle-btn-icon"><i class="fas fa-chevron-down"></i></span>
+      </button>
+    </div>
+    <div class="invoice-item-list" id="invoice-demo-items"></div>
+    <div
+      id="invoice-demo-items-summary"
+      class="summary-grid"
+      style="display: none"
+    >
+      <div class="invoice-summary-label">Total Tax Amount</div>
+      <div class="summary-value" id="invoice-demo-total-tax">0.0</div>
+      <div class="invoice-summary-label">Total Quantity</div>
+      <div class="summary-value" id="invoice-demo-total-qty">0.0</div>
+      <div class="invoice-summary-label">Subtotal</div>
+      <div class="summary-value" id="invoice-demo-subtotal">0.0</div>
+      <div class="invoice-summary-label">Total Count</div>
+      <div class="summary-value" id="invoice-demo-total-count">0</div>
+      <div class="invoice-summary-label">Total Discount</div>
+      <div class="summary-value" id="invoice-demo-total-disc">0.0</div>
+    </div>
+    <hr class="invoice-divider" />
+    <div class="add-actions">
+      <button
+        class="add-icon-btn add-item-btn"
+        id="invoice-demo-add-item"
+        title="Add items"
+        aria-label="Add items"
+      >
+        <i class="fas fa-plus-circle"></i>
+        <span>Add Items</span>
+      </button>
+      <button
+        class="add-icon-btn scan-btn"
+        id="invoice-demo-scan-item"
+        title="Scan code"
+        aria-label="Scan code"
+      >
+        <i class="fas fa-qrcode"></i>
+      </button>
+    </div>
+  </section>
+
+  <section
+    class="invoice-card section-collapsible"
+    id="invoice-demo-charges-section"
+  >
+    <div class="section-header">
+      <div class="section-pill">Included Charges</div>
+      <button
+        class="toggle-btn"
+        id="invoice-demo-toggle-charges"
+        aria-label="Toggle included charges"
+      >
+        <span class="toggle-btn-icon"><i class="fas fa-chevron-down"></i></span>
+      </button>
+    </div>
+    <div class="invoice-charge-row">
+      <label class="invoice-charge-label" for="invoice-demo-shipping"
+        >Shipping</label
+      >
+      <div class="invoice-charge-input-wrapper">
+        <span class="invoice-currency-symbol">₹</span>
+        <input
+          class="invoice-charge-input"
+          type="number"
+          id="invoice-demo-shipping"
+          placeholder="0.00"
+        />
+      </div>
+    </div>
+    <div class="invoice-charge-row">
+      <label class="invoice-charge-label" for="invoice-demo-packaging"
+        >Packaging</label
+      >
+      <div class="invoice-charge-input-wrapper">
+        <span class="invoice-currency-symbol">₹</span>
+        <input
+          class="invoice-charge-input"
+          type="number"
+          id="invoice-demo-packaging"
+          placeholder="0.00"
+        />
+      </div>
+    </div>
+    <div class="invoice-charge-row">
+      <label class="invoice-charge-label" for="invoice-demo-adjustment"
+        >Adjustment</label
+      >
+      <div class="invoice-charge-input-wrapper">
+        <span class="invoice-currency-symbol">₹</span>
+        <input
+          class="invoice-charge-input"
+          type="number"
+          id="invoice-demo-adjustment"
+          placeholder="0.00"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="invoice-card">
+    <div class="invoice-amount-row">
+      <div class="invoice-amount-label">Total Amount</div>
+      <div class="invoice-amount-display">
+        <div class="invoice-amount-value" id="invoice-demo-total">0.00</div>
+        <div class="invoice-currency-icon">₹</div>
+      </div>
+    </div>
+    <div class="invoice-amount-row">
+      <div class="invoice-amount-label">
+        Received
+        <input
+          type="checkbox"
+          id="invoice-demo-received-confirm"
+          class="invoice-confirm-checkbox"
+        />
+      </div>
+      <div class="invoice-amount-input-wrapper">
+        <input
+          class="invoice-amount-input"
+          type="number"
+          id="invoice-demo-received"
+          placeholder="0.00"
+        />
+        <div class="invoice-currency-icon">₹</div>
+      </div>
+    </div>
+    <div class="invoice-amount-row">
+      <div class="invoice-amount-label">Balance Due</div>
+      <div class="invoice-amount-display">
+        <div class="invoice-amount-value" id="invoice-demo-balance">0.00</div>
+        <div class="invoice-currency-icon">₹</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payment Type Section -->
+  <section class="invoice-card">
+    <div class="invoice-charge-row" id="invoice-demo-payment-row">
+      <label class="invoice-charge-label" for="invoice-demo-payment-type"
+        >Payment Type</label
+      >
+      <div class="invoice-payment-badge" id="invoice-demo-payment-badge">
+        Cash
+      </div>
+    </div>
+  </section>
+
+  <!-- Note & Attachment Section -->
+  <section class="invoice-card">
+    <div class="invoice-field">
+      <label class="invoice-label" for="invoice-demo-note">Note</label>
+      <textarea
+        class="invoice-textarea"
+        id="invoice-demo-note"
+        placeholder="Add a note (optional)"
+        rows="2"
+      ></textarea>
+    </div>
+    <div class="invoice-field" style="margin-top: 12px">
+      <label class="invoice-label" for="invoice-demo-attachment"
+        >Attachment</label
+      >
+      <input
+        type="file"
+        class="invoice-input"
+        id="invoice-demo-attachment"
+        accept="image/*,.pdf,.doc,.docx"
+      />
+    </div>
+  </section>
+</main>
+
+<div class="action-bar">
+  <button class="secondary-btn action-btn">Save</button>
+  <button class="primary-btn action-btn">Save &amp; New</button>
+</div>
+
+
+

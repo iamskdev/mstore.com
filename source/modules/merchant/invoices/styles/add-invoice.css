@@ -1,0 +1,752 @@
+.transaction-topbar {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    background: var(--bg-secondary);
+    border-bottom: var(--card-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    border: none;
+    background: var(--bg-tertiary);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--text-primary);
+  }
+
+  .page-title {
+    font-size: 18px;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  .invoice-content {
+    flex: 1;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .invoice-card {
+    background: var(--bg-primary);
+    border: none;
+    border-radius: var(--card-radius);
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  }
+
+  .invoice-content > .invoice-card:first-of-type {
+    padding-top: 10px;
+  }
+
+  .invoice-invoice-card {
+    padding: 10px 12px 0;
+    border-radius: 0;
+  }
+
+  .invoice-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    font-size: 11px;
+  }
+
+  .invoice-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 6px;
+    position: relative;
+  }
+
+  .invoice-col:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    right: 0;
+    width: 1px;
+    background: var(--border-color);
+    opacity: 0.7;
+  }
+
+  .invoice-pill-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+  }
+
+  .pill-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .pill-arrow {
+    font-size: 8px;
+    opacity: 0.7;
+  }
+
+  .pill-arrow i {
+    font-size: 8px;
+  }
+
+  .invoice-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .invoice-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .invoice-label {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Notched field style for Customer Name & Phone */
+  .invoice-notched-field {
+    position: relative;
+    margin-top: 8px;
+  }
+
+  .invoice-notched-field .invoice-label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    padding: 0 4px 0 0;
+    background: var(--bg-primary);
+    font-size: 11px;
+    border-radius: 4px;
+  }
+
+  .invoice-notched-field .invoice-input {
+    padding-top: 10px;
+  }
+
+  .invoice-input,
+  .invoice-select,
+  .invoice-textarea {
+    border-radius: 4px;
+    border: var(--card-border);
+    padding: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .invoice-textarea {
+    min-height: 20px;
+    resize: vertical;
+  }
+
+  /* Charge Fields Layout */
+  .invoice-charge-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+  }
+
+  .invoice-charge-label {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 600;
+    flex-shrink: 0;
+    min-width: 80px;
+  }
+
+  #invoice-demo-payment-row {
+    margin-left: 0;
+  }
+
+  .invoice-charge-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    width: 120px;
+  }
+
+  .invoice-currency-symbol {
+    position: absolute;
+    left: 8px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 12px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .invoice-charge-input {
+    border-radius: 16px;
+    border: var(--card-border);
+    padding: 4px 8px 4px 20px;
+    font-size: 13px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    width: 100%;
+    text-align: right;
+    transition: border-color 0.2s ease;
+    height: 28px;
+    box-sizing: border-box;
+  }
+
+  .invoice-charge-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+  }
+
+  .invoice-charge-input::placeholder {
+    color: var(--text-tertiary);
+    text-align: right;
+  }
+
+  /* Payment Type Badge */
+  .invoice-payment-badge {
+    background: var(--accent-primary);
+    color: var(--accent-text);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    box-sizing: border-box;
+    white-space: nowrap;
+  }
+
+  .invoice-payment-badge:hover {
+    background: var(--accent-primary);
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  /* Amount Rows */
+  .invoice-amount-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dotted var(--border-color);
+  }
+
+  .invoice-amount-row:last-child {
+    border-bottom: none;
+  }
+
+  .invoice-amount-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    min-width: 100px;
+  }
+
+  .invoice-amount-display,
+  .invoice-amount-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    margin-right: 10px;
+  }
+
+  .invoice-currency-icon {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .invoice-amount-value {
+    border: none;
+    border-bottom: 1px dotted var(--text-secondary);
+    background: transparent;
+    padding: 6px 20px 6px 24px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+  }
+
+  .invoice-amount-input {
+    border: none;
+    border-bottom: 1px dotted var(--text-secondary);
+    background: transparent;
+    padding: 6px 20px 6px 24px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+  }
+
+  .invoice-amount-input:focus,
+  .invoice-amount-value:focus {
+    border-bottom-color: var(--accent-primary);
+  }
+
+  /* Received amount - Green */
+  #invoice-demo-received {
+    color: var(--accent-success);
+  }
+
+  /* Balance due amount - Red */
+  #invoice-demo-balance {
+    color: var(--accent-danger);
+  }
+
+  /* Hide number input spinners/arrows */
+  .invoice-amount-input::-webkit-outer-spin-button,
+  .invoice-amount-input::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+
+  .invoice-amount-input[type=number],
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .invoice-amount-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+  }
+
+  .invoice-confirm-checkbox {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .invoice-badge-group {
+    display: inline-flex;
+    gap: 8px;
+    background: var(--bg-tertiary);
+    padding: 4px;
+    border-radius: 14px;
+  }
+
+  .invoice-badge {
+    border: none;
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-weight: 700;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .invoice-badge.active {
+    background: var(--accent-primary);
+    color: var(--accent-text);
+  }
+
+  .invoice-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .invoice-item-card {
+    border: var(--card-border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--bg-tertiary);
+  }
+
+  .invoice-item-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .invoice-item-name {
+    flex: 1;
+    min-width: 0;
+    font-weight: 700;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .invoice-item-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .invoice-item-sub {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  .invoice-item-sub-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 2px;
+  }
+
+  .invoice-item-sub-label {
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .invoice-item-sub-value {
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  .invoice-amount {
+    font-weight: 800;
+    color: var(--text-primary);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .invoice-divider {
+    border: 0;
+    border-top: var(--card-border);
+    margin-top: 10px;
+  }
+
+  .add-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+    background: transparent;
+    width: 100%;
+  }
+
+  .add-icon-btn {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    border-radius: 4px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .add-icon-btn i {
+    color: var(--accent-primary);
+  }
+
+  .add-icon-btn.add-item-btn {
+    flex: 4;
+  }
+
+  .add-icon-btn.scan-btn {
+    flex: 1;
+  }
+
+  .add-icon-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+  }
+
+  .add-icon-btn:hover i {
+    color: var(--accent-primary);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    padding: 4px 8px;
+  }
+
+  /* Items section header - Blue */
+  #invoice-demo-items-section .section-header {
+    background: var(--accent-primary);
+  }
+
+  /* Charges section header - Red */
+  #invoice-demo-charges-section .section-header {
+    background: var(--accent-danger);
+  }
+
+  .section-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    background: transparent;
+    color: var(--accent-text);
+  }
+
+  .toggle-btn {
+    border: none;
+    background: transparent;
+    color: var(--accent-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .toggle-btn-icon {
+    transition: transform 0.2s ease;
+    font-size: 10px;
+  }
+
+  .toggle-btn-icon i {
+    font-size: 10px;
+  }
+
+  .section-collapsed .toggle-btn-icon {
+    transform: rotate(-90deg);
+  }
+
+  .section-collapsed .invoice-item-list,
+  .section-collapsed #invoice-demo-items-summary,
+  .section-collapsed #invoice-demo-add-item,
+  .section-collapsed #invoice-demo-scan-item,
+  .section-collapsed .invoice-divider,
+  .section-collapsed .add-actions {
+    display: none !important;
+  }
+
+  .section-collapsed .invoice-charge-row {
+    display: none !important;
+  }
+
+  /* Collapsed sections have reduced padding */
+  .section-collapsed.invoice-card {
+    padding: 12px 16px;
+  }
+
+  .invoice-total-row,
+  .summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 800;
+    font-size: 17px;
+  }
+
+  .invoice-total-row .invoice-note {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 12px;
+    font-size: 13px;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    padding: 0 2px;
+    box-sizing: border-box;
+  }
+
+  .invoice-summary-label {
+    font-weight: 600;
+  }
+
+  .summary-value {
+    justify-self: end;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .action-bar {
+    display: flex;
+    width: 100%;
+    padding: 0;
+    background: var(--bg-secondary);
+    border-top: var(--card-border);
+    position: sticky;
+    bottom: 0;
+  }
+
+  .action-btn {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    height: 40px;
+    padding: 8px 24px;
+    border-radius: 0;
+    border: none;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  .primary-btn {
+    background: var(--accent-primary);
+    color: var(--accent-text);
+  }
+
+  .secondary-btn {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  /* Modal */
+  .invoice-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: none;
+    align-items: flex-end;
+    z-index: 20;
+  }
+
+  .invoice-modal.active {
+    display: flex;
+  }
+
+  .invoice-modal-sheet {
+    background: var(--bg-secondary);
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 20px 20px 0 0;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .invoice-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .invoice-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .invoice-inline-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .invoice-totals {
+    border: var(--card-border);
+    border-radius: 12px;
+    padding: 12px;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-weight: 700;
+  }
+
+  .invoice-muted {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .invoice-note {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    .invoice-row,
+    .invoice-inline-row {
+      grid-template-columns: 1fr;
+    }
+  }

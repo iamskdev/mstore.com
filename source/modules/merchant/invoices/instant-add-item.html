@@ -1,0 +1,528 @@
+    <!-- Add Item Modal -->
+    <div class="invoice-modal" id="invoice-modal">
+      <div class="invoice-modal-sheet">
+      <!-- Modal Header -->
+      <div class="modal-header">
+          <div class="modal-title-header">
+              <div class="modal-title">Add Item to Sale</div>
+              <button class="modal-close-btn">&times;</button>
+          </div>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="modal-content">
+          <div class="modal-scrollable">
+              <div class="invoice-field invoice-notched-field">
+                  <label class="invoice-label" for="invoice-item-input">Item Name</label>
+                  <div class="invoice-input-wrapper full-width-input">
+                      <input
+                          class="invoice-input full-width-input-field"
+                          type="text"
+                          id="invoice-item-input"
+                          placeholder="Type item name or add new..."
+                          autocomplete="off"
+                      />
+                      <div class="autocomplete-dropdown" id="autocomplete-dropdown" style="display: none;"></div>
+                  </div>
+              </div>
+              <div class="quantity-unit-row">
+          <div class="quantity-field invoice-notched-field">
+              <label class="invoice-label" for="invoice-qty">Quantity</label>
+              <input
+                  class="invoice-input"
+                  type="number"
+                  min="0"
+                  step="1"
+                  id="invoice-qty"
+                  value="1"
+              />
+          </div>
+          <div class="unit-field invoice-notched-field">
+              <label class="invoice-label" for="invoice-unit"> Unit </label>
+              <select class="invoice-select" id="invoice-unit">
+                  <option value="">Select Primary Unit...</option>
+              </select>
+          </div>
+      </div>
+      <div class="price-row">
+          <div class="purchase-price-field invoice-notched-field">
+              <label class="invoice-label" for="invoice-purchase-price"> Cost Price / Unit </label>
+              <input
+                  class="invoice-input"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  id="invoice-purchase-price"
+                  placeholder="0.00"
+              />
+          </div>
+          <div class="sale-price-field invoice-notched-field">
+              <label class="invoice-label" for="invoice-sale-price">Sale Price / Unit </label>
+              <input
+                  class="invoice-input"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  id="invoice-sale-price"
+                  placeholder="0.00"
+              />
+          </div>
+      </div>
+      <div class="invoice-field invoice-notched-field description-field">
+          <label class="invoice-label" for="invoice-desc">Description</label>
+          <textarea
+              class="invoice-textarea"
+              id="invoice-desc"
+              placeholder="Add note"
+          ></textarea>
+      </div>
+
+              <hr class="modal-divider">
+              <div class="invoice-totals">
+                  <div class="subtotal-row">
+                      <div class="invoice-amount amount-label">Subtotal (Rate × Qty)</div>
+                      <div class="invoice-amount amount-value" id="invoice-modal-subtotal">₹ 0.00</div>
+                  </div>
+                  <div class="total-amount-row">
+                      <div class="invoice-amount amount-label">Total Amount</div>
+                      <div class="invoice-amount amount-value" id="invoice-modal-total">₹ 0.00</div>
+                  </div>
+              </div>
+            </div>
+
+            <!-- Fixed Footer with Totals and Buttons -->
+            <div class="modal-footer">              
+              <div class="button-row">
+                  <button class="primary-btn" id="invoice-save-item">Save</button>
+                  <button class="secondary-btn" id="invoice-save-new">
+                      Save &amp; New
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<style>
+        .quick-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-bottom: 16px;
+            transition: background 0.2s;
+        }
+
+        .quick-button:hover {
+            background: #0056b3;
+        }
+
+        .quick-info {
+            background: #e3f2fd;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            margin-bottom: 16px;
+        }
+
+        .quick-info h3 {
+            margin: 0 0 8px 0;
+            color: #1565c0;
+        }
+
+        .quick-info p {
+            margin: 0;
+            color: #424242;
+            font-size: 14px;
+        }
+
+        /* Autocomplete Styles */
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            border: var(--card-border);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 100%; /* Ensure dropdown uses full width */
+            box-sizing: border-box;
+        }
+
+        .autocomplete-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .autocomplete-item.selected {
+            background: var(--accent-primary);
+            color: var(--accent-text);
+        }
+
+        .item-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .item-details {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            text-align: left;
+        }
+
+        .add-new-item {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .add-new-item .item-name::before {
+            content: "+ ";
+        }
+
+        /* Modal Content Layout */
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            padding: 0; /* Remove all padding to allow full width */
+            border: none;
+            height: calc(90vh - 140px); /* Adjust based on header height for centered modal */
+            background-color: var(--bg-primary);
+            width: 100%; /* Ensure full width */
+            box-sizing: border-box;
+            margin: 0; /* Ensure no margins */
+        }
+
+        /* Modal scrollable - only form fields */
+        .modal-scrollable {
+            flex: 1;
+            overflow: visible; /* Remove scrolling since content is minimal */
+            padding: 16px; /* Full padding for proper spacing */
+            width: 100%; /* Ensure full width usage */
+            box-sizing: border-box;
+            margin: 0; /* Ensure no margins */
+        }
+
+        /* Modal Footer - fixed at bottom */
+        .modal-footer {
+            flex-shrink: 0;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: 16px; /* Keep footer padding for proper spacing */
+        }
+
+        /* Consistent spacing for form fields */
+        .invoice-field.invoice-notched-field {
+            margin-bottom: 4px;
+            background-color: var(--bg-primary) !important; /* Ensure consistent background */
+            border: none !important; /* Remove any borders */
+        }
+
+        /* Adjust notched label position */
+        .invoice-label {
+            font-size: 13px;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-top: 2px !important; /* Shift label down */
+            margin-bottom: 6px !important; /* Adjust spacing */
+        }
+
+        .invoice-totals {
+            border: none !important;
+            padding: 0;
+            position: relative;
+        }
+
+        .description-field {
+            margin-top: 20px;
+            margin-bottom: 16px;
+            background-color: var(--bg-primary) !important; /* Match other fields background */
+        }
+
+        .description-field .invoice-textarea {
+            background-color: var(--bg-primary) !important; /* Ensure textarea background matches */
+            border-color: var(--border-color) !important;
+        }
+
+
+
+
+        /* Full width input */
+        .full-width-input {
+            width: 100%;
+            background-color: var(--bg-primary) !important;
+        }
+
+        .full-width-input-field {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: var(--bg-primary) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        /* Ensure all input fields have consistent background */
+        .invoice-input {
+            background-color: var(--bg-primary) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        .invoice-select {
+            background-color: var(--bg-primary) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        /* Quantity and Unit Row */
+        .quantity-unit-row {
+            display: flex !important;
+            gap: 20px !important; /* Large gap for clear separation */
+            align-items: flex-end !important;
+            flex-wrap: nowrap !important;
+            margin-bottom: 8px !important;
+            background-color: transparent !important; /* Ensure no background override */
+        }
+
+        .quantity-field {
+            width: 80px !important; /* Very small fixed width */
+            flex-shrink: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        .quantity-field .invoice-input {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .unit-field {
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+
+        .unit-field .invoice-select {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Price Row */
+        .price-row {
+            display: flex !important;
+            gap: 20px !important;
+            align-items: flex-end !important;
+            flex-wrap: nowrap !important;
+            margin-bottom: 12px !important;
+            background-color: transparent !important; /* Ensure no background override */
+        }
+
+        .purchase-price-field,
+        .sale-price-field {
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+
+        .purchase-price-field .invoice-input,
+        .sale-price-field .invoice-input {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Button Row in Footer */
+        .button-row {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end; /* Changed from space-between to flex-end for better alignment */
+            margin-top: 16px;
+            width: 100%; /* Ensure full width */
+            box-sizing: border-box;
+        }
+
+        .button-row button {
+            flex: 1;
+            width: auto;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .primary-btn {
+            background: var(--accent-primary);
+            color: var(--accent-text);
+        }
+
+        .primary-btn:hover {
+            background: var(--accent-primary-hover, #0056b3);
+        }
+
+        .secondary-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .secondary-btn:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* Modal Header */
+        .modal-header {
+            flex-shrink: 0;
+            position: relative;
+            width: 100%; /* Ensure full width */
+            box-sizing: border-box;
+        }
+
+        .modal-title-header {
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0; /* Remove any padding that might cause spacing */
+            margin: 0; /* Ensure no margins */
+            min-height: 56px; /* Ensure consistent header height */
+            box-sizing: border-box; /* Ensure proper box sizing */
+        }
+
+        .modal-title {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 16px; /* Keep padding for internal spacing */
+            margin: 0; /* Remove any margins */
+            line-height: 1.2; /* Improve text alignment */
+            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden; /* Hide overflow if needed */
+            text-overflow: ellipsis; /* Show ellipsis if text is too long */
+        }
+
+        .modal-close-btn {
+            background: transparent !important; /* Ensure no background */
+            border: none;
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 16px; /* Keep padding for click area */
+            margin: 0; /* Remove any margins */
+            border-radius: 4px;
+            transition: color 0.2s; /* Only change color on hover */
+            flex-shrink: 0; /* Prevent button from shrinking */
+            width: auto; /* Ensure button doesn't have fixed width */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1; /* Ensure proper vertical alignment */
+            height: 24px; /* Match the font size for proper centering */
+        }
+
+        .modal-close-btn:hover {
+            background: transparent !important; /* No background on hover */
+            color: var(--text-primary);
+        }
+
+        /* Modal Styles */
+        .invoice-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 10px; /* Reduced from 20px to give more space to modal */
+        }
+
+        .invoice-modal.active {
+            display: flex; /* Show when active */
+        }
+
+        .invoice-modal-sheet {
+            background: var(--bg-primary) !important;
+            border-radius: 0; /* Remove border radius for square modal */
+            width: 95vw; /* Increased from 90vw to use more width */
+            max-width: 600px; /* Increased from 500px */
+            max-height: 90vh;
+            margin: 0;
+            padding: 0 !important; /* Remove padding to use full width */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Invoice totals row styles */
+        .subtotal-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-amount-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+
+        .amount-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .amount-value {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* Divider styles */
+        .modal-divider {
+            width: 100%;
+            height: 1px;
+            background: var(--border-color);
+            margin: 20px 0;
+            border: none;
+        }
+
+</style>

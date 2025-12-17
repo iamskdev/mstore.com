@@ -63,6 +63,15 @@ const routeConfig = {
       title: 'Complete Your Profile',
       isMainTab: false, // It's a sub-view, not a main tab
       dataDependencies: []
+    },
+    'add-invoice': {
+      id: 'merchant-add-invoice-view',
+      path: './source/modules/merchant/invoices/add-invoice.html',
+      cssPath: './source/modules/merchant/invoices/styles/add-invoice.css',
+      jsPath: './source/modules/merchant/invoices/scripts/add-invoice.js',
+      title: (params) => params?.sale ? 'Create Sale Invoice' : params?.purchase ? 'Create Purchase' : 'Create Sale',
+      isMainTab: false,
+      dataDependencies: ['items', 'users', 'units']
     }
   },
   admin: {
