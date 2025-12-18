@@ -132,6 +132,8 @@ const APP_SHELL_URLS = [
   './source/modules/merchant/invoices/scripts/add-invoice.js',
   './source/modules/merchant/invoices/instant-add-item.html',
   './source/modules/merchant/invoices/scripts/instant-add-item.js',
+  './source/modules/merchant/invoices/scripts/instant-db-operation.js',
+  './source/modules/merchant/invoices/scripts/instant-ui-component.js',
   './source/modules/merchant/invoices/scripts/invoice-db-operation.js',
   './source/modules/merchant/invoices/scripts/invoice-ui-component.js',
   './source/modules/merchant/invoices/scripts/invoice-event-manager.js',

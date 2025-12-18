@@ -227,7 +227,7 @@
             flex-direction: column;
             padding: 0; /* Remove all padding to allow full width */
             border: none;
-            height: calc(90vh - 140px); /* Adjust based on header height for centered modal */
+            min-height: auto; /* Let content determine height instead of fixed viewport height */
             background-color: var(--bg-primary);
             width: 100%; /* Ensure full width */
             box-sizing: border-box;
@@ -238,7 +238,7 @@
         .modal-scrollable {
             flex: 1;
             overflow: visible; /* Remove scrolling since content is minimal */
-            padding: 16px; /* Full padding for proper spacing */
+            padding: 12px; /* Reduced padding for more compact layout */
             width: 100%; /* Ensure full width usage */
             box-sizing: border-box;
             margin: 0; /* Ensure no margins */
@@ -249,7 +249,7 @@
             flex-shrink: 0;
             background: var(--bg-primary);
             border-top: 1px solid var(--border-color);
-            padding: 16px; /* Keep footer padding for proper spacing */
+            padding: 12px; /* Reduced footer padding for more compact layout */
         }
 
 
@@ -270,8 +270,8 @@
         }
 
         .description-field {
-            margin-top: 25px;
-            margin-bottom: -20px;
+            margin-top: 12px; /* Reduced margin for more compact spacing */
+            margin-bottom: 0px;
             background-color: var(--bg-primary) !important; /* Match other fields background */
         }
 
@@ -297,17 +297,21 @@
             border-color: var(--border-color) !important;
         }
 
-        /* Ensure all input fields have consistent background */
+        /* Ensure all input fields have consistent styling and height */
         .invoice-input {
             background-color: var(--bg-primary) !important;
             border-color: var(--border-color) !important;
             border-radius: 2px !important;
+            height: 36px !important; /* Uniform height for all inputs */
+            box-sizing: border-box !important;
         }
 
         .invoice-select {
             background-color: var(--bg-primary) !important;
             border-color: var(--border-color) !important;
             border-radius: 2px !important;
+            height: 36px !important; /* Uniform height for select elements too */
+            box-sizing: border-box !important;
         }
         /* Consistent spacing for form fields */
         .invoice-field.invoice-notched-field {
@@ -319,9 +323,9 @@
         .quantity-unit-row {
             display: flex !important;
             gap: 20px !important; /* Large gap for clear separation */
-            align-items: flex-end !important;
+            align-items: flex-start !important; /* Align to top for consistent positioning */
             flex-wrap: nowrap !important;
-            margin-bottom: 12px !important;
+            margin-bottom: 8px !important;
             background-color: transparent !important; /* Ensure no background override */
         }
         /* Price Row */
@@ -330,7 +334,7 @@
             gap: 20px !important;
             align-items: flex-end !important;
             flex-wrap: nowrap !important;
-            margin-bottom: 12px !important;
+            margin-bottom: 8px !important;
             background-color: transparent !important; /* Ensure no background override */
         }
         .quantity-field {
@@ -349,10 +353,11 @@
             min-width: 0 !important;
         }
 
-        .unit-field .invoice-select {
+        .unit-field .unit-combobox {
             width: 100% !important;
             box-sizing: border-box !important;
         }
+
 
 
 
@@ -434,7 +439,7 @@
             font-size: 18px;
             font-weight: 600;
             color: var(--text-primary);
-            padding: 16px; /* Keep padding for internal spacing */
+            padding: 12px; /* Reduced padding for more compact header */
             margin: 0; /* Remove any margins */
             line-height: 1.2; /* Improve text alignment */
             white-space: nowrap; /* Prevent text wrapping */
@@ -552,6 +557,126 @@
             background: var(--border-color);
             margin: 20px 0;
             border: none;
+        }
+
+        /* Custom Unit Dropdown Styles */
+        .custom-unit-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+
+        /* Style the unit combobox input */
+        .unit-combobox {
+            /* Match exactly with quantity input styling */
+            background-color: var(--bg-primary) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 2px !important;
+            padding: 8px 30px 8px 12px !important; /* Extra padding for dropdown arrow */
+            font-size: 14px !important;
+            color: var(--text-primary) !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            cursor: text !important;
+            transition: border-color 0.2s !important;
+            outline: none !important;
+            /* Custom dropdown arrow */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 8px center !important;
+            background-size: 12px !important;
+        }
+
+        .unit-combobox:hover,
+        .unit-combobox:focus {
+            border-color: var(--accent-primary) !important;
+            outline: none !important; /* Remove outline to match other inputs */
+        }
+
+        .unit-combobox::placeholder {
+            color: var(--text-secondary) !important;
+        }
+
+        .unit-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-height: 350px; /* Increased height for search input */
+            overflow: hidden;
+            margin-top: -15px; /* Bring dropdown closer to input field */
+        }
+
+
+        .unit-groups {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: -5px;
+            padding-top: 0;
+        }
+
+        .unit-group {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .unit-group:last-child {
+            border-bottom: none;
+        }
+
+        .unit-group-title {
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .unit-group-items {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .unit-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .unit-item:last-child {
+            border-bottom: none;
+        }
+
+        .unit-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .unit-title {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .popular-star {
+            margin-left: auto;
+            color: var(--accent-warning);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+
+        /* Hide groups with no visible items */
+        .unit-group:not(:has(.unit-item:not([style*="display: none"]))) {
+            display: none;
         }
 
 </style>

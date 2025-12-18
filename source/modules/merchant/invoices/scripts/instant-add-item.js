@@ -1,4 +1,8 @@
 // Instant Add Item Modal Manager
+import { fetchAllItems, fetchAllUnits } from '../../../../utils/data-manager.js';
+import { createInstantAddItemDBOperations } from './instant-db-operation.js';
+import { createInstantAddItemUIComponents } from './instant-ui-component.js';
+
 class InstantAddItemModal {
     constructor() {
         this.modal = null;
@@ -8,6 +12,9 @@ class InstantAddItemModal {
         this.itemInput = null;
         this.autocompleteDropdown = null;
         this.unitSelect = null;
+        this.unitInput = null; // The visible input element
+        this.selectedUnitCode = ''; // Store the selected unit code for form submission
+        this.customUnitDropdown = null;
         this.purchasePriceInput = null;
         this.salePriceInput = null;
         this.descInput = null;
@@ -15,131 +22,302 @@ class InstantAddItemModal {
         // Global variables for loaded data
         this.inventoryItems = [];
         this.unitOptions = [];
+        this.groupedUnits = {}; // For grouped display
 
         this.selectedIndex = -1;
         this.currentItem = null;
         this.currentEditIndex = -1;
         this.isInitialized = false;
+        this.userIntentionalClick = false; // Flag to track intentional clicks
+        this.currentSearchQuery = ''; // Current search query
         this.callbacks = {
             onItemAdded: null,
             onModalClose: null
         };
 
-        // Bind methods
-        this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-        this.updateSubtotal = this.updateSubtotal.bind(this);
-        this.setDefaultsFromItem = this.setDefaultsFromItem.bind(this);
-        this.showAutocomplete = this.showAutocomplete.bind(this);
-        this.hideAutocomplete = this.hideAutocomplete.bind(this);
-        this.addNewItem = this.addNewItem.bind(this);
-        this.filterItems = this.filterItems.bind(this);
-        this.updateSelection = this.updateSelection.bind(this);
-        this.resetModalPosition = this.resetModalPosition.bind(this);
+        // Initialize components
+        this.dbOperations = null;
+        this.uiComponents = null;
     }
 
-    // Load data from local JSON files
-    async loadLocalJson(url) {
-        try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error('Failed to load ' + url);
-            return res.json();
-        } catch (err) {
-            console.error('Error loading', url, err);
-            return [];
+
+
+    convertSelectToCombobox() {
+        // Get the container for the unit select
+        const unitContainer = this.unitSelect.parentElement;
+
+        // Store original select reference
+        const originalSelect = this.unitSelect;
+
+        // Create new input element to replace select completely
+        const inputElement = document.createElement('input');
+        inputElement.type = 'text';
+        inputElement.className = 'unit-combobox invoice-input';
+        inputElement.placeholder = 'Select unit...';
+        inputElement.id = originalSelect.id;
+        inputElement.readOnly = true; // Make it read-only for traditional dropdown behavior
+
+        // Replace select with input
+        unitContainer.replaceChild(inputElement, originalSelect);
+
+        // Remove original select completely from DOM
+        if (originalSelect.parentNode) {
+            originalSelect.parentNode.removeChild(originalSelect);
         }
+
+        // Update reference
+        this.unitSelect = inputElement;
+
+        // Create custom dropdown container
+        this.customUnitDropdown = document.createElement('div');
+        this.customUnitDropdown.className = 'custom-unit-dropdown';
+        this.customUnitDropdown.innerHTML = `
+            <div class="unit-dropdown-menu" style="display: none;">
+                <div class="unit-groups"></div>
+            </div>
+        `;
+
+        // Insert after the input
+        unitContainer.appendChild(this.customUnitDropdown);
+
+        // Get reference to the dropdown menu
+        this.unitGroupsContainer = this.customUnitDropdown.querySelector('.unit-groups');
+
+        // Setup event listeners for the input element
+        this.setupComboboxEvents();
     }
 
-    async loadInventoryData() {
-        try {
+    setupComboboxEvents() {
+        const dropdownMenu = this.customUnitDropdown.querySelector('.unit-dropdown-menu');
 
-            // Try to load from localstore first
-            let itemsData, unitsData;
-            try {
-                itemsData = await this.loadLocalJson('../../../localstore/jsons/items.json');
-                unitsData = await this.loadLocalJson('../../../localstore/jsons/units.json');
-            } catch (localError) {
-                console.warn('Localstore data not available, using fallback:', localError);
-                throw localError; // Will be caught by outer catch
+        // Handle input typing for filtering (disabled for traditional dropdown)
+        // this.unitSelect.addEventListener('input', (e) => {
+        //     // Disabled - input is read-only for traditional dropdown behavior
+        // });
+
+        // Handle focus to show dropdown for selection
+        this.unitSelect.addEventListener('focus', () => {
+            // Show dropdown on focus for selection, but don't filter since input is read-only
+            if (dropdownMenu.style.display === 'none') {
+                dropdownMenu.style.display = 'block';
+                // Don't filter - just show all units for selection
             }
+        });
 
-            // Process items data
-            this.inventoryItems = Array.isArray(itemsData) ? itemsData.slice(0, 50).map(item => ({
-                id: item.meta?.itemId || 'unknown',
-                name: item.info?.name || 'Unknown Item',
-                mrp: item.pricing?.mrp || 0,
-                rate: item.pricing?.sellingPrice || 0,
-                unit: this.getUnitCodeFromItem(item),
-                description: item.info?.description || '',
-                stock: item.inventory?.stock || 0,
-                count: item.info?.attributes?.count || null
-            })) : [];
+        // Handle blur to validate input and close dropdown
+        this.unitSelect.addEventListener('blur', () => {
+            // Delay to allow click on dropdown items and icon clicks
+            setTimeout(() => {
+                // Check if we're clicking on dropdown items or if dropdown is still meant to be open
+                const activeElement = document.activeElement;
+                const isClickingDropdownItem = activeElement && (
+                    this.customUnitDropdown.contains(activeElement) ||
+                    activeElement.closest('.unit-dropdown-menu') ||
+                    activeElement.closest('.unit-item')
+                );
 
-            // Process units data
-            this.unitOptions = [];
-            if (Array.isArray(unitsData)) {
-                unitsData.forEach((unitGroup) => {
-                    if (unitGroup.subunits) {
-                        unitGroup.subunits.forEach((sub) => {
-                            this.unitOptions.push({
-                                code: sub.code,
-                                label: sub.title || sub.symbol || sub.code,
-                                isPopular: sub.isPopular || false
-                            });
-                        });
+                // Also check if user just clicked the input itself (prevent false blur closes)
+                const justClickedInput = activeElement === this.unitSelect;
+
+                // Don't close if user just intentionally clicked
+                if (this.userIntentionalClick) {
+                    return;
+                }
+
+                if (!isClickingDropdownItem && !justClickedInput) {
+                    const currentValue = this.unitSelect.value;
+                    const validUnit = this.unitOptions.find(u => u.label === currentValue);
+
+                    if (!validUnit && currentValue.trim() !== '') {
+                        // Reset to current selected unit
+                        const currentSelected = this.unitOptions.find(u => u.code === this.selectedUnitCode);
+                        if (currentSelected) {
+                            this.unitSelect.value = currentSelected.label;
+                        } else {
+                            this.unitSelect.value = '';
+                            this.selectedUnitCode = '';
+                        }
                     }
-                });
-            }
 
-            // Sort units: popular first, then alphabetically
-            this.unitOptions.sort((a, b) => {
-                if (a.isPopular && !b.isPopular) return -1;
-                if (!a.isPopular && b.isPopular) return 1;
-                return a.label.localeCompare(b.label);
+                    dropdownMenu.style.display = 'none';
+                } else {
+                }
+            }, 300); // Increased delay to prevent premature closes
+        });
+
+        // Handle keydown for navigation
+        this.unitSelect.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                // Select first visible item if dropdown is open
+                if (dropdownMenu.style.display !== 'none') {
+                    const firstVisibleItem = this.unitGroupsContainer.querySelector('.unit-item:not([style*="display: none"])');
+                    if (firstVisibleItem) {
+                        firstVisibleItem.click();
+                    }
+                }
+            } else if (e.key === 'Escape') {
+                dropdownMenu.style.display = 'none';
+            } else if (e.key === 'ArrowDown' && dropdownMenu.style.display === 'none') {
+                // Show dropdown on arrow down if not visible
+                e.preventDefault();
+                dropdownMenu.style.display = 'block';
+                this.filterUnits(this.unitSelect.value);
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            // Don't close if clicking on the input or dropdown elements
+            const clickedOnInput = e.target === this.unitSelect;
+            const clickedOnDropdown = this.customUnitDropdown.contains(e.target);
+
+            if (!clickedOnInput && !clickedOnDropdown) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
+
+        // Handle input click to show dropdown for selection
+        this.unitSelect.addEventListener('click', (e) => {
+            // Check if click is on the dropdown icon area (right side)
+            const rect = e.target.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const isIconClick = clickX > rect.width - 25; // Icon area: rightmost 25px
+
+
+            // Set flag that user intentionally clicked
+            this.userIntentionalClick = true;
+
+            // Clear the flag after a short delay
+            setTimeout(() => {
+                this.userIntentionalClick = false;
+            }, 100);
+
+            // Prevent event bubbling to avoid document click conflicts
+            e.stopPropagation();
+
+            // Traditional dropdown behavior: only icon click toggles dropdown
+            if (isIconClick) {
+                if (dropdownMenu.style.display === 'none') {
+                    // Position dropdown below input (relative to modal)
+                    const rect = this.unitSelect.getBoundingClientRect();
+                    const modalRect = this.modal.getBoundingClientRect();
+
+                    dropdownMenu.style.position = 'fixed';
+                    dropdownMenu.style.top = (rect.bottom - modalRect.top + this.modal.scrollTop + 5) + 'px';
+                    dropdownMenu.style.left = (rect.left - modalRect.left + 2) + 'px';
+                    dropdownMenu.style.width = rect.width + 'px';
+                    dropdownMenu.style.display = 'block';
+                    dropdownMenu.style.visibility = 'visible';
+                    dropdownMenu.style.opacity = '1';
+                    dropdownMenu.style.zIndex = '99999';
+
+                    // Show all units (don't filter since input is read-only)
+                    this.showAllUnits();
+                } else {
+                    this.closeDropdown();
+                }
+            }
+            // No action for input area clicks in traditional dropdown
+        });
+    }
+
+    renderUnitDropdown() {
+        if (!this.unitGroupsContainer) {
+            return;
+        }
+
+        this.unitGroupsContainer.innerHTML = '';
+
+        // Reset search query since there's no search box
+        this.currentSearchQuery = '';
+
+        // Sort groups by number of popular units (descending)
+        const sortedGroupTypes = Object.keys(this.groupedUnits).sort((a, b) => {
+            const aPopularCount = this.groupedUnits[a].filter(unit => unit.isPopular).length;
+            const bPopularCount = this.groupedUnits[b].filter(unit => unit.isPopular).length;
+            return bPopularCount - aPopularCount; // Descending order
+        });
+
+        sortedGroupTypes.forEach(groupType => {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'unit-group';
+
+            const groupTitle = document.createElement('div');
+            groupTitle.className = 'unit-group-title';
+            groupTitle.textContent = this.capitalizeFirst(groupType);
+
+            const groupItems = document.createElement('div');
+            groupItems.className = 'unit-group-items';
+
+            this.groupedUnits[groupType].forEach(unit => {
+                const unitItem = document.createElement('div');
+                unitItem.className = 'unit-item';
+                unitItem.dataset.code = unit.code;
+                unitItem.innerHTML = `
+                    <span class="unit-title">${unit.title} (${unit.code})</span>
+                    ${unit.isPopular ? '<span class="popular-star">★</span>' : ''}
+                `;
+
+                unitItem.addEventListener('click', () => {
+                    this.selectUnit(unit);
+                });
+
+                groupItems.appendChild(unitItem);
             });
 
-            // Populate unit dropdown
-            this.populateUnitDropdown();
+            groupDiv.appendChild(groupTitle);
+            groupDiv.appendChild(groupItems);
+            this.unitGroupsContainer.appendChild(groupDiv);
+        });
+    }
 
+    filterUnits(query) {
+        // Since search box is removed, always show all units
+        const groups = this.unitGroupsContainer.querySelectorAll('.unit-group');
 
-        } catch (err) {
-            console.error('Error loading data, using fallback:', err);
-            // Fallback data - ensure modal works even without data
-            this.inventoryItems = [
-                { id: 'fallback1', name: 'Sample Item 1', mrp: 10.00, rate: 10.00, unit: 'Pcs', description: 'Fallback item', stock: 10 },
-                { id: 'fallback2', name: 'Sample Item 2', mrp: 20.00, rate: 18.00, unit: 'Pcs', description: 'Another fallback item', stock: 5 }
-            ];
-            this.unitOptions = [
-                { code: 'Pcs', label: 'Pieces', isPopular: true },
-                { code: 'Kg', label: 'Kilogram', isPopular: true },
-                { code: 'Ltr', label: 'Liters', isPopular: false }
-            ];
-            this.populateUnitDropdown();
+        groups.forEach(group => {
+            const items = group.querySelectorAll('.unit-item');
+
+            items.forEach(item => {
+                item.style.display = 'flex'; // Show all items
+            });
+
+            // Always show groups since all items are visible
+            group.style.display = 'block';
+        });
+    }
+
+    selectUnit(unit) {
+        // Update the selected unit code for form submission
+        this.selectedUnitCode = unit.code;
+        // Update the input display value
+        this.unitSelect.value = unit.label;
+
+        // Hide dropdown
+        this.customUnitDropdown.querySelector('.unit-dropdown-menu').style.display = 'none';
+
+        // Update subtotal if needed
+        this.updateSubtotal();
+    }
+
+    setUnitValue(unitCode) {
+        // Update the selected unit code
+        this.selectedUnitCode = unitCode;
+
+        // Update the input display value
+        const unit = this.unitOptions.find(u => u.code === unitCode);
+        if (unit) {
+            this.unitSelect.value = unit.label;
+        } else if (unitCode) {
+            this.unitSelect.value = unitCode;
+        } else {
+            this.unitSelect.value = '';
         }
     }
 
-    getUnitCodeFromItem(item) {
-    // Try to find unit from various places in the item data
-    if (item.meta?.links?.unitId) {
-        // Could map unitId to code, but for now return default
-        return 'Pcs';
-    }
-    if (item.info?.attributes?.unit) {
-        return item.info.attributes.unit;
-    }
-    // Default unit
-    return 'Pcs';
-}
-
-    populateUnitDropdown() {
-        this.unitSelect.innerHTML = '<option value="" disabled selected>Select Primary Unit...</option>';
-
-        this.unitOptions.forEach(unit => {
-            const option = document.createElement('option');
-            option.value = unit.code;
-            option.textContent = unit.label;
-            this.unitSelect.appendChild(option);
-        });
+    capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
     openModal() {
@@ -209,7 +387,7 @@ class InstantAddItemModal {
         this.itemInput.value = item.name;
         this.purchasePriceInput.value = item.purchasePrice ? item.purchasePrice.toFixed(2) : '';
         this.salePriceInput.value = item.rate ? item.rate.toFixed(2) : '';
-        this.unitSelect.value = item.unit || 'Pcs';
+        this.setUnitValue(item.unit || 'Pcs');
         this.descInput.value = item.description || '';
         this.qtyInput.value = 1;
 
@@ -290,7 +468,7 @@ class InstantAddItemModal {
         this.itemInput.value = name;
         this.purchasePriceInput.value = '';
         this.salePriceInput.value = '';
-        this.unitSelect.value = 'Pcs';
+        this.setUnitValue('Pcs');
         this.descInput.value = '';
         this.qtyInput.value = 1;
 
@@ -424,82 +602,6 @@ class InstantAddItemModal {
         }
     }
 
-    setupSaveButtons() {
-        const saveItemBtn = document.getElementById('invoice-save-item');
-        const saveNewBtn = document.getElementById('invoice-save-new');
-
-        if (saveItemBtn) {
-            saveItemBtn.addEventListener('click', () => {
-                const itemData = {
-                    id: this.currentItem?.id || 'custom_' + Date.now(),
-                    name: this.itemInput.value || 'Custom Item',
-                    qty: Number(this.qtyInput.value) || 1,
-                    unit: this.unitSelect.value || 'Pcs',
-                    unitLabel: this.unitSelect.options[this.unitSelect.selectedIndex]?.text || 'Pcs',
-                    mrp: Number(this.purchasePriceInput.value) || 0,
-                    purchasePrice: Number(this.purchasePriceInput.value) || 0,
-                    rate: Number(this.salePriceInput.value) || 0,
-                    salePrice: Number(this.salePriceInput.value) || 0,
-                    count: null,
-                    description: this.descInput.value || '',
-                    desc: this.descInput.value || '',
-                    editIndex: this.currentEditIndex // Pass edit index for updating existing items
-                };
-
-                // Call callback if provided, otherwise dispatch event
-                if (this.callbacks.onItemAdded) {
-                    this.callbacks.onItemAdded(itemData);
-                } else {
-                    document.dispatchEvent(new CustomEvent('itemAdded', { detail: itemData }));
-                }
-
-                this.closeModal();
-            });
-        }
-
-        if (saveNewBtn) {
-            saveNewBtn.addEventListener('click', () => {
-                const itemData = {
-                    id: this.currentItem?.id || 'custom_' + Date.now(),
-                    name: this.itemInput.value || 'Custom Item',
-                    qty: Number(this.qtyInput.value) || 1,
-                    unit: this.unitSelect.value || 'Pcs',
-                    unitLabel: this.unitSelect.options[this.unitSelect.selectedIndex]?.text || 'Pcs',
-                    mrp: Number(this.purchasePriceInput.value) || 0,
-                    purchasePrice: Number(this.purchasePriceInput.value) || 0,
-                    rate: Number(this.salePriceInput.value) || 0,
-                    salePrice: Number(this.salePriceInput.value) || 0,
-                    count: null,
-                    description: this.descInput.value || '',
-                    desc: this.descInput.value || '',
-                    editIndex: this.currentEditIndex // Pass edit index for updating existing items
-                };
-
-                // Call callback if provided, otherwise dispatch event
-                if (this.callbacks.onItemAdded) {
-                    this.callbacks.onItemAdded(itemData);
-                } else {
-                    document.dispatchEvent(new CustomEvent('itemAdded', { detail: itemData }));
-                }
-
-                // Only reset form and keep modal open if not in edit mode
-                if (this.currentEditIndex === -1) {
-                    // Reset form but keep modal open
-                    this.currentItem = null;
-                    this.itemInput.value = '';
-                    this.qtyInput.value = 1;
-                    this.purchasePriceInput.value = '';
-                    this.salePriceInput.value = '';
-                    this.descInput.value = '';
-                    this.updateSubtotal();
-                    this.itemInput.focus();
-                } else {
-                    // In edit mode, just close the modal after saving
-                    this.closeModal();
-                }
-            });
-        }
-    }
 
     setupDragFunctionality() {
         if (!this.modal) return;
@@ -596,7 +698,7 @@ class InstantAddItemModal {
         this.currentItem = editItem;
         this.itemInput.value = editItem.name || '';
         this.qtyInput.value = editItem.qty || 1;
-        this.unitSelect.value = editItem.unit || 'Pcs';
+        this.setUnitValue(editItem.unit || 'Pcs');
         this.purchasePriceInput.value = editItem.mrp ? editItem.mrp.toFixed(2) : '';
         this.salePriceInput.value = editItem.rate ? editItem.rate.toFixed(2) : '';
         this.descInput.value = editItem.desc || editItem.description || '';
@@ -607,7 +709,7 @@ class InstantAddItemModal {
         this.currentItem = null;
         if (this.itemInput) this.itemInput.value = '';
         if (this.qtyInput) this.qtyInput.value = 1;
-        if (this.unitSelect) this.unitSelect.value = 'Pcs';
+        if (this.unitSelect) this.setUnitValue(''); // Leave empty to show placeholder
         if (this.purchasePriceInput) this.purchasePriceInput.value = '';
         if (this.salePriceInput) this.salePriceInput.value = '';
         if (this.descInput) this.descInput.value = '';
@@ -618,7 +720,6 @@ class InstantAddItemModal {
         if (this.isInitialized) {
             return;
         }
-
 
         // Get modal elements
         this.modal = document.getElementById('invoice-modal');
@@ -632,16 +733,125 @@ class InstantAddItemModal {
         this.salePriceInput = document.getElementById('invoice-sale-price');
         this.descInput = document.getElementById('invoice-desc');
 
+        // Initialize components
+        this.dbOperations = createInstantAddItemDBOperations(this);
+        this.uiComponents = createInstantAddItemUIComponents(this);
+
         // Load data
-        await this.loadInventoryData();
-        this.updateSubtotal();
+        const data = await this.dbOperations.loadInventoryData(fetchAllItems, fetchAllUnits);
+        this.inventoryItems = data.inventoryItems;
+        this.unitOptions = data.unitOptions;
+        this.groupedUnits = data.groupedUnits;
+
+        // Setup UI
+        this.uiComponents.populateUnitDropdown();
+        this.uiComponents.updateSubtotal();
 
         // Setup event listeners
         this.setupEventListeners();
-        this.setupSaveButtons();
-        this.setupDragFunctionality();
+        this.dbOperations.setupSaveButtons();
+        this.uiComponents.setupDragFunctionality();
 
         this.isInitialized = true;
+    }
+
+    setupEventListeners() {
+        if (!this.modal || !this.itemInput) {
+            return;
+        }
+
+        // Only setup listeners once
+        if (this.listenersSetup) {
+            return;
+        }
+        this.listenersSetup = true;
+
+        // FIRST: Setup close button handler (capture phase to ensure it runs before modal handler)
+        const closeBtn = document.querySelector('.modal-close-btn');
+        if (closeBtn) {
+            // Remove any existing listeners to avoid duplicates
+            if (this.closeModalHandler) {
+                closeBtn.removeEventListener('click', this.closeModalHandler, true);
+            }
+            // Create a bound handler - use capture phase
+            this.closeModalHandler = (e) => {
+                e.preventDefault();
+                e.stopImmediatePropagation(); // Stop all other handlers
+                this.uiComponents.closeModal();
+            };
+            closeBtn.addEventListener('click', this.closeModalHandler, true); // Capture phase
+        }
+
+        // SECOND: Close modal when clicking outside (only if not clicking on close button)
+        this.modal.addEventListener('click', (e) => {
+            // Don't close if clicking on close button or its children
+            if (e.target === this.modal) {
+                this.uiComponents.closeModal();
+            }
+        });
+
+        // Also handle touch events for mobile
+        this.modal.addEventListener('touchend', (e) => {
+            // Don't close if touching close button or its children
+            if (e.target === this.modal) {
+                this.uiComponents.closeModal();
+            }
+        });
+
+        // Update subtotal on input change
+        this.qtyInput.addEventListener('input', () => this.uiComponents.updateSubtotal());
+        this.salePriceInput.addEventListener('input', () => this.uiComponents.updateSubtotal());
+
+        // Handle item input autocomplete
+        this.itemInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            const filteredItems = this.uiComponents.filterItems(query);
+            this.uiComponents.showAutocomplete(filteredItems, query);
+        });
+
+        this.itemInput.addEventListener('focus', () => {
+            const query = this.itemInput.value.trim();
+            const filteredItems = this.uiComponents.filterItems(query);
+            if (filteredItems.length > 0 || query !== '') {
+                this.uiComponents.showAutocomplete(filteredItems, query);
+            }
+        });
+
+        this.itemInput.addEventListener('keydown', (e) => {
+            const items = this.autocompleteDropdown.children;
+
+            switch (e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    this.selectedIndex = Math.min(this.selectedIndex + 1, items.length - 1);
+                    this.uiComponents.updateSelection();
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
+                    this.uiComponents.updateSelection();
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (this.selectedIndex >= 0 && items[this.selectedIndex]) {
+                        items[this.selectedIndex].click();
+                    } else if (this.itemInput.value.trim() !== '') {
+                        this.uiComponents.addNewItem(this.itemInput.value.trim());
+                    }
+                    break;
+                case 'Escape':
+                    this.uiComponents.hideAutocomplete();
+                    break;
+            }
+        });
+
+        // Hide autocomplete when clicking outside
+        document.addEventListener('click', (e) => {
+            if (this.itemInput && this.autocompleteDropdown &&
+                !this.itemInput.contains(e.target) && !this.autocompleteDropdown.contains(e.target)) {
+                this.uiComponents.hideAutocomplete();
+            }
+        });
     }
 
     // Public methods for global access
@@ -679,7 +889,7 @@ class InstantAddItemModal {
         // Handle edit mode
         if (isEdit && editItem) {
             this.currentEditIndex = editIndex;
-            this.setEditMode(editItem);
+            this.uiComponents.setEditMode(editItem);
             // Update modal title
             const titleEl = document.querySelector('.modal-title');
             if (titleEl) {
@@ -687,7 +897,7 @@ class InstantAddItemModal {
             }
         } else {
             this.currentEditIndex = -1;
-            this.resetForm();
+            this.uiComponents.resetForm();
             // Reset modal title
             const titleEl = document.querySelector('.modal-title');
             if (titleEl) {
@@ -698,7 +908,7 @@ class InstantAddItemModal {
         // Make sure event listeners are set up
         this.setupEventListeners();
 
-        this.openModal();
+        this.uiComponents.openModal();
 
         // Set up back button listener
         if (!this.handleBackButton) {
@@ -739,7 +949,7 @@ class InstantAddItemModal {
     }
 
     hide() {
-        this.closeModal();
+        this.uiComponents.closeModal();
     }
 
     // Reset callbacks
@@ -748,6 +958,27 @@ class InstantAddItemModal {
             onItemAdded: null,
             onModalClose: null
         };
+    }
+
+    closeDropdown() {
+        const dropdownMenu = this.customUnitDropdown?.querySelector('.unit-dropdown-menu');
+        if (dropdownMenu) {
+            dropdownMenu.style.display = 'none';
+            dropdownMenu.style.visibility = 'hidden';
+            dropdownMenu.style.opacity = '0';
+            // Reset position
+            dropdownMenu.style.position = '';
+            dropdownMenu.style.top = '';
+            dropdownMenu.style.left = '';
+            dropdownMenu.style.width = '';
+            dropdownMenu.style.zIndex = '';
+        }
+    }
+
+    showAllUnits() {
+        // Reset search query and show all units
+        this.currentSearchQuery = '';
+        this.filterUnits(''); // Empty query shows all units
     }
 }
 
@@ -871,5 +1102,6 @@ if (typeof window.instantAddItemModalInitialized === 'undefined') {
             }
         }
     });
+
     window.instantAddItemModalInitialized = true;
 }
