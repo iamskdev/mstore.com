@@ -222,12 +222,25 @@
       <label class="invoice-label" for="invoice-demo-attachment"
         >Attachment</label
       >
-      <input
-        type="file"
-        class="invoice-input"
-        id="invoice-demo-attachment"
-        accept="image/*,.pdf,.doc,.docx"
-      />
+      <div class="invoice-attachment-wrapper">
+        <input
+          type="file"
+          class="invoice-input"
+          id="invoice-demo-attachment"
+          accept="image/*,.pdf,.doc,.docx"
+        />
+        <div class="invoice-attachment-icons" id="invoice-demo-attachment-icons">
+          <button class="invoice-attachment-icon" id="invoice-demo-attachment-view" title="View">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="invoice-attachment-icon" id="invoice-demo-attachment-download" title="Download">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="invoice-attachment-icon" id="invoice-demo-attachment-remove" title="Remove">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 </main>

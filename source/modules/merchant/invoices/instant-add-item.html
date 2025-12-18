@@ -5,7 +5,9 @@
       <div class="modal-header">
           <div class="modal-title-header">
               <div class="modal-title">Add Item to Sale</div>
-              <button class="modal-close-btn">&times;</button>
+              <button class="modal-close-btn" onclick="window.closeInstantAddItemModal(event)">
+                <i class="fas fa-times"></i>
+              </button>
           </div>
       </div>
 
@@ -38,9 +40,9 @@
               />
           </div>
           <div class="unit-field invoice-notched-field">
-              <label class="invoice-label" for="invoice-unit"> Unit </label>
+              <label class="invoice-label" for="invoice-unit"> Unit (Primary) </label>
               <select class="invoice-select" id="invoice-unit">
-                  <option value="">Select Primary Unit...</option>
+                  <option value="" disabled selected>Select Primary Unit...</option>
               </select>
           </div>
       </div>
@@ -159,13 +161,14 @@
             right: 0;
             background: var(--bg-primary);
             border: var(--card-border);
-            border-radius: 8px;
+            border-radius: 0; /* Remove border radius */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             z-index: 1000;
             max-height: 200px;
             overflow-y: auto;
             width: 100%; /* Ensure dropdown uses full width */
             box-sizing: border-box;
+            margin-top: -12px; /* Bring it closer to input field */
         }
 
         .autocomplete-item {
@@ -249,12 +252,7 @@
             padding: 16px; /* Keep footer padding for proper spacing */
         }
 
-        /* Consistent spacing for form fields */
-        .invoice-field.invoice-notched-field {
-            margin-bottom: 4px;
-            background-color: var(--bg-primary) !important; /* Ensure consistent background */
-            border: none !important; /* Remove any borders */
-        }
+
 
         /* Adjust notched label position */
         .invoice-label {
@@ -272,14 +270,15 @@
         }
 
         .description-field {
-            margin-top: 20px;
-            margin-bottom: 16px;
+            margin-top: 25px;
+            margin-bottom: -20px;
             background-color: var(--bg-primary) !important; /* Match other fields background */
         }
 
         .description-field .invoice-textarea {
             background-color: var(--bg-primary) !important; /* Ensure textarea background matches */
             border-color: var(--border-color) !important;
+            border-radius: 2px !important;
         }
 
 
@@ -302,23 +301,38 @@
         .invoice-input {
             background-color: var(--bg-primary) !important;
             border-color: var(--border-color) !important;
+            border-radius: 2px !important;
         }
 
         .invoice-select {
             background-color: var(--bg-primary) !important;
             border-color: var(--border-color) !important;
+            border-radius: 2px !important;
         }
-
+        /* Consistent spacing for form fields */
+        .invoice-field.invoice-notched-field {
+            margin-bottom: 0px;
+            background-color: var(--bg-primary) !important; /* Ensure consistent background */
+            border: none !important; /* Remove any borders */
+        }
         /* Quantity and Unit Row */
         .quantity-unit-row {
             display: flex !important;
             gap: 20px !important; /* Large gap for clear separation */
             align-items: flex-end !important;
             flex-wrap: nowrap !important;
-            margin-bottom: 8px !important;
+            margin-bottom: 12px !important;
             background-color: transparent !important; /* Ensure no background override */
         }
-
+        /* Price Row */
+        .price-row {
+            display: flex !important;
+            gap: 20px !important;
+            align-items: flex-end !important;
+            flex-wrap: nowrap !important;
+            margin-bottom: 12px !important;
+            background-color: transparent !important; /* Ensure no background override */
+        }
         .quantity-field {
             width: 80px !important; /* Very small fixed width */
             flex-shrink: 0 !important;
@@ -340,15 +354,7 @@
             box-sizing: border-box !important;
         }
 
-        /* Price Row */
-        .price-row {
-            display: flex !important;
-            gap: 20px !important;
-            align-items: flex-end !important;
-            flex-wrap: nowrap !important;
-            margin-bottom: 12px !important;
-            background-color: transparent !important; /* Ensure no background override */
-        }
+
 
         .purchase-price-field,
         .sale-price-field {
@@ -438,21 +444,30 @@
 
         .modal-close-btn {
             background: transparent !important; /* Ensure no background */
-            border: none;
-            font-size: 24px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 16px; /* Keep padding for click area */
-            margin: 0; /* Remove any margins */
-            border-radius: 4px;
-            transition: color 0.2s; /* Only change color on hover */
-            flex-shrink: 0; /* Prevent button from shrinking */
-            width: auto; /* Ensure button doesn't have fixed width */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1; /* Ensure proper vertical alignment */
-            height: 24px; /* Match the font size for proper centering */
+            border: none !important;
+            font-size: 16px !important; /* Icon size */
+            color: var(--text-secondary) !important;
+            cursor: pointer !important;
+            padding: 8px !important; /* Smaller padding for better alignment */
+            margin: 0 !important; /* Remove any margins */
+            margin-top: -20px !important; /* Shift button upwards */
+            border-radius: 2px !important;
+            transition: color 0.2s !important; /* Only change color on hover */
+            flex-shrink: 0 !important; /* Prevent button from shrinking */
+            width: 32px !important; /* Fixed width for icon button */
+            height: 32px !important; /* Fixed height to match title line height */
+            display: flex !important;
+
+            align-items: center !important;
+            justify-content: center !important;
+            position: relative !important;
+            z-index: 10001 !important; /* Ensure it's above modal overlay */
+            pointer-events: auto !important; /* Ensure it's clickable */
+        }
+
+        .modal-close-btn i {
+            font-size: 16px !important; /* Icon size */
+            line-height: 1 !important;
         }
 
         .modal-close-btn:hover {
@@ -462,34 +477,48 @@
 
         /* Modal Styles */
         .invoice-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: none; /* Hidden by default */
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 10px; /* Reduced from 20px to give more space to modal */
+            position: fixed !important;
+            border-radius: 0;
+            background: rgba(0, 0, 0, 0.5) !important;
+            display: none !important; /* Hidden by default */
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 10000 !important; /* Higher z-index to ensure it appears above other elements */
+            padding: 10px !important; /* Reduced from 20px to give more space to modal */
+            -webkit-overflow-scrolling: touch !important; /* Better scrolling on iOS */
         }
 
         .invoice-modal.active {
-            display: flex; /* Show when active */
+            display: flex !important; /* Show when active */
         }
 
         .invoice-modal-sheet {
             background: var(--bg-primary) !important;
-            border-radius: 0; /* Remove border radius for square modal */
-            width: 95vw; /* Increased from 90vw to use more width */
-            max-width: 600px; /* Increased from 500px */
-            max-height: 90vh;
-            margin: 0;
+            border-radius: 16px !important; /* Increased border radius for better rounded look */
+            width: 95vw !important; /* Increased from 90vw to use more width */
+            max-width: 600px !important; /* Increased from 500px */
+            max-height: 90vh !important;
+            margin: 0 !important;
             padding: 0 !important; /* Remove padding to use full width */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            transform: translateZ(0) !important; /* Force hardware acceleration */
+            -webkit-transform: translateZ(0) !important;
+            overflow: hidden !important; /* Ensure content doesn't break border radius */
+        }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 768px) {
+            .invoice-modal {
+                padding: 5px !important;
+            }
+
+            .invoice-modal-sheet {
+                width: 98vw !important;
+                max-width: none !important;
+                border-radius: 12px !important; /* Consistent with desktop but slightly smaller for mobile */
+            }
         }
 
         /* Invoice totals row styles */

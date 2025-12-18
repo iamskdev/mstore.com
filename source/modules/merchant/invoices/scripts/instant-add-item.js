@@ -51,63 +51,72 @@ class InstantAddItemModal {
     }
 
     async loadInventoryData() {
-    try {
-        const itemsData = await this.loadLocalJson('../../../../localstore/jsons/items.json');
-        const unitsData = await this.loadLocalJson('../../../../localstore/jsons/units.json');
+        try {
 
-        // Process items data
-        this.inventoryItems = Array.isArray(itemsData) ? itemsData.slice(0, 50).map(item => ({
-            id: item.meta?.itemId || 'unknown',
-            name: item.info?.name || 'Unknown Item',
-            mrp: item.pricing?.mrp || 0,
-            rate: item.pricing?.sellingPrice || 0,
-            unit: this.getUnitCodeFromItem(item),
-            description: item.info?.description || '',
-            stock: item.inventory?.stock || 0,
-            count: item.info?.attributes?.count || null
-        })) : [];
+            // Try to load from localstore first
+            let itemsData, unitsData;
+            try {
+                itemsData = await this.loadLocalJson('../../../localstore/jsons/items.json');
+                unitsData = await this.loadLocalJson('../../../localstore/jsons/units.json');
+            } catch (localError) {
+                console.warn('Localstore data not available, using fallback:', localError);
+                throw localError; // Will be caught by outer catch
+            }
 
-        // Process units data
-        this.unitOptions = [];
-        if (Array.isArray(unitsData)) {
-            unitsData.forEach((unitGroup) => {
-                if (unitGroup.subunits) {
-                    unitGroup.subunits.forEach((sub) => {
-                        this.unitOptions.push({
-                            code: sub.code,
-                            label: sub.title || sub.symbol || sub.code,
-                            isPopular: sub.isPopular || false
+            // Process items data
+            this.inventoryItems = Array.isArray(itemsData) ? itemsData.slice(0, 50).map(item => ({
+                id: item.meta?.itemId || 'unknown',
+                name: item.info?.name || 'Unknown Item',
+                mrp: item.pricing?.mrp || 0,
+                rate: item.pricing?.sellingPrice || 0,
+                unit: this.getUnitCodeFromItem(item),
+                description: item.info?.description || '',
+                stock: item.inventory?.stock || 0,
+                count: item.info?.attributes?.count || null
+            })) : [];
+
+            // Process units data
+            this.unitOptions = [];
+            if (Array.isArray(unitsData)) {
+                unitsData.forEach((unitGroup) => {
+                    if (unitGroup.subunits) {
+                        unitGroup.subunits.forEach((sub) => {
+                            this.unitOptions.push({
+                                code: sub.code,
+                                label: sub.title || sub.symbol || sub.code,
+                                isPopular: sub.isPopular || false
+                            });
                         });
-                    });
-                }
+                    }
+                });
+            }
+
+            // Sort units: popular first, then alphabetically
+            this.unitOptions.sort((a, b) => {
+                if (a.isPopular && !b.isPopular) return -1;
+                if (!a.isPopular && b.isPopular) return 1;
+                return a.label.localeCompare(b.label);
             });
+
+            // Populate unit dropdown
+            this.populateUnitDropdown();
+
+
+        } catch (err) {
+            console.error('Error loading data, using fallback:', err);
+            // Fallback data - ensure modal works even without data
+            this.inventoryItems = [
+                { id: 'fallback1', name: 'Sample Item 1', mrp: 10.00, rate: 10.00, unit: 'Pcs', description: 'Fallback item', stock: 10 },
+                { id: 'fallback2', name: 'Sample Item 2', mrp: 20.00, rate: 18.00, unit: 'Pcs', description: 'Another fallback item', stock: 5 }
+            ];
+            this.unitOptions = [
+                { code: 'Pcs', label: 'Pieces', isPopular: true },
+                { code: 'Kg', label: 'Kilogram', isPopular: true },
+                { code: 'Ltr', label: 'Liters', isPopular: false }
+            ];
+            this.populateUnitDropdown();
         }
-
-        // Sort units: popular first, then alphabetically
-        this.unitOptions.sort((a, b) => {
-            if (a.isPopular && !b.isPopular) return -1;
-            if (!a.isPopular && b.isPopular) return 1;
-            return a.label.localeCompare(b.label);
-        });
-
-        // Populate unit dropdown
-        this.populateUnitDropdown();
-
-        console.log('Loaded', this.inventoryItems.length, 'items and', this.unitOptions.length, 'units');
-
-    } catch (err) {
-        console.error('Error loading data:', err);
-        // Fallback data
-        this.inventoryItems = [
-            { id: 'fallback1', name: 'Sample Item 1', mrp: 10.00, rate: 10.00, unit: 'Pcs', description: 'Fallback item', stock: 10 }
-        ];
-        this.unitOptions = [
-            { code: 'Pcs', label: 'Pieces', isPopular: true },
-            { code: 'Kg', label: 'Kilogram', isPopular: true }
-        ];
-        this.populateUnitDropdown();
     }
-}
 
     getUnitCodeFromItem(item) {
     // Try to find unit from various places in the item data
@@ -123,7 +132,7 @@ class InstantAddItemModal {
 }
 
     populateUnitDropdown() {
-        this.unitSelect.innerHTML = '<option value="">Select Primary Unit...</</option>';
+        this.unitSelect.innerHTML = '<option value="" disabled selected>Select Primary Unit...</option>';
 
         this.unitOptions.forEach(unit => {
             const option = document.createElement('option');
@@ -137,6 +146,9 @@ class InstantAddItemModal {
         if (this.modal) {
             this.modal.style.display = ''; // Reset display style
             this.modal.classList.add('active');
+            // Lock background scroll
+            document.body.style.overflow = 'hidden';
+            document.body.style.height = '100vh';
         }
     }
 
@@ -155,6 +167,10 @@ class InstantAddItemModal {
                 this.resetModalPosition();
             }
         }
+
+        // Restore background scroll
+        document.body.style.overflow = '';
+        document.body.style.height = '';
 
         if (this.callbacks.onModalClose) {
             this.callbacks.onModalClose();
@@ -303,33 +319,38 @@ class InstantAddItemModal {
         }
         this.listenersSetup = true;
 
-        // Close modal when clicking outside
+        // FIRST: Setup close button handler (capture phase to ensure it runs before modal handler)
+        const closeBtn = document.querySelector('.modal-close-btn');
+        if (closeBtn) {
+            // Remove any existing listeners to avoid duplicates
+            if (this.closeModalHandler) {
+                closeBtn.removeEventListener('click', this.closeModalHandler, true);
+            }
+            // Create a bound handler - use capture phase
+            this.closeModalHandler = (e) => {
+                e.preventDefault();
+                e.stopImmediatePropagation(); // Stop all other handlers
+                this.closeModal();
+            };
+            closeBtn.addEventListener('click', this.closeModalHandler, true); // Capture phase
+        } else {
+        }
+
+        // SECOND: Close modal when clicking outside (only if not clicking on close button)
         this.modal.addEventListener('click', (e) => {
+            // Don't close if clicking on close button or its children
             if (e.target === this.modal) {
                 this.closeModal();
             }
         });
 
-        // Close modal when clicking the close button
-        const closeBtn = document.querySelector('.modal-close-btn');
-        if (closeBtn) {
-            // Test if button is clickable
-            closeBtn.addEventListener('mousedown', () => console.log('Close button mousedown'));
-            closeBtn.addEventListener('mouseup', () => console.log('Close button mouseup'));
-
-            // Remove any existing listeners to avoid duplicates
-            if (this.closeModalHandler) {
-                closeBtn.removeEventListener('click', this.closeModalHandler);
-            }
-            // Create a bound handler
-            this.closeModalHandler = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation(); // Prevent other listeners on the same element
+        // Also handle touch events for mobile
+        this.modal.addEventListener('touchend', (e) => {
+            // Don't close if touching close button or its children
+            if (e.target === this.modal) {
                 this.closeModal();
-            };
-            closeBtn.addEventListener('click', this.closeModalHandler);
-        }
+            }
+        });
 
         // Update subtotal on input change
         this.qtyInput.addEventListener('input', this.updateSubtotal);
@@ -586,7 +607,10 @@ class InstantAddItemModal {
     }
 
     async initialize() {
-        if (this.isInitialized) return;
+        if (this.isInitialized) {
+            return;
+        }
+
 
         // Get modal elements
         this.modal = document.getElementById('invoice-modal');
@@ -724,6 +748,32 @@ if (typeof window.closeModal === 'undefined') {
             if (modal) {
                 modal.classList.remove('active');
             }
+            // Restore background scroll in fallback
+            document.body.style.overflow = '';
+            document.body.style.height = '';
+        }
+    };
+}
+
+// Specific function for close button in instant-add-item modal
+if (typeof window.closeInstantAddItemModal === 'undefined') {
+    window.closeInstantAddItemModal = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        if (window.instantAddItemModal) {
+            window.instantAddItemModal.closeModal();
+        } else {
+            // Fallback: directly hide the modal
+            const modal = document.getElementById('invoice-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+            }
+            // Restore background scroll in fallback
+            document.body.style.overflow = '';
+            document.body.style.height = '';
         }
     };
 }
@@ -731,19 +781,11 @@ if (typeof window.closeModal === 'undefined') {
 // Function to load and show the modal
 export async function loadInstantAddItemModal(isEdit = false, editItem = null, editIndex = -1) {
     try {
-        // Check if modal is already loaded
-        if (document.getElementById('invoice-modal')) {
-            // If already exists, just trigger it
-            if (window.instantAddItemInit) {
-                window.instantAddItemInit(isEdit, editItem, editIndex);
-                return;
-            }
-        }
 
-        // Check if script is already loaded
-        const existingScript = document.querySelector('script[data-instant-add-item]');
-        if (existingScript && window.InstantAddItemModal) {
-            // Script is already loaded, just initialize
+        // Check if modal is already loaded
+        let modalElement = document.getElementById('invoice-modal');
+        if (modalElement) {
+            // If already exists, just trigger it
             if (window.instantAddItemInit) {
                 window.instantAddItemInit(isEdit, editItem, editIndex);
                 return;
@@ -763,7 +805,7 @@ export async function loadInstantAddItemModal(isEdit = false, editItem = null, e
         tempDiv.innerHTML = htmlContent;
 
         // Extract the modal and styles
-        const modalElement = tempDiv.querySelector('#invoice-modal');
+        modalElement = tempDiv.querySelector('#invoice-modal');
         const styleElement = tempDiv.querySelector('style');
 
         if (modalElement) {
@@ -779,8 +821,12 @@ export async function loadInstantAddItemModal(isEdit = false, editItem = null, e
             setTimeout(() => {
                 if (window.instantAddItemInit) {
                     window.instantAddItemInit(isEdit, editItem, editIndex);
+                } else {
+                    console.error('window.instantAddItemInit not found');
                 }
             }, 100);
+        } else {
+            console.error('Modal element not found in HTML content');
         }
     } catch (error) {
         console.error('Error loading instant add item modal:', error);

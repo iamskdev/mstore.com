@@ -229,5 +229,79 @@ export async function init() {
       addItemFromModal(e.detail);
     });
 
+    // Attachment field icons visibility and ripple effect
+    const attachmentInput = document.getElementById('invoice-demo-attachment');
+    const attachmentIcons = document.getElementById('invoice-demo-attachment-icons');
+
+    if (attachmentInput && attachmentIcons) {
+      attachmentInput.addEventListener('change', () => {
+        if (attachmentInput.files && attachmentInput.files.length > 0) {
+          attachmentIcons.style.display = 'flex';
+        } else {
+          attachmentIcons.style.display = 'none';
+        }
+      });
+    }
+
+    // Add ripple effect to attachment icons
+    const attachmentIconButtons = document.querySelectorAll('.invoice-attachment-icon');
+    attachmentIconButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+
+        // Get button dimensions
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+
+        // Remove existing ripples
+        const existingRipples = this.querySelectorAll('.ripple');
+        existingRipples.forEach(r => r.remove());
+
+        this.appendChild(ripple);
+
+        // Remove ripple after animation
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+
+    // Add ripple effect to action buttons (Save and Save & New)
+    const actionButtons = document.querySelectorAll('.primary-btn, .secondary-btn');
+    actionButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+
+        // Get button dimensions
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+
+        // Remove existing ripples
+        const existingRipples = this.querySelectorAll('.ripple');
+        existingRipples.forEach(r => r.remove());
+
+        this.appendChild(ripple);
+
+        // Remove ripple after animation
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+
     init();
 }
