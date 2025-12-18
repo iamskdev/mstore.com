@@ -1,354 +1,450 @@
 /**
- * Invoice Event Manager - Handles all event bindings and form interactions
+ * Invoice Event Manager - Handles invoice meta field interactions
  */
 
-import { InvoiceUIComponents } from './invoice-ui-component.js';
-
 export class InvoiceEventManager {
-    static eventListeners = [];
+    constructor() {
+        this.eventListeners = [];
+        this.invoiceMeta = {
+            number: '116',
+            date: '16/12/2025',
+            time: '02:26 PM'
+        };
 
-    static init() {
-        console.log('🎯 Initializing Invoice Event Manager...');
-        this.bindFormEvents();
-        this.bindCustomerEvents();
-        this.bindItemEvents();
-        this.bindChargesEvents();
-        this.bindModalEvents();
+
+        // Prevent multiple modals
+        this.activeModal = null;
     }
 
-    static addEventListener(element, event, handler, options = {}) {
+    /**
+     * Initialize invoice meta field event handlers
+     */
+    static initializeEventHandlers() {
+        const manager = new InvoiceEventManager();
+        manager.setupMetaFieldHandlers();
+        return manager;
+    }
+
+
+    /**
+     * Set invoice type label based on sessionStorage
+     */
+    setInvoiceTypeLabel() {
+        const labelElement = document.getElementById('invoice-number-label');
+        if (!labelElement) return;
+
+        // Read invoice type from sessionStorage
+        const invoiceType = sessionStorage.getItem('invoiceType') || 'sale';
+
+        if (invoiceType === 'purchase') {
+            labelElement.textContent = 'Bill No.';
+            console.log('Set label to: Bill No. (Purchase)');
+        } else {
+            labelElement.textContent = 'Invoice No.';
+            console.log('Set label to: Invoice No. (Sale)');
+        }
+
+        // Clear the sessionStorage after reading
+        sessionStorage.removeItem('invoiceType');
+    }
+
+    /**
+     * Setup click handlers for invoice meta fields
+     */
+    setupMetaFieldHandlers() {
+        console.log('Setting up meta field handlers...');
+
+        // Set invoice type label based on sessionStorage
+        this.setInvoiceTypeLabel();
+
+        // Use event delegation on the invoice grid to handle all clicks
+        const invoiceGrid = document.querySelector('.invoice-grid');
+        if (invoiceGrid) {
+            this.addTrackedListener(invoiceGrid, 'click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const target = e.target;
+                const clickX = e.clientX;
+                const clickY = e.clientY;
+
+                // Check if clicked on invoice number area
+                if (target.closest('.invoice-col:nth-child(1)') ||
+                    target.classList.contains('invoice-col') &&
+                    target.querySelector('.invoice-pill-label')?.textContent?.includes('Invoice No.')) {
+                    console.log('Invoice number area clicked');
+                    this.openInvoiceNumberModal();
+                    return;
+                }
+
+                // Check if clicked on date area
+                if (target.closest('.invoice-col:nth-child(2)') ||
+                    target.classList.contains('invoice-col') &&
+                    target.querySelector('.invoice-pill-label')?.textContent?.includes('Date')) {
+                    console.log('Date area clicked at:', clickX, clickY);
+                    this.triggerDatePicker(clickX, clickY);
+                    return;
+                }
+
+                // Check if clicked on time area
+                if (target.closest('.invoice-col:nth-child(3)') ||
+                    target.classList.contains('invoice-col') &&
+                    target.querySelector('.invoice-pill-label')?.textContent?.includes('Time')) {
+                    console.log('Time area clicked at:', clickX, clickY);
+                    this.triggerTimePicker(clickX, clickY);
+                    return;
+                }
+            });
+
+            // Set cursor pointer for all clickable elements
+            const allPillValues = invoiceGrid.querySelectorAll('.pill-value, .pill-arrow');
+            allPillValues.forEach(el => {
+                el.style.cursor = 'pointer';
+            });
+        }
+    }
+
+    /**
+     * Create invoice meta modal
+     */
+    createInvoiceMetaModal(title, inputElement, onSave) {
+        // Prevent multiple modals
+        if (this.activeModal) {
+            console.log('Modal already active, ignoring request');
+            return null;
+        }
+
+        console.log('Creating modal for:', title);
+
+        const overlay = document.createElement('div');
+        overlay.className = 'invoice-meta-modal-overlay';
+        this.activeModal = overlay;
+
+        const modal = document.createElement('div');
+        modal.className = 'invoice-meta-modal';
+
+        const header = document.createElement('div');
+        header.className = 'invoice-meta-modal-header';
+        header.textContent = title;
+
+        const body = document.createElement('div');
+        body.className = 'invoice-meta-modal-body';
+        body.appendChild(inputElement);
+
+        const footer = document.createElement('div');
+        footer.className = 'invoice-meta-modal-footer';
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'invoice-meta-modal-cancel';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => {
+            console.log('Cancel clicked');
+            this.closeActiveModal();
+        };
+
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'invoice-meta-modal-save';
+        saveBtn.textContent = 'Save';
+        saveBtn.onclick = () => {
+            console.log('Save clicked');
+            if (onSave()) {
+                this.closeActiveModal();
+            }
+        };
+
+        footer.appendChild(cancelBtn);
+        footer.appendChild(saveBtn);
+
+        modal.appendChild(header);
+        modal.appendChild(body);
+        modal.appendChild(footer);
+        overlay.appendChild(modal);
+
+        // Close on overlay click
+        overlay.onclick = (e) => {
+            if (e.target === overlay) {
+                console.log('Overlay clicked');
+                this.closeActiveModal();
+            }
+        };
+
+        // Close on Escape key
+        const escHandler = (e) => {
+            if (e.key === 'Escape') {
+                console.log('Escape pressed');
+                this.closeActiveModal();
+                document.removeEventListener('keydown', escHandler);
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+
+        return overlay;
+    }
+
+    /**
+     * Close active modal
+     */
+    closeActiveModal() {
+        if (this.activeModal) {
+            this.activeModal.remove();
+            this.activeModal = null;
+        }
+    }
+
+    /**
+     * Open invoice number modal
+     */
+    openInvoiceNumberModal() {
+        console.log('Opening invoice number modal');
+
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'invoice-meta-input';
+        input.value = this.invoiceMeta.number;
+        input.focus();
+        input.select();
+
+        const modal = this.createInvoiceMetaModal(
+            'Edit Invoice Number',
+            input,
+            () => {
+                const newValue = input.value.trim();
+                if (newValue && !isNaN(newValue)) {
+                    this.invoiceMeta.number = newValue;
+                    this.updateInvoiceMetaDisplay();
+                    console.log('Invoice number updated to:', newValue);
+                    return true;
+                }
+                console.log('Invalid invoice number:', newValue);
+                return false;
+            }
+        );
+
+        if (modal) {
+            document.body.appendChild(modal);
+        }
+    }
+
+    /**
+     * Trigger native date picker
+     */
+    triggerDatePicker(clickX, clickY) {
+        console.log('Triggering date picker at:', clickX, clickY);
+
+        // Create a temporary input at the exact click location
+        const tempInput = document.createElement('input');
+        tempInput.type = 'date';
+
+        // Convert DD/MM/YYYY to YYYY-MM-DD for date input
+        const dateParts = this.invoiceMeta.date.split('/');
+        tempInput.value = dateParts.length === 3 ?
+            `${dateParts[2]}-${dateParts[1].padStart(2, '0')}-${dateParts[0].padStart(2, '0')}` :
+            '';
+
+        // Position at click location
+        tempInput.style.cssText = `
+            position: fixed;
+            left: ${clickX || window.innerWidth / 2}px;
+            top: ${clickY || window.innerHeight / 2}px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
+            border: none;
+            outline: none;
+        `;
+
+        document.body.appendChild(tempInput);
+
+        // Listen for changes and cleanup triggers
+        let cleanupTimer;
+
+        const cleanupInput = () => {
+            if (cleanupTimer) clearTimeout(cleanupTimer);
+            if (tempInput.parentNode) {
+                tempInput.parentNode.removeChild(tempInput);
+                console.log('Date picker input cleaned up');
+            }
+        };
+
+        tempInput.onchange = () => {
+            if (tempInput.value) {
+                const date = new Date(tempInput.value);
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                this.invoiceMeta.date = `${day}/${month}/${year}`;
+                this.updateInvoiceMetaDisplay();
+                console.log('Date changed to:', this.invoiceMeta.date);
+
+                // Clean up immediately after value change
+                setTimeout(cleanupInput, 100);
+            }
+        };
+
+        tempInput.onblur = () => {
+            // Clean up after losing focus (picker closed)
+            cleanupTimer = setTimeout(cleanupInput, 500);
+        };
+
+        // Trigger the picker
+        setTimeout(() => {
+            tempInput.focus();
+            if (tempInput.showPicker) {
+                try {
+                    tempInput.showPicker();
+                    console.log('Date picker triggered with showPicker');
+                } catch (error) {
+                    console.warn('showPicker failed:', error.message);
+                    tempInput.click();
+                }
+            } else {
+                tempInput.click();
+                console.log('Date picker triggered with click');
+            }
+        }, 10);
+
+        // Fallback cleanup after 30 seconds (in case something goes wrong)
+        setTimeout(cleanupInput, 30000);
+    }
+
+
+    /**
+     * Trigger native time picker
+     */
+    triggerTimePicker(clickX, clickY) {
+        console.log('Triggering time picker at:', clickX, clickY);
+
+        // Create a temporary input at the exact click location
+        const tempInput = document.createElement('input');
+        tempInput.type = 'time';
+
+        // Convert 12-hour to 24-hour format for time input
+        const timeMatch = this.invoiceMeta.time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (timeMatch) {
+            let hours = parseInt(timeMatch[1]);
+            const minutes = timeMatch[2];
+            const ampm = timeMatch[3].toUpperCase();
+
+            if (ampm === 'PM' && hours !== 12) hours += 12;
+            if (ampm === 'AM' && hours === 12) hours = 0;
+
+            tempInput.value = `${hours.toString().padStart(2, '0')}:${minutes}`;
+        }
+
+        // Position at click location
+        tempInput.style.cssText = `
+            position: fixed;
+            left: ${clickX || window.innerWidth / 2}px;
+            top: ${clickY || window.innerHeight / 2}px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
+            border: none;
+            outline: none;
+        `;
+
+        document.body.appendChild(tempInput);
+
+        // Listen for changes and cleanup triggers
+        let cleanupTimer;
+
+        const cleanupInput = () => {
+            if (cleanupTimer) clearTimeout(cleanupTimer);
+            if (tempInput.parentNode) {
+                tempInput.parentNode.removeChild(tempInput);
+                console.log('Time picker input cleaned up');
+            }
+        };
+
+        tempInput.onchange = () => {
+            if (tempInput.value) {
+                // Convert 24-hour back to 12-hour format
+                const [hours24, minutes] = tempInput.value.split(':');
+                const hours = parseInt(hours24);
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const hours12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+
+                this.invoiceMeta.time = `${hours12}:${minutes} ${ampm}`;
+                this.updateInvoiceMetaDisplay();
+                console.log('Time changed to:', this.invoiceMeta.time);
+
+                // Clean up immediately after value change
+                setTimeout(cleanupInput, 100);
+            }
+        };
+
+        tempInput.onblur = () => {
+            // Clean up after losing focus (picker closed)
+            cleanupTimer = setTimeout(cleanupInput, 500);
+        };
+
+        // Trigger the picker
+        setTimeout(() => {
+            tempInput.focus();
+            if (tempInput.showPicker) {
+                try {
+                    tempInput.showPicker();
+                    console.log('Time picker triggered with showPicker');
+                } catch (error) {
+                    console.warn('showPicker failed:', error.message);
+                    tempInput.click();
+                }
+            } else {
+                tempInput.click();
+                console.log('Time picker triggered with click');
+            }
+        }, 10);
+
+        // Fallback cleanup after 30 seconds (in case something goes wrong)
+        setTimeout(cleanupInput, 30000);
+    }
+
+    /**
+     * Fallback time picker for browsers that don't support showPicker
+     */
+
+    /**
+     * Update invoice meta display
+     */
+    updateInvoiceMetaDisplay() {
+        const numberSpan = document.querySelector('.invoice-col:nth-child(1) .pill-value span:first-child');
+        const dateSpan = document.querySelector('.invoice-col:nth-child(2) .pill-value span:first-child');
+        const timeSpan = document.querySelector('.invoice-col:nth-child(3) .pill-value span:first-child');
+
+        if (numberSpan) {
+            numberSpan.textContent = this.invoiceMeta.number;
+            console.log('Updated number display to:', this.invoiceMeta.number);
+        }
+        if (dateSpan) {
+            dateSpan.textContent = this.invoiceMeta.date;
+            console.log('Updated date display to:', this.invoiceMeta.date);
+        }
+        if (timeSpan) {
+            timeSpan.textContent = this.invoiceMeta.time;
+            console.log('Updated time display to:', this.invoiceMeta.time);
+        }
+    }
+
+    /**
+     * Add event listener with cleanup tracking
+     */
+    addTrackedListener(element, event, handler, options) {
         if (!element) return;
 
         element.addEventListener(event, handler, options);
-        this.eventListeners.push({ element, event, handler, options });
+        this.eventListeners.push(() => element.removeEventListener(event, handler, options));
     }
 
-    static bindFormEvents() {
-        // Save invoice button (will be added to bottom navigation)
-        // Reset/Cancel functionality will be handled by navigation
-    }
-
-    static bindCustomerEvents() {
-        // Customer input change
-        const customerInput = document.getElementById('invoice-demo-customer');
-        if (customerInput) {
-            this.addEventListener(customerInput, 'input', this.handleCustomerInput.bind(this));
-        }
-    }
-
-    static bindItemEvents() {
-        // Add item button
-        const addItemBtn = document.getElementById('invoice-demo-add-item');
-        if (addItemBtn) {
-            this.addEventListener(addItemBtn, 'click', this.handleAddItem.bind(this));
-        }
-
-        // Scan item button
-        const scanBtn = document.getElementById('invoice-demo-scan-item');
-        if (scanBtn) {
-            this.addEventListener(scanBtn, 'click', this.handleScanItem.bind(this));
-        }
-    }
-
-    static bindChargesEvents() {
-        // Toggle sections
-        const toggleItemsBtn = document.getElementById('invoice-demo-toggle-items');
-        const toggleChargesBtn = document.getElementById('invoice-demo-toggle-charges');
-
-        if (toggleItemsBtn) {
-            this.addEventListener(toggleItemsBtn, 'click', () => {
-                this.toggleSection('invoice-demo-items-section');
-            });
-        }
-
-        if (toggleChargesBtn) {
-            this.addEventListener(toggleChargesBtn, 'click', () => {
-                this.toggleSection('invoice-demo-charges-section');
-            });
-        }
-
-        // Amount inputs and charges
-        const receivedInput = document.getElementById('invoice-demo-received');
-        const shippingInput = document.getElementById('invoice-demo-shipping');
-        const packagingInput = document.getElementById('invoice-demo-packaging');
-        const adjustmentInput = document.getElementById('invoice-demo-adjustment');
-
-        if (receivedInput) {
-            this.addEventListener(receivedInput, 'input', () => {
-                this.updateReceivedAmount();
-            });
-        }
-
-        if (shippingInput) {
-            this.addEventListener(shippingInput, 'input', () => this.updateCharges());
-        }
-        if (packagingInput) {
-            this.addEventListener(packagingInput, 'input', () => this.updateCharges());
-        }
-        if (adjustmentInput) {
-            this.addEventListener(adjustmentInput, 'input', () => this.updateCharges());
-        }
-    }
-
-    static bindModalEvents() {
-        // Modal close button
-        const closeBtn = document.getElementById('invoice-item-modal-close');
-        if (closeBtn) {
-            this.addEventListener(closeBtn, 'click', () => this.closeItemModal());
-        }
-
-        // Modal cancel button
-        const cancelBtn = document.getElementById('invoice-item-modal-cancel');
-        if (cancelBtn) {
-            this.addEventListener(cancelBtn, 'click', () => this.closeItemModal());
-        }
-
-        // Modal save button
-        const saveBtn = document.getElementById('invoice-item-modal-save');
-        if (saveBtn) {
-            this.addEventListener(saveBtn, 'click', this.handleSaveItem.bind(this));
-        }
-
-        // Modal overlay click
-        const overlay = document.getElementById('invoice-item-modal-overlay');
-        if (overlay) {
-            this.addEventListener(overlay, 'click', (e) => {
-                if (e.target === overlay) {
-                    this.closeItemModal();
-                }
-            });
-        }
-
-        // Item selection change
-        const itemSelect = document.getElementById('invoice-item-select');
-        if (itemSelect) {
-            this.addEventListener(itemSelect, 'change', this.handleItemSelection.bind(this));
-        }
-
-        // Quantity and rate inputs for live calculation
-        const qtyInput = document.getElementById('invoice-qty');
-        const rateInput = document.getElementById('invoice-rate');
-
-        if (qtyInput) {
-            this.addEventListener(qtyInput, 'input', this.updateModalTotal.bind(this));
-        }
-
-        if (rateInput) {
-            this.addEventListener(rateInput, 'input', this.updateModalTotal.bind(this));
-        }
-    }
-
-    static updateCharges() {
-        // Update calculations when charges change
-        import('./add-invoice.js').then(module => {
-            module.calculateTotals();
-        });
-    }
-
-    static async handleSaveInvoice() {
-        try {
-            const { saveInvoice } = await import('./add-invoice.js');
-            await saveInvoice();
-
-            // Show success message
-            if (window.showToast) {
-                window.showToast('success', 'Invoice saved successfully!', 3000);
-            }
-
-            // Navigate back or reset form
-            setTimeout(() => {
-                // Reset form after success
-                this.handleResetInvoice();
-            }, 1500);
-
-        } catch (error) {
-            console.error('Save invoice error:', error);
-            if (window.showToast) {
-                window.showToast('error', 'Failed to save invoice. Please try again.', 5000);
-            }
-        }
-    }
-
-    static async handleResetInvoice() {
-        const { resetInvoice } = await import('./add-invoice.js');
-        resetInvoice();
-    }
-
-    static handleCustomerSearch() {
-        // Open customer search modal or dropdown
-        console.log('Customer search clicked');
-        // TODO: Implement customer search functionality
-    }
-
-    static handleAddCustomer() {
-        // Open add customer modal
-        console.log('Add customer clicked');
-        // TODO: Implement add customer functionality
-    }
-
-    static handleCustomerInput(event) {
-        const query = event.target.value;
-        // TODO: Implement customer autocomplete
-        console.log('Customer input:', query);
-    }
-
-    static handleAddItem() {
-        this.openItemModal();
-    }
-
-    static handleScanItem() {
-        // TODO: Implement barcode scanning
-        console.log('Scan item clicked');
-    }
-
-    static openItemModal() {
-        const modal = document.getElementById('invoice-item-modal-overlay');
-        if (modal) {
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-
-            // Focus first input
-            const firstInput = document.getElementById('invoice-item-select');
-            if (firstInput) firstInput.focus();
-        }
-    }
-
-    static closeItemModal() {
-        const modal = document.getElementById('invoice-item-modal-overlay');
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = '';
-
-            // Reset modal form
-            this.resetModalForm();
-        }
-    }
-
-    static resetModalForm() {
-        const formElements = [
-            'invoice-item-select',
-            'invoice-unit',
-            'invoice-qty',
-            'invoice-rate'
-        ];
-
-        formElements.forEach(id => {
-            const element = document.getElementById(id);
-            if (element) {
-                if (element.tagName === 'SELECT') {
-                    element.selectedIndex = 0;
-                } else {
-                    element.value = '';
-                }
-            }
-        });
-
-        // Reset total
-        const totalEl = document.getElementById('invoice-modal-total');
-        if (totalEl) totalEl.textContent = '₹0.00';
-    }
-
-    static handleItemSelection(event) {
-        const itemId = event.target.value;
-        if (!itemId) return;
-
-        // TODO: Load item details and auto-fill rate/unit
-        console.log('Item selected:', itemId);
-    }
-
-    static updateModalTotal() {
-        const qtyInput = document.getElementById('invoice-qty');
-        const rateInput = document.getElementById('invoice-rate');
-        const totalEl = document.getElementById('invoice-modal-total');
-
-        if (!qtyInput || !rateInput || !totalEl) return;
-
-        const qty = parseFloat(qtyInput.value) || 0;
-        const rate = parseFloat(rateInput.value) || 0;
-        const total = qty * rate;
-
-        totalEl.textContent = `₹${total.toFixed(2)}`;
-    }
-
-    static async handleSaveItem() {
-        try {
-            const itemData = this.getModalFormData();
-            if (!this.validateItemData(itemData)) return;
-
-            const { addItem } = await import('./add-invoice.js');
-            addItem(itemData);
-
-            this.closeItemModal();
-
-            if (window.showToast) {
-                window.showToast('success', 'Item added to invoice!', 2000);
-            }
-
-        } catch (error) {
-            console.error('Save item error:', error);
-            if (window.showToast) {
-                window.showToast('error', 'Failed to add item. Please try again.', 3000);
-            }
-        }
-    }
-
-    static getModalFormData() {
-        const itemSelect = document.getElementById('invoice-item-select');
-        const unitSelect = document.getElementById('invoice-unit');
-        const qtyInput = document.getElementById('invoice-qty');
-        const rateInput = document.getElementById('invoice-rate');
-
-        const selectedOption = itemSelect?.options[itemSelect.selectedIndex];
-        const unitOption = unitSelect?.options[unitSelect.selectedIndex];
-
-        return {
-            id: Date.now().toString(), // Temporary ID
-            itemId: itemSelect?.value,
-            name: selectedOption?.text || '',
-            unitId: unitSelect?.value,
-            unitLabel: unitOption?.text || '',
-            quantity: parseFloat(qtyInput?.value) || 0,
-            rate: parseFloat(rateInput?.value) || 0,
-            timestamp: new Date()
-        };
-    }
-
-    static validateItemData(data) {
-        if (!data.itemId) {
-            if (window.showToast) {
-                window.showToast('error', 'Please select an item.', 3000);
-            }
-            return false;
-        }
-
-        if (!data.quantity || data.quantity <= 0) {
-            if (window.showToast) {
-                window.showToast('error', 'Please enter a valid quantity.', 3000);
-            }
-            return false;
-        }
-
-        if (!data.rate || data.rate <= 0) {
-            if (window.showToast) {
-                window.showToast('error', 'Please enter a valid rate.', 3000);
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    static cleanup() {
-        console.log('🧹 Cleaning up Invoice Event Manager...');
-
-        // Remove all event listeners
-        this.eventListeners.forEach(({ element, event, handler, options }) => {
-            if (element) {
-                element.removeEventListener(event, handler, options);
-            }
-        });
-
+    /**
+     * Cleanup all event listeners
+     */
+    cleanup() {
+        console.log('Cleaning up invoice event listeners');
+        this.eventListeners.forEach(cleanup => cleanup());
         this.eventListeners = [];
-        console.log('✅ Invoice Event Manager cleaned up');
     }
 }

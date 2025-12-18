@@ -85,7 +85,7 @@
     font-size: 10px;
     font-weight: 600;
     color: var(--text-secondary);
-    text-transform: uppercase;
+    text-transform: capitalize;
   }
 
   .pill-value {
@@ -608,7 +608,7 @@
   .section-pill {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 2px 4px;
     border-radius: 4px;
     font-size: 12px;
@@ -658,7 +658,7 @@
 
   /* Collapsed sections have reduced padding and height */
   .section-collapsed.invoice-card {
-    padding: 8px 16px;
+    padding: 16px 16px;
     min-height: auto;
   }
 
@@ -828,6 +828,109 @@
     font-size: 12px;
     color: var(--text-secondary);
     font-weight: 600;
+  }
+
+  /* Invoice Meta Field Modals */
+  .invoice-meta-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: modalFadeIn 0.2s ease-out;
+  }
+
+  .invoice-meta-modal {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 20px;
+    min-width: 300px;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalSlideUp 0.2s ease-out;
+  }
+
+  .invoice-meta-modal-header {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    text-align: center;
+  }
+
+  .invoice-meta-modal-body {
+    margin-bottom: 20px;
+  }
+
+  .invoice-meta-modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  .invoice-meta-modal-cancel {
+    padding: 8px 16px;
+    border: var(--card-border);
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+
+  .invoice-meta-modal-save {
+    padding: 8px 16px;
+    background: var(--accent-primary);
+    color: var(--accent-text);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .invoice-meta-input {
+    width: 100%;
+    padding: 12px;
+    border: var(--card-border);
+    border-radius: 6px;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .invoice-meta-input:focus {
+    border-color: var(--accent-primary);
+  }
+
+  /* Hidden inputs for date/time pickers */
+  .invoice-meta-hidden-input {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: auto;
+    width: 1px;
+    height: 1px;
+    z-index: -1;
+  }
+
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes modalSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 
   @media (max-width: 640px) {

@@ -1,4 +1,5 @@
 import { loadInstantAddItemModal } from './instant-add-item.js';
+import { InvoiceEventManager } from './invoice-event-manager.js';
 
 export async function init() {
     const itemsUrl = '../../../localstore/jsons/items.json';
@@ -20,22 +21,13 @@ export async function init() {
 
     let catalog = [];
     let unitOptions = [];
+
+
     // Pre-filled sample billed items so UI samajhne ke liye bina add kiye hi list dikhe
     let billedItems = [
       {
-        id: 'SAMPLE-DAIRY-MILK',
-        name: 'Dairy Milk',
-        qty: 1,
-        unit: 'Pcs',
-        unitLabel: 'Pcs',
-        mrp: 10,
-        rate: 10,
-        count: null,
-        desc: ''
-      },
-      {
-        id: 'SAMPLE-GRAPH-NOTEBOOK',
-        name: 'Graph Notebook (5)',
+        id: 'SAMPLE-ITEM-1',
+        name: 'Sample Item 1',
         qty: 2,
         unit: 'Pcs',
         unitLabel: 'Pcs',
@@ -228,6 +220,9 @@ export async function init() {
     document.addEventListener('itemAdded', (e) => {
       addItemFromModal(e.detail);
     });
+
+    // Initialize invoice meta field event handlers
+    const invoiceEventManager = InvoiceEventManager.initializeEventHandlers();
 
     // Attachment field icons visibility and ripple effect
     const attachmentInput = document.getElementById('invoice-demo-attachment');

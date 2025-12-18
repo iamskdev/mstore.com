@@ -176,10 +176,18 @@ class InstantAddItemModal {
             this.callbacks.onModalClose();
         }
 
-        // Clean up back button listener
+        // Clean up back button listeners
         if (this.handleBackButton) {
             window.removeEventListener('popstate', this.handleBackButton);
             this.handleBackButton = null;
+        }
+        if (this.handleVisibilityChange) {
+            document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+            this.handleVisibilityChange = null;
+        }
+        if (this.handlePageHide) {
+            window.removeEventListener('pagehide', this.handlePageHide);
+            this.handlePageHide = null;
         }
 
         // Reset listeners setup flag so they can be reattached when reopened
@@ -701,6 +709,25 @@ class InstantAddItemModal {
                 }
             };
             window.addEventListener('popstate', this.handleBackButton);
+        }
+
+        // Additional mobile back button handling
+        if (!this.handleVisibilityChange) {
+            this.handleVisibilityChange = () => {
+                if (document.visibilityState === 'hidden' && this.modal && this.modal.classList.contains('active')) {
+                    this.closeModal();
+                }
+            };
+            document.addEventListener('visibilitychange', this.handleVisibilityChange);
+        }
+
+        if (!this.handlePageHide) {
+            this.handlePageHide = () => {
+                if (this.modal && this.modal.classList.contains('active')) {
+                    this.closeModal();
+                }
+            };
+            window.addEventListener('pagehide', this.handlePageHide);
         }
         setTimeout(() => {
             if (this.itemInput && !isEdit) {
