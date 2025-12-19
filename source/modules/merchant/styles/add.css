@@ -5,13 +5,17 @@
     overflow: hidden;
     position: relative;
     background-color: var(--bg-primary); 
+    align-items: flex-start; /* Prevent forcing children to matched height */
+    transition: min-height 0.3s ease; /* Smooth height transition if needed */
 }
 
 /* --- Scrollable Content --- */
 .add-scrollable-content {
     min-width: 100%;
-    height: 100%;
-    overflow-y: auto;
+    /* height: 100%; REMOVED to allow auto height */
+    height: auto; 
+    /* overflow-y: auto; REMOVED to defer to body scroll */
+    overflow: hidden; /* Needed to hide content when height is set to 0 */
     box-sizing: border-box;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
@@ -22,6 +26,8 @@
 .content-scrollable-area {
     flex-grow: 1; 
     background-color: var(--bg-primary);
+    /* Ensure content flows naturally */
+    height: auto;
 }
 
 /* --- Horizontal Tabs --- */

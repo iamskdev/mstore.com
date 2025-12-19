@@ -718,11 +718,34 @@ export async function init() {
         // Scroll tab into view
         newActiveTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
-        // Slide content panes
+        // Slide content panes and manage height
         const offset = -index * 100;
-        contentPanes.forEach(pane => {
+        const oldIndex = activeTabIndex;
+
+        contentPanes.forEach((pane, i) => {
             pane.style.transform = `translateX(${offset}%)`;
+
+            if (i === index) {
+                // New Active Pane: Ensure it's visible fully immediately
+                pane.style.height = 'auto';
+            } else if (i === oldIndex) {
+                // Old Active Pane: Keep visible during transition, then collapse
+                // This prevents the container from snapping size instantly, allowing for a smoother visual transition if possible,
+                // or at least keeping the old content visible while it slides out.
+                setTimeout(() => {
+                    // Check if stick active index is different (in case of rapid switching)
+                    if (activeTabIndex !== i) {
+                        pane.style.height = '0px';
+                    }
+                }, 300); // Matches CSS transition time
+            } else {
+                // Ensure other inactive panes are collapsed
+                pane.style.height = '0px';
+            }
         });
+        
+        // Optional: Scroll back to top if the new tab is much shorter and user was scrolled down?
+        // For now, reliance on browser's natural shift due to height collapse is usually sufficient to remove whitespace.
 
         activeTabIndex = index;
 
