@@ -177,10 +177,14 @@ const createDataFetcher = (collectionName, idKey) => {
             // while the listener sets up in the background.
             const cachedData = localCache.get(cacheKey);
             if (cachedData) {
-                console.log(`[DataManager] ⚡️ Serving '${collectionName}' from cache while listener connects.`);
-                // Call setupListener without resolve/reject, as we are not in a promise context here.
-                // It will set up the listener in the background.
-                setupListener(null, null);
+                console.log(`[DataManager] ⚡️ Serving '${collectionName}' from cache.`);
+                // Only set up listener if not already active - avoid unnecessary Firebase connections
+                if (!isListenerActive) {
+                    console.log(`[DataManager] 🎧 Setting up background listener for '${collectionName}'...`);
+                    setupListener(null, null);
+                } else {
+                    console.log(`[DataManager] ✅ Listener already active for '${collectionName}'`);
+                }
                 return Promise.resolve(cachedData);
             }
 

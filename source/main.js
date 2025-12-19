@@ -449,6 +449,7 @@ class RouteManager {
     console.log(`Applied 'view-active' and 'display: flex' to ${newViewElement.id}. Class list:`, newViewElement.classList);
     this.currentRole = role;
     this.currentView = viewId;
+    this.currentViewId = viewId; // FIX: Also update currentViewId to maintain consistency
     this.currentConfig = resolvedConfig; // Store the resolved config for notifications
 
     // --- Session Persistence ---
@@ -793,6 +794,20 @@ class RouteManager {
         const pathView = pathViewParts.join('/');
 
         if (pathRole && pathView) {
+            // --- FIX: Handle dashboard sub-route navigation ---
+            // If we're navigating within the same main view (e.g., dashboard tabs),
+            // don't do a full route switch, just update the tab
+            if (pathRole === this.currentRole && pathView.startsWith(this.currentViewId + '/')) {
+                const subRoute = pathView.split('/')[1]; // e.g., 'analytics' from 'dashboard/analytics'
+                console.log(`🔄 Sub-route navigation: ${this.currentViewId}/${subRoute}`);
+
+                // Dispatch custom event for the current view to handle sub-route changes
+                window.dispatchEvent(new CustomEvent('subRouteChange', {
+                    detail: { mainView: this.currentViewId, subRoute: subRoute }
+                }));
+                return; // Don't do full route switch
+            }
+
             console.log(`Switching view from popstate (hash): Role=${pathRole}, View=${pathView}`);
             // Call switchView without pushing a new state, as we are navigating history.
             this.switchView(pathRole, pathView, true); // Pass true for fromPopState

@@ -5,6 +5,7 @@ import { routeManager } from '../../../routing/index.js';
 
 let isInitialized = false;
 let eventListeners = []; // To keep track of added event listeners
+let isTabSwitching = false; // Flag to prevent concurrent tab switches
 
 function addManagedEventListener(element, type, listener, options) {
     if (!element) return;
@@ -17,6 +18,8 @@ export async function init() {
     if (!view || isInitialized) {
         return;
     }
+
+    let isProgrammaticHashChange = false; // Flag to prevent processing our own hash changes
 
     // Initialize card helper
     initCardHelper({}); // Pass an empty object for now, unitsData might not be directly relevant here
@@ -48,6 +51,7 @@ export async function init() {
         const correctHash = `#/merchant/dashboard/${activeTab}`;
         if (window.location.hash !== correctHash) {
             console.log('🔄 Updating URL to:', correctHash);
+            isProgrammaticHashChange = true; // Flag this as programmatic
             window.location.hash = correctHash;
         }
     }
@@ -61,19 +65,63 @@ export async function init() {
 
         if (finalHash !== expectedHash && finalHash !== '') {
             console.log('🔄 Final URL correction:', expectedHash);
+            isProgrammaticHashChange = true; // Flag this as programmatic
             window.location.hash = expectedHash;
         } else if (finalHash === '') {
             // If hash is completely empty, set default
             console.log('🔄 Setting initial URL:', expectedHash);
+            isProgrammaticHashChange = true; // Flag this as programmatic
             window.location.hash = expectedHash;
         }
     }, 200); // Wait for any other URL updates to complete
+
+    // Final indicator update to ensure it's positioned correctly
+    setTimeout(() => {
+        const activeTabBtn = document.querySelector('.tab-btn.active');
+        if (activeTabBtn && tabIndicator) {
+            updateIndicator(activeTabBtn);
+        }
+    }, 200);
+
+    // Listen for sub-route changes (tab switches within dashboard)
+    window.addEventListener('subRouteChange', (e) => {
+        const { mainView, subRoute } = e.detail;
+        if (mainView === 'dashboard' && subRoute && subRoute !== activeTab) {
+            console.log('🔄 Sub-route change detected:', subRoute);
+            const tabButton = document.querySelector(`.tab-btn[data-tab="${subRoute}"]`);
+            if (tabButton) {
+                // Update URL hash for sub-route changes (flag as programmatic)
+                const correctHash = `#/merchant/dashboard/${subRoute}`;
+                if (window.location.hash !== correctHash) {
+                    isProgrammaticHashChange = true; // Flag this as programmatic
+                    window.location.hash = correctHash;
+                }
+
+                const tabIndex = Array.from(tabButtons).indexOf(tabButton);
+                switchTab(tabIndex, 'subroute');
+                activeTab = subRoute;
+
+                // Indicator will be updated by switchTab function
+
+                // Ensure tab scrolls into view for URL-based navigation
+                setTimeout(() => {
+                    tabButton.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }, 100);
+            }
+        }
+    });
 
     // Listen for hash changes to update UI (debounced)
     let hashChangeTimeout;
     let lastProcessedHash = window.location.hash;
 
     window.addEventListener('hashchange', () => {
+        // Skip processing if we just set the hash programmatically
+        if (isProgrammaticHashChange) {
+            isProgrammaticHashChange = false;
+            return;
+        }
+
         // Clear any pending hash change processing
         if (hashChangeTimeout) {
             clearTimeout(hashChangeTimeout);
@@ -88,26 +136,27 @@ export async function init() {
             }
 
             lastProcessedHash = newHash;
-            console.log('🔄 Hash change detected:', newHash);
+            console.log('🔄 External hash change detected:', newHash);
 
             if (newHash.includes('/dashboard/')) {
                 const hashParts = newHash.split('/dashboard/');
                 if (hashParts[1]) {
                     const newTab = hashParts[1].split('/')[0].split('?')[0];
                     if (newTab && newTab !== activeTab) {
-                        console.log('🔄 Switching to tab:', newTab);
+                        console.log('🔄 Switching to tab via external hash change:', newTab);
                         const tabButton = document.querySelector(`.tab-btn[data-tab="${newTab}"]`);
                         if (tabButton) {
                             const tabIndex = Array.from(tabButtons).indexOf(tabButton);
-                            switchTab(tabIndex);
+                            switchTab(tabIndex, 'hashchange');
                             activeTab = newTab;
                         }
                     }
                 }
             } else if (newHash.includes('/dashboard') && !newHash.includes('/dashboard/')) {
                 // If hash changes to just /dashboard, redirect to analytics
-                console.log('🔄 Redirecting to analytics tab');
+                console.log('🔄 Redirecting to analytics tab via external hash change');
                 lastProcessedHash = '#/merchant/dashboard/analytics';
+                isProgrammaticHashChange = true; // Flag this as programmatic
                 window.location.hash = '#/merchant/dashboard/analytics';
             }
         }, 100); // Increased delay to prevent rapid firing
@@ -268,15 +317,10 @@ export async function init() {
         ]
     };
 
-    // --- NEW: Fetch all inventory items ---
-    let allInventoryItems = await fetchAllItems();
-    
-    // Sort items by createdAt descending (newest first)
-    allInventoryItems.sort((a, b) => {
-        const dateA = new Date(a.audit?.createdAt || 0);
-        const dateB = new Date(b.audit?.createdAt || 0);
-        return dateB - dateA; // Descending order
-    });
+    // --- OPTIMIZED: Only fetch inventory data when needed ---
+    // We'll fetch this lazily when the inventory tab is activated
+    let allInventoryItems = null;
+    let inventoryFetched = false;
 
     // --- NEW: Dummy Transaction Data & Rendering Logic ---
     const dummyTransactions = [
@@ -546,10 +590,28 @@ export async function init() {
 
     // --- NEW: Listener for inventory filter buttons ---
     document.querySelectorAll('.add-scrollable-content[data-tab="inventory"] .filter-btn').forEach(button => {
-        button.addEventListener('click', function () {
+        addManagedEventListener(button, 'click', function () {
             const filter = this.dataset.inventoryFilter;
             if (filter !== 'advanced') {
-                renderInventory(allInventoryItems, filter);
+                // Ensure data is loaded before filtering
+                if (!inventoryFetched) {
+                    console.log('📦 Loading inventory data for filtering...');
+                    fetchAllItems().then(items => {
+                        allInventoryItems = items;
+                        // Sort items by createdAt descending (newest first)
+                        allInventoryItems.sort((a, b) => {
+                            const dateA = new Date(a.audit?.createdAt || 0);
+                            const dateB = new Date(b.audit?.createdAt || 0);
+                            return dateB - dateA; // Descending order
+                        });
+                        inventoryFetched = true;
+                        renderInventory(allInventoryItems, filter);
+                    }).catch(error => {
+                        console.error('Failed to load inventory data for filtering:', error);
+                    });
+                } else {
+                    renderInventory(allInventoryItems, filter);
+                }
             }
         });
     });
@@ -790,12 +852,20 @@ let activeTabId = 'analytics';
     // --- Tab Switching Logic ---
 
     function updateIndicator(activeTab) {
-        tabIndicator.style.width = `${activeTab.offsetWidth}px`;
-        tabIndicator.style.left = `${activeTab.offsetLeft}px`;
+        if (!activeTab || !tabIndicator) return;
+
+        // Use requestAnimationFrame for smooth transitions
+        requestAnimationFrame(() => {
+            tabIndicator.style.width = `${activeTab.offsetWidth}px`;
+            tabIndicator.style.left = `${activeTab.offsetLeft}px`;
+        });
     }
 
-    function switchTab(index) {
-        if (index < 0 || index >= tabButtons.length) return;
+    function switchTab(index, source = 'unknown') {
+        if (index < 0 || index >= tabButtons.length || isTabSwitching) return;
+
+        console.log('🔄 Switching to tab index:', index, 'from source:', source);
+        isTabSwitching = true;
 
         // --- NEW: Reset all scrollable areas to prevent scroll sharing ---
         contentPanes.forEach((pane, i) => {
@@ -822,37 +892,77 @@ let activeTabId = 'analytics';
         tabButtons.forEach(btn => btn.classList.remove('active'));
         newActiveTab.classList.add('active');
 
-        // Update indicator position
-        updateIndicator(newActiveTab);
+        // Update indicator position with delay to ensure DOM is ready and transitions smoothly
+        setTimeout(() => updateIndicator(newActiveTab), 50);
 
-        // Scroll tab into view
-        newActiveTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        // Scroll tab into view with delay to ensure DOM is ready
+        setTimeout(() => {
+            if (newActiveTab && typeof newActiveTab.scrollIntoView === 'function') {
+                console.log('📱 Scrolling tab into view:', newActiveTab.dataset.tab);
+
+                // Try scrollIntoView first
+                try {
+                    newActiveTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } catch (error) {
+                    console.warn('📱 scrollIntoView failed, trying manual scroll:', error);
+                    // Fallback: manual scrolling
+                    const tabsContainer = document.querySelector('.add-primary-tabs');
+                    if (tabsContainer) {
+                        const tabRect = newActiveTab.getBoundingClientRect();
+                        const containerRect = tabsContainer.getBoundingClientRect();
+                        const scrollLeft = tabsContainer.scrollLeft;
+
+                        // Calculate how much to scroll to center the tab
+                        const tabCenter = tabRect.left + tabRect.width / 2;
+                        const containerCenter = containerRect.left + containerRect.width / 2;
+                        const scrollTo = scrollLeft + (tabCenter - containerCenter);
+
+                        tabsContainer.scrollTo({
+                            left: scrollTo,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            } else {
+                console.warn('📱 Could not scroll tab into view:', newActiveTab);
+            }
+        }, 50);
 
         // Slide content panes and manage height
         const offset = -index * 100;
         const oldIndex = activeTabIndex;
 
+        // First, set up the new active pane
         contentPanes.forEach((pane, i) => {
-            pane.style.transform = `translateX(${offset}%)`;
-
             if (i === index) {
-                // New Active Pane: Ensure it's visible fully immediately
+                // New Active Pane: Prepare for visibility
                 pane.style.height = 'auto';
-            } else if (i === oldIndex) {
-                // Old Active Pane: Keep visible during transition, then collapse
-                // This prevents the container from snapping size instantly, allowing for a smoother visual transition if possible,
-                // or at least keeping the old content visible while it slides out.
-                setTimeout(() => {
-                    // Check if stick active index is different (in case of rapid switching)
-                    if (activeTabIndex !== i) {
-                        pane.style.height = '0px';
-                    }
-                }, 300); // Matches CSS transition time
+                pane.style.opacity = '1';
+                pane.style.visibility = 'visible';
             } else {
-                // Ensure other inactive panes are collapsed
-                pane.style.height = '0px';
+                // Keep old pane visible during transition to prevent blinking
+                pane.style.opacity = i === oldIndex ? '1' : '0';
+                pane.style.visibility = i === oldIndex ? 'visible' : 'hidden';
             }
         });
+
+        // Apply transform after a small delay to ensure height is set
+        setTimeout(() => {
+            contentPanes.forEach((pane, i) => {
+                pane.style.transform = `translateX(${offset}%)`;
+
+                // Clean up after transition
+                if (i !== index) {
+                    setTimeout(() => {
+                        if (activeTabIndex !== i) { // Double-check in case of rapid switching
+                            pane.style.height = '0px';
+                            pane.style.opacity = '0';
+                            pane.style.visibility = 'hidden';
+                        }
+                    }, 250); // Slightly less than CSS transition time
+                }
+            });
+        }, 10);
 
         // Optional: Scroll back to top if the new tab is much shorter and user was scrolled down?
         // For now, reliance on browser's natural shift due to height collapse is usually sufficient to remove whitespace.
@@ -883,7 +993,26 @@ let activeTabId = 'analytics';
         if (activeTabId === 'parties') {
             renderParties(); // Render with default 'all' filter
         } else if (activeTabId === 'inventory') {
-            renderInventory(allInventoryItems); // Render with default 'all' filter
+            // Lazy load inventory data only when tab is first activated
+            if (!inventoryFetched) {
+                console.log('📦 Lazy loading inventory data...');
+                fetchAllItems().then(items => {
+                    allInventoryItems = items;
+                    // Sort items by createdAt descending (newest first)
+                    allInventoryItems.sort((a, b) => {
+                        const dateA = new Date(a.audit?.createdAt || 0);
+                        const dateB = new Date(b.audit?.createdAt || 0);
+                        return dateB - dateA; // Descending order
+                    });
+                    inventoryFetched = true;
+                    renderInventory(allInventoryItems); // Render with default 'all' filter
+                }).catch(error => {
+                    console.error('Failed to load inventory data:', error);
+                    renderInventory([]); // Render empty state
+                });
+            } else {
+                renderInventory(allInventoryItems); // Render with default 'all' filter
+            }
         } else if (activeTabId === 'analytics') {
             // Initialize analytics dashboard when tab becomes active
             if (typeof window.initAnalytics === 'function') {
@@ -901,12 +1030,13 @@ let activeTabId = 'analytics';
 
         // Update the FAB options for the new tab
         updateFabOptions();
+
+        // Reset the flag after transition completes
+        setTimeout(() => {
+            isTabSwitching = false;
+        }, 300); // Match CSS transition duration
     }
 
-    function updateIndicator(activeTab) {
-        tabIndicator.style.width = `${activeTab.offsetWidth}px`;
-        tabIndicator.style.left = `${activeTab.offsetLeft}px`;
-    }
 
     // Initialize - respect route-based tab activation
     let targetTab = document.querySelector(`.tab-btn[data-tab="${activeTab}"]`) ||
@@ -919,7 +1049,7 @@ let activeTabId = 'analytics';
         targetTab.classList.add('active');
         activeTabIndex = Array.from(tabButtons).indexOf(targetTab);
         updateIndicator(targetTab);
-        switchTab(activeTabIndex); // Set initial content position
+        switchTab(activeTabIndex, 'initialization'); // Set initial content position
         updateFabOptions(); // Initial FAB options
 
         // Enable scrolling for initial active tab
@@ -939,19 +1069,15 @@ let activeTabId = 'analytics';
         const clickedTab = e.target.closest('.tab-btn');
         if (clickedTab) {
             const tabName = clickedTab.dataset.tab;
-            if (tabName) {
+            if (tabName && tabName !== activeTab) {
                 console.log('🖱️ Tab clicked:', tabName);
 
-                // Ensure URL format is correct
+                // Update URL hash for bookmarkability (this will trigger hashchange event)
                 const correctHash = `#/merchant/dashboard/${tabName}`;
                 if (window.location.hash !== correctHash) {
+                    isProgrammaticHashChange = true; // Flag this as programmatic
                     window.location.hash = correctHash;
                 }
-
-                // Switch tab immediately for responsive UI
-                const tabIndex = Array.from(tabButtons).indexOf(clickedTab);
-                switchTab(tabIndex);
-                activeTab = tabName; // Update active tab reference
             }
         }
     });
@@ -1393,8 +1519,17 @@ let activeTabId = 'analytics';
     }, { passive: true });
 
     function handleSwipe() {
-        const swipeThreshold = 50; // Minimum pixels for a swipe
-        if (touchEndX < touchStartX - swipeThreshold) {
+        const swipeThreshold = 30; // Reduced from 50 to 30 for better sensitivity
+        const deltaX = touchEndX - touchStartX;
+
+        console.log('👆 Swipe detected:', { startX: touchStartX, endX: touchEndX, deltaX, threshold: swipeThreshold, currentTab: activeTab });
+
+        if (Math.abs(deltaX) < swipeThreshold) {
+            console.log('👆 Swipe too small, ignored');
+            return; // Swipe not significant enough
+        }
+
+        if (deltaX < -swipeThreshold) {
             // Swiped left - next tab
             const nextIndex = activeTabIndex + 1;
             if (nextIndex < tabButtons.length) {
@@ -1402,18 +1537,21 @@ let activeTabId = 'analytics';
                 const tabName = nextTab.dataset.tab;
                 console.log('👆 Swipe left to tab:', tabName);
 
-                // Update URL first
+                // Update URL first (flag as programmatic)
                 const correctHash = `#/merchant/dashboard/${tabName}`;
                 if (window.location.hash !== correctHash) {
+                    isProgrammaticHashChange = true; // Flag this as programmatic
                     window.location.hash = correctHash;
                 }
 
-                // Then switch tab
-                switchTab(nextIndex);
+                // Then switch tab (includes auto-scrolling)
+                switchTab(nextIndex, 'swipe');
                 activeTab = tabName; // Update active tab reference
+            } else {
+                console.log('👆 Swipe left blocked - already at last tab');
             }
         }
-        if (touchEndX > touchStartX + swipeThreshold) {
+        else if (deltaX > swipeThreshold) {
             // Swiped right - previous tab
             const prevIndex = activeTabIndex - 1;
             if (prevIndex >= 0) {
@@ -1421,15 +1559,18 @@ let activeTabId = 'analytics';
                 const tabName = prevTab.dataset.tab;
                 console.log('👆 Swipe right to tab:', tabName);
 
-                // Update URL first
+                // Update URL first (flag as programmatic)
                 const correctHash = `#/merchant/dashboard/${tabName}`;
                 if (window.location.hash !== correctHash) {
+                    isProgrammaticHashChange = true; // Flag this as programmatic
                     window.location.hash = correctHash;
                 }
 
-                // Then switch tab
+                // Then switch tab (includes auto-scrolling)
                 switchTab(prevIndex);
                 activeTab = tabName; // Update active tab reference
+            } else {
+                console.log('👆 Swipe right blocked - already at first tab');
             }
         }
     }
