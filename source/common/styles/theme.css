@@ -22,31 +22,47 @@
   --text-tertiary: #8a8d91;
   --accent-text: #ffffff; /* Text on colored accent backgrounds */
   --text-google-btn: #3c4043;
+  --dark-color: #1c1e21; /* Dark text color */
+  --gray: #606770; /* Gray text color */
+  --light-color: #ffffff; /* Light/white color */
+  --gray-light: #f0f2f5; /* Light gray background */
 
   /* --- 3. Accents & Actions --- */
   --accent-primary: #4361ee;
   --accent-primary-hover: #3a53c4;
   --accent-primary-rgb: 67, 97, 238;
+  --primary-color: #4361ee; /* Alias for accent-primary */
+  --primary-light: #4895ef; /* Light variant of primary color */
   --accent-secondary: #28a745;
   --accent-secondary-hover: #218838;
+  --secondary-color: #3f37c9; /* Secondary color variant */
   --accent-danger: #e74a3b;
   --accent-danger-rgb: 231, 74, 59;
+  --danger-color: #f72585; /* Danger color variant */
   --accent-info: #36b9cc;
+  --info-color: #7209b7; /* Info color variant */
   --accent-warning: #fbbf24; /* Added for stars */
+  --warning-color: #f8961e; /* Warning color variant */
   --accent-success: #22c55e; /* Added for stock status in */
+  --success-color: #4cc9f0; /* Success color variant */
 
   /* --- 4. Borders & States --- */
   --border-color: #e0e0e0;
   --card-border: 1px solid #e0e0e0; /* Border for cards and form elements */
   --card-radius: 8px; /* Border radius for cards */
+  --radius: 8px; /* General border radius */
+  --radius-sm: 6px; /* Small border radius */
+  --radius-lg: 12px; /* Large border radius */
   --error-color: #d93025;
   --bg-skeleton: #e0e0e0;
   --bg-skeleton-shimmer: #f0f0f0;
   --button-disabled-bg: #cbd5e1; /* Added for disabled button background */
   --icon-invert-value: 0; /* FIX: Value for inverting icons (0 = no invert for light mode) */
+  --transition: all 0.3s ease; /* General transition */
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.05);
+  --shadow: 0 2px 8px rgba(0,0,0,0.1); /* General shadow */
   --shadow-elevation-medium: 0 -4px 20px rgba(0, 0, 0, 0.15); /* For selection container bottom shadow */
   --shadow-elevation-large: 0 10px 25px rgba(0, 0, 0, 0.2); /* For selection container modal shadow */
   --shadow-focus-primary: rgba(0, 123, 255, 0.2);
@@ -82,6 +98,19 @@
   --color-warning-user: #f8961e;
   --color-danger-user: #ef233c;
 
+  /* --- 9. Component-Specific: Analytics Colors --- */
+  --analytics-bg: #f5f7fb;
+  --analytics-info: #7209b7;
+  --analytics-chart-sales: #9d4edd;
+  --analytics-chart-sales-bg: rgba(157, 78, 221, 0.1);
+  --analytics-chart-inventory: #ffb347;
+  --analytics-status-positive-bg: rgba(76, 201, 240, 0.15);
+  --analytics-status-positive-text: #0c5460;
+  --analytics-status-negative-bg: rgba(247, 37, 133, 0.15);
+  --analytics-status-negative-text: #721c24;
+  --analytics-status-pending-bg: rgba(248, 150, 30, 0.15);
+  --analytics-status-pending-text: #856404;
+
   /* --- 9. Component-Specific: Profile Gradient Border --- */
   --profile-gradient-border: linear-gradient(135deg, #4895ef, #f72585, #f8961e); /* For profile pages */
   --story-ring-gradient: conic-gradient(from 30deg, #f97794, #f72585, #c42d8f, #833ab4, #f97794); /* For update stories */
@@ -107,31 +136,47 @@ html.dark-mode {
   --text-tertiary: #7f8c8d;
   --accent-text: #ffffff; /* Text on colored accent backgrounds */
   --text-google-btn: #e0e0e0;
+  --dark-color: #e0e0e0; /* Dark text color */
+  --gray: #a0a0a0; /* Gray text color */
+  --light-color: #1e1e1e; /* Light color (dark background) */
+  --gray-light: #2a2a3b; /* Light gray background */
 
   /* --- 3. Accents & Actions --- */
   --accent-primary: #0077b6;
   --accent-primary-hover: #005f9e;
   --accent-primary-rgb: 0, 119, 182;
+  --primary-color: #0077b6; /* Alias for accent-primary */
+  --primary-light: #005f9e; /* Light variant of primary color */
   --accent-secondary: #69f0ae;
   --accent-secondary-hover: #00bfa5;
+  --secondary-color: #69f0ae; /* Secondary color variant */
   --accent-danger: #d00000;
   --accent-danger-rgb: 208, 0, 0;
+  --danger-color: #d00000; /* Danger color variant */
   --accent-info: #0081a7;
+  --info-color: #0081a7; /* Info color variant */
   --accent-warning: #fbbf24; /* Added for stars */
+  --warning-color: #fbbf24; /* Warning color variant */
   --accent-success: #22c55e; /* Added for stock status in */
+  --success-color: #22c55e; /* Success color variant */
 
   /* --- 4. Borders & States --- */
   --border-color: #333333;
   --card-border: 1px solid #333333; /* Border for cards and form elements */
   --card-radius: 8px; /* Border radius for cards */
+  --radius: 8px; /* General border radius */
+  --radius-sm: 6px; /* Small border radius */
+  --radius-lg: 12px; /* Large border radius */
   --error-color: #ff5252;
   --bg-skeleton: #2a2a3b;
   --bg-skeleton-shimmer: #3a3b4c;
   --button-disabled-bg: #cbd5e1; /* Added for disabled button background */
   --icon-invert-value: 1; /* FIX: Value for inverting icons (1 = invert for dark mode) */
+  --transition: all 0.3s ease; /* General transition */
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(255, 255, 255, 0.05); /* Changed to a light shadow for dark mode */
+  --shadow: 0 2px 8px rgba(0,0,0,0.3); /* General shadow for dark mode */
   --shadow-elevation-medium: 0 -4px 20px rgba(255, 255, 255, 0.1); /* For selection container bottom shadow in dark mode */
   --shadow-elevation-large: 0 10px 25px rgba(255, 255, 255, 0.15); /* For selection container modal shadow in dark mode */
   --shadow-focus-primary: rgba(68, 138, 255, 0.25);
@@ -157,4 +202,17 @@ html.dark-mode {
   --profile-gradient-border: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); /* For profile pages */
   --story-ring-gradient: conic-gradient(from 30deg, #f97794, #f72585, #c42d8f, #833ab4, #f97794); /* For update stories */
   --story-ring-viewed-gradient: conic-gradient(from 45deg, #08aeea, #2af598, #08aeea); /* For viewed stories in dark mode (Vibrant Ocean) */
+
+  /* --- 10. Component-Specific: Analytics Colors (Dark Mode) --- */
+  --analytics-bg: #121826;
+  --analytics-info: #7209b7;
+  --analytics-chart-sales: #9d4edd;
+  --analytics-chart-sales-bg: rgba(157, 78, 221, 0.1);
+  --analytics-chart-inventory: #ffb347;
+  --analytics-status-positive-bg: rgba(76, 201, 240, 0.2);
+  --analytics-status-positive-text: #4cc9f0;
+  --analytics-status-negative-bg: rgba(247, 37, 133, 0.2);
+  --analytics-status-negative-text: #f72585;
+  --analytics-status-pending-bg: rgba(248, 150, 30, 0.2);
+  --analytics-status-pending-text: #f8961e;
 }

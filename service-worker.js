@@ -111,6 +111,11 @@ const APP_SHELL_URLS = [
   './source/modules/merchant/styles/add-item.css',
   './source/modules/merchant/scripts/add-item.js',
 
+  // Merchant Analytics View
+  './source/modules/merchant/analytics/merchant-analytics.html',
+  './source/modules/merchant/analytics/styles/merchant-analytics.css',
+  './source/modules/merchant/analytics/scripts/merchant-analytics.js',
+
   // Item Helper Modules
   './source/modules/merchant/scripts/item-helper/index.js',
   './source/modules/merchant/scripts/item-helper/item-data-manager.js',

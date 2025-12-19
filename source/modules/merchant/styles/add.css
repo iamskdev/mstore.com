@@ -28,7 +28,7 @@
 .add-primary-tabs {
     display: flex;
     overflow-x: auto;
-    padding: 4px 16px;
+    padding: 4px 8px;
     gap: 12px;
     flex-shrink: 0;
     position: sticky; 

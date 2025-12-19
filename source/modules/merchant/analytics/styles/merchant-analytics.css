@@ -1,0 +1,628 @@
+/* ===== MAIN CONTAINER ===== */
+.anls-container {
+    padding: 5px 12px 12px 12px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+/* ===== BUTTONS ===== */
+.anls-btn {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  background: var(--light-color);
+  color: var(--primary-color);
+  border-color: var(--border-color);
+  height: 36px;
+}
+
+.anls-btn:hover {
+  background: var(--primary-color);
+  color: var(--light-color);
+  border-color: var(--primary-color);
+}
+
+.anls-btn.active {
+  background: var(--primary-color);
+  color: var(--light-color);
+  border-color: var(--primary-color);
+}
+
+
+/* ===== HEADER ===== */
+.anls-header {
+  margin-bottom: 20px;
+}
+
+.anls-page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin-bottom: 16px;
+}
+
+/* Single Row Date Picker */
+.anls-date-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.anls-date-row::-webkit-scrollbar {
+  height: 4px;
+}
+
+.anls-date-row::-webkit-scrollbar-track {
+  background: var(--gray-light);
+  border-radius: 2px;
+}
+
+.anls-date-row::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 2px;
+}
+
+/* ===== METRICS GRID - Mobile First ===== */
+.anls-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Rectangular Cards */
+.anls-metric-card {
+  background: var(--light-color);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.anls-metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.anls-metric-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.anls-trend-badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 55px;
+  text-align: center;
+}
+
+.anls-positive {
+  background: var(--analytics-status-positive-bg);
+  color: var(--analytics-status-positive-text);
+}
+
+.anls-negative {
+  background: var(--analytics-status-negative-bg);
+  color: var(--analytics-status-negative-text);
+}
+
+.anls-metric-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin: 4px 0;
+  line-height: 1.2;
+}
+
+.anls-metric-comparison {
+  font-size: 12px;
+  color: var(--gray);
+  margin-bottom: 8px;
+}
+
+/* Rectangular Mini Chart */
+.anls-mini-chart {
+  height: 30px;
+  margin-top: 12px;
+  background: var(--gray-light);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.anls-chart-bar {
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--primary-light)
+  );
+  border-radius: var(--radius-sm);
+  transition: height 1s ease;
+}
+
+/* Specific Card Styles */
+.anls-revenue-card {
+  border-top: 3px solid var(--primary-color);
+}
+
+.anls-profit-card {
+  border-top: 3px solid var(--success-color);
+}
+
+.anls-overdue-card {
+  border-top: 3px solid var(--danger-color);
+}
+
+.anls-moneyflow-card {
+  border-top: 3px solid var(--info-color);
+}
+
+.anls-inventory-card {
+  border-top: 3px solid var(--warning-color);
+}
+
+.anls-sales-card {
+  border-top: 3px solid var(--analytics-chart-sales);
+}
+
+.anls-expenditure-card {
+  border-top: 3px solid var(--warning-color);
+}
+
+/* Money Flow Card - Rectangular Layout */
+.anls-moneyflow-section {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.anls-moneyflow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.anls-moneyflow-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.anls-moneyflow-amount {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+.anls-moneyflow-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.anls-moneyflow-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: var(--gray-light);
+  border-radius: var(--radius-sm);
+}
+
+.anls-moneyflow-label {
+  font-size: 11px;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.anls-moneyflow-value {
+  font-weight: 600;
+  color: var(--dark-color);
+  font-size: 14px;
+}
+
+.anls-pending {
+  color: var(--warning-color);
+}
+
+.anls-moneyflow-summary {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--analytics-status-pending-bg);
+  border-radius: var(--radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Inventory Chart - Rectangular */
+.anls-inventory-chart {
+  margin-top: 12px;
+}
+
+.anls-chart-bar-container {
+  height: 30px;
+  background: var(--gray-light);
+  border-radius: var(--radius);
+  position: relative;
+  margin: 8px 0;
+  overflow: hidden;
+}
+
+.anls-chart-main-bar {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--analytics-chart-inventory)
+  );
+  border-radius: var(--radius);
+  position: relative;
+  transition: width 1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+
+.anls-chart-current {
+  color: var(--light-color);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Sales Chart Container - Rectangular */
+.anls-sales-chart-container {
+  height: 120px;
+  margin: 12px 0;
+}
+
+.anls-sales-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background: var(--analytics-chart-sales-bg);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--analytics-chart-sales);
+  margin-top: auto;
+}
+
+/* ===== CHARTS SECTION ===== */
+.anls-charts-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.anls-chart-container {
+  background: var(--light-color);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  height: auto;
+  min-height: 320px;
+}
+
+.anls-revenue-container {
+  min-height: 220px;
+}
+
+.anls-category-container {
+  min-height: 220px;
+}
+
+.anls-chart-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.anls-chart-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.anls-chart-actions {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.anls-chart-content {
+  height: 250px;
+}
+
+.anls-revenue-chart-content {
+  height: 150px;
+}
+
+/* Mobile specific chart height */
+@media (max-width: 767px) {
+  .anls-chart-content {
+    height: 180px;
+  }
+  .anls-revenue-chart-content {
+    height: 120px;
+  }
+  .anls-revenue-container {
+    min-height: 180px;
+  }
+  .anls-category-container {
+    min-height: 180px;
+  }
+}
+
+/* ===== TABLES SECTION ===== */
+.anls-tables-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.anls-table-container {
+  background: var(--light-color);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  height: auto;
+}
+
+.anls-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--light-color);
+}
+
+.anls-table-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.anls-table-content {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.anls-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 400px;
+}
+
+.anls-data-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--gray);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-color);
+  background: var(--light-color);
+}
+
+.anls-data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--dark-color);
+  font-size: 13px;
+}
+
+.anls-data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ===== STATUS BADGES ===== */
+.anls-status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.anls-status-overdue {
+  background: var(--analytics-status-negative-bg);
+  color: var(--analytics-status-negative-text);
+}
+
+.anls-status-paid {
+  background: var(--analytics-status-positive-bg);
+  color: var(--analytics-status-positive-text);
+}
+
+.anls-status-pending {
+  background: var(--analytics-status-pending-bg);
+  color: var(--analytics-status-pending-text);
+}
+
+.anls-growth-positive {
+  color: var(--analytics-status-positive-text);
+  font-weight: 600;
+}
+
+.anls-growth-negative {
+  color: var(--analytics-status-negative-text);
+  font-weight: 600;
+}
+
+.anls-view-all-btn {
+  border: none;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.anls-secondary-text {
+  font-size: 12px;
+  color: var(--gray);
+}
+
+.anls-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.anls-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.anls-moneyflow-negative {
+  color: var(--danger-color);
+}
+
+/* ===== TABLET STYLES (≥768px) ===== */
+@media (min-width: 768px) {
+  .anls-container {
+    padding: 20px;
+  }
+
+  .anls-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .anls-metric-card {
+    padding: 20px;
+    min-height: 160px;
+  }
+
+  .anls-metric-value {
+    font-size: 28px;
+  }
+
+  .anls-date-row {
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .anls-charts-section {
+    grid-template-columns: 3fr 1fr;
+  }
+
+  .anls-tables-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .anls-chart-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .anls-chart-actions {
+    overflow-x: visible;
+  }
+}
+
+/* ===== DESKTOP STYLES (≥1024px) ===== */
+@media (min-width: 1024px) {
+  .anls-container {
+    max-width: 1200px;
+    padding: 24px;
+  }
+
+  .anls-metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .anls-moneyflow-card {
+    grid-column: span 2;
+  }
+
+  .anls-metric-card {
+    min-height: 180px;
+  }
+
+  .anls-metric-value {
+    font-size: 32px;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anls-metric-card {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.anls-metric-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.anls-metric-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.anls-metric-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.anls-metric-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.anls-metric-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.anls-metric-card:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.anls-metric-card:nth-child(7) {
+  animation-delay: 0.7s;
+}

@@ -3,12 +3,14 @@
     <!-- Horizontal Tabs -->
     <!-- FIX: Moved primary tabs inside the main view for correct layout context -->
         <div class="add-primary-tabs">
-            <button class="tab-btn active" data-tab="transactions">Transactions</button>
+            <button class="tab-btn active" data-tab="analytics">Analytics</button>
+            <button class="tab-btn" data-tab="transactions">Transactions</button>
             <button class="tab-btn" data-tab="inventory">Inventory</button>
             <button class="tab-btn" data-tab="parties">Parties</button>
             <button class="tab-btn" data-tab="posts">Posts</button>
             <button class="tab-btn" data-tab="offers">Offers</button>
             <button class="tab-btn" data-tab="banners">Banners</button>
+            <button class="tab-btn" data-tab="reports">Reports</button>
             <div class="tab-indicator"></div>
         </div>
 
@@ -95,6 +97,292 @@
 
     <!-- Content Panes -->
     <div class="add-screen-content">
+        <!-- Analytics Pane -->
+        <div class="add-scrollable-content" data-tab="analytics">
+            <div class="content-filter-bar">
+                <button class="filter-btn active" data-analytics-filter="today">Today</button>
+                <button class="filter-btn" data-analytics-filter="this_week">This Week</button>
+                <button class="filter-btn" data-analytics-filter="this_month">This Month</button>
+                <button class="filter-btn" data-analytics-filter="this_year">This Year</button>
+                <button class="filter-btn filter-helper-only" data-analytics-filter="advanced" title="Advanced Filters"><i class="fas fa-filter"></i></button>
+            </div>
+            <div class="content-scrollable-area">
+                <!-- Embed merchant analytics dashboard -->
+                <link rel="stylesheet" href="./source/modules/merchant/analytics/styles/merchant-analytics.css">
+                <main class="anls-container">
+                    <!-- Key Metrics Cards - Rectangular -->
+                    <section class="anls-metrics-grid">
+                      <!-- Total Revenue Card -->
+                      <div class="anls-metric-card anls-revenue-card">
+                        <div class="anls-metric-header">
+                          <h3 class="anls-metric-title" lang-key="total_revenue">
+                            Total Revenue
+                          </h3>
+                          <span class="anls-trend-badge anls-positive">+12.5%</span>
+                        </div>
+                        <div class="anls-metric-value">₹25,480</div>
+                        <div class="anls-metric-comparison">
+                          <span class="anls-comparison-text">$55,120 vs. average</span>
+                          <span class="anls-average-score">71.50 for average</span>
+                        </div>
+                        <div class="anls-mini-chart">
+                          <div class="anls-chart-bar" style="width: 0%; height: 100%"></div>
+                        </div>
+                      </div>
+                  
+                      <!-- Profit Card -->
+                      <div class="anls-metric-card anls-profit-card">
+                        <div class="anls-metric-header">
+                          <h3 class="anls-metric-title" lang-key="profit">Profit</h3>
+                          <span class="anls-trend-badge anls-negative">-5%</span>
+                        </div>
+                        <div class="anls-metric-value">₹6,220</div>
+                        <div class="anls-metric-comparison">
+                          <span class="anls-comparison-text">22% profit ▼ average</span>
+                          <span class="anls-average-range">27% - 18% for average</span>
+                        </div>
+                      </div>
+                  
+                      <!-- Overdue Card -->
+                      <div class="anls-metric-card anls-overdue-card">
+                        <div class="anls-metric-header">
+                          <h3 class="anls-metric-title" lang-key="overdue_payments">Overdue</h3>
+                        </div>
+                        <div class="anls-metric-value">₹38,300</div>
+                        <div class="anls-metric-comparison">
+                          <span>Rohan Verma</span><br />
+                          <span class="anls-secondary-text">Global Distributors</span>
+                        </div>
+                        <label class="anls-checkbox-label">
+                          <span>Payable > Receivable</span>
+                          <input type="checkbox" id="overdue-checkbox" />
+                        </label>
+                      </div>
+                  
+                      <!-- Money Flow Card -->
+                      <div class="anls-metric-card anls-moneyflow-card">
+                        <div class="anls-metric-header">
+                          <h3 class="anls-metric-title" lang-key="money_flow">Money Flow</h3>
+                        </div>
+                  
+                        <!-- Receivable Section -->
+                        <div class="anls-moneyflow-section">
+                          <div class="anls-moneyflow-header">
+                            <h4 class="anls-moneyflow-title">Receivable</h4>
+                            <span class="anls-moneyflow-amount">₹38,300</span>
+                          </div>
+                          <div class="anls-moneyflow-details">
+                            <div class="anls-moneyflow-item">
+                              <span class="anls-moneyflow-label">Collected</span>
+                              <span class="anls-moneyflow-value">₹21,000</span>
+                            </div>
+                            <div class="anls-moneyflow-item">
+                              <span class="anls-moneyflow-label">Pending</span>
+                              <span class="anls-moneyflow-value anls-pending">₹17,300</span>
+                            </div>
+                          </div>
+                        </div>
+                  
+                        <!-- Payable Section -->
+                        <div class="anls-moneyflow-section">
+                          <div class="anls-moneyflow-header">
+                            <h4 class="anls-moneyflow-title">Payable</h4>
+                            <span class="anls-moneyflow-amount">₹56,800</span>
+                          </div>
+                          <div class="anls-moneyflow-details">
+                            <div class="anls-moneyflow-item">
+                              <span class="anls-moneyflow-label">Paid</span>
+                              <span class="anls-moneyflow-value">₹28,000</span>
+                            </div>
+                            <div class="anls-moneyflow-item">
+                              <span class="anls-moneyflow-label">Pending</span>
+                              <span class="anls-moneyflow-value anls-pending">₹28,800</span>
+                            </div>
+                          </div>
+                        </div>
+                  
+                        <div class="anls-moneyflow-summary">
+                          <span>Payable > Receivable</span>
+                          <span class="anls-moneyflow-negative">-₹18,500</span>
+                        </div>
+                      </div>
+                  
+                      <!-- Expenditure Card -->
+                      <div class="anls-metric-card anls-expenditure-card">
+                        <div class="anls-metric-header">
+                          <h3 class="anls-metric-title" lang-key="total_expenditure">
+                            Total Expenditure
+                          </h3>
+                          <span class="anls-trend-badge anls-negative">-8.2%</span>
+                        </div>
+                        <div class="anls-metric-value">₹18,750</div>
+                        <div class="anls-metric-comparison">
+                          <span class="anls-comparison-text">Cost reduction goal: ₹15,000</span>
+                          <span class="anls-average-score">25% below average</span>
+                        </div>
+                        <div class="anls-mini-chart">
+                          <div class="anls-chart-bar" style="width: 0%; height: 100%"></div>
+                        </div>
+                      </div>
+                  
+                      <!-- Inventory Health Card -->
+                      <div class="anls-metric-card anls-inventory-card">
+                        <div class="anls-metric-header">
+                          <h3 class="anls-metric-title" lang-key="inventory_health">
+                            Inventory Health
+                          </h3>
+                        </div>
+                        <div class="anls-metric-value">₹3,62,500</div>
+                        <div class="anls-metric-comparison">Total inventory value</div>
+                  
+                        <div class="anls-inventory-chart">
+                          <div class="anls-scale-labels">
+                            <span>0</span>
+                            <span>300K</span>
+                            <span>600K</span>
+                          </div>
+                          <div class="anls-chart-bar-container">
+                            <div class="anls-chart-main-bar" style="width: 60.4%">
+                              <span class="anls-chart-current">362.5K</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  
+                      <!-- Sales Performance Card -->
+                      <div class="anls-metric-card anls-sales-card">
+                        <div class="anls-metric-header">
+                          <h3 class="anls-metric-title" lang-key="sales_performance">
+                            Sales Performance
+                          </h3>
+                        </div>
+                        <div class="anls-sales-chart-container">
+                          <canvas id="anls-sales-chart"></canvas>
+                        </div>
+                        <div class="anls-sales-note">📉 Sales dipped on Tue–Wed.</div>
+                      </div>
+                    </section>
+                  
+                    <!-- Charts Section -->
+                    <section class="anls-charts-section">
+                      <div class="anls-chart-container anls-revenue-container">
+                        <div class="anls-chart-header">
+                          <h3 class="anls-chart-title">Revenue Trend (Last 30 Days)</h3>
+                          <div class="anls-chart-actions">
+                            <button class="anls-btn active" data-chart="revenue">Revenue</button>
+                            <button class="anls-btn" data-chart="orders">Orders</button>
+                            <button class="anls-btn" data-chart="customers">Customers</button>
+                          </div>
+                        </div>
+                        <div class="anls-chart-content anls-revenue-chart-content">
+                          <canvas id="anls-revenue-chart"></canvas>
+                        </div>
+                      </div>
+                  
+                      <div class="anls-chart-container anls-category-container">
+                        <div class="anls-chart-header">
+                          <h3 class="anls-chart-title">Category Distribution</h3>
+                        </div>
+                        <div class="anls-chart-content anls-category-chart-content">
+                          <canvas id="anls-category-chart"></canvas>
+                        </div>
+                      </div>
+                    </section>
+                  
+                    <!-- Tables Section -->
+                    <section class="anls-tables-section">
+                      <div class="anls-table-container">
+                        <div class="anls-table-header">
+                          <h3 class="anls-table-title">Top Products</h3>
+                          <button class="anls-btn anls-view-all-btn">View All →</button>
+                        </div>
+                        <div class="anls-table-content">
+                          <table class="anls-data-table">
+                            <thead>
+                              <tr>
+                                <th>Product</th>
+                                <th>Sales</th>
+                                <th>Revenue</th>
+                                <th>Growth</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>Premium Widget X</td>
+                                <td>1,245 units</td>
+                                <td>₹84,500</td>
+                                <td class="anls-growth-positive">+24%</td>
+                              </tr>
+                              <tr>
+                                <td>Basic Gadget Y</td>
+                                <td>892 units</td>
+                                <td>₹42,300</td>
+                                <td class="anls-growth-positive">+12%</td>
+                              </tr>
+                              <tr>
+                                <td>Deluxe Tool Z</td>
+                                <td>567 units</td>
+                                <td>₹67,800</td>
+                                <td class="anls-growth-negative">-5%</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                  
+                      <div class="anls-table-container">
+                        <div class="anls-table-header">
+                          <h3 class="anls-table-title">Recent Transactions</h3>
+                          <button class="anls-btn anls-view-all-btn">View All →</button>
+                        </div>
+                        <div class="anls-table-content">
+                          <table class="anls-data-table">
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>2024-01-15</td>
+                                <td>Global Distributors</td>
+                                <td>₹38,300</td>
+                                <td>
+                                  <span class="anls-status-badge anls-status-overdue"
+                                    >Overdue</span
+                                  >
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>2024-01-14</td>
+                                <td>Tech Solutions Inc</td>
+                                <td>₹21,000</td>
+                                <td>
+                                  <span class="anls-status-badge anls-status-paid">Paid</span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>2024-01-13</td>
+                                <td>Retail Chain Corp</td>
+                                <td>₹56,800</td>
+                                <td>
+                                  <span class="anls-status-badge anls-status-pending"
+                                    >Pending</span
+                                  >
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </section>
+                  </main>
+            </div>
+        </div>
+
         <!-- Transactions Pane -->
         <div class="add-scrollable-content" data-tab="transactions">
             <div class="content-filter-bar">
@@ -215,6 +503,26 @@
                 <div class="placeholder-content">
                     <i class="fa-solid fa-images"></i>
                     <p>No active banners.<br>Click the '+' button to add a new banner.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Pane -->
+        <div class="add-scrollable-content" data-tab="reports">
+            <div class="content-filter-bar">
+                <button class="filter-btn active" data-report-filter="overview">Overview</button>
+                <button class="filter-btn" data-report-filter="sales">Sales</button>
+                <button class="filter-btn" data-report-filter="inventory">Inventory</button>
+                <button class="filter-btn" data-report-filter="parties">Parties</button>
+                <button class="filter-btn filter-helper-only" data-report-filter="export" title="Export Report"><i class="fas fa-download"></i></button>
+            </div>
+            <div class="content-scrollable-area">
+                <div class="list-container">
+                    <!-- Reports content will be dynamically injected here -->
+                    <div class="placeholder-content">
+                        <i class="fas fa-file-chart-column"></i>
+                        <p>Reports section coming soon...</p>
+                    </div>
                 </div>
             </div>
         </div>

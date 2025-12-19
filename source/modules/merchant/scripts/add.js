@@ -1,5 +1,6 @@
 import { createListCard, initCardHelper } from '../../../templates/cards/card-helper.js';
 import { fetchAllItems, localCache } from '../../../utils/data-manager.js';
+import '../analytics/scripts/merchant-analytics.js';
 
 let isInitialized = false;
 let eventListeners = []; // To keep track of added event listeners
@@ -122,6 +123,13 @@ export async function init() {
 
     // --- Speed Dial Actions Data ---
     const fabActions = {
+        // NEW: Analytics tab quick actions
+        analytics: [
+            { label: 'Add Item', icon: 'fa-solid fa-box-open' },
+            { label: 'Sale', icon: 'fa-solid fa-cart-plus' },
+            { label: 'Purchase', icon: 'fa-solid fa-receipt' },
+            { label: 'Add Party', icon: 'fa-solid fa-user-plus' }
+        ],
         // REVISED: Actions are now clearer and more logical
         transactions: [
             { label: 'Payment Out', icon: 'fa-solid fa-money-bill-wave' }, // Money going out
@@ -160,6 +168,12 @@ export async function init() {
             { label: 'Design From Template', icon: 'fa-solid fa-pen-ruler' },
             { label: 'Add New Banner', icon: 'fa-solid fa-image' },
 
+        ],
+        // NEW: Reports tab actions
+        reports: [
+            { label: 'Generate Report', icon: 'fa-solid fa-chart-bar' },
+            { label: 'Export Data', icon: 'fa-solid fa-download' },
+            { label: 'Print Report', icon: 'fa-solid fa-print' }
         ]
     };
 
@@ -552,7 +566,7 @@ export async function init() {
     }
 
     let activeTabIndex = 0;
-    let activeTabId = 'transactions';
+    let activeTabId = 'analytics';
 
     // --- FAB & Speed Dial Logic ---
     function updateFabOptions() {
@@ -595,13 +609,35 @@ export async function init() {
             const label = optionItem.querySelector('.fab-option-label').textContent;
             console.log(`Action clicked: ${label}`);
 
-            // Handle Add Item action
+            // Handle Add Item action (works for both inventory and analytics tabs)
             if (label === 'Add Item') {
                 toggleFabMenu(false);
                 // Import routeManager dynamically
                 import('../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-item');
                 });
+            }
+            // Handle Analytics tab actions
+            else if (label === 'Sale' && activeTabId === 'analytics') {
+                toggleFabMenu(false);
+                // Store the type in sessionStorage before navigation
+                sessionStorage.setItem('invoiceType', 'sale');
+                import('../../../main.js').then(({ routeManager }) => {
+                    routeManager.switchView('merchant', 'add-invoice');
+                });
+            }
+            else if (label === 'Purchase' && activeTabId === 'analytics') {
+                toggleFabMenu(false);
+                // Store the type in sessionStorage before navigation
+                sessionStorage.setItem('invoiceType', 'purchase');
+                import('../../../main.js').then(({ routeManager }) => {
+                    routeManager.switchView('merchant', 'add-invoice');
+                });
+            }
+            else if (label === 'Add Party') {
+                toggleFabMenu(false);
+                alert('Add Party - Coming Soon!');
+                // TODO: Navigate to add party page
             }
             // Handle Invoice actions
             else if (label === 'View Invoices') {
@@ -637,6 +673,19 @@ export async function init() {
                 import('../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-invoice');
                 });
+            }
+            // Handle Reports tab actions
+            else if (label === 'Generate Report') {
+                toggleFabMenu(false);
+                alert('Generate Report - Coming Soon!');
+            }
+            else if (label === 'Export Data') {
+                toggleFabMenu(false);
+                alert('Export Data - Coming Soon!');
+            }
+            else if (label === 'Print Report') {
+                toggleFabMenu(false);
+                alert('Print Report - Coming Soon!');
             }
             else {
                 // Other actions - show alert for now
@@ -682,6 +731,11 @@ export async function init() {
             renderParties(); // Render with default 'all' filter
         } else if (activeTabId === 'inventory') {
             renderInventory(allInventoryItems); // Render with default 'all' filter
+        } else if (activeTabId === 'analytics') {
+            // Initialize analytics dashboard when tab becomes active
+            if (typeof window.initAnalytics === 'function') {
+                window.initAnalytics();
+            }
         }
 
 
@@ -743,6 +797,51 @@ export async function init() {
     });
 
     // --- NEW: Event listeners for the newly added filter bars ---
+
+    // Listener for Analytics Tab (triggers analytics filter handler)
+    document.querySelectorAll('.add-scrollable-content[data-tab="analytics"] .filter-btn').forEach(button => {
+        addManagedEventListener(button, 'click', function () {
+            const filter = this.dataset.analyticsFilter;
+            if (filter === 'advanced') {
+                // Handle advanced analytics filter separately (no state change)
+                console.log('Advanced Analytics filter clicked. Not changing primary active state.');
+                return;
+            }
+            updateActiveFilterButton(this);
+            // Call analytics range handler if available (from embedded dashboard script)
+            // Try calling it directly, or wait a bit if script is still loading
+            if (typeof window.updateDateRange === 'function') {
+                window.updateDateRange(filter);
+            } else {
+                // Retry after a short delay in case script is still loading
+                setTimeout(() => {
+                    if (typeof window.updateDateRange === 'function') {
+                        window.updateDateRange(filter);
+                    } else {
+                        console.log('Analytics filter clicked:', filter, '- updateDateRange not available yet');
+                        // Fallback: show a simple alert or toast
+                        if (typeof showToast === 'function') {
+                            showToast(`Showing data for ${filter}`);
+                        }
+                    }
+                }, 100);
+            }
+        });
+    });
+
+    // Listener for Reports Tab
+    document.querySelectorAll('.add-scrollable-content[data-tab="reports"] .filter-btn').forEach(button => {
+        addManagedEventListener(button, 'click', function () {
+            const filter = this.dataset.reportFilter;
+            if (filter === 'export') {
+                // Handle export functionality
+                console.log('Export Reports clicked.');
+                return;
+            }
+            updateActiveFilterButton(this);
+            console.log('Report filter clicked:', filter);
+        });
+    });
 
     // Listener for Posts Tab
     document.querySelectorAll('.add-scrollable-content[data-tab="posts"] .filter-btn').forEach(button => {
