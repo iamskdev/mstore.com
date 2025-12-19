@@ -29,8 +29,8 @@ export class InstantAddItemUIComponents {
         // Create new input element to replace select completely
         const inputElement = document.createElement('input');
         inputElement.type = 'text';
-        inputElement.className = 'unit-combobox invoice-input';
-        inputElement.placeholder = 'Select unit...';
+        inputElement.className = 'instant-add-item-unit-combobox';
+        inputElement.placeholder = 'Select Primary Unit';
         inputElement.id = originalSelect.id;
         inputElement.readOnly = true; // Make it read-only for traditional dropdown behavior
 
@@ -47,10 +47,10 @@ export class InstantAddItemUIComponents {
 
         // Create custom dropdown container
         this.modal.customUnitDropdown = document.createElement('div');
-        this.modal.customUnitDropdown.className = 'custom-unit-dropdown';
+        this.modal.customUnitDropdown.className = 'instant-add-item-custom-unit-dropdown';
         this.modal.customUnitDropdown.innerHTML = `
-            <div class="unit-dropdown-menu" style="display: none;">
-                <div class="unit-groups"></div>
+            <div class="instant-add-item-unit-dropdown-menu" style="display: none;">
+                <div class="instant-add-item-unit-groups"></div>
             </div>
         `;
 
@@ -58,14 +58,14 @@ export class InstantAddItemUIComponents {
         unitContainer.appendChild(this.modal.customUnitDropdown);
 
         // Get reference to the dropdown menu
-        this.modal.unitGroupsContainer = this.modal.customUnitDropdown.querySelector('.unit-groups');
+        this.modal.unitGroupsContainer = this.modal.customUnitDropdown.querySelector('.instant-add-item-unit-groups');
 
         // Setup event listeners for the input element
         this.setupComboboxEvents();
     }
 
     setupComboboxEvents() {
-        const dropdownMenu = this.modal.customUnitDropdown.querySelector('.unit-dropdown-menu');
+        const dropdownMenu = this.modal.customUnitDropdown.querySelector('.instant-add-item-unit-dropdown-menu');
 
         // Handle focus to show dropdown for selection
         this.modal.unitSelect.addEventListener('focus', () => {
@@ -84,8 +84,8 @@ export class InstantAddItemUIComponents {
                 const activeElement = document.activeElement;
                 const isClickingDropdownItem = activeElement && (
                     this.modal.customUnitDropdown.contains(activeElement) ||
-                    activeElement.closest('.unit-dropdown-menu') ||
-                    activeElement.closest('.unit-item')
+                    activeElement.closest('.instant-add-item-unit-dropdown-menu') ||
+                    activeElement.closest('.instant-add-item-unit-item')
                 );
 
                 // Also check if user just clicked the input itself (prevent false blur closes)
@@ -123,7 +123,7 @@ export class InstantAddItemUIComponents {
                 e.preventDefault();
                 // Select first visible item if dropdown is open
                 if (dropdownMenu.style.display !== 'none') {
-                    const firstVisibleItem = this.modal.unitGroupsContainer.querySelector('.unit-item:not([style*="display: none"])');
+                    const firstVisibleItem = this.modal.unitGroupsContainer.querySelector('.instant-add-item-unit-item:not([style*="display: none"])');
                     if (firstVisibleItem) {
                         firstVisibleItem.click();
                     }
@@ -210,22 +210,22 @@ export class InstantAddItemUIComponents {
 
         sortedGroupTypes.forEach(groupType => {
             const groupDiv = document.createElement('div');
-            groupDiv.className = 'unit-group';
+            groupDiv.className = 'instant-add-item-unit-group';
 
             const groupTitle = document.createElement('div');
-            groupTitle.className = 'unit-group-title';
+            groupTitle.className = 'instant-add-item-unit-group-title';
             groupTitle.textContent = this.modal.capitalizeFirst(groupType);
 
             const groupItems = document.createElement('div');
-            groupItems.className = 'unit-group-items';
+            groupItems.className = 'instant-add-item-unit-group-items';
 
             this.modal.groupedUnits[groupType].forEach(unit => {
                 const unitItem = document.createElement('div');
-                unitItem.className = 'unit-item';
+                unitItem.className = 'instant-add-item-unit-item';
                 unitItem.dataset.code = unit.code;
                 unitItem.innerHTML = `
-                    <span class="unit-title">${unit.title} (${unit.code})</span>
-                    ${unit.isPopular ? '<span class="popular-star">★</span>' : ''}
+                    <span class="instant-add-item-unit-title">${unit.title} (${unit.code})</span>
+                    ${unit.isPopular ? '<span class="instant-add-item-popular-star">★</span>' : ''}
                 `;
 
                 unitItem.addEventListener('click', () => {
@@ -243,10 +243,10 @@ export class InstantAddItemUIComponents {
 
     filterUnits(query) {
         // Since search box is removed, always show all units
-        const groups = this.modal.unitGroupsContainer.querySelectorAll('.unit-group');
+        const groups = this.modal.unitGroupsContainer.querySelectorAll('.instant-add-item-unit-group');
 
         groups.forEach(group => {
-            const items = group.querySelectorAll('.unit-item');
+            const items = group.querySelectorAll('.instant-add-item-unit-item');
 
             items.forEach(item => {
                 item.style.display = 'flex'; // Show all items
@@ -342,13 +342,13 @@ export class InstantAddItemUIComponents {
         // Add existing items
         items.forEach((item, index) => {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'autocomplete-item';
+            itemDiv.className = 'instant-add-item-autocomplete-item';
             itemDiv.onclick = () => this.setDefaultsFromItem(item);
 
             itemDiv.innerHTML = `
-                <div class="item-info">
-                    <div class="item-name">${this.highlightMatch(item.name, query)}</div>
-                    <div class="item-details">Cost Price: ₹${item.mrp || 0}, Sale Price: ₹${item.rate || 0}</div>
+                <div class="instant-add-item-item-info">
+                    <div class="instant-add-item-item-name">${this.highlightMatch(item.name, query)}</div>
+                    <div class="instant-add-item-item-details">Cost Price: ₹${item.mrp || 0}, Sale Price: ₹${item.rate || 0}</div>
                 </div>
             `;
 
@@ -358,13 +358,13 @@ export class InstantAddItemUIComponents {
         // Add "Add New Item" option if query exists
         if (query.trim() !== '') {
             const addNewDiv = document.createElement('div');
-            addNewDiv.className = 'autocomplete-item add-new-item';
+            addNewDiv.className = 'instant-add-item-autocomplete-item instant-add-item-add-new-item';
             addNewDiv.onclick = () => this.addNewItem(query.trim());
 
             addNewDiv.innerHTML = `
-                <div class="item-info">
-                    <div class="item-name">${query}</div>
-                    <div class="item-details">Add as new item</div>
+                <div class="instant-add-item-item-info">
+                    <div class="instant-add-item-item-name">${query}</div>
+                    <div class="instant-add-item-item-details">Add as new item</div>
                 </div>
             `;
 
@@ -450,14 +450,14 @@ export class InstantAddItemUIComponents {
     }
 
     closeModal() {
-        const modal = document.getElementById('invoice-modal');
+        const modal = document.getElementById('instant-add-item-modal');
         if (modal) {
             modal.classList.remove('active');
             modal.style.display = 'none'; // Force hide immediately
             this.resetModalPosition();
         } else {
             // Fallback: try to find and hide the modal directly
-            const modalElement = document.querySelector('.invoice-modal');
+            const modalElement = document.querySelector('.instant-add-item-modal');
             if (modalElement) {
                 modalElement.classList.remove('active');
                 modalElement.style.display = 'none';
@@ -492,7 +492,7 @@ export class InstantAddItemUIComponents {
     }
 
     resetModalPosition() {
-        const modalSheet = document.querySelector('.invoice-modal-sheet');
+        const modalSheet = document.querySelector('.instant-add-item-modal-sheet');
         if (modalSheet) {
             modalSheet.style.transform = '';
             modalSheet.style.opacity = '';
@@ -531,7 +531,7 @@ export class InstantAddItemUIComponents {
         const dragThreshold = 100; // Minimum drag distance to close modal
 
         const dragHandle = document.getElementById('modal-drag-handle');
-        const modalSheet = document.querySelector('.invoice-modal-sheet');
+        const modalSheet = document.querySelector('.instant-add-item-modal-sheet');
 
         if (!dragHandle || !modalSheet) return;
 

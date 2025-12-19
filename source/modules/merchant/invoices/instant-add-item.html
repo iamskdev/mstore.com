@@ -1,102 +1,101 @@
     <!-- Add Item Modal -->
-    <div class="invoice-modal" id="invoice-modal">
-      <div class="invoice-modal-sheet">
+    <div class="instant-add-item-modal" id="instant-add-item-modal">
+      <div class="instant-add-item-modal-sheet">
       <!-- Modal Header -->
-      <div class="modal-header">
-          <div class="modal-title-header">
-              <div class="modal-title">Add Item to Sale</div>
-              <button class="modal-close-btn" onclick="window.closeInstantAddItemModal(event)">
+      <div class="instant-add-item-modal-header">
+          <div class="instant-add-item-modal-title-header">
+              <div class="instant-add-item-modal-title">Add Item to Sale</div>
+              <button class="instant-add-item-modal-close-btn" onclick="window.closeInstantAddItemModal(event)">
                 <i class="fas fa-times"></i>
               </button>
           </div>
       </div>
 
       <!-- Modal Content -->
-      <div class="modal-content">
-          <div class="modal-scrollable">
-              <div class="invoice-field invoice-notched-field">
-                  <label class="invoice-label" for="invoice-item-input">Item Name</label>
-                  <div class="invoice-input-wrapper full-width-input">
-                      <input
-                          class="invoice-input full-width-input-field"
-                          type="text"
-                          id="invoice-item-input"
-                          placeholder="Type item name or add new..."
-                          autocomplete="off"
-                      />
-                      <div class="autocomplete-dropdown" id="autocomplete-dropdown" style="display: none;"></div>
-                  </div>
+      <div class="instant-add-item-modal-content">
+          <div class="instant-add-item-modal-scrollable">
+              <div class="instant-add-item-notched-field">
+                  <input
+                      class="instant-add-item-input"
+                      type="text"
+                      id="instant-add-item-item-input"
+                      placeholder=" "
+                      autocomplete="off"
+                  />
+                  <label class="instant-add-item-label" for="instant-add-item-item-input">Item Name</label>
+                  <div class="instant-add-item-autocomplete-dropdown" id="instant-add-item-autocomplete-dropdown" style="display: none;"></div>
               </div>
-              <div class="quantity-unit-row">
-          <div class="quantity-field invoice-notched-field">
-              <label class="invoice-label" for="invoice-qty">Quantity</label>
+              <div class="instant-add-item-quantity-unit-row">
+          <div class="instant-add-item-quantity-field instant-add-item-notched-field">
               <input
-                  class="invoice-input"
+                  class="instant-add-item-input"
                   type="number"
                   min="0"
                   step="1"
-                  id="invoice-qty"
+                  id="instant-add-item-qty"
                   value="1"
+                  placeholder=" "
               />
+              <label class="instant-add-item-label" for="instant-add-item-qty">Quantity</label>
           </div>
-          <div class="unit-field invoice-notched-field">
-              <label class="invoice-label" for="invoice-unit"> Unit (Primary) </label>
-              <select class="invoice-select" id="invoice-unit">
-                  <option value="" disabled selected>Select Primary Unit...</option>
+          <div class="instant-add-item-unit-field instant-add-item-notched-field">
+              <select class="instant-add-item-select" id="instant-add-item-unit">
+                  <option value="" disabled selected></option>
               </select>
+              <label class="instant-add-item-label" for="instant-add-item-unit">Unit (Primary)</label>
           </div>
       </div>
-      <div class="price-row">
-          <div class="purchase-price-field invoice-notched-field">
-              <label class="invoice-label" for="invoice-purchase-price"> Cost Price / Unit </label>
+      <div class="instant-add-item-price-row">
+          <div class="instant-add-item-purchase-price-field instant-add-item-notched-field">
               <input
-                  class="invoice-input"
+                  class="instant-add-item-input"
                   type="number"
                   min="0"
                   step="0.01"
-                  id="invoice-purchase-price"
-                  placeholder="0.00"
+                  id="instant-add-item-purchase-price"
+                  placeholder=" "
               />
+              <label class="instant-add-item-label" for="instant-add-item-purchase-price">Cost Price / Unit</label>
           </div>
-          <div class="sale-price-field invoice-notched-field">
-              <label class="invoice-label" for="invoice-sale-price">Sale Price / Unit </label>
+          <div class="instant-add-item-sale-price-field instant-add-item-notched-field">
               <input
-                  class="invoice-input"
+                  class="instant-add-item-input"
                   type="number"
                   min="0"
                   step="0.01"
-                  id="invoice-sale-price"
-                  placeholder="0.00"
+                  id="instant-add-item-sale-price"
+                  placeholder=" "
               />
+              <label class="instant-add-item-label" for="instant-add-item-sale-price">Sale Price / Unit</label>
           </div>
       </div>
-      <div class="invoice-field invoice-notched-field description-field">
-          <label class="invoice-label" for="invoice-desc">Description</label>
+      <div class="instant-add-item-description-field instant-add-item-notched-field">
           <textarea
-              class="invoice-textarea"
-              id="invoice-desc"
-              placeholder="Add note"
+              class="instant-add-item-textarea"
+              id="instant-add-item-desc"
+              placeholder=" "
           ></textarea>
+          <label class="instant-add-item-label" for="instant-add-item-desc">Description</label>
       </div>
 
-              <hr class="modal-divider">
-              <div class="invoice-totals">
-                  <div class="subtotal-row">
-                      <div class="invoice-amount amount-label">Subtotal (Rate × Qty)</div>
-                      <div class="invoice-amount amount-value" id="invoice-modal-subtotal">₹ 0.00</div>
+              <hr class="instant-add-item-modal-divider">
+              <div class="instant-add-item-totals">
+                  <div class="instant-add-item-subtotal-row">
+                      <div class="instant-add-item-amount instant-add-item-amount-label">Subtotal (Rate × Qty)</div>
+                      <div class="instant-add-item-amount instant-add-item-amount-value" id="instant-add-item-modal-subtotal">₹ 0.00</div>
                   </div>
-                  <div class="total-amount-row">
-                      <div class="invoice-amount amount-label">Total Amount</div>
-                      <div class="invoice-amount amount-value" id="invoice-modal-total">₹ 0.00</div>
+                  <div class="instant-add-item-total-amount-row">
+                      <div class="instant-add-item-amount instant-add-item-amount-label">Total Amount</div>
+                      <div class="instant-add-item-amount instant-add-item-amount-value" id="instant-add-item-modal-total">₹ 0.00</div>
                   </div>
               </div>
             </div>
 
             <!-- Fixed Footer with Totals and Buttons -->
-            <div class="modal-footer">              
-              <div class="button-row">
-                  <button class="primary-btn" id="invoice-save-item">Save</button>
-                  <button class="secondary-btn" id="invoice-save-new">
+            <div class="instant-add-item-modal-footer">
+              <div class="instant-add-item-button-row">
+                  <button class="instant-add-item-primary-btn" id="instant-add-item-save-item">Save</button>
+                  <button class="instant-add-item-secondary-btn" id="instant-add-item-save-new">
                       Save &amp; New
                   </button>
               </div>
@@ -154,7 +153,7 @@
         }
 
         /* Autocomplete Styles */
-        .autocomplete-dropdown {
+        .instant-add-item-autocomplete-dropdown {
             position: absolute;
             top: 100%;
             left: 0;
@@ -168,10 +167,10 @@
             overflow-y: auto;
             width: 100%; /* Ensure dropdown uses full width */
             box-sizing: border-box;
-            margin-top: -12px; /* Bring it closer to input field */
+            margin-top: 2px;
         }
 
-        .autocomplete-item {
+        .instant-add-item-autocomplete-item {
             padding: 10px 12px;
             cursor: pointer;
             border-bottom: 1px solid var(--border-color);
@@ -181,377 +180,428 @@
             text-align: left;
         }
 
-        .autocomplete-item:last-child {
+        .instant-add-item-autocomplete-item:last-child {
             border-bottom: none;
         }
 
-        .autocomplete-item:hover {
+        .instant-add-item-autocomplete-item:hover {
             background: var(--bg-tertiary);
         }
 
-        .autocomplete-item.selected {
+        .instant-add-item-autocomplete-item.selected {
             background: var(--accent-primary);
             color: var(--accent-text);
         }
 
-        .item-info {
+        .instant-add-item-item-info {
             flex: 1;
             text-align: left;
         }
 
-        .item-name {
+        .instant-add-item-item-name {
             font-weight: 600;
             font-size: 14px;
             text-align: left;
         }
 
-        .item-details {
+        .instant-add-item-item-details {
             font-size: 12px;
             color: var(--text-secondary);
             margin-top: 2px;
             text-align: left;
         }
 
-        .add-new-item {
+        .instant-add-item-add-new-item {
             color: var(--accent-primary);
             font-weight: 600;
         }
 
-        .add-new-item .item-name::before {
+        .instant-add-item-add-new-item .instant-add-item-item-name::before {
             content: "+ ";
         }
 
         /* Modal Content Layout */
-        .modal-content {
+        .instant-add-item-modal-content {
             display: flex;
             flex-direction: column;
-            padding: 0; /* Remove all padding to allow full width */
-            border: none;
-            min-height: auto; /* Let content determine height instead of fixed viewport height */
+            height: 100%;
             background-color: var(--bg-primary);
-            width: 100%; /* Ensure full width */
-            box-sizing: border-box;
-            margin: 0; /* Ensure no margins */
         }
 
         /* Modal scrollable - only form fields */
-        .modal-scrollable {
+        .instant-add-item-modal-scrollable {
             flex: 1;
-            overflow: visible; /* Remove scrolling since content is minimal */
-            padding: 12px; /* Reduced padding for more compact layout */
-            width: 100%; /* Ensure full width usage */
+            overflow-y: auto;
+            padding: 24px;
             box-sizing: border-box;
-            margin: 0; /* Ensure no margins */
         }
 
         /* Modal Footer - fixed at bottom */
-        .modal-footer {
+        .instant-add-item-modal-footer {
             flex-shrink: 0;
             background: var(--bg-primary);
             border-top: 1px solid var(--border-color);
-            padding: 12px; /* Reduced footer padding for more compact layout */
+            padding: 16px 24px;
         }
 
 
 
-        /* Adjust notched label position */
-        .invoice-label {
+        /* Notched field styling - matching invoice page */
+        .instant-add-item-notched-field {
+            position: relative;
+        }
+
+        .instant-add-item-label {
+            position: absolute;
+            top: -8px;
+            left: 8px;
             font-size: 13px;
             color: var(--text-primary);
             font-weight: 600;
-            margin-top: 2px !important; /* Shift label down */
-            margin-bottom: 6px !important; /* Adjust spacing */
+            pointer-events: none;
+            background: var(--bg-primary);
+            padding: 0 4px;
+            z-index: 1;
+            transition: color 0.2s ease;
         }
 
-        .invoice-totals {
+        /* Change color on focus */
+        .instant-add-item-notched-field input:focus + .instant-add-item-label,
+        .instant-add-item-notched-field select:focus + .instant-add-item-label,
+        .instant-add-item-notched-field textarea:focus + .instant-add-item-label {
+            color: var(--accent-primary);
+        }
+
+        .instant-add-item-totals {
             border: none !important;
             padding: 0;
             position: relative;
         }
 
-        .description-field {
+        .instant-add-item-description-field {
             margin-top: 12px; /* Reduced margin for more compact spacing */
             margin-bottom: 0px;
             background-color: var(--bg-primary) !important; /* Match other fields background */
         }
 
-        .description-field .invoice-textarea {
-            background-color: var(--bg-primary) !important; /* Ensure textarea background matches */
-            border-color: var(--border-color) !important;
-            border-radius: 2px !important;
+        /* Description field specific styling */
+        .instant-add-item-description-field .instant-add-item-label {
+            top: -8px;
+            left: 12px;
         }
 
 
 
 
-        /* Full width input */
-        .full-width-input {
-            width: 100%;
-            background-color: var(--bg-primary) !important;
-        }
 
-        .full-width-input-field {
-            width: 100%;
+        /* Input styling matching invoice page */
+        .instant-add-item-input,
+        .instant-add-item-select,
+        .instant-add-item-textarea {
+            border-radius: 4px;
+            border: var(--card-border);
+            padding: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
             box-sizing: border-box;
-            background-color: var(--bg-primary) !important;
-            border-color: var(--border-color) !important;
+            outline: none;
+            transition: border-color 0.2s ease;
+            width: 100%;
         }
 
-        /* Ensure all input fields have consistent styling and height */
-        .invoice-input {
-            background-color: var(--bg-primary) !important;
-            border-color: var(--border-color) !important;
-            border-radius: 2px !important;
-            height: 36px !important; /* Uniform height for all inputs */
-            box-sizing: border-box !important;
+        .instant-add-item-input:focus,
+        .instant-add-item-select:focus,
+        .instant-add-item-textarea:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.1);
         }
 
-        .invoice-select {
-            background-color: var(--bg-primary) !important;
-            border-color: var(--border-color) !important;
-            border-radius: 2px !important;
-            height: 36px !important; /* Uniform height for select elements too */
-            box-sizing: border-box !important;
+        .instant-add-item-textarea {
+            min-height: 80px;
+            resize: vertical;
         }
         /* Consistent spacing for form fields */
-        .invoice-field.invoice-notched-field {
-            margin-bottom: 0px;
-            background-color: var(--bg-primary) !important; /* Ensure consistent background */
-            border: none !important; /* Remove any borders */
-        }
-        /* Quantity and Unit Row */
-        .quantity-unit-row {
-            display: flex !important;
-            gap: 20px !important; /* Large gap for clear separation */
-            align-items: flex-start !important; /* Align to top for consistent positioning */
-            flex-wrap: nowrap !important;
-            margin-bottom: 8px !important;
-            background-color: transparent !important; /* Ensure no background override */
-        }
-        /* Price Row */
-        .price-row {
-            display: flex !important;
-            gap: 20px !important;
-            align-items: flex-end !important;
-            flex-wrap: nowrap !important;
-            margin-bottom: 8px !important;
-            background-color: transparent !important; /* Ensure no background override */
-        }
-        .quantity-field {
-            width: 80px !important; /* Very small fixed width */
-            flex-shrink: 0 !important;
-            margin-right: 0 !important;
+        .instant-add-item-notched-field {
+            margin-bottom: 16px;
         }
 
-        .quantity-field .invoice-input {
-            width: 100% !important;
-            box-sizing: border-box !important;
+        /* Row spacing - only add margin between rows, not between fields in same row */
+        .instant-add-item-notched-field {
+            margin-bottom: 25px;
         }
 
-        .unit-field {
-            flex: 1 !important;
-            min-width: 0 !important;
+        /* Remove bottom margin for fields in same row */
+        .instant-add-item-quantity-unit-row .instant-add-item-notched-field,
+        .instant-add-item-price-row .instant-add-item-notched-field {
+            margin-bottom: 0;
         }
 
-        .unit-field .unit-combobox {
-            width: 100% !important;
-            box-sizing: border-box !important;
+        /* Add bottom margin to rows */
+        .instant-add-item-quantity-unit-row {
+            margin-bottom: 24px;
+        }
+
+        .instant-add-item-price-row {
+            margin-bottom: 24px;
+        }
+
+        /* Quantity and Unit Row - always same row */
+        .instant-add-item-quantity-unit-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            flex-wrap: nowrap; /* Never wrap to new line */
+        }
+
+        .instant-add-item-quantity-field {
+            flex: 0 0 100px; /* Fixed small width */
+            min-width: 80px;
+        }
+
+        .instant-add-item-unit-field {
+            flex: 1; /* Take remaining space */
+            min-width: 120px;
+        }
+
+        /* Price Row - always same row */
+        .instant-add-item-price-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            flex-wrap: nowrap; /* Never wrap to new line */
+        }
+
+        .instant-add-item-purchase-price-field,
+        .instant-add-item-sale-price-field {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        /* Description field - no extra margin needed */
+        .instant-add-item-description-field {
+            margin-bottom: 0;
         }
 
 
 
 
-        .purchase-price-field,
-        .sale-price-field {
-            flex: 1 !important;
-            min-width: 0 !important;
-        }
-
-        .purchase-price-field .invoice-input,
-        .sale-price-field .invoice-input {
-            width: 100% !important;
-            box-sizing: border-box !important;
+        .instant-add-item-purchase-price-field,
+        .instant-add-item-sale-price-field {
+            flex: 1;
         }
 
         /* Button Row in Footer */
-        .button-row {
+        .instant-add-item-button-row {
             display: flex;
             gap: 12px;
-            justify-content: flex-end; /* Changed from space-between to flex-end for better alignment */
-            margin-top: 16px;
-            width: 100%; /* Ensure full width */
+            justify-content: flex-end;
+            width: 100%;
             box-sizing: border-box;
         }
 
-        .button-row button {
-            flex: 1;
-            width: auto;
-            padding: 12px 16px;
+        .instant-add-item-button-row button {
+            padding: 12px 24px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 14px;
             border: none;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            min-width: 100px;
         }
 
-        .primary-btn {
+        .instant-add-item-primary-btn {
             background: var(--accent-primary);
             color: var(--accent-text);
         }
 
-        .primary-btn:hover {
-            background: var(--accent-primary-hover, #0056b3);
+        .instant-add-item-primary-btn:hover {
+            background: var(--accent-primary);
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
 
-        .secondary-btn {
+        .instant-add-item-secondary-btn {
             background: var(--bg-tertiary);
             color: var(--text-primary);
             border: 1px solid var(--border-color);
         }
 
-        .secondary-btn:hover {
+        .instant-add-item-secondary-btn:hover {
             background: var(--bg-secondary);
         }
 
         /* Modal Header */
-        .modal-header {
+        .instant-add-item-modal-header {
             flex-shrink: 0;
             position: relative;
             width: 100%; /* Ensure full width */
             box-sizing: border-box;
         }
 
-        .modal-title-header {
+        .instant-add-item-modal-title-header {
             border-bottom: 1px solid var(--border-color);
             display: flex;
             width: 100%;
             justify-content: space-between;
             align-items: center;
-            padding: 0; /* Remove any padding that might cause spacing */
-            margin: 0; /* Ensure no margins */
-            min-height: 56px; /* Ensure consistent header height */
-            box-sizing: border-box; /* Ensure proper box sizing */
+            padding: 16px 24px;
+            min-height: 64px;
+            box-sizing: border-box;
         }
 
-        .modal-title {
+        .instant-add-item-modal-title {
             flex: 1;
             font-size: 18px;
             font-weight: 600;
             color: var(--text-primary);
-            padding: 12px; /* Reduced padding for more compact header */
-            margin: 0; /* Remove any margins */
-            line-height: 1.2; /* Improve text alignment */
-            white-space: nowrap; /* Prevent text wrapping */
-            overflow: hidden; /* Hide overflow if needed */
-            text-overflow: ellipsis; /* Show ellipsis if text is too long */
+            margin: 0;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .modal-close-btn {
-            background: transparent !important; /* Ensure no background */
-            border: none !important;
-            font-size: 16px !important; /* Icon size */
-            color: var(--text-secondary) !important;
-            cursor: pointer !important;
-            padding: 8px !important; /* Smaller padding for better alignment */
-            margin: 0 !important; /* Remove any margins */
-            margin-top: -20px !important; /* Shift button upwards */
-            border-radius: 2px !important;
-            transition: color 0.2s !important; /* Only change color on hover */
-            flex-shrink: 0 !important; /* Prevent button from shrinking */
-            width: 32px !important; /* Fixed width for icon button */
-            height: 32px !important; /* Fixed height to match title line height */
-            display: flex !important;
-
-            align-items: center !important;
-            justify-content: center !important;
-            position: relative !important;
-            z-index: 10001 !important; /* Ensure it's above modal overlay */
-            pointer-events: auto !important; /* Ensure it's clickable */
+        .instant-add-item-modal-close-btn {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10001;
+            pointer-events: auto;
         }
 
-        .modal-close-btn i {
-            font-size: 16px !important; /* Icon size */
-            line-height: 1 !important;
-        }
-
-        .modal-close-btn:hover {
-            background: transparent !important; /* No background on hover */
-            color: var(--text-primary);
+        .instant-add-item-modal-close-btn i {
+            font-size: 16px;
+            line-height: 1;
         }
 
         /* Modal Styles */
-        .invoice-modal {
+        .instant-add-item-modal {
             position: fixed !important;
-            border-radius: 0;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
             background: rgba(0, 0, 0, 0.5) !important;
             display: none !important; /* Hidden by default */
             align-items: center !important;
             justify-content: center !important;
             z-index: 10000 !important; /* Higher z-index to ensure it appears above other elements */
-            padding: 10px !important; /* Reduced from 20px to give more space to modal */
+            padding: 20px !important; /* Padding for proper spacing */
             -webkit-overflow-scrolling: touch !important; /* Better scrolling on iOS */
         }
 
-        .invoice-modal.active {
+        .instant-add-item-modal.active {
             display: flex !important; /* Show when active */
         }
 
-        .invoice-modal-sheet {
+        .instant-add-item-modal-sheet {
             background: var(--bg-primary) !important;
-            border-radius: 16px !important; /* Increased border radius for better rounded look */
-            width: 95vw !important; /* Increased from 90vw to use more width */
-            max-width: 600px !important; /* Increased from 500px */
-            max-height: 90vh !important;
-            margin: 0 !important;
-            padding: 0 !important; /* Remove padding to use full width */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+            border-radius: 12px !important;
+            width: 100% !important;
+            max-width: 500px !important;
+            max-height: 80vh !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
             display: flex !important;
             flex-direction: column !important;
-            transform: translateZ(0) !important; /* Force hardware acceleration */
-            -webkit-transform: translateZ(0) !important;
-            overflow: hidden !important; /* Ensure content doesn't break border radius */
+            overflow: hidden !important;
         }
 
         /* Mobile-specific adjustments */
         @media (max-width: 768px) {
-            .invoice-modal {
-                padding: 5px !important;
+            .instant-add-item-modal {
+                padding: 10px;
             }
 
-            .invoice-modal-sheet {
-                width: 98vw !important;
-                max-width: none !important;
-                border-radius: 12px !important; /* Consistent with desktop but slightly smaller for mobile */
+            .instant-add-item-modal-sheet {
+                width: 100%;
+                max-width: none;
+                border-radius: 12px;
+            }
+
+            .instant-add-item-modal-scrollable {
+                padding: 16px;
+            }
+
+            .instant-add-item-modal-title-header,
+            .instant-add-item-modal-footer {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            /* Keep quantity and unit in same row even on mobile */
+            .instant-add-item-quantity-unit-row {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                gap: 8px; /* Smaller gap on mobile */
+            }
+
+            .instant-add-item-quantity-field {
+                flex: 0 0 80px; /* Smaller fixed width on mobile */
+                min-width: 70px;
+            }
+
+            .instant-add-item-unit-field {
+                flex: 1;
+                min-width: 100px;
+            }
+
+            /* Keep price fields in same row even on mobile */
+            .instant-add-item-price-row {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                gap: 8px; /* Smaller gap on mobile */
+            }
+
+            .instant-add-item-purchase-price-field,
+            .instant-add-item-sale-price-field {
+                flex: 1;
+                min-width: 100px;
             }
         }
 
         /* Invoice totals row styles */
-        .subtotal-row {
+        .instant-add-item-subtotal-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 4px;
         }
 
-        .total-amount-row {
+        .instant-add-item-total-amount-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
 
         }
 
-        .amount-label {
+        .instant-add-item-amount-label {
             font-size: 13px;
             font-weight: 600;
         }
 
-        .amount-value {
+        .instant-add-item-amount-value {
             font-size: 14px;
             font-weight: 700;
         }
 
         /* Divider styles */
-        .modal-divider {
+        .instant-add-item-modal-divider {
             width: 100%;
             height: 1px;
             background: var(--border-color);
@@ -560,75 +610,72 @@
         }
 
         /* Custom Unit Dropdown Styles */
-        .custom-unit-dropdown {
+        .instant-add-item-custom-unit-dropdown {
             position: relative;
             width: 100%;
         }
 
 
-        /* Style the unit combobox input */
-        .unit-combobox {
-            /* Match exactly with quantity input styling */
-            background-color: var(--bg-primary) !important;
-            border: 1px solid var(--border-color) !important;
-            border-radius: 2px !important;
-            padding: 8px 30px 8px 12px !important; /* Extra padding for dropdown arrow */
-            font-size: 14px !important;
-            color: var(--text-primary) !important;
-            width: 100% !important;
-            box-sizing: border-box !important;
-            cursor: text !important;
-            transition: border-color 0.2s !important;
-            outline: none !important;
+        /* Style the unit combobox input - matching invoice page */
+        .instant-add-item-unit-combobox {
+            border-radius: 4px;
+            border: var(--card-border);
+            padding: 12px 30px 12px 12px; /* Extra padding for dropdown arrow */
+            font-size: 15px;
+            font-family: inherit;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s ease;
+            cursor: pointer;
+            width: 100%;
             /* Custom dropdown arrow */
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e") !important;
-            background-repeat: no-repeat !important;
-            background-position: right 8px center !important;
-            background-size: 12px !important;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 14px;
         }
 
-        .unit-combobox:hover,
-        .unit-combobox:focus {
-            border-color: var(--accent-primary) !important;
-            outline: none !important; /* Remove outline to match other inputs */
+        .instant-add-item-unit-combobox:hover,
+        .instant-add-item-unit-combobox:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.1);
         }
 
-        .unit-combobox::placeholder {
-            color: var(--text-secondary) !important;
-        }
-
-        .unit-dropdown-menu {
+        .instant-add-item-unit-dropdown-menu {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
             background: var(--bg-primary);
             border: 1px solid var(--border-color);
-            border-radius: 2px;
+            border-radius: none;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             z-index: 1000;
-            max-height: 350px; /* Increased height for search input */
-            overflow: hidden;
-            margin-top: -15px; /* Bring dropdown closer to input field */
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 4px;
         }
 
 
-        .unit-groups {
-            max-height: 250px;
-            overflow-y: auto;
-            margin-top: -5px;
+        .instant-add-item-unit-groups {
+            max-height: 200px;
+            overflow-y: visible;
+            margin-top: 0;
             padding-top: 0;
         }
 
-        .unit-group {
+        .instant-add-item-unit-group {
             border-bottom: 1px solid var(--border-color);
         }
 
-        .unit-group:last-child {
+        .instant-add-item-unit-group:last-child {
             border-bottom: none;
         }
 
-        .unit-group-title {
+        .instant-add-item-unit-group-title {
             padding: 8px 12px;
             font-size: 12px;
             font-weight: 600;
@@ -638,12 +685,12 @@
             letter-spacing: 0.5px;
         }
 
-        .unit-group-items {
+        .instant-add-item-unit-group-items {
             display: flex;
             flex-direction: column;
         }
 
-        .unit-item {
+        .instant-add-item-unit-item {
             display: flex;
             align-items: center;
             padding: 8px 12px;
@@ -652,21 +699,21 @@
             border-bottom: 1px solid var(--border-light);
         }
 
-        .unit-item:last-child {
+        .instant-add-item-unit-item:last-child {
             border-bottom: none;
         }
 
-        .unit-item:hover {
+        .instant-add-item-unit-item:hover {
             background: var(--bg-tertiary);
         }
 
-        .unit-title {
+        .instant-add-item-unit-title {
             flex: 1;
             font-size: 14px;
             color: var(--text-primary);
         }
 
-        .popular-star {
+        .instant-add-item-popular-star {
             margin-left: auto;
             color: var(--accent-warning);
             font-size: 12px;
@@ -675,7 +722,7 @@
 
 
         /* Hide groups with no visible items */
-        .unit-group:not(:has(.unit-item:not([style*="display: none"]))) {
+        .instant-add-item-unit-group:not(:has(.instant-add-item-unit-item:not([style*="display: none"]))) {
             display: none;
         }
 

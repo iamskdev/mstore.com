@@ -52,8 +52,8 @@ class InstantAddItemModal {
         // Create new input element to replace select completely
         const inputElement = document.createElement('input');
         inputElement.type = 'text';
-        inputElement.className = 'unit-combobox invoice-input';
-        inputElement.placeholder = 'Select unit...';
+        inputElement.className = 'instant-add-item-unit-combobox instant-add-item-input';
+        inputElement.placeholder = 'Select Primary Unit';
         inputElement.id = originalSelect.id;
         inputElement.readOnly = true; // Make it read-only for traditional dropdown behavior
 
@@ -331,14 +331,14 @@ class InstantAddItemModal {
     }
 
     closeModal() {
-        const modal = document.getElementById('invoice-modal');
+        const modal = document.getElementById('instant-add-item-modal');
         if (modal) {
             modal.classList.remove('active');
             modal.style.display = 'none'; // Force hide immediately
             this.resetModalPosition();
         } else {
             // Fallback: try to find and hide the modal directly
-            const modalElement = document.querySelector('.invoice-modal');
+            const modalElement = document.querySelector('.instant-add-item-modal');
             if (modalElement) {
                 modalElement.classList.remove('active');
                 modalElement.style.display = 'none';
@@ -406,13 +406,13 @@ class InstantAddItemModal {
         // Add existing items
         items.forEach((item, index) => {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'autocomplete-item';
+            itemDiv.className = 'instant-add-item-autocomplete-item';
             itemDiv.onclick = () => this.setDefaultsFromItem(item);
 
             itemDiv.innerHTML = `
-                <div class="item-info">
-                    <div class="item-name">${this.highlightMatch(item.name, query)}</div>
-                    <div class="item-details">Cost Price: ₹${item.mrp || 0}, Sale Price: ₹${item.rate || 0}</div>
+                <div class="instant-add-item-item-info">
+                    <div class="instant-add-item-item-name">${this.highlightMatch(item.name, query)}</div>
+                    <div class="instant-add-item-item-details">Cost Price: ₹${item.mrp || 0}, Sale Price: ₹${item.rate || 0}</div>
                 </div>
             `;
 
@@ -422,13 +422,13 @@ class InstantAddItemModal {
         // Add "Add New Item" option if query exists
         if (query.trim() !== '') {
             const addNewDiv = document.createElement('div');
-            addNewDiv.className = 'autocomplete-item add-new-item';
+            addNewDiv.className = 'instant-add-item-autocomplete-item instant-add-item-add-new-item';
             addNewDiv.onclick = () => this.addNewItem(query.trim());
 
             addNewDiv.innerHTML = `
-                <div class="item-info">
-                    <div class="item-name">${query}</div>
-                    <div class="item-details">Add as new item</div>
+                <div class="instant-add-item-item-info">
+                    <div class="instant-add-item-item-name">${query}</div>
+                    <div class="instant-add-item-item-details">Add as new item</div>
                 </div>
             `;
 
@@ -506,7 +506,7 @@ class InstantAddItemModal {
         this.listenersSetup = true;
 
         // FIRST: Setup close button handler (capture phase to ensure it runs before modal handler)
-        const closeBtn = document.querySelector('.modal-close-btn');
+        const closeBtn = document.querySelector('.instant-add-item-modal-close-btn');
         if (closeBtn) {
             // Remove any existing listeners to avoid duplicates
             if (this.closeModalHandler) {
@@ -612,7 +612,7 @@ class InstantAddItemModal {
         const dragThreshold = 100; // Minimum drag distance to close modal
 
         const dragHandle = document.getElementById('modal-drag-handle');
-        const modalSheet = document.querySelector('.invoice-modal-sheet');
+        const modalSheet = document.querySelector('.instant-add-item-modal-sheet');
 
         if (!dragHandle || !modalSheet) return;
 
@@ -687,7 +687,7 @@ class InstantAddItemModal {
     }
 
     resetModalPosition() {
-        const modalSheet = document.querySelector('.invoice-modal-sheet');
+        const modalSheet = document.querySelector('.instant-add-item-modal-sheet');
         if (modalSheet) {
             modalSheet.style.transform = '';
             modalSheet.style.opacity = '';
@@ -713,6 +713,7 @@ class InstantAddItemModal {
         if (this.purchasePriceInput) this.purchasePriceInput.value = '';
         if (this.salePriceInput) this.salePriceInput.value = '';
         if (this.descInput) this.descInput.value = '';
+
         this.updateSubtotal();
     }
 
@@ -722,16 +723,16 @@ class InstantAddItemModal {
         }
 
         // Get modal elements
-        this.modal = document.getElementById('invoice-modal');
-        this.qtyInput = document.getElementById('invoice-qty');
-        this.subtotalEl = document.getElementById('invoice-modal-subtotal');
-        this.modalTotalEl = document.getElementById('invoice-modal-total');
-        this.itemInput = document.getElementById('invoice-item-input');
-        this.autocompleteDropdown = document.getElementById('autocomplete-dropdown');
-        this.unitSelect = document.getElementById('invoice-unit');
-        this.purchasePriceInput = document.getElementById('invoice-purchase-price');
-        this.salePriceInput = document.getElementById('invoice-sale-price');
-        this.descInput = document.getElementById('invoice-desc');
+        this.modal = document.getElementById('instant-add-item-modal');
+        this.qtyInput = document.getElementById('instant-add-item-qty');
+        this.subtotalEl = document.getElementById('instant-add-item-modal-subtotal');
+        this.modalTotalEl = document.getElementById('instant-add-item-modal-total');
+        this.itemInput = document.getElementById('instant-add-item-item-input');
+        this.autocompleteDropdown = document.getElementById('instant-add-item-autocomplete-dropdown');
+        this.unitSelect = document.getElementById('instant-add-item-unit');
+        this.purchasePriceInput = document.getElementById('instant-add-item-purchase-price');
+        this.salePriceInput = document.getElementById('instant-add-item-sale-price');
+        this.descInput = document.getElementById('instant-add-item-desc');
 
         // Initialize components
         this.dbOperations = createInstantAddItemDBOperations(this);
@@ -767,7 +768,7 @@ class InstantAddItemModal {
         this.listenersSetup = true;
 
         // FIRST: Setup close button handler (capture phase to ensure it runs before modal handler)
-        const closeBtn = document.querySelector('.modal-close-btn');
+        const closeBtn = document.querySelector('.instant-add-item-modal-close-btn');
         if (closeBtn) {
             // Remove any existing listeners to avoid duplicates
             if (this.closeModalHandler) {
@@ -857,7 +858,7 @@ class InstantAddItemModal {
     // Public methods for global access
     async show(options = {}, isEdit = false, editItem = null, editIndex = -1) {
         // Check if modal exists in DOM
-        const modalExists = document.getElementById('invoice-modal');
+        const modalExists = document.getElementById('instant-add-item-modal');
 
         if (!modalExists) {
             // Reset initialization state so it will reload
@@ -869,8 +870,8 @@ class InstantAddItemModal {
             await this.initialize();
         } else {
             // Re-check modal elements in case they were lost
-            this.modal = document.getElementById('invoice-modal');
-            this.itemInput = document.getElementById('invoice-item-input');
+            this.modal = document.getElementById('instant-add-item-modal');
+            this.itemInput = document.getElementById('instant-add-item-item-input');
 
             // Re-setup event listeners if elements exist but listeners might be lost
             if (this.modal && this.itemInput && !this.listenersSetup) {
@@ -891,7 +892,7 @@ class InstantAddItemModal {
             this.currentEditIndex = editIndex;
             this.uiComponents.setEditMode(editItem);
             // Update modal title
-            const titleEl = document.querySelector('.modal-title');
+            const titleEl = document.querySelector('.instant-add-item-modal-title');
             if (titleEl) {
                 titleEl.textContent = 'Edit Item in Sale';
             }
@@ -899,7 +900,7 @@ class InstantAddItemModal {
             this.currentEditIndex = -1;
             this.uiComponents.resetForm();
             // Reset modal title
-            const titleEl = document.querySelector('.modal-title');
+            const titleEl = document.querySelector('.instant-add-item-modal-title');
             if (titleEl) {
                 titleEl.textContent = 'Add Item to Sale';
             }
@@ -1002,7 +1003,7 @@ if (typeof window.closeModal === 'undefined') {
             window.instantAddItemModal.closeModal();
         } else {
             // Fallback: directly hide the modal
-            const modal = document.getElementById('invoice-modal');
+            const modal = document.getElementById('instant-add-item-modal');
             if (modal) {
                 modal.classList.remove('active');
             }
@@ -1024,7 +1025,7 @@ if (typeof window.closeInstantAddItemModal === 'undefined') {
             window.instantAddItemModal.closeModal();
         } else {
             // Fallback: directly hide the modal
-            const modal = document.getElementById('invoice-modal');
+            const modal = document.getElementById('instant-add-item-modal');
             if (modal) {
                 modal.classList.remove('active');
                 modal.style.display = 'none';
@@ -1041,7 +1042,7 @@ export async function loadInstantAddItemModal(isEdit = false, editItem = null, e
     try {
 
         // Check if modal is already loaded
-        let modalElement = document.getElementById('invoice-modal');
+        let modalElement = document.getElementById('instant-add-item-modal');
         if (modalElement) {
             // If already exists, just trigger it
             if (window.instantAddItemInit) {
@@ -1063,7 +1064,7 @@ export async function loadInstantAddItemModal(isEdit = false, editItem = null, e
         tempDiv.innerHTML = htmlContent;
 
         // Extract the modal and styles
-        modalElement = tempDiv.querySelector('#invoice-modal');
+        modalElement = tempDiv.querySelector('#instant-add-item-modal');
         const styleElement = tempDiv.querySelector('style');
 
         if (modalElement) {
@@ -1096,7 +1097,7 @@ export async function loadInstantAddItemModal(isEdit = false, editItem = null, e
 // Auto-initialize if modal exists on page (for direct usage)
 if (typeof window.instantAddItemModalInitialized === 'undefined') {
     document.addEventListener('DOMContentLoaded', () => {
-        if (document.getElementById('invoice-modal')) {
+        if (document.getElementById('instant-add-item-modal')) {
             if (typeof window.instantAddItemModal !== 'undefined') {
                 window.instantAddItemModal.initialize();
             }

@@ -9,8 +9,8 @@ export class InstantAddItemDBOperations {
     }
 
     setupSaveButtons() {
-        const saveItemBtn = document.getElementById('invoice-save-item');
-        const saveNewBtn = document.getElementById('invoice-save-new');
+        const saveItemBtn = document.getElementById('instant-add-item-save-item');
+        const saveNewBtn = document.getElementById('instant-add-item-save-new');
 
         if (saveItemBtn) {
             saveItemBtn.addEventListener('click', () => {
