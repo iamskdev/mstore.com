@@ -10,7 +10,7 @@
  */
 
 import { AuthService } from './firebase/auth/auth.js';
-import { routeConfig, defaultViews } from './routes.js';
+import { routeConfig, defaultViews } from './routing/routes.js';
 import { setDeferredPrompt, setupPwaRefreshBlockers } from './utils/pwa-manager.js';
 import { initializeFirebase } from './firebase/firebase-config.js';
 import { setAppConfig, getAppConfig } from './settings/main-config.js';
@@ -18,6 +18,7 @@ import { initMediaEditor } from './modals/media-editor/media-editor.js';
 import { initOtpVerificationModal } from './modals/otp-verification-modal.js';
 import { initWishlistHandler } from './utils/saved-manager.js';
 import { initAddToCartHandler } from './utils/cart-manager.js'; // Added this line
+import { routeManager as newRouteManager } from './routing/index.js';
 import { loadTopNavigation } from './partials/navigations/top-nav.js';
 import { loadBottomNavigation } from './partials/navigations/bottom-nav.js';
 import { getFooterHtml } from './partials/footer/footer.js';
@@ -32,6 +33,8 @@ class RouteManager {
     // asynchronously by the init() method, preventing a "flash" of guest content.
     this.currentRole = 'merchant';
     this.currentView = 'home';
+    this.currentViewId = 'home'; // NEW: To track current view ID
+    this.currentConfig = null; // NEW: To store resolved config
     this.routeConfig = routeConfig; // Expose config if needed externally
     this.defaultViews = defaultViews;
     this.currentModule = null; // NEW: To hold the currently active view's module
@@ -39,6 +42,10 @@ class RouteManager {
     
     this.footerHelper = null; // To be lazy-loaded for managing the footer
     this.subscribers = [];
+
+    // Rate limiting for rapid successive calls
+    this.lastSwitchTime = null;
+    this.lastSwitchKey = null;
   }
 
   /**
@@ -64,10 +71,9 @@ class RouteManager {
   /** @private Notifies all subscribers about a state change. */
   _notifySubscribers() {
     console.log("routeManager: Notifying subscribers about state change.");
-    // --- FIX: Correctly resolve config from role-specific OR common views ---
-    // This ensures that subscribers (like top-nav) always get the correct title and config,
-    // even for parameterized routes like 'item-details/:id'.
-    let config = this.routeConfig[this.currentRole]?.[this.currentView];
+
+    // Use stored resolved config if available, otherwise fall back to resolution
+    let config = this.currentConfig || this.routeConfig[this.currentRole]?.[this.currentView];
 
     if (!config) {
       // Try parameterized route matching in role-specific config first
@@ -230,7 +236,30 @@ class RouteManager {
    * @param {string} viewId The ID of the view to switch to.
    */
   async switchView(role, viewId, fromPopState = false) {
-    console.log(`routeManager: Attempting to switch to role: ${role}, viewId: ${viewId}`); // Added log
+    console.log(`routeManager: Attempting to switch to role: ${role}, viewId: ${viewId}`);
+
+    // Prevent switching to the same view that's already active
+    if (this.currentRole === role && this.currentViewId === viewId && !fromPopState) {
+      console.log('routeManager: Already on the same view, skipping switch');
+      return;
+    }
+
+    // Prevent rapid successive calls to the same route
+    const switchKey = `${role}:${viewId}`;
+    const now = Date.now();
+    if (this.lastSwitchTime && this.lastSwitchKey === switchKey && (now - this.lastSwitchTime) < 200) {
+      console.log('routeManager: Rapid successive call, skipping');
+      return;
+    }
+    this.lastSwitchKey = switchKey;
+    this.lastSwitchTime = now; // Added log
+
+    // Prevent switching to the same view that's already active
+    if (this.currentRole === role && this.currentViewId === viewId && !fromPopState) {
+      console.log('routeManager: Already on the same view, skipping switch');
+      return;
+    }
+
     // --- FIX: Close any open modals before switching views ---
     window.dispatchEvent(new CustomEvent('toggleAdvancedFilter', { detail: { show: false } }));
 
@@ -239,8 +268,21 @@ class RouteManager {
     // Reset routeParams at the start of each switch
     this.routeParams = {};
 
+    // Special handling for dashboard sub-routes
+    if (role === 'merchant' && viewId.startsWith('dashboard/')) {
+      // Extract tab from dashboard/tab format
+      const tab = viewId.split('/')[1];
+      if (this.routeConfig[role] && this.routeConfig[role]['dashboard']) {
+        config = { ...this.routeConfig[role]['dashboard'] }; // Clone config to avoid modifying original
+
+
+        // Pass tab as parameter to the view
+        routeParams.activeTab = tab;
+        this.routeParams = routeParams;
+      }
+    }
     // First, check for a direct match in the role-specific config
-    if (this.routeConfig[role] && this.routeConfig[role][viewId]) {
+    else if (this.routeConfig[role] && this.routeConfig[role][viewId]) {
       config = this.routeConfig[role][viewId];
     } else {
       // If not found, check for a parameterized route in role-specific config first
@@ -298,8 +340,8 @@ class RouteManager {
         } else {
           console.warn(`routeManager: Invalid role "${role}" or view "${viewId}". Falling back to default.`);
           role = 'guest'; // Safe fallback role
-          viewId = this.defaultViews[role];
-          config = this.routeConfig[role][viewId];
+          viewId = this.defaultViews.guest; // Use guest default
+          config = this.routeConfig.guest[viewId];
         }
       }
     }
@@ -407,6 +449,7 @@ class RouteManager {
     console.log(`Applied 'view-active' and 'display: flex' to ${newViewElement.id}. Class list:`, newViewElement.classList);
     this.currentRole = role;
     this.currentView = viewId;
+    this.currentConfig = resolvedConfig; // Store the resolved config for notifications
 
     // --- Session Persistence ---
     // Save the last active state to localStorage. This is the key to remembering the

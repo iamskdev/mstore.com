@@ -20,6 +20,12 @@ const APP_SHELL_URLS = [
   './source/main.js',
   './source/firebase/firebase-config.js',
 
+  // Routing Modules
+  './source/routing/route-manager.js',
+  './source/routing/route-url-handler.js',
+  './source/routing/route-validator.js',
+  './source/routing/index.js',
+
   // Core Utility Modules
   './source/utils/data-manager.js',
   './source/api/cloudinary.js',
@@ -59,7 +65,7 @@ const APP_SHELL_URLS = [
   './source/templates/cards/card-list.html',
 
   // Pages & Associated Assets from view-config.
-  './source/routes.js',
+  './source/routing/routes.js',
   './source/templates/cards/card-helper.js',
   './source/common/pages/cart.html',
   './source/common/styles/cart.css',

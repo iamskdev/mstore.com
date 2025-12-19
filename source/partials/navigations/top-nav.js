@@ -211,7 +211,7 @@ export function initializeTopNavigation() {
             } else if (routeManager.currentView === 'merchant-add-item-view') {
                 // Special case: For add-item views, navigate to the main add view instead of history.back()
                 console.log('Back button clicked on add-item view, navigating to add view');
-                routeManager.switchView('merchant', 'add');
+                routeManager.switchView('merchant', 'dashboard');
             } else {
                 // Otherwise, its job is to go back in history.
                 window.history.back();

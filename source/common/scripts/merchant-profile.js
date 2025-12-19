@@ -752,7 +752,7 @@ function addCommentInputListeners() {
 
 /**
  * Caches or removes a followed merchant's data from localStorage.
- * @param {string} action - 'add' to cache the merchant, 'remove' to delete from cache.
+ * @param {string} action - 'dashboard' to cache the merchant, 'remove' to delete from cache.
  * @param {object} merchantData - The full merchant object.
  * @param {Array} allItems - An array of all items to filter from.
  */
@@ -763,7 +763,7 @@ function manageFollowedMerchantCache(action, merchantData, allItems) {
     const merchantId = merchantData.meta.merchantId;
     let followedMerchants = localCache.get(cacheKey) || {};
 
-    if (action === 'add') {
+    if (action === 'dashboard') {
         // Filter items belonging to this merchant
         const merchantItems = allItems.filter(item => item.meta?.links?.merchantId === merchantId);
 
@@ -1045,7 +1045,7 @@ function addFollowButtonListener(followBtn) {
             followBtn.classList.remove('secondary');
             followBtn.classList.add('primary');
             followBtn.innerHTML = '<i class="fas fa-user-check"></i> Following';
-            manageFollowedMerchantCache('add', merchantData, allItemsData);
+            manageFollowedMerchantCache('dashboard', merchantData, allItemsData);
         }
     });
 }

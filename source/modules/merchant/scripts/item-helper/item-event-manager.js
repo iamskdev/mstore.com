@@ -84,7 +84,7 @@ export class ItemEventManager {
             // Navigate back immediately after showing toast
             if (window.routeManager) {
                 setTimeout(() => {
-                    window.routeManager.switchView('merchant', 'add');
+                    window.routeManager.switchView('merchant', 'dashboard');
                 }, 0); // Immediate navigation
             }
 
@@ -102,7 +102,7 @@ export class ItemEventManager {
 
         // Navigate back to merchant home/add view
         if (window.routeManager) {
-            window.routeManager.switchView('merchant', 'add');
+            window.routeManager.switchView('merchant', 'dashboard');
         } else {
             // Fallback: use browser back
             window.history.back();

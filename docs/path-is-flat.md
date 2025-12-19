@@ -1,362 +1,409 @@
 # 📁 Project Path Tree (Gemini-friendly)
-📅 Last Updated: 12/10/2025, 09:57
+📅 Last Updated: 19/12/2025, 18:36
 
-S:\My Projects\Apna Store\mStore\.firebaserc
-S:\My Projects\Apna Store\mStore\.github\workflows\release.yml
-S:\My Projects\Apna Store\mStore\.gitignore
-S:\My Projects\Apna Store\mStore\.husky\_\.gitignore
-S:\My Projects\Apna Store\mStore\.husky\_\applypatch-msg
-S:\My Projects\Apna Store\mStore\.husky\_\commit-msg
-S:\My Projects\Apna Store\mStore\.husky\_\h
-S:\My Projects\Apna Store\mStore\.husky\_\husky.sh
-S:\My Projects\Apna Store\mStore\.husky\_\post-applypatch
-S:\My Projects\Apna Store\mStore\.husky\_\post-checkout
-S:\My Projects\Apna Store\mStore\.husky\_\post-commit
-S:\My Projects\Apna Store\mStore\.husky\_\post-merge
-S:\My Projects\Apna Store\mStore\.husky\_\post-rewrite
-S:\My Projects\Apna Store\mStore\.husky\_\pre-applypatch
-S:\My Projects\Apna Store\mStore\.husky\_\pre-auto-gc
-S:\My Projects\Apna Store\mStore\.husky\_\pre-commit
-S:\My Projects\Apna Store\mStore\.husky\_\pre-merge-commit
-S:\My Projects\Apna Store\mStore\.husky\_\pre-push
-S:\My Projects\Apna Store\mStore\.husky\_\pre-rebase
-S:\My Projects\Apna Store\mStore\.husky\_\prepare-commit-msg
-S:\My Projects\Apna Store\mStore\.husky\post-commit
-S:\My Projects\Apna Store\mStore\.husky\post-commit.sh
-S:\My Projects\Apna Store\mStore\.husky\pre-commit
-S:\My Projects\Apna Store\mStore\.husky\pre-push
-S:\My Projects\Apna Store\mStore\archive\card-old.html
-S:\My Projects\Apna Store\mStore\archive\error-page.html
-S:\My Projects\Apna Store\mStore\archive\merchant-add-demo.html
-S:\My Projects\Apna Store\mStore\archive\merchant-profile-demo.html
-S:\My Projects\Apna Store\mStore\archive\photo-editor-demo.html
-S:\My Projects\Apna Store\mStore\archive\rating-demo.html
-S:\My Projects\Apna Store\mStore\archive\rating-modal.html
-S:\My Projects\Apna Store\mStore\archive\rating-modal.js
-S:\My Projects\Apna Store\mStore\archive\story-viewer-demo.html
-S:\My Projects\Apna Store\mStore\archive\updates-demo.html
-S:\My Projects\Apna Store\mStore\docs\CHANGELOG.md
-S:\My Projects\Apna Store\mStore\docs\brands_list.md
-S:\My Projects\Apna Store\mStore\docs\commit-guide.md
-S:\My Projects\Apna Store\mStore\docs\commit_message.txt
-S:\My Projects\Apna Store\mStore\docs\firebase-emulator.md
-S:\My Projects\Apna Store\mStore\docs\id-generation.md
-S:\My Projects\Apna Store\mStore\docs\implementing-new-views.md
-S:\My Projects\Apna Store\mStore\docs\instruction.md
-S:\My Projects\Apna Store\mStore\docs\media-queries.md
-S:\My Projects\Apna Store\mStore\docs\path-is-flat.md
-S:\My Projects\Apna Store\mStore\docs\path-structured.md
-S:\My Projects\Apna Store\mStore\docs\renaming-the-app.md
-S:\My Projects\Apna Store\mStore\docs\schema-guide.md
-S:\My Projects\Apna Store\mStore\docs\shortcuts.md
-S:\My Projects\Apna Store\mStore\docs\versions-guide.md
-S:\My Projects\Apna Store\mStore\docs\workflow.md
-S:\My Projects\Apna Store\mStore\firebase-debug.log
-S:\My Projects\Apna Store\mStore\firebase.json
-S:\My Projects\Apna Store\mStore\firestore-debug.log
-S:\My Projects\Apna Store\mStore\functions\firebase-debug.log
-S:\My Projects\Apna Store\mStore\functions\index.js
-S:\My Projects\Apna Store\mStore\functions\package-lock.json
-S:\My Projects\Apna Store\mStore\functions\package.json
-S:\My Projects\Apna Store\mStore\index.html
-S:\My Projects\Apna Store\mStore\localstore\images\default-product.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\default-service.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\aadhaar-lamination.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\amul-butter.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\bread.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\colgate-paste.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\color-print.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\dabur-red.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\good-day.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\kurkure.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\lamination.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\lijjat.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\lux-soap.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\mobile-recharge.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\mustard-oil.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\pan-card.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\parle-desk.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\parleg-add.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\parleg-cup.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\parleg-genius.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\parleg-glucose.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\parleg-gold.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\parleg-royal.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\parleg-tea.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\parleg-white.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\passport-photo-studio.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\photo-print.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\red-bull.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\redlabel-tea.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\rice.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\scan-document.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\surf-excel.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\tata-salt.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\toor-dal.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\items\xerox-bw.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\logos\anita-store-logo.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\logos\internet-cafe-logo.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\users\anita.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\users\dev.png
-S:\My Projects\Apna Store\mStore\localstore\images\users\rohit.jpg
-S:\My Projects\Apna Store\mStore\localstore\images\users\vivek.jpg
-S:\My Projects\Apna Store\mStore\localstore\jsons\accounts.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\alerts.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\brands.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\campaigns.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\categories.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\comments.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\feedbacks.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\items.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\logs.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\merchants.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\orders.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\posts.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\price-logs.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\promotions.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\ratings.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\stories.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\transactions.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\units.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\users.json
-S:\My Projects\Apna Store\mStore\localstore\jsons\versions.json
-S:\My Projects\Apna Store\mStore\manifest.json
-S:\My Projects\Apna Store\mStore\package-lock.json
-S:\My Projects\Apna Store\mStore\package.json
-S:\My Projects\Apna Store\mStore\python\config_editor.py
-S:\My Projects\Apna Store\mStore\python\markdown_creator.py
-S:\My Projects\Apna Store\mStore\python\timestamp_generator.py
-S:\My Projects\Apna Store\mStore\python\timestamp_usage.json
-S:\My Projects\Apna Store\mStore\python\zip_creator.py
-S:\My Projects\Apna Store\mStore\python\zip_creator_manual.py
-S:\My Projects\Apna Store\mStore\readme.md
-S:\My Projects\Apna Store\mStore\service-worker.js
-S:\My Projects\Apna Store\mStore\source\api\cloudinary.js
-S:\My Projects\Apna Store\mStore\source\assets\icon-use.md
-S:\My Projects\Apna Store\mStore\source\assets\icons\action\add.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\action\delete.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\action\download.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\action\refresh.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\action\share-nodes.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\action\share.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\action\upload.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\auth\key.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\auth\lock.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\auth\login.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\auth\logout.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\avatars\admin.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\avatars\female.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\avatars\guest.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\avatars\male-user-circle.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\avatars\merchant.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\avatars\user.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\billing\bill.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\billing\invoice.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\commerce\bag.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\commerce\cart.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\commerce\money.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\commerce\offer.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\commerce\receipt.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\commerce\ruppee.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\commerce\wallet.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\communication\call.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\communication\chat.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\communication\mail.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\communication\sms.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\communication\support.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\identity\aadhaar copy 4.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\identity\aadhaar.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\identity\pan.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\identity\passport.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\identity\voter.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\indicators\bell.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\indicators\eye.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\indicators\flame.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\indicators\heart.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\indicators\star.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\attachment.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\calendar.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\camera.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\csv.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\file.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\folder.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\gallery.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\image.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\pdf.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\photo.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\misc\time.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\navigation\arrow.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\navigation\back.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\navigation\chevron.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\navigation\close.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\navigation\drawer.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\navigation\home.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\navigation\menu.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\navigation\user-account.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\network\internet.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\network\sync.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\network\wifi.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\social\facebook.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\social\google.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\social\twitter.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\social\whatsapp.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\social\youtube.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\approved.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\check.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\completed.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\error.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\failed.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\info.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\loading.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\offline.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\pending.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\success.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\verified-badge.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\verified.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\status\warning.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\system\language.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\system\location.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\system\login.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\system\logout.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\system\setting.svg
-S:\My Projects\Apna Store\mStore\source\assets\icons\system\signup.svg
-S:\My Projects\Apna Store\mStore\source\assets\logos\app-logo.png
-S:\My Projects\Apna Store\mStore\source\assets\logos\app_icon_192.png
-S:\My Projects\Apna Store\mStore\source\assets\logos\app_icon_512.png
-S:\My Projects\Apna Store\mStore\source\assets\screenshots\desktop-guest-home.png
-S:\My Projects\Apna Store\mStore\source\assets\screenshots\guest-account.jpg
-S:\My Projects\Apna Store\mStore\source\assets\screenshots\guest-home.jpg
-S:\My Projects\Apna Store\mStore\source\common\langs\en.json
-S:\My Projects\Apna Store\mStore\source\common\langs\hi.json
-S:\My Projects\Apna Store\mStore\source\common\langs\langs.json
-S:\My Projects\Apna Store\mStore\source\common\pages\account.html
-S:\My Projects\Apna Store\mStore\source\common\pages\authentication.html
-S:\My Projects\Apna Store\mStore\source\common\pages\cart.html
-S:\My Projects\Apna Store\mStore\source\common\pages\chat.html
-S:\My Projects\Apna Store\mStore\source\common\pages\conversation.html
-S:\My Projects\Apna Store\mStore\source\common\pages\home.html
-S:\My Projects\Apna Store\mStore\source\common\pages\item-details.html
-S:\My Projects\Apna Store\mStore\source\common\pages\merchant-profile.html
-S:\My Projects\Apna Store\mStore\source\common\pages\notification.html
-S:\My Projects\Apna Store\mStore\source\common\pages\offline.html
-S:\My Projects\Apna Store\mStore\source\common\pages\profile-update.html
-S:\My Projects\Apna Store\mStore\source\common\pages\updates.html
-S:\My Projects\Apna Store\mStore\source\common\pages\wishlist.html
-S:\My Projects\Apna Store\mStore\source\common\scripts\account.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\authentication.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\cart.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\chat.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\conversation.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\home.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\item-details.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\merchant-profile.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\notification.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\profile-update.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\updates.js
-S:\My Projects\Apna Store\mStore\source\common\scripts\wishlist.js
-S:\My Projects\Apna Store\mStore\source\common\styles\account.css
-S:\My Projects\Apna Store\mStore\source\common\styles\authentication.css
-S:\My Projects\Apna Store\mStore\source\common\styles\cart.css
-S:\My Projects\Apna Store\mStore\source\common\styles\chat.css
-S:\My Projects\Apna Store\mStore\source\common\styles\conversation.css
-S:\My Projects\Apna Store\mStore\source\common\styles\home.css
-S:\My Projects\Apna Store\mStore\source\common\styles\item-details.css
-S:\My Projects\Apna Store\mStore\source\common\styles\merchant-profile.css
-S:\My Projects\Apna Store\mStore\source\common\styles\notification.css
-S:\My Projects\Apna Store\mStore\source\common\styles\profile-update.css
-S:\My Projects\Apna Store\mStore\source\common\styles\theme.css
-S:\My Projects\Apna Store\mStore\source\common\styles\updates.css
-S:\My Projects\Apna Store\mStore\source\common\styles\wishlist.css
-S:\My Projects\Apna Store\mStore\source\firebase\auth\auth.js
-S:\My Projects\Apna Store\mStore\source\firebase\firebase-config.js
-S:\My Projects\Apna Store\mStore\source\firebase\firebase-credentials.js
-S:\My Projects\Apna Store\mStore\source\firebase\firestore\logs-collection.js
-S:\My Projects\Apna Store\mStore\source\firebase\rules\firestore.rules
-S:\My Projects\Apna Store\mStore\source\firebase\serviceAccountKey.json
-S:\My Projects\Apna Store\mStore\source\main.css
-S:\My Projects\Apna Store\mStore\source\main.js
-S:\My Projects\Apna Store\mStore\source\modals\account-switcher.html
-S:\My Projects\Apna Store\mStore\source\modals\media-editor\media-editor.html
-S:\My Projects\Apna Store\mStore\source\modals\media-editor\media-editor.js
-S:\My Projects\Apna Store\mStore\source\modals\otp-verification-modal.html
-S:\My Projects\Apna Store\mStore\source\modals\otp-verification-modal.js
-S:\My Projects\Apna Store\mStore\source\modals\rating\rating-modal.html
-S:\My Projects\Apna Store\mStore\source\modals\rating\rating-modal.js
-S:\My Projects\Apna Store\mStore\source\modals\story-viewer\story-viewer.html
-S:\My Projects\Apna Store\mStore\source\modals\story-viewer\story-viewer.js
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\activity.log
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\daily-report.log
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\error.log
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\exports\daily-report.pdf
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\exports\sale-summary.pdf
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\exports\stock-export.csv
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\exports\stock-export.pdf
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\exports\stock-export.xlsx
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\imports\stock-import.csv
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\imports\stock-import.xlsx
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\logs.json
-S:\My Projects\Apna Store\mStore\source\modules\admin\logs\price-change-logs.html
-S:\My Projects\Apna Store\mStore\source\modules\admin\pages\admin-home.html
-S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\admin-home.js
-S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\dev-tools.js
-S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\log-reader.js
-S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\mock-inject.js
-S:\My Projects\Apna Store\mStore\source\modules\admin\scripts\mode-switcher.js
-S:\My Projects\Apna Store\mStore\source\modules\admin\styles\admin-home.css
-S:\My Projects\Apna Store\mStore\source\modules\merchant\analytics.html
-S:\My Projects\Apna Store\mStore\source\modules\merchant\merchant-home.html
-S:\My Projects\Apna Store\mStore\source\partials\drawer\drawer.html
-S:\My Projects\Apna Store\mStore\source\partials\drawer\drawer.js
-S:\My Projects\Apna Store\mStore\source\partials\filter\filter-bar.html
-S:\My Projects\Apna Store\mStore\source\partials\filter\filter-bar.js
-S:\My Projects\Apna Store\mStore\source\partials\filter\filter-modal.html
-S:\My Projects\Apna Store\mStore\source\partials\filter\filter-modal.js
-S:\My Projects\Apna Store\mStore\source\partials\footer\footer.html
-S:\My Projects\Apna Store\mStore\source\partials\footer\footer.js
-S:\My Projects\Apna Store\mStore\source\partials\modals\feedback.html
-S:\My Projects\Apna Store\mStore\source\partials\modals\feedback.js
-S:\My Projects\Apna Store\mStore\source\partials\navigations\bottom-nav.html
-S:\My Projects\Apna Store\mStore\source\partials\navigations\bottom-nav.js
-S:\My Projects\Apna Store\mStore\source\partials\navigations\top-nav.html
-S:\My Projects\Apna Store\mStore\source\partials\navigations\top-nav.js
-S:\My Projects\Apna Store\mStore\source\partials\role-switcher.html
-S:\My Projects\Apna Store\mStore\source\routes.js
-S:\My Projects\Apna Store\mStore\source\schemas\feedback-schema.json
-S:\My Projects\Apna Store\mStore\source\schemas\rating-schema.json
-S:\My Projects\Apna Store\mStore\source\schemas\stories-schema.json
-S:\My Projects\Apna Store\mStore\source\settings\config.json
-S:\My Projects\Apna Store\mStore\source\settings\main-config.js
-S:\My Projects\Apna Store\mStore\source\styles\main.css
-S:\My Projects\Apna Store\mStore\source\templates\banner.html
-S:\My Projects\Apna Store\mStore\source\templates\banner.js
-S:\My Projects\Apna Store\mStore\source\templates\cards\card-grid.html
-S:\My Projects\Apna Store\mStore\source\templates\cards\card-helper.js
-S:\My Projects\Apna Store\mStore\source\templates\cards\card-list.html
-S:\My Projects\Apna Store\mStore\source\utils\cart-manager.js
-S:\My Projects\Apna Store\mStore\source\utils\cursor-zoom.js
-S:\My Projects\Apna Store\mStore\source\utils\data-manager.js
-S:\My Projects\Apna Store\mStore\source\utils\formatters.js
-S:\My Projects\Apna Store\mStore\source\utils\idGenerator.js
-S:\My Projects\Apna Store\mStore\source\utils\image-zoom.js
-S:\My Projects\Apna Store\mStore\source\utils\lang-helper.js
-S:\My Projects\Apna Store\mStore\source\utils\pwa-manager.js
-S:\My Projects\Apna Store\mStore\source\utils\saved-manager.js
-S:\My Projects\Apna Store\mStore\source\utils\search-handler.js
-S:\My Projects\Apna Store\mStore\source\utils\theme-switcher.js
-S:\My Projects\Apna Store\mStore\source\utils\toast.js
-S:\My Projects\Apna Store\mStore\tools\field-inject.json
-S:\My Projects\Apna Store\mStore\tools\firebase-inject.md
-S:\My Projects\Apna Store\mStore\tools\scripts\add-hsn-code.js
-S:\My Projects\Apna Store\mStore\tools\scripts\backup-data.js
-S:\My Projects\Apna Store\mStore\tools\scripts\create-auth-users.js
-S:\My Projects\Apna Store\mStore\tools\scripts\export-data.js
-S:\My Projects\Apna Store\mStore\tools\scripts\import-data.js
-S:\My Projects\Apna Store\mStore\tools\scripts\item-seeds.js
-S:\My Projects\Apna Store\mStore\tools\scripts\path-generator.js
-S:\My Projects\Apna Store\mStore\tools\scripts\set-emulator.js
-S:\My Projects\Apna Store\mStore\tools\scripts\upload-to-emulator.js
-S:\My Projects\Apna Store\mStore\versioner\config-updater.js
-S:\My Projects\Apna Store\mStore\versioner\deploy-update.js
-S:\My Projects\Apna Store\mStore\versioner\validate-config.js
-S:\My Projects\Apna Store\mStore\versioner\versioner.js
-S:\My Projects\Apna Store\mStore\versioner\versioner.json
+H:\My Projects\ecommerce\mStore\.cursor\commands\commit-msg-drafting.md
+H:\My Projects\ecommerce\mStore\.firebaserc
+H:\My Projects\ecommerce\mStore\.github\workflows\release.yml
+H:\My Projects\ecommerce\mStore\.gitignore
+H:\My Projects\ecommerce\mStore\.husky\_\.gitignore
+H:\My Projects\ecommerce\mStore\.husky\_\applypatch-msg
+H:\My Projects\ecommerce\mStore\.husky\_\commit-msg
+H:\My Projects\ecommerce\mStore\.husky\_\h
+H:\My Projects\ecommerce\mStore\.husky\_\husky.sh
+H:\My Projects\ecommerce\mStore\.husky\_\post-applypatch
+H:\My Projects\ecommerce\mStore\.husky\_\post-checkout
+H:\My Projects\ecommerce\mStore\.husky\_\post-commit
+H:\My Projects\ecommerce\mStore\.husky\_\post-merge
+H:\My Projects\ecommerce\mStore\.husky\_\post-rewrite
+H:\My Projects\ecommerce\mStore\.husky\_\pre-applypatch
+H:\My Projects\ecommerce\mStore\.husky\_\pre-auto-gc
+H:\My Projects\ecommerce\mStore\.husky\_\pre-commit
+H:\My Projects\ecommerce\mStore\.husky\_\pre-merge-commit
+H:\My Projects\ecommerce\mStore\.husky\_\pre-push
+H:\My Projects\ecommerce\mStore\.husky\_\pre-rebase
+H:\My Projects\ecommerce\mStore\.husky\_\prepare-commit-msg
+H:\My Projects\ecommerce\mStore\.husky\post-commit
+H:\My Projects\ecommerce\mStore\.husky\post-commit.sh
+H:\My Projects\ecommerce\mStore\.husky\pre-commit
+H:\My Projects\ecommerce\mStore\.husky\pre-push
+H:\My Projects\ecommerce\mStore\archive\add-item-demo-new.html
+H:\My Projects\ecommerce\mStore\archive\analytics.html
+H:\My Projects\ecommerce\mStore\archive\card-old.html
+H:\My Projects\ecommerce\mStore\archive\error-page.html
+H:\My Projects\ecommerce\mStore\archive\merchant-add-demo.html
+H:\My Projects\ecommerce\mStore\archive\merchant-profile-demo.html
+H:\My Projects\ecommerce\mStore\archive\new-analytic copy.html
+H:\My Projects\ecommerce\mStore\archive\photo-editor-demo.html
+H:\My Projects\ecommerce\mStore\archive\rating-demo.html
+H:\My Projects\ecommerce\mStore\archive\rating-modal.html
+H:\My Projects\ecommerce\mStore\archive\rating-modal.js
+H:\My Projects\ecommerce\mStore\archive\request-to-switch-prof.html
+H:\My Projects\ecommerce\mStore\archive\story-viewer-demo.html
+H:\My Projects\ecommerce\mStore\archive\updates-demo.html
+H:\My Projects\ecommerce\mStore\docs\CHANGELOG.md
+H:\My Projects\ecommerce\mStore\docs\brands_list.md
+H:\My Projects\ecommerce\mStore\docs\categories-schema-guide.md
+H:\My Projects\ecommerce\mStore\docs\commit-guide.md
+H:\My Projects\ecommerce\mStore\docs\commit_message.txt
+H:\My Projects\ecommerce\mStore\docs\firebase-emulator.md
+H:\My Projects\ecommerce\mStore\docs\gemini_settings.md
+H:\My Projects\ecommerce\mStore\docs\id-generation.md
+H:\My Projects\ecommerce\mStore\docs\implementing-new-views.md
+H:\My Projects\ecommerce\mStore\docs\instruction.md
+H:\My Projects\ecommerce\mStore\docs\media-queries.md
+H:\My Projects\ecommerce\mStore\docs\path-is-flat.md
+H:\My Projects\ecommerce\mStore\docs\path-structured.md
+H:\My Projects\ecommerce\mStore\docs\renaming-the-app.md
+H:\My Projects\ecommerce\mStore\docs\schema-guide.md
+H:\My Projects\ecommerce\mStore\docs\shortcuts.md
+H:\My Projects\ecommerce\mStore\docs\versions-guide.md
+H:\My Projects\ecommerce\mStore\docs\workflow.md
+H:\My Projects\ecommerce\mStore\firebase-debug.log
+H:\My Projects\ecommerce\mStore\firebase.json
+H:\My Projects\ecommerce\mStore\firestore-debug.log
+H:\My Projects\ecommerce\mStore\functions\firebase-debug.log
+H:\My Projects\ecommerce\mStore\functions\index.js
+H:\My Projects\ecommerce\mStore\functions\package-lock.json
+H:\My Projects\ecommerce\mStore\functions\package.json
+H:\My Projects\ecommerce\mStore\index.html
+H:\My Projects\ecommerce\mStore\localstore\images\default-product.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\default-service.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\aadhaar-lamination.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\amul-butter.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\bread.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\colgate-paste.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\color-print.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\dabur-red.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\good-day.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\kurkure.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\lamination.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\lijjat.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\lux-soap.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\mobile-recharge.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\mustard-oil.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\pan-card.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\parle-desk.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\parleg-add.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\parleg-cup.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\parleg-genius.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\parleg-glucose.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\parleg-gold.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\parleg-royal.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\parleg-tea.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\parleg-white.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\passport-photo-studio.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\photo-print.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\red-bull.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\redlabel-tea.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\rice.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\scan-document.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\surf-excel.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\tata-salt.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\toor-dal.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\items\xerox-bw.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\logos\anita-store-logo.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\logos\internet-cafe-logo.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\users\anita.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\users\dev.png
+H:\My Projects\ecommerce\mStore\localstore\images\users\rohit.jpg
+H:\My Projects\ecommerce\mStore\localstore\images\users\vivek.jpg
+H:\My Projects\ecommerce\mStore\localstore\jsons\accounts.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\alerts.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\brands.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\campaigns.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\categories.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\comments.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\feedbacks.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\items.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\logs.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\merchants.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\orders.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\posts.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\price-logs.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\promotions.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\ratings.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\stories.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\transactions.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\units.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\users.json
+H:\My Projects\ecommerce\mStore\localstore\jsons\versions.json
+H:\My Projects\ecommerce\mStore\manifest.json
+H:\My Projects\ecommerce\mStore\package-lock.json
+H:\My Projects\ecommerce\mStore\package.json
+H:\My Projects\ecommerce\mStore\python\config_editor.py
+H:\My Projects\ecommerce\mStore\python\markdown_creator.py
+H:\My Projects\ecommerce\mStore\python\timestamp_generator.py
+H:\My Projects\ecommerce\mStore\python\timestamp_usage.json
+H:\My Projects\ecommerce\mStore\python\zip_creator.py
+H:\My Projects\ecommerce\mStore\python\zip_creator_manual.py
+H:\My Projects\ecommerce\mStore\readme.md
+H:\My Projects\ecommerce\mStore\service-worker.js
+H:\My Projects\ecommerce\mStore\source\api\cloudinary.js
+H:\My Projects\ecommerce\mStore\source\assets\icon-use.md
+H:\My Projects\ecommerce\mStore\source\assets\icons\action\add.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\action\delete.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\action\download.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\action\refresh.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\action\share-nodes.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\action\share.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\action\upload.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\auth\key.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\auth\lock.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\auth\login.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\auth\logout.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\avatars\admin.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\avatars\female.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\avatars\guest.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\avatars\male-user-circle.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\avatars\merchant.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\avatars\user.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\billing\bill.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\billing\invoice.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\commerce\bag.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\commerce\cart.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\commerce\money.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\commerce\offer.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\commerce\receipt.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\commerce\ruppee.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\commerce\wallet.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\communication\call.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\communication\chat.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\communication\mail.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\communication\sms.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\communication\support.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\identity\aadhaar copy 4.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\identity\aadhaar.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\identity\pan.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\identity\passport.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\identity\voter.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\indicators\bell.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\indicators\eye.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\indicators\flame.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\indicators\heart.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\indicators\star.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\attachment.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\calendar.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\camera.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\csv.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\file.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\folder.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\gallery.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\image.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\pdf.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\photo.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\misc\time.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\navigation\arrow.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\navigation\back.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\navigation\chevron.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\navigation\close.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\navigation\drawer.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\navigation\home.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\navigation\menu.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\navigation\user-account.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\network\internet.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\network\sync.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\network\wifi.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\social\facebook.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\social\google.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\social\twitter.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\social\whatsapp.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\social\youtube.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\approved.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\check.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\completed.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\error.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\failed.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\info.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\loading.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\offline.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\pending.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\success.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\verified-badge.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\verified.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\status\warning.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\system\language.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\system\location.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\system\login.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\system\logout.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\system\setting.svg
+H:\My Projects\ecommerce\mStore\source\assets\icons\system\signup.svg
+H:\My Projects\ecommerce\mStore\source\assets\logos\app-logo.png
+H:\My Projects\ecommerce\mStore\source\assets\logos\app_icon_192.png
+H:\My Projects\ecommerce\mStore\source\assets\logos\app_icon_512.png
+H:\My Projects\ecommerce\mStore\source\assets\screenshots\desktop-guest-home.png
+H:\My Projects\ecommerce\mStore\source\assets\screenshots\guest-account.jpg
+H:\My Projects\ecommerce\mStore\source\assets\screenshots\guest-home.jpg
+H:\My Projects\ecommerce\mStore\source\common\langs\en.json
+H:\My Projects\ecommerce\mStore\source\common\langs\hi.json
+H:\My Projects\ecommerce\mStore\source\common\langs\langs.json
+H:\My Projects\ecommerce\mStore\source\common\pages\account.html
+H:\My Projects\ecommerce\mStore\source\common\pages\authentication.html
+H:\My Projects\ecommerce\mStore\source\common\pages\cart.html
+H:\My Projects\ecommerce\mStore\source\common\pages\chat.html
+H:\My Projects\ecommerce\mStore\source\common\pages\conversation.html
+H:\My Projects\ecommerce\mStore\source\common\pages\home.html
+H:\My Projects\ecommerce\mStore\source\common\pages\item-details.html
+H:\My Projects\ecommerce\mStore\source\common\pages\merchant-profile.html
+H:\My Projects\ecommerce\mStore\source\common\pages\notification.html
+H:\My Projects\ecommerce\mStore\source\common\pages\offline.html
+H:\My Projects\ecommerce\mStore\source\common\pages\profile-update.html
+H:\My Projects\ecommerce\mStore\source\common\pages\updates.html
+H:\My Projects\ecommerce\mStore\source\common\pages\wishlist.html
+H:\My Projects\ecommerce\mStore\source\common\scripts\account.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\authentication.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\cart.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\chat.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\conversation.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\home.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\item-details.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\merchant-profile.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\notification.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\profile-update.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\updates.js
+H:\My Projects\ecommerce\mStore\source\common\scripts\wishlist.js
+H:\My Projects\ecommerce\mStore\source\common\styles\account.css
+H:\My Projects\ecommerce\mStore\source\common\styles\authentication.css
+H:\My Projects\ecommerce\mStore\source\common\styles\cart.css
+H:\My Projects\ecommerce\mStore\source\common\styles\chat.css
+H:\My Projects\ecommerce\mStore\source\common\styles\conversation.css
+H:\My Projects\ecommerce\mStore\source\common\styles\home.css
+H:\My Projects\ecommerce\mStore\source\common\styles\item-details.css
+H:\My Projects\ecommerce\mStore\source\common\styles\merchant-profile.css
+H:\My Projects\ecommerce\mStore\source\common\styles\notification.css
+H:\My Projects\ecommerce\mStore\source\common\styles\profile-update.css
+H:\My Projects\ecommerce\mStore\source\common\styles\theme.css
+H:\My Projects\ecommerce\mStore\source\common\styles\updates.css
+H:\My Projects\ecommerce\mStore\source\common\styles\wishlist.css
+H:\My Projects\ecommerce\mStore\source\firebase\auth\auth.js
+H:\My Projects\ecommerce\mStore\source\firebase\firebase-config.js
+H:\My Projects\ecommerce\mStore\source\firebase\firebase-credentials.js
+H:\My Projects\ecommerce\mStore\source\firebase\firestore\logs-collection.js
+H:\My Projects\ecommerce\mStore\source\firebase\rules\firestore.rules
+H:\My Projects\ecommerce\mStore\source\firebase\serviceAccountKey.json
+H:\My Projects\ecommerce\mStore\source\main.css
+H:\My Projects\ecommerce\mStore\source\main.js
+H:\My Projects\ecommerce\mStore\source\modals\account-switcher.html
+H:\My Projects\ecommerce\mStore\source\modals\dropdown\dropdown-list.html
+H:\My Projects\ecommerce\mStore\source\modals\dropdown\dropdown-list.js
+H:\My Projects\ecommerce\mStore\source\modals\media-editor\media-editor.html
+H:\My Projects\ecommerce\mStore\source\modals\media-editor\media-editor.js
+H:\My Projects\ecommerce\mStore\source\modals\otp-verification-modal.html
+H:\My Projects\ecommerce\mStore\source\modals\otp-verification-modal.js
+H:\My Projects\ecommerce\mStore\source\modals\rating\rating-modal.html
+H:\My Projects\ecommerce\mStore\source\modals\rating\rating-modal.js
+H:\My Projects\ecommerce\mStore\source\modals\scan-barcode\qr-scanner.html
+H:\My Projects\ecommerce\mStore\source\modals\scan-barcode\qr-scanner.js
+H:\My Projects\ecommerce\mStore\source\modals\story-viewer\story-viewer.html
+H:\My Projects\ecommerce\mStore\source\modals\story-viewer\story-viewer.js
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\activity.log
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\daily-report.log
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\error.log
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\exports\daily-report.pdf
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\exports\sale-summary.pdf
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\exports\stock-export.csv
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\exports\stock-export.pdf
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\exports\stock-export.xlsx
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\imports\stock-import.csv
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\imports\stock-import.xlsx
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\logs.json
+H:\My Projects\ecommerce\mStore\source\modules\admin\logs\price-change-logs.html
+H:\My Projects\ecommerce\mStore\source\modules\admin\pages\admin-home.html
+H:\My Projects\ecommerce\mStore\source\modules\admin\scripts\admin-home.js
+H:\My Projects\ecommerce\mStore\source\modules\admin\scripts\dev-tools.js
+H:\My Projects\ecommerce\mStore\source\modules\admin\scripts\log-reader.js
+H:\My Projects\ecommerce\mStore\source\modules\admin\scripts\mock-inject.js
+H:\My Projects\ecommerce\mStore\source\modules\admin\scripts\mode-switcher.js
+H:\My Projects\ecommerce\mStore\source\modules\admin\styles\admin-home.css
+H:\My Projects\ecommerce\mStore\source\modules\merchant\analytics\merchant-analytics.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\analytics\scripts\merchant-analytics.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\analytics\styles\merchant-analytics.css
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\add-invoice.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\instant-add-item.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\add-invoice.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\instant-add-item.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\instant-db-operation.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\instant-ui-component.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\invoice-db-operation.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\invoice-event-manager.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\invoice-ui-component.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\styles\add-invoice.css
+H:\My Projects\ecommerce\mStore\source\modules\merchant\pages\add-item.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\pages\add.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\pages\merchant-profile-edit.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\add-item.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\add.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\index.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-data-manager.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-db-operations.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-event-manager.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-form-manager.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-media-handler.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-ui-components.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-validator.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\merchant-profile-edit.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\styles\add-item.css
+H:\My Projects\ecommerce\mStore\source\modules\merchant\styles\add.css
+H:\My Projects\ecommerce\mStore\source\modules\merchant\styles\merchant-profile-edit.css
+H:\My Projects\ecommerce\mStore\source\partials\drawer\drawer.html
+H:\My Projects\ecommerce\mStore\source\partials\drawer\drawer.js
+H:\My Projects\ecommerce\mStore\source\partials\filter\filter-bar.html
+H:\My Projects\ecommerce\mStore\source\partials\filter\filter-bar.js
+H:\My Projects\ecommerce\mStore\source\partials\filter\filter-modal.html
+H:\My Projects\ecommerce\mStore\source\partials\filter\filter-modal.js
+H:\My Projects\ecommerce\mStore\source\partials\footer\footer.html
+H:\My Projects\ecommerce\mStore\source\partials\footer\footer.js
+H:\My Projects\ecommerce\mStore\source\partials\modals\feedback.html
+H:\My Projects\ecommerce\mStore\source\partials\modals\feedback.js
+H:\My Projects\ecommerce\mStore\source\partials\navigations\bottom-nav.html
+H:\My Projects\ecommerce\mStore\source\partials\navigations\bottom-nav.js
+H:\My Projects\ecommerce\mStore\source\partials\navigations\top-nav.html
+H:\My Projects\ecommerce\mStore\source\partials\navigations\top-nav.js
+H:\My Projects\ecommerce\mStore\source\partials\role-switcher.html
+H:\My Projects\ecommerce\mStore\source\routing\index.js
+H:\My Projects\ecommerce\mStore\source\routing\route-manager.js
+H:\My Projects\ecommerce\mStore\source\routing\route-url-handler.js
+H:\My Projects\ecommerce\mStore\source\routing\route-validator.js
+H:\My Projects\ecommerce\mStore\source\routing\routes.js
+H:\My Projects\ecommerce\mStore\source\schemas\feedback-schema.json
+H:\My Projects\ecommerce\mStore\source\schemas\rating-schema.json
+H:\My Projects\ecommerce\mStore\source\schemas\stories-schema.json
+H:\My Projects\ecommerce\mStore\source\settings\config.json
+H:\My Projects\ecommerce\mStore\source\settings\main-config.js
+H:\My Projects\ecommerce\mStore\source\styles\main.css
+H:\My Projects\ecommerce\mStore\source\templates\banner.html
+H:\My Projects\ecommerce\mStore\source\templates\banner.js
+H:\My Projects\ecommerce\mStore\source\templates\cards\card-grid.html
+H:\My Projects\ecommerce\mStore\source\templates\cards\card-helper.js
+H:\My Projects\ecommerce\mStore\source\templates\cards\card-list.html
+H:\My Projects\ecommerce\mStore\source\utils\cart-manager.js
+H:\My Projects\ecommerce\mStore\source\utils\cursor-zoom.js
+H:\My Projects\ecommerce\mStore\source\utils\data-manager.js
+H:\My Projects\ecommerce\mStore\source\utils\formatters.js
+H:\My Projects\ecommerce\mStore\source\utils\idGenerator.js
+H:\My Projects\ecommerce\mStore\source\utils\image-zoom.js
+H:\My Projects\ecommerce\mStore\source\utils\lang-helper.js
+H:\My Projects\ecommerce\mStore\source\utils\pwa-manager.js
+H:\My Projects\ecommerce\mStore\source\utils\saved-manager.js
+H:\My Projects\ecommerce\mStore\source\utils\search-handler.js
+H:\My Projects\ecommerce\mStore\source\utils\theme-switcher.js
+H:\My Projects\ecommerce\mStore\source\utils\toast.js
+H:\My Projects\ecommerce\mStore\tools\field-inject.json
+H:\My Projects\ecommerce\mStore\tools\firebase-inject.md
+H:\My Projects\ecommerce\mStore\tools\scripts\add-hsn-code.js
+H:\My Projects\ecommerce\mStore\tools\scripts\backup-data.js
+H:\My Projects\ecommerce\mStore\tools\scripts\create-auth-users.js
+H:\My Projects\ecommerce\mStore\tools\scripts\delay.js
+H:\My Projects\ecommerce\mStore\tools\scripts\export-data.js
+H:\My Projects\ecommerce\mStore\tools\scripts\import-data.js
+H:\My Projects\ecommerce\mStore\tools\scripts\inject-fields.js
+H:\My Projects\ecommerce\mStore\tools\scripts\item-seeds.js
+H:\My Projects\ecommerce\mStore\tools\scripts\kill-ports.bat
+H:\My Projects\ecommerce\mStore\tools\scripts\kill-ports.ps1
+H:\My Projects\ecommerce\mStore\tools\scripts\path-generator.js
+H:\My Projects\ecommerce\mStore\tools\scripts\set-emulator.js
+H:\My Projects\ecommerce\mStore\tools\scripts\upload-to-emulator.js
+H:\My Projects\ecommerce\mStore\versioner\config-updater.js
+H:\My Projects\ecommerce\mStore\versioner\deploy-update.js
+H:\My Projects\ecommerce\mStore\versioner\validate-config.js
+H:\My Projects\ecommerce\mStore\versioner\versioner.js
+H:\My Projects\ecommerce\mStore\versioner\versioner.json

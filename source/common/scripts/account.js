@@ -7,6 +7,16 @@ import { showFeedbackModal } from '../../partials/modals/feedback.js';
  * Renders the user's profile data onto the account page.
  */
 async function renderProfileData() {
+    // Ensure DOM is ready before accessing elements
+    if (document.readyState === 'loading') {
+        await new Promise(resolve => {
+            document.addEventListener('DOMContentLoaded', resolve);
+        });
+    }
+
+    // Small additional delay to ensure elements are rendered
+    await new Promise(resolve => setTimeout(resolve, 50));
+
     const userId = localCache.get('currentUserId');
     const currentUserType = localCache.get('currentUserType');
 
@@ -22,19 +32,21 @@ async function renderProfileData() {
 
     if (!userId) {
         // --- NEW: Make the guest prompt clickable ---
-        nameDisplay.textContent = 'Guest User';
-        usernameDisplay.style.display = 'none'; // Hide username for guests
-        tagsContainer.innerHTML = `<span class="clickable-link">Click to Log In or Sign Up</span>`;
+        if (nameDisplay) nameDisplay.textContent = 'Guest User';
+        if (usernameDisplay) usernameDisplay.style.display = 'none'; // Hide username for guests
+        if (tagsContainer) tagsContainer.innerHTML = `<span class="clickable-link">Click to Log In or Sign Up</span>`;
         if (defaultIcon) defaultIcon.style.display = 'block';
         if (avatarImg) avatarImg.style.display = 'none';
 
         // --- FIX: Add click listener directly to the newly created span ---
         // Find the span that was just added.
-        const loginLink = tagsContainer.querySelector('.clickable-link');
+        const loginLink = tagsContainer?.querySelector('.clickable-link');
         // Add the event listener only to the link, not the whole container.
-        loginLink.addEventListener('click', () => {
-            routeManager.switchView('guest', 'account/authentication');
-        });
+        if (loginLink) {
+            loginLink.addEventListener('click', () => {
+                routeManager.switchView('guest', 'account/authentication');
+            });
+        }
 
         // --- NEW: Hide buttons and divider for guests ---
         if (scrollableButtons) scrollableButtons.style.display = 'none';
@@ -77,29 +89,33 @@ async function renderProfileData() {
         // --- NEW: Ensure buttons and divider are visible for logged-in users ---
         if (scrollableButtons) scrollableButtons.style.display = 'flex';
 
-        usernameDisplay.style.display = 'block'; // Ensure username is visible for logged-in users
+        if (usernameDisplay) usernameDisplay.style.display = 'block'; // Ensure username is visible for logged-in users
 
         // Update Name
-        nameDisplay.textContent = user.info?.nickName || user.info?.fullName || 'Anonymous User';
+        if (nameDisplay) nameDisplay.textContent = user.info?.nickName || user.info?.fullName || 'Anonymous User';
 
         // --- NEW: Role-based header logic ---
         if (currentUserType === 'merchant') {
             if (merchant) {
                 // Case 1: A specific merchant is loaded
-                usernameDisplay.innerHTML = `
-                    <span>@${merchant.info.handle.replace('@', '')}</span>
-                    <span class="action-link" data-merchant-id="${merchant.meta.merchantId}">› View Profile</span>
-                `;
-                usernameDisplay.querySelector('.action-link').addEventListener('click', (e) => {
-                    const merchantId = e.target.dataset.merchantId;
-                    routeManager.switchView(currentUserType, `merchant-profile/${merchantId}`);
-                });
+                if (usernameDisplay) {
+                    usernameDisplay.innerHTML = `
+                        <span>@${merchant.info.handle.replace('@', '')}</span>
+                        <span class="action-link" data-merchant-id="${merchant.meta.merchantId}">› View Profile</span>
+                    `;
+                    usernameDisplay.querySelector('.action-link').addEventListener('click', (e) => {
+                        const merchantId = e.target.dataset.merchantId;
+                        routeManager.switchView(currentUserType, `merchant-profile/${merchantId}`);
+                    });
+                }
             } else if (user.meta?.flags?.isSuperAdmin) {
                 // Case 2: Super admin in generic merchant role (no specific merchant loaded)
-                usernameDisplay.innerHTML = `
-                    <span>@merchant_handle</span>
-                    <span class="action-link" id="admin-view-profile-test">› View Profile</span>
-                `;
+                if (usernameDisplay) {
+                    usernameDisplay.innerHTML = `
+                        <span>@merchant_handle</span>
+                        <span class="action-link" id="admin-view-profile-test">› View Profile</span>
+                    `;
+                }
                 document.getElementById('admin-view-profile-test')?.addEventListener('click', () => {
                     window.showCustomAlert({ title: 'Admin Test View', message: 'This is where the merchant profile page would appear for a standard merchant.' });
                 });
@@ -113,7 +129,9 @@ async function renderProfileData() {
             const actionText = 'Add Business';
             const createProfileLink = `<span class="action-link" id="header-business-action-link">› ${actionText}</span>`;
 
-            usernameDisplay.innerHTML = `<span>${username}</span>${createProfileLink}`;
+            if (usernameDisplay) {
+                usernameDisplay.innerHTML = `<span>${username}</span>${createProfileLink}`;
+            }
 
             document.getElementById('header-business-action-link')?.addEventListener('click', () => {
                 // --- FIX: Call the function to create a new business profile ---
@@ -123,7 +141,9 @@ async function renderProfileData() {
             // --- FIX: Add "Admin Tools" link for admins for consistency ---
             const username = user.info?.username ? `@${user.info.username}` : '';
             const adminToolsLink = (currentUserType === 'admin') ? `<span class="action-link" id="admin-tools-link">› Admin Tools</span>` : '';
-            usernameDisplay.innerHTML = `<span>${username}</span>${adminToolsLink}`;
+            if (usernameDisplay) {
+                usernameDisplay.innerHTML = `<span>${username}</span>${adminToolsLink}`;
+            }
             document.getElementById('admin-tools-link')?.addEventListener('click', () => window.showCustomAlert({ title: 'Coming Soon', message: 'The Admin Tools section is under development.' }));
         }
 
@@ -131,7 +151,9 @@ async function renderProfileData() {
         const tags = [];
 
         // Use the centralized getTagsForRole function to ensure consistency.
-        tagsContainer.innerHTML = getTagsForRole(currentUserType, user, account, merchant);
+        if (tagsContainer) {
+            tagsContainer.innerHTML = getTagsForRole(currentUserType, user, account, merchant);
+        }
 
         // Render tags to the container
 
@@ -139,15 +161,15 @@ async function renderProfileData() {
         if (user.info?.avatar && avatarImg && defaultIcon) {
             // --- FIX: Prevent blinking on re-render ---
             // If the correct avatar is already displayed, do nothing.
-            if (avatarImg.src === user.info.avatar && avatarImg.style.display === 'block') {
+            if (avatarImg && avatarImg.src === user.info.avatar && avatarImg.style.display === 'block') {
                 return; // Exit to prevent re-loading and blinking
             }
 
             // FIX: Show image only after it has successfully loaded
             // to prevent showing a broken image icon.
             avatarImg.onload = () => {
-                avatarImg.style.display = 'block';
-                defaultIcon.style.display = 'none';
+                if (avatarImg) avatarImg.style.display = 'block';
+                if (defaultIcon) defaultIcon.style.display = 'none';
             };
             avatarImg.onerror = () => {
                 console.error('Failed to load user avatar image.');
@@ -161,9 +183,9 @@ async function renderProfileData() {
         }
     } catch (error) {
         console.error('Failed to render profile data:', error);
-        nameDisplay.textContent = 'Error';
-        usernameDisplay.textContent = '';
-        tagsContainer.innerHTML = `<span class="profile-tag">Could not load profile.</span>`;
+        if (nameDisplay) nameDisplay.textContent = 'Error';
+        if (usernameDisplay) usernameDisplay.textContent = '';
+        if (tagsContainer) tagsContainer.innerHTML = `<span class="profile-tag">Could not load profile.</span>`;
     }
 }
 
@@ -242,6 +264,11 @@ async function initSwitchAccountModal() {
     const modal = document.getElementById('switch-account-modal');
     const closeBtn = document.getElementById('switch-account-close-btn');
     const roleListContainer = document.getElementById('switch-account-list');
+
+    if (!modal || !closeBtn || !roleListContainer) {
+        console.warn('Switch Account modal elements not found after loading HTML. Feature disabled.');
+        return;
+    }
 
     const openModal = async () => {
         const userId = localCache.get('currentUserId');

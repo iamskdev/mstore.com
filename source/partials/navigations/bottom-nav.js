@@ -34,7 +34,14 @@ export function initializeBottomNavigationLogic() {
       btn.classList.toggle('hidden', btn.dataset.role !== role);
       const path = btn.dataset.path;
       const isCorrectRole = btn.dataset.role === role;
-      const isCorrectView = (view === path) || view.startsWith(path + '/');
+
+      // Special handling for dashboard routes
+      let isCorrectView = (view === path) || view.startsWith(path + '/');
+      if (path === 'dashboard' && role === 'merchant') {
+        // For dashboard, also match if view starts with 'dashboard/'
+        isCorrectView = isCorrectView || view.startsWith('dashboard/');
+      }
+
       const shouldBeActive = isCorrectRole && isCorrectView;
       btn.classList.toggle('active', shouldBeActive);
       if (shouldBeActive) {

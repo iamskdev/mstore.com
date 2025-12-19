@@ -1,6 +1,7 @@
 import { createListCard, initCardHelper } from '../../../templates/cards/card-helper.js';
 import { fetchAllItems, localCache } from '../../../utils/data-manager.js';
 import '../analytics/scripts/merchant-analytics.js';
+import { routeManager } from '../../../routing/index.js';
 
 let isInitialized = false;
 let eventListeners = []; // To keep track of added event listeners
@@ -12,13 +13,107 @@ function addManagedEventListener(element, type, listener, options) {
 }
 
 export async function init() {
-    const view = document.getElementById('merchant-add-view');
+  const view = document.getElementById('merchant-add-view');
     if (!view || isInitialized) {
         return;
     }
 
     // Initialize card helper
     initCardHelper({}); // Pass an empty object for now, unitsData might not be directly relevant here
+
+    // Check current URL hash for route information
+    const currentHash = window.location.hash;
+    let activeTab = 'analytics'; // default
+    let needsUrlUpdate = false;
+
+    if (currentHash.includes('/dashboard/')) {
+        const hashParts = currentHash.split('/dashboard/');
+        if (hashParts[1]) {
+            activeTab = hashParts[1].split('/')[0].split('?')[0]; // Remove query params
+        }
+    } else if (currentHash.includes('/dashboard') && !currentHash.includes('/dashboard/')) {
+        // If just /dashboard without specific tab, default to analytics
+        console.log('🔄 Defaulting to analytics tab');
+        activeTab = 'analytics';
+        needsUrlUpdate = true;
+    } else if (!currentHash || currentHash === '#/merchant/dashboard') {
+        // No hash or just merchant/dashboard, set to analytics
+        console.log('🔄 No specific tab in URL, setting analytics');
+        activeTab = 'analytics';
+        needsUrlUpdate = true;
+    }
+
+    // Ensure URL always shows the current tab
+    if (needsUrlUpdate || !currentHash.includes('/dashboard/')) {
+        const correctHash = `#/merchant/dashboard/${activeTab}`;
+        if (window.location.hash !== correctHash) {
+            console.log('🔄 Updating URL to:', correctHash);
+            window.location.hash = correctHash;
+        }
+    }
+
+    console.log('🎯 Initial tab detection from URL:', { currentHash, activeTab, needsUrlUpdate });
+
+    // Final URL validation - ensure URL is always in correct format
+    setTimeout(() => {
+        const finalHash = window.location.hash;
+        const expectedHash = `#/merchant/dashboard/${activeTab}`;
+
+        if (finalHash !== expectedHash && finalHash !== '') {
+            console.log('🔄 Final URL correction:', expectedHash);
+            window.location.hash = expectedHash;
+        } else if (finalHash === '') {
+            // If hash is completely empty, set default
+            console.log('🔄 Setting initial URL:', expectedHash);
+            window.location.hash = expectedHash;
+        }
+    }, 200); // Wait for any other URL updates to complete
+
+    // Listen for hash changes to update UI (debounced)
+    let hashChangeTimeout;
+    let lastProcessedHash = window.location.hash;
+
+    window.addEventListener('hashchange', () => {
+        // Clear any pending hash change processing
+        if (hashChangeTimeout) {
+            clearTimeout(hashChangeTimeout);
+        }
+
+        hashChangeTimeout = setTimeout(() => {
+            const newHash = window.location.hash;
+
+            // Avoid processing the same hash multiple times
+            if (newHash === lastProcessedHash) {
+                return;
+            }
+
+            lastProcessedHash = newHash;
+            console.log('🔄 Hash change detected:', newHash);
+
+            if (newHash.includes('/dashboard/')) {
+                const hashParts = newHash.split('/dashboard/');
+                if (hashParts[1]) {
+                    const newTab = hashParts[1].split('/')[0].split('?')[0];
+                    if (newTab && newTab !== activeTab) {
+                        console.log('🔄 Switching to tab:', newTab);
+                        const tabButton = document.querySelector(`.tab-btn[data-tab="${newTab}"]`);
+                        if (tabButton) {
+                            const tabIndex = Array.from(tabButtons).indexOf(tabButton);
+                            switchTab(tabIndex);
+                            activeTab = newTab;
+                        }
+                    }
+                }
+            } else if (newHash.includes('/dashboard') && !newHash.includes('/dashboard/')) {
+                // If hash changes to just /dashboard, redirect to analytics
+                console.log('🔄 Redirecting to analytics tab');
+                lastProcessedHash = '#/merchant/dashboard/analytics';
+                window.location.hash = '#/merchant/dashboard/analytics';
+            }
+        }, 100); // Increased delay to prevent rapid firing
+    });
+
+    console.log('🎯 Initializing add view with tab:', activeTab);
 
     // --- NEW: Inventory Card Configuration ---
     const inventoryCardConfig = {
@@ -125,10 +220,11 @@ export async function init() {
     const fabActions = {
         // NEW: Analytics tab quick actions
         analytics: [
+            { label: 'Add Party', icon: 'fa-solid fa-user-plus' },
+            { label: 'Create Post', icon: 'fa-solid fa-pen-to-square' },
             { label: 'Add Item', icon: 'fa-solid fa-box-open' },
-            { label: 'Sale', icon: 'fa-solid fa-cart-plus' },
-            { label: 'Purchase', icon: 'fa-solid fa-receipt' },
-            { label: 'Add Party', icon: 'fa-solid fa-user-plus' }
+            { label: 'Add Sale', icon: 'fa-solid fa-cart-plus' },
+            { label: 'Add Purchase', icon: 'fa-solid fa-receipt' },
         ],
         // REVISED: Actions are now clearer and more logical
         transactions: [
@@ -152,11 +248,6 @@ export async function init() {
         parties: [
             { label: 'Add Customer', icon: 'fa-solid fa-user-plus' },
             { label: 'Add Supplier', icon: 'fa-solid fa-user-tie' },
-        ],
-        posts: [
-            { label: 'Create Post', icon: 'fa-solid fa-pen-to-square' },
-            { label: 'Create Poll', icon: 'fa-solid fa-poll' },
-            { label: 'Add Story', icon: 'fa-solid fa-circle-plus' },
         ],
         offers: [
             { label: 'Add Offer / Discount', icon: 'fa-solid fa-percent' },
@@ -817,20 +908,28 @@ let activeTabId = 'analytics';
         tabIndicator.style.left = `${activeTab.offsetLeft}px`;
     }
 
-    // Initialize
-    const initialActiveTab = document.querySelector('.tab-btn.active');
-    if (initialActiveTab) {
-        activeTabIndex = Array.from(tabButtons).indexOf(initialActiveTab);
-        updateIndicator(initialActiveTab);
+    // Initialize - respect route-based tab activation
+    let targetTab = document.querySelector(`.tab-btn[data-tab="${activeTab}"]`) ||
+                   document.querySelector('.tab-btn.active');
+
+    if (targetTab) {
+        // Remove existing active state
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        // Activate target tab
+        targetTab.classList.add('active');
+        activeTabIndex = Array.from(tabButtons).indexOf(targetTab);
+        updateIndicator(targetTab);
         switchTab(activeTabIndex); // Set initial content position
         updateFabOptions(); // Initial FAB options
 
         // Enable scrolling for initial active tab
         setTimeout(() => {
-            const activeScrollableArea = contentPanes[activeTabIndex].querySelector('.content-scrollable-area');
-            if (activeScrollableArea) {
-                activeScrollableArea.style.overflowY = 'auto';
-                activeScrollableArea.style.overflowX = 'hidden';
+            if (contentPanes && activeTabIndex >= 0 && activeTabIndex < contentPanes.length) {
+                const activeScrollableArea = contentPanes[activeTabIndex]?.querySelector('.content-scrollable-area');
+                if (activeScrollableArea) {
+                    activeScrollableArea.style.overflowY = 'auto';
+                    activeScrollableArea.style.overflowX = 'hidden';
+                }
             }
         }, 100);
     }
@@ -839,7 +938,21 @@ let activeTabId = 'analytics';
     addManagedEventListener(tabsContainer, 'click', (e) => {
         const clickedTab = e.target.closest('.tab-btn');
         if (clickedTab) {
-            switchTab(Array.from(tabButtons).indexOf(clickedTab));
+            const tabName = clickedTab.dataset.tab;
+            if (tabName) {
+                console.log('🖱️ Tab clicked:', tabName);
+
+                // Ensure URL format is correct
+                const correctHash = `#/merchant/dashboard/${tabName}`;
+                if (window.location.hash !== correctHash) {
+                    window.location.hash = correctHash;
+                }
+
+                // Switch tab immediately for responsive UI
+                const tabIndex = Array.from(tabButtons).indexOf(clickedTab);
+                switchTab(tabIndex);
+                activeTab = tabName; // Update active tab reference
+            }
         }
     });
     renderTransactions(dummyTransactions);
@@ -918,19 +1031,6 @@ let activeTabId = 'analytics';
             }
             updateActiveFilterButton(this);
             console.log('Report filter clicked:', filter);
-        });
-    });
-
-    // Listener for Posts Tab
-    document.querySelectorAll('.add-scrollable-content[data-tab="posts"] .filter-btn').forEach(button => {
-        addManagedEventListener(button, 'click', function () {
-            const filter = this.dataset.contentFilter;
-            if (filter === 'advanced') {
-                // Handle advanced filter separately, maybe open a modal
-                console.log('Advanced Posts filter clicked. Not changing primary active state.');
-                return;
-            }
-            updateActiveFilterButton(this);
         });
     });
 
@@ -1295,12 +1395,42 @@ let activeTabId = 'analytics';
     function handleSwipe() {
         const swipeThreshold = 50; // Minimum pixels for a swipe
         if (touchEndX < touchStartX - swipeThreshold) {
-            // Swiped left
-            switchTab(activeTabIndex + 1);
+            // Swiped left - next tab
+            const nextIndex = activeTabIndex + 1;
+            if (nextIndex < tabButtons.length) {
+                const nextTab = tabButtons[nextIndex];
+                const tabName = nextTab.dataset.tab;
+                console.log('👆 Swipe left to tab:', tabName);
+
+                // Update URL first
+                const correctHash = `#/merchant/dashboard/${tabName}`;
+                if (window.location.hash !== correctHash) {
+                    window.location.hash = correctHash;
+                }
+
+                // Then switch tab
+                switchTab(nextIndex);
+                activeTab = tabName; // Update active tab reference
+            }
         }
         if (touchEndX > touchStartX + swipeThreshold) {
-            // Swiped right
-            switchTab(activeTabIndex - 1);
+            // Swiped right - previous tab
+            const prevIndex = activeTabIndex - 1;
+            if (prevIndex >= 0) {
+                const prevTab = tabButtons[prevIndex];
+                const tabName = prevTab.dataset.tab;
+                console.log('👆 Swipe right to tab:', tabName);
+
+                // Update URL first
+                const correctHash = `#/merchant/dashboard/${tabName}`;
+                if (window.location.hash !== correctHash) {
+                    window.location.hash = correctHash;
+                }
+
+                // Then switch tab
+                switchTab(prevIndex);
+                activeTab = tabName; // Update active tab reference
+            }
         }
     }
 

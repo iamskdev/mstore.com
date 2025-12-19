@@ -76,3 +76,4 @@ docs/CHANGELOG.md
 docs/commit_message.txt
 docs/GEMINI.md
 docs/gemini_settings.md
+.cursor/commands/commit-msg-drafting.md

@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 12/10/2025, 09:57
+📅 Last Updated: 19/12/2025, 18:36
 
 ├── .firebaserc
 ├── .gitignore
@@ -12,6 +12,10 @@
 ├── package.json
 ├── readme.md
 ├── service-worker.js
+├── 📁 .cursor\
+│   ├── 📁 commands\
+│   │   └── commit-msg-drafting.md
+│   └── 📁 rules\
 ├── 📁 .github\
 │   └── 📁 workflows\
 │       └── release.yml
@@ -39,22 +43,28 @@
 │   ├── pre-commit
 │   └── pre-push
 ├── 📁 archive\
+│   ├── add-item-demo-new.html
+│   ├── analytics.html
 │   ├── card-old.html
 │   ├── error-page.html
 │   ├── merchant-add-demo.html
 │   ├── merchant-profile-demo.html
+│   ├── new-analytic copy.html
 │   ├── photo-editor-demo.html
 │   ├── rating-demo.html
 │   ├── rating-modal.html
 │   ├── rating-modal.js
+│   ├── request-to-switch-prof.html
 │   ├── story-viewer-demo.html
 │   └── updates-demo.html
 ├── 📁 docs\
 │   ├── CHANGELOG.md
 │   ├── brands_list.md
+│   ├── categories-schema-guide.md
 │   ├── commit-guide.md
 │   ├── commit_message.txt
 │   ├── firebase-emulator.md
+│   ├── gemini_settings.md
 │   ├── id-generation.md
 │   ├── implementing-new-views.md
 │   ├── instruction.md
@@ -318,12 +328,18 @@
 │   │   ├── firebase-credentials.js
 │   │   └── serviceAccountKey.json
 │   ├── 📁 modals\
+│   │   ├── 📁 dropdown\
+│   │   │   ├── dropdown-list.html
+│   │   │   └── dropdown-list.js
 │   │   ├── 📁 media-editor\
 │   │   │   ├── media-editor.html
 │   │   │   └── media-editor.js
 │   │   ├── 📁 rating\
 │   │   │   ├── rating-modal.html
 │   │   │   └── rating-modal.js
+│   │   ├── 📁 scan-barcode\
+│   │   │   ├── qr-scanner.html
+│   │   │   └── qr-scanner.js
 │   │   ├── 📁 story-viewer\
 │   │   │   ├── story-viewer.html
 │   │   │   └── story-viewer.js
@@ -360,9 +376,46 @@
 │   │   │       └── admin-home.css
 │   │   ├── 📁 consumer\
 │   │   └── 📁 merchant\
+│   │       ├── 📁 analytics\
+│   │       │   ├── 📁 scripts\
+│   │       │   │   └── merchant-analytics.js
+│   │       │   ├── 📁 styles\
+│   │       │   │   └── merchant-analytics.css
+│   │       │   └── merchant-analytics.html
+│   │       ├── 📁 invoices\
+│   │       │   ├── 📁 scripts\
+│   │       │   │   ├── add-invoice.js
+│   │       │   │   ├── instant-add-item.js
+│   │       │   │   ├── instant-db-operation.js
+│   │       │   │   ├── instant-ui-component.js
+│   │       │   │   ├── invoice-db-operation.js
+│   │       │   │   ├── invoice-event-manager.js
+│   │       │   │   └── invoice-ui-component.js
+│   │       │   ├── 📁 styles\
+│   │       │   │   └── add-invoice.css
+│   │       │   ├── add-invoice.html
+│   │       │   └── instant-add-item.html
 │   │       ├── 📁 pages\
-│   │       ├── analytics.html
-│   │       └── merchant-home.html
+│   │       │   ├── add-item.html
+│   │       │   ├── add.html
+│   │       │   └── merchant-profile-edit.html
+│   │       ├── 📁 scripts\
+│   │       │   ├── 📁 item-helper\
+│   │       │   │   ├── index.js
+│   │       │   │   ├── item-data-manager.js
+│   │       │   │   ├── item-db-operations.js
+│   │       │   │   ├── item-event-manager.js
+│   │       │   │   ├── item-form-manager.js
+│   │       │   │   ├── item-media-handler.js
+│   │       │   │   ├── item-ui-components.js
+│   │       │   │   └── item-validator.js
+│   │       │   ├── add-item.js
+│   │       │   ├── add.js
+│   │       │   └── merchant-profile-edit.js
+│   │       └── 📁 styles\
+│   │           ├── add-item.css
+│   │           ├── add.css
+│   │           └── merchant-profile-edit.css
 │   ├── 📁 partials\
 │   │   ├── 📁 drawer\
 │   │   │   ├── drawer.html
@@ -384,6 +437,12 @@
 │   │   │   ├── top-nav.html
 │   │   │   └── top-nav.js
 │   │   └── role-switcher.html
+│   ├── 📁 routing\
+│   │   ├── index.js
+│   │   ├── route-manager.js
+│   │   ├── route-url-handler.js
+│   │   ├── route-validator.js
+│   │   └── routes.js
 │   ├── 📁 schemas\
 │   │   ├── feedback-schema.json
 │   │   ├── rating-schema.json
@@ -414,16 +473,19 @@
 │   │   ├── theme-switcher.js
 │   │   └── toast.js
 │   ├── main.css
-│   ├── main.js
-│   └── routes.js
+│   └── main.js
 ├── 📁 tools\
 │   ├── 📁 scripts\
 │   │   ├── add-hsn-code.js
 │   │   ├── backup-data.js
 │   │   ├── create-auth-users.js
+│   │   ├── delay.js
 │   │   ├── export-data.js
 │   │   ├── import-data.js
+│   │   ├── inject-fields.js
 │   │   ├── item-seeds.js
+│   │   ├── kill-ports.bat
+│   │   ├── kill-ports.ps1
 │   │   ├── path-generator.js
 │   │   ├── set-emulator.js
 │   │   └── upload-to-emulator.js

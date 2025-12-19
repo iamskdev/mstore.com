@@ -1,8 +1,8 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Updated`
-> - **Last Reviewed:** 24/08/2025 18:58:34 +05:30
-> - **Reviewer:** Santosh (with Gemini)
-> - **Purpose:** This document provides a mandatory guide for developers on how to create new pages and views within the "mStore" project, ensuring consistency, performance, and adherence to the established architecture. It has been updated to reflect the latest routeManager architecture and best practices.
+> - **Last Reviewed:** 2025-12-19 13:00:00 IST
+> - **Reviewer:** Santosh
+> - **Purpose:** This document provides a mandatory guide for developers on how to create new pages and views within the "mStore" project, ensuring consistency, performance, and adherence to the established architecture. Updated to reflect routes.js relocation to routing directory.
 
 ---
 
@@ -39,9 +39,9 @@
             └── merchant-profile-edit.css   <-- (नई CSS)
 ```
 
-### चरण 2: व्यू को कॉन्फ़िगर करें (`view-config.js`)
+### चरण 2: व्यू को कॉन्फ़िगर करें (`routes.js`)
 
-`source/routes.js` खोलें और `routeConfig` ऑब्जेक्ट में अपने नए व्यू के लिए एक एंट्री जोड़ें।
+`source/routing/routes.js` खोलें और `routeConfig` ऑब्जेक्ट में अपने नए व्यू के लिए एक एंट्री जोड़ें।
 
 ```javascript
 const routeConfig = {
@@ -54,16 +54,17 @@ const routeConfig = {
             // JS और CSS पथ वैकल्पिक हैं, लेकिन अनुशंसित हैं
             jsPath: './source/modules/merchant/scripts/merchant-profile-edit.js',
             cssPath: './source/modules/merchant/styles/merchant-profile-edit.css',
-            embedFooter: false, // इस पेज पर फुटर की आवश्यकता नहीं है
-            showFilterBar: false, // इस पेज पर फिल्टर बार की आवश्यकता नहीं है
-            title: 'प्रोफाइल एडिट' // पेज का शीर्षक
+            title: 'प्रोफाइल एडिट', // पेज का शीर्षक
+            isMainTab: false, // यह मुख्य टैब नहीं है
+            dataDependencies: [] // आवश्यक डेटा निर्भरताएँ
         },
         'dynamic-content-example': { // एक उदाहरण जहां HTML सीधे लोड नहीं होता है
             id: 'dynamic-content-view',
             path: null, // HTML फ़ाइल लोड नहीं की जाएगी
             jsPath: './source/modules/consumer/scripts/dynamic-content.js', // JS अभी भी लोड होगा
-            embedFooter: true, // फुटर को एम्बेड करें
-            title: 'डायनामिक कंटेंट'
+            isMainTab: true, // यह मुख्य टैब है
+            title: 'डायनामिक कंटेंट',
+            dataDependencies: []
         }
     }
     // ... other roles
@@ -71,7 +72,7 @@ const routeConfig = {
 ```
 **नोट:**
 *   `path: null` का उपयोग उन व्यू के लिए किया जाता है जो सीधे HTML फ़ाइल से कंटेंट लोड नहीं करते हैं (जैसे कि वे जो JavaScript में अपना UI बनाते हैं या केवल एक प्लेसहोल्डर के रूप में कार्य करते हैं)।
-*   `embedFooter: true` और `showFilterBar: true` गुण `routeManager` को स्वचालित रूप से संबंधित कंपोनेंट्स को व्यू में एम्बेड करने का निर्देश देते हैं।
+*   `isMainTab: true` और `showFilterBar: true` गुण `routeManager` को स्वचालित रूप से संबंधित कंपोनेंट्स को व्यू में एम्बेड करने का निर्देश देते हैं।
 
 ### चरण 3: पेज का लॉजिक लिखें (JS फाइल)
 
@@ -115,10 +116,10 @@ editProfileBtn.addEventListener('click', () => {
 
 ## ✅ चेकलिस्ट और सर्वोत्तम प्रथाएँ
 
--   **क्या आपने `view-config.js` को अपडेट किया है?** यह सबसे महत्वपूर्ण कदम है।
+-   **क्या आपने `routes.js` को अपडेट किया है?** यह सबसे महत्वपूर्ण कदम है।
 -   **क्या आपका सारा लॉजिक एक `export function init()` फ़ंक्शन के अंदर है?** यह लेज़ी-लोडिंग और `routeManager` द्वारा सही निष्पादन के लिए आवश्यक है।
 -   **क्या आप डेटा के लिए `data-manager.js` का उपयोग कर रहे हैं?** यह डेटा स्रोत एब्स्ट्रैक्शन के लिए महत्वपूर्ण है।
 -   **क्या आप फीडबैक के लिए `showToast()` का उपयोग कर रहे हैं?**
 -   **क्या आपने अपने पेज के शीर्ष पर एक `data-initialized` एट्रिब्यूट सेट किया है** ताकि लॉजिक दोबारा न चले?
 -   **आपको अब `index.html` में मैन्युअल रूप से `div` जोड़ने की आवश्यकता नहीं है!** `routeManager` इसे आपके लिए गतिशील रूप से बनाता है।
--   **क्या आपने `view-config.js` में `embedFooter` और `showFilterBar` गुणों को सही ढंग से सेट किया है?** `routeManager` इन गुणों के आधार पर फुटर और फिल्टर बार को स्वचालित रूप से एम्बेड करेगा।
+-   **क्या आपने `routes.js` में `isMainTab` और `dataDependencies` गुणों को सही ढंग से सेट किया है?** `routeManager` इन गुणों के आधार पर नेविगेशन और डेटा लोडिंग को प्रबंधित करेगा।
