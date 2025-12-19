@@ -14,8 +14,41 @@ function hexToRgba(hex, alpha = 1) {
 
 // ===== INITIALIZATION =====
 let anlsInitialized = false;
-function initAnalytics() {
+let cssLoaded = false;
+
+function loadAnalyticsCSS() {
+  return new Promise((resolve) => {
+    if (cssLoaded || document.querySelector('link[href*="merchant-analytics.css"]')) {
+      cssLoaded = true;
+      resolve();
+      return;
+    }
+
+    const analyticsCss = document.createElement('link');
+    analyticsCss.rel = 'stylesheet';
+    analyticsCss.href = './source/modules/merchant/analytics/styles/merchant-analytics.css';
+
+    analyticsCss.onload = () => {
+      cssLoaded = true;
+      resolve();
+    };
+
+    analyticsCss.onerror = () => {
+      console.warn('Failed to load analytics CSS');
+      cssLoaded = true; // Still mark as loaded to prevent infinite waiting
+      resolve();
+    };
+
+    document.head.appendChild(analyticsCss);
+  });
+}
+
+async function initAnalytics() {
   if (anlsInitialized) return;
+
+  // Ensure analytics CSS is loaded before initialization
+  await loadAnalyticsCSS();
+
   anlsInitialized = true;
   initializeCharts();
   setupEventListeners();
@@ -24,6 +57,9 @@ function initAnalytics() {
 
 // Make function globally available for add.js to call
 window.initAnalytics = initAnalytics;
+
+// Pre-load CSS on script load to prevent flash of unstyled content
+loadAnalyticsCSS();
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initAnalytics);

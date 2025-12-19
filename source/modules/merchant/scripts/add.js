@@ -565,8 +565,9 @@ export async function init() {
         container.innerHTML = partyCardsHTML;
     }
 
-    let activeTabIndex = 0;
-    let activeTabId = 'analytics';
+let activeTabIndex = 0;
+let activeTabId = 'analytics';
+
 
     // --- FAB & Speed Dial Logic ---
     function updateFabOptions() {
@@ -705,6 +706,24 @@ export async function init() {
     function switchTab(index) {
         if (index < 0 || index >= tabButtons.length) return;
 
+        // --- NEW: Reset all scrollable areas to prevent scroll sharing ---
+        contentPanes.forEach((pane, i) => {
+            const scrollableArea = pane.querySelector('.content-scrollable-area');
+            if (scrollableArea) {
+                // For inactive panes, reset scroll position
+                if (i !== index) {
+                    scrollableArea.scrollTop = 0;
+                    scrollableArea.scrollLeft = 0;
+                }
+            }
+        });
+
+        // Reset the main container's scroll position
+        contentContainer.scrollTop = 0;
+        contentContainer.scrollLeft = 0;
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+
         const newActiveTab = tabButtons[index];
         activeTabId = newActiveTab.dataset.tab;
 
@@ -743,11 +762,31 @@ export async function init() {
                 pane.style.height = '0px';
             }
         });
-        
+
         // Optional: Scroll back to top if the new tab is much shorter and user was scrolled down?
         // For now, reliance on browser's natural shift due to height collapse is usually sufficient to remove whitespace.
 
         activeTabIndex = index;
+
+        // --- NEW: Ensure only the active tab can scroll ---
+        setTimeout(() => {
+            contentPanes.forEach((pane, i) => {
+                const scrollableArea = pane.querySelector('.content-scrollable-area');
+                if (scrollableArea) {
+                    if (i === index) {
+                        // Active tab - enable scrolling
+                        scrollableArea.style.overflowY = 'auto';
+                        scrollableArea.style.overflowX = 'hidden';
+                    } else {
+                        // Inactive tabs - disable scrolling and reset position
+                        scrollableArea.style.overflowY = 'hidden';
+                        scrollableArea.style.overflowX = 'hidden';
+                        scrollableArea.scrollTop = 0;
+                        scrollableArea.scrollLeft = 0;
+                    }
+                }
+            });
+        }, 50);
 
         // --- NEW: Render content for specific tabs when they become active ---
         if (activeTabId === 'parties') {
@@ -757,7 +796,14 @@ export async function init() {
         } else if (activeTabId === 'analytics') {
             // Initialize analytics dashboard when tab becomes active
             if (typeof window.initAnalytics === 'function') {
-                window.initAnalytics();
+                // Use immediately invoked async function to ensure CSS loads properly
+                (async () => {
+                    try {
+                        await window.initAnalytics();
+                    } catch (error) {
+                        console.error('Error initializing analytics:', error);
+                    }
+                })();
             }
         }
 
@@ -778,6 +824,15 @@ export async function init() {
         updateIndicator(initialActiveTab);
         switchTab(activeTabIndex); // Set initial content position
         updateFabOptions(); // Initial FAB options
+
+        // Enable scrolling for initial active tab
+        setTimeout(() => {
+            const activeScrollableArea = contentPanes[activeTabIndex].querySelector('.content-scrollable-area');
+            if (activeScrollableArea) {
+                activeScrollableArea.style.overflowY = 'auto';
+                activeScrollableArea.style.overflowX = 'hidden';
+            }
+        }, 100);
     }
 
     // --- Initial Render Call ---
@@ -1251,6 +1306,7 @@ export async function init() {
 
     enableHorizontalScroll('.content-filter-bar'); // For the filter bar
     enableHorizontalScroll('.add-primary-tabs');     // For the top tabs
+
 
     isInitialized = true;
     console.log('✅ Merchant Add View Initialized.');

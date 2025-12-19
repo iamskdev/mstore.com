@@ -4,7 +4,7 @@
     display: flex;
     overflow: hidden;
     position: relative;
-    background-color: var(--bg-primary); 
+    background-color: var(--bg-primary);
     align-items: flex-start; /* Prevent forcing children to matched height */
     transition: min-height 0.3s ease; /* Smooth height transition if needed */
 }
@@ -24,10 +24,15 @@
 }
 
 .content-scrollable-area {
-    flex-grow: 1; 
+    flex-grow: 1;
     background-color: var(--bg-primary);
     /* Ensure content flows naturally */
     height: auto;
+    /* NEW: Default to no scrolling - will be enabled by JS for active tab only */
+    overflow-y: hidden;
+    overflow-x: hidden;
+    /* NEW: Prevent scroll bubbling */
+    overscroll-behavior: contain;
 }
 
 /* --- Horizontal Tabs --- */
