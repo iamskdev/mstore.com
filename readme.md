@@ -1,9 +1,61 @@
 > **DOCUMENT AUDIT**
 > - **Status:** `Updated`
-> - **Last Reviewed:** 2025-12-19 12:45:00 IST
+> - **Last Reviewed:** 2025-12-20 14:30:00 IST
 > - **Reviewer:** Santosh
 > - **Purpose:** This document serves as the main entry point for understanding the project's features, architecture, and setup instructions. It is intended for all developers joining the project.
-> - **Recent Updates:** Added routing system details, updated folder structure, enhanced dashboard feature descriptions.
+> - **Recent Updates:** Added URL migration system, PWA auto-healing, comprehensive config documentation, and migration handbook. Updated to reflect latest architecture changes.
+
+---
+
+## 🚀 **Recent Major Updates (December 2025)**
+
+### **🔄 URL Migration & Resilience System**
+- **Smart Environment Detection:** App automatically detects GitHub Pages, custom domains, and localhost
+- **Auto-Healing Configuration:** Config automatically updates based on current environment
+- **Seamless URL Migration:** Safe transition between repository names and custom domains
+- **PWA Continuity:** Installed PWAs continue working even after URL changes
+
+### **🛠️ Enhanced Configuration System**
+- **Comprehensive config.json:** All app settings in one place with detailed documentation
+- **Risk Warnings:** Critical safety alerts for dangerous configuration changes
+- **Environment-Specific Settings:** Separate configs for development, staging, production
+- **Migration Controls:** Built-in URL migration management system
+
+### **📱 PWA & Service Worker Improvements**
+- **Dynamic Manifest Generation:** Manifest updates automatically based on environment
+- **Smart Caching:** Environment-aware cache keys for better performance
+- **Offline Support:** Enhanced offline functionality with proper asset caching
+- **Asset Management:** Fixed logo and icon references for all environments
+
+### **🛡️ Security & Performance Enhancements**
+- **Auto-Config Healing:** Prevents configuration drift and inconsistencies
+- **Enhanced Error Tracking:** Better error reporting and debugging
+- **Performance Monitoring:** Built-in performance tracking and analytics
+- **Security Headers:** Improved security configurations
+
+### **📚 Documentation Updates**
+- **Complete Config Guide:** Detailed field-by-field documentation (`docs/config-readme.md`)
+- **Migration Handbook:** Step-by-step URL migration guide (`docs/migration-readme.md`)
+- **Risk Assessment:** Safety warnings and emergency procedures
+- **Troubleshooting:** Common issues and solutions
+
+### **🔧 Technical Architecture Changes**
+- **New Routing Modules:** `route-env-manager.js`, `route-config-healer.js`, `route-migration-handler.js`
+- **Enhanced Service Worker:** Environment-aware caching and asset management
+- **Configuration Validation:** Automatic config validation and healing
+- **Asset Reference Fixes:** Proper logo and icon handling across environments
+
+---
+
+## 🔄 **Migration-Ready Architecture**
+
+Your app now supports seamless transitions between:
+- **GitHub Pages:** `https://username.github.io/repo-name/`
+- **Custom Domains:** `https://yourstore.com`
+- **Repository Renames:** Change repo names without breaking user access
+- **Domain Migrations:** Move to custom domains safely
+
+**Migration Process:** 4-week phased rollout with user notifications and analytics.
 
 ---
 
@@ -30,10 +82,40 @@
 
 ---
 
+## ⚙️ **Configuration System**
+
+### **📋 How to Modify Settings Safely**
+```bash
+# 1. Always backup first
+cp source/settings/config.json source/settings/config.json.backup
+
+# 2. Make changes carefully
+# 3. Test locally: npm run dev
+# 4. Check console for errors
+# 5. Deploy only after thorough testing
+```
+
+### **🚨 Critical Configuration Fields**
+| Field | Risk Level | Description |
+|-------|------------|-------------|
+| `routing.githubPage` | 🔴 **CRITICAL** | Wrong URL breaks all user access |
+| `routing.customDomain` | 🔴 **CRITICAL** | Wrong URL breaks all user access |
+| `security.httpsOnly` | 🔴 **CRITICAL** | Disables HTTPS security |
+| `pwa.enabled` | 🟡 **HIGH** | Breaks app installation |
+| `migration.enabled` | 🟡 **HIGH** | Shows migration to all users |
+
+### **📚 Configuration Documentation**
+- **Complete Guide:** `docs/config-readme.md` - Detailed field-by-field documentation with working status
+- **Migration Guide:** `docs/migration-readme.md` - Step-by-step URL migration handbook
+- **Risk Assessment:** Safety warnings and emergency procedures for all config changes
+- **Troubleshooting:** Common issues, validation errors, and rollback procedures
+
+---
+
 ## ✨ मुख्य विशेषताएँ (Core Features)
 
 -   **भूमिका-आधारित UI:** इंटरफ़ेस **मेहमानों (Guests)**, पंजीकृत **उपभोक्ताओं (Consumers)**, **व्यापारियों (Merchants)**, और **एडमिन (Admins)** के लिए गतिशील रूप से अनुकूल होता है।
--   **प्रोग्रेसिव वेब ऐप (PWA):**
+-   **प्रोग्रेसिव वेब ऐप (PWA) with Auto-Healing:**
     -   **इंस्टॉल करने योग्य:** उपयोगकर्ता ऐप को सीधे अपने डिवाइस की होम स्क्रीन पर इंस्टॉल कर सकते हैं।
     -   **ऑफ़लाइन समर्थन:** सर्विस वर्कर का उपयोग करके, ऐप के मुख्य हिस्से (App Shell) और पहले देखे गए पेज ऑफ़लाइन भी उपलब्ध रहते हैं।
 -   **स्मार्ट डेटा सिंकिंग और कैशिंग (Smart Data Syncing & Caching):** ऐप अब फायरबेस के `onSnapshot` लिस्नर का उपयोग करता है, जिससे डेटा हमेशा लाइव और ताज़ा रहता है। यह अनावश्यक 'reads' को समाप्त करता है और ऐप को अविश्वसनीय रूप से तेज़ बनाता है। Pull-to-refresh अब केवल UI को रीफ़्रेश करता है, सर्वर से डेटा नहीं लाता।
@@ -55,7 +137,8 @@
     -   **UX सुधार:** जब किसी व्यापारी की प्रोफ़ाइल अधूरी होती है, तो "Complete Profile" बटन पर एक आकर्षक पल्सिंग एनीमेशन दिखाई देता है, जो उन्हें प्रोफ़ाइल पूरा करने के लिए प्रोत्साहित करता है। कवर इमेज अब Unsplash से स्वचालित रूप से लोड होती हैं।
 -   **शक्तिशाली फ़ज़ी सर्च (Powerful Fuzzy Search):** `Fuse.js` का उपयोग करके एक तेज़ और गलती-सहिष्णु (fault-tolerant) सर्च सुविधा जो उपयोगकर्ताओं को टाइप करते ही प्रासंगिक परिणाम दिखाती है।
 -   **कस्टम UI कंपोनेंट्स:**
-    -   **ग्लोबल अलर्ट:** `window.showCustomAlert` एक पुन: प्रयोज्य (reusable) फ़ंक्शन है जो पूरे ऐप में एक समान और सुंदर अलर्ट दिखाता है।
+    -   **ग्लोबल अलर्ट:** `window.showCustomAlert` एक पुन: प्रयोज्य (reusable) फ़ंक्शन है जो पूरे ऐप में एक समान और सुंदर अलर्ट दिखाता है。
+-   **URL Migration & Resilience System:** App automatically detects and adapts to GitHub Pages, custom domains, and localhost. Supports seamless repository renames and domain migrations with user notifications.
 
     ### व्यापारी आइटम प्रबंधन (Merchant Item Management)
     -   **पूर्ण CRUD कार्यक्षमता:** व्यापारियों को Firebase एकीकरण के साथ आइटम बनाने, पढ़ने, अपडेट करने और हटाने की अनुमति देता है।

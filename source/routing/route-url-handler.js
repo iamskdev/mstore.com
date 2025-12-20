@@ -10,13 +10,33 @@ class RouteUrlHandler {
   }
 
   init() {
-    // Get base URL from config if available
+    // Get base URL from updated routing config
     try {
       const config = window.getAppConfig?.() || {};
-      this.baseUrl = config.urls?.pageUrl || '';
+      this.baseUrl = config.routing?.githubPage || window.location.origin;
+      this.basePath = config.routing?.basePath || '';
     } catch (error) {
       this.baseUrl = window.location.origin;
+      this.basePath = '';
     }
+  }
+
+  /**
+   * Get dynamic path for assets and resources
+   * @param {string} staticPath - Static relative path (e.g., './source/assets/logo.png')
+   * @returns {string} Dynamic path with correct base path
+   */
+  getDynamicPath(staticPath) {
+    return staticPath.replace('./', this.basePath);
+  }
+
+  /**
+   * Get full asset URL
+   * @param {string} assetPath - Asset path (e.g., 'source/assets/logo.png')
+   * @returns {string} Full URL with base path
+   */
+  getAssetUrl(assetPath) {
+    return `${this.basePath}${assetPath}`.replace(/^\/+/, '/');
   }
 
   /**

@@ -100,8 +100,8 @@ export async function deleteFromCloudinary(publicId) {
 export function buildCloudinaryUrl(publicId, options = {}, resource_type = 'image') {
   // Get the cloud name dynamically from the application config.
   const appConfig = getAppConfig();
-  const cloudName = appConfig?.cloudinary?.cloud_name;
-  const baseUrl = appConfig?.cloudinary?.base_url || 'https://res.cloudinary.com';
+  const cloudName = appConfig?.integrations?.cloudinary?.cloud_name;
+  const baseUrl = appConfig?.integrations?.cloudinary?.base_url || 'https://res.cloudinary.com';
 
   if (!cloudName) {
     console.error("Cloudinary cloud_name is not configured in config.json. Cannot build media URL.");

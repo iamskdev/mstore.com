@@ -27,6 +27,11 @@ import { loadDrawer } from './partials/drawer/drawer.js';
 
 import { initializeSearch, setupSearchToggle } from './utils/search-handler.js';
 
+// New routing utilities
+import { healAppConfig } from './routing/route-config-healer.js';
+import { shouldShowMigration } from './routing/route-migration-handler.js';
+import { initializePWASystem } from './utils/pwa-manager.js';
+
 class RouteManager {
   constructor() {
     // Initialize with a null state. The correct state will be determined
@@ -1023,6 +1028,25 @@ export async function initializeApp() {
   const loadedConfig = await configResponse.json();
   setAppConfig(loadedConfig);
   initializeFirebase(loadedConfig);
+
+  // --- NEW: Initialize routing system ---
+  // Heal config and setup environment detection
+  try {
+    const healed = healAppConfig();
+    if (healed) {
+      console.log('🔄 App config was auto-healed for current environment');
+    }
+
+    // Setup migration notifications if needed
+    if (shouldShowMigration()) {
+      console.log('📢 Migration notifications will be shown');
+    }
+
+    // Initialize PWA system with dynamic environment
+    await initializePWASystem();
+  } catch (error) {
+    console.error('❌ Routing system initialization failed:', error);
+  }
 
   // --- NEW: Load OTP Verification Modal HTML ---
   try {

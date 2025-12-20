@@ -2,25 +2,182 @@
   "app": {
     "owner": "santosh",
     "name": "mStore",
-    "version": "0.32.1",
+    "displayName": "mStore E-Commerce",
+    "version": "0.33.0",
+    "build": "2025.12.19",
     "environment": "development",
-    "description": ""
+    "description": "Modern PWA E-commerce platform for local businesses",
+    "keywords": [
+      "ecommerce",
+      "pwa",
+      "local",
+      "business",
+      "store"
+    ],
+    "category": "shopping",
+    "platform": "web",
+    "supportedBrowsers": [
+      "chrome",
+      "firefox",
+      "safari",
+      "edge"
+    ]
   },
-  "urls": {
+  "routing": {
     "localIp": "http://127.0.0.1:3000/",
-    "pageUrl": "https://iamskdev.github.io/mstore.com/",
-    "fallbackUrl": "",
-    "customDomain": "",
-    "localHost": "http://localhost:2201"
+    "githubPage": "https://iamskdev.github.io/mstore.com/",
+    "fallbackUrl": "https://fallback.mystore.com",
+    "customDomain": null,
+    "localHost": "http://localhost:2201",
+    "serveMode": "github-pages",
+    "currentRepo": "mstore.com",
+    "currentUsername": "iamskdev",
+    "basePath": "/mstore.com/",
+    "autoDetect": true,
+    "lastEnvironmentCheck": "2025-12-19T14:25:11Z",
+    "cdnUrl": "https://cdn.mystore.com",
+    "apiUrl": "https://api.mystore.com"
+  },
+  "migration": {
+    "enabled": false,
+    "urlMigration": false,
+    "newUrl": null,
+    "message": "🚀 नया URL available है! अपडेट करें",
+    "urgency": "medium",
+    "startDate": null,
+    "endDate": null,
+    "targetAudience": "all",
+    "autoMigration": false,
+    "progressTracking": true,
+    "analyticsEnabled": true
+  },
+  "resilience": {
+    "autoHealEnabled": true,
+    "pwaResilience": true,
+    "cacheInvalidation": "smart",
+    "fallbackEnabled": true,
+    "pwaUpdates": "background",
+    "errorRecovery": true,
+    "offlineSupport": true,
+    "networkRetryAttempts": 3,
+    "cacheMaxAge": 86400000,
+    "serviceWorkerVersion": "v1.0.0"
   },
   "source": {
     "data": "firebase",
-    "offlineCache": true
+    "offlineCache": true,
+    "cacheStrategy": "network-first",
+    "syncInterval": 300000,
+    "maxCacheSize": 52428800,
+    "compressionEnabled": true
   },
   "ui": {
     "theme": "dark",
     "headerStyle": "logo",
-    "splashEnabled": true
+    "splashEnabled": true,
+    "animationsEnabled": true,
+    "reducedMotion": false,
+    "fontSize": "medium",
+    "language": "hi",
+    "timezone": "Asia/Kolkata",
+    "currency": "INR",
+    "dateFormat": "DD/MM/YYYY"
+  },
+  "performance": {
+    "lazyLoading": true,
+    "imageOptimization": true,
+    "codeSplitting": true,
+    "preloadCritical": true,
+    "bundleAnalyzer": false,
+    "performanceMonitoring": true,
+    "errorTracking": true,
+    "analyticsEnabled": true
+  },
+  "security": {
+    "httpsOnly": true,
+    "contentSecurityPolicy": true,
+    "xFrameOptions": "DENY",
+    "hstsEnabled": true,
+    "corsEnabled": false,
+    "rateLimiting": true,
+    "inputValidation": true,
+    "xssProtection": true
+  },
+  "pwa": {
+    "enabled": true,
+    "installPrompt": "auto",
+    "updateStrategy": "background",
+    "offlinePage": "/offline.html",
+    "cacheStrategy": "network-first",
+    "backgroundSync": true,
+    "pushNotifications": false,
+    "iconSizes": [
+      192,
+      512
+    ]
+  },
+  "analytics": {
+    "enabled": true,
+    "provider": "google-analytics",
+    "trackingId": "GA_MEASUREMENT_ID",
+    "anonymizeIp": true,
+    "trackErrors": true,
+    "trackPerformance": true,
+    "customEvents": true,
+    "userJourneyTracking": true
+  },
+  "integrations": {
+    "firebase": {
+      "enabled": true,
+      "emulatorMode": true,
+      "auth": true,
+      "firestore": true,
+      "functions": true,
+      "storage": false
+    },
+    "cloudinary": {
+      "enabled": true,
+      "cloud_name": "dq3xqcpqg",
+      "base_url": "https://res.cloudinary.com",
+      "uploadPreset": "mstore-uploads",
+      "maxFileSize": 10485760,
+      "allowedFormats": [
+        "jpg",
+        "png",
+        "webp"
+      ]
+    },
+    "payment": {
+      "enabled": false,
+      "provider": "razorpay",
+      "testMode": true,
+      "supportedMethods": [
+        "card",
+        "upi",
+        "netbanking"
+      ]
+    },
+    "sms": {
+      "enabled": false,
+      "provider": "twilio",
+      "verificationEnabled": true
+    }
+  },
+  "features": {
+    "userAuth": true,
+    "multiLanguage": false,
+    "darkMode": true,
+    "offlineMode": true,
+    "pushNotifications": false,
+    "socialLogin": false,
+    "guestCheckout": true,
+    "wishlist": true,
+    "cart": true,
+    "reviews": true,
+    "search": true,
+    "filters": true,
+    "sorting": true,
+    "pagination": true
   },
   "flags": {
     "maintenanceMode": false,
@@ -29,14 +186,50 @@
     "ptrEnabled": true,
     "promotionEnabled": false
   },
+  "limits": {
+    "maxCartItems": 50,
+    "maxWishlistItems": 100,
+    "maxSearchResults": 100,
+    "maxFileUploads": 10,
+    "sessionTimeout": 3600000,
+    "apiTimeout": 30000,
+    "cacheTimeout": 86400000
+  },
+  "monitoring": {
+    "enabled": true,
+    "logLevel": "info",
+    "errorReporting": true,
+    "performanceTracking": true,
+    "userAnalytics": true,
+    "crashReporting": true,
+    "uptimeMonitoring": false,
+    "alertsEnabled": false
+  },
+  "deployment": {
+    "environment": "development",
+    "branch": "main",
+    "buildCommand": "npm run build",
+    "deployCommand": "npm run deploy",
+    "rollbackEnabled": true,
+    "autoDeploy": false,
+    "healthCheckUrl": "/health",
+    "maintenancePage": "/maintenance.html"
+  },
+  "development": {
+    "debugMode": false,
+    "betaFeatures": false,
+    "experimentalUI": false,
+    "consoleLogging": true,
+    "errorReporting": true,
+    "performanceMetrics": true
+  },
   "audit": {
     "createdAt": "2025-09-08T09:56:14Z",
     "createdBy": "Santosh",
-    "modifyAt": "2025-12-19T14:25:11Z",
-    "modifyBy": "System"
-  },
-  "cloudinary": {
-    "cloud_name": "dq3xqcpqg",
-    "base_url": "https://res.cloudinary.com"
+    "modifyAt": "2025-12-20T09:48:47Z",
+    "modifyBy": "System",
+    "lastConfigUpdate": "2025-12-19T14:25:11Z",
+    "configVersion": "2.0",
+    "changeHistory": []
   }
 }

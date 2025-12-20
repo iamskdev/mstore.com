@@ -3,6 +3,7 @@ const RUNTIME_CACHE = 'runtime-cache';
 const MAX_RUNTIME_CACHE_AGE = 24 * 60 * 60; // 24 hours in seconds
 
 let dynamicCacheName;
+let currentConfig = null; // Store current environment config
 
 // --- App Shell + Critical Assets ---
 const APP_SHELL_URLS = [
@@ -25,6 +26,9 @@ const APP_SHELL_URLS = [
   './source/routing/route-url-handler.js',
   './source/routing/route-validator.js',
   './source/routing/index.js',
+  './source/routing/route-env-manager.js',
+  './source/routing/route-config-healer.js',
+  './source/routing/route-migration-handler.js',
 
   // Core Utility Modules
   './source/utils/data-manager.js',
@@ -247,15 +251,47 @@ const fromCache = async (request) => {
   try {
     const cacheName = await getCacheName();
     const cache = await caches.open(cacheName);
-    const cached = await cache.match(normalizeUrl(request.url));
-    if (cached) return cached;
 
+    // Create environment-aware cache key
+    const cacheKey = getEnvironmentCacheKey(request.url);
+
+    const cached = await cache.match(cacheKey);
+    if (cached) {
+      console.log('✅ Cache hit:', cacheKey);
+      return cached;
+    }
+
+    // Fallback to runtime cache with normalized URL
     const runtimeCache = await caches.open(RUNTIME_CACHE);
-    return await runtimeCache.match(normalizeUrl(request.url));
+    const runtimeCached = await runtimeCache.match(normalizeUrl(request.url));
+    if (runtimeCached) {
+      console.log('✅ Runtime cache hit:', request.url);
+    }
+    return runtimeCached;
   } catch (error) {
     console.error('Cache access error:', error);
     return undefined;
   }
+};
+
+// Generate environment-aware cache key
+const getEnvironmentCacheKey = (url) => {
+  if (!currentConfig?.routing) {
+    return normalizeUrl(url);
+  }
+
+  const basePath = currentConfig.routing.basePath || '';
+  const serveMode = currentConfig.routing.serveMode || 'localhost';
+
+  // Create unique cache key based on environment
+  const envKey = `${serveMode}-${basePath}`;
+
+  // For app shell assets, use environment-specific keys
+  if (APP_SHELL_URLS.some(asset => url.includes(asset.replace('./', '')))) {
+    return `${envKey}-${normalizeUrl(url)}`;
+  }
+
+  return normalizeUrl(url);
 };
 
 const fromNetwork = async (request, cacheName) => {
@@ -273,6 +309,19 @@ const fromNetwork = async (request, cacheName) => {
     throw error;
   }
 };
+
+// --- Environment Update Handler ---
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'ENVIRONMENT_UPDATE') {
+    currentConfig = event.data.config;
+    console.log('🔄 SW: Environment updated:', currentConfig?.routing?.basePath);
+
+    // Update dynamic cache name based on environment
+    if (currentConfig?.routing) {
+      dynamicCacheName = `mstore-${currentConfig.routing.serveMode}-${Date.now()}`;
+    }
+  }
+});
 
 // --- Resilient Installation ---
 self.addEventListener('install', (event) => {

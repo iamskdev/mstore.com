@@ -187,3 +187,129 @@ export function setupPwaRefreshBlockers() {
     });
   }
 }
+
+/**
+ * Generate and update PWA manifest dynamically based on current environment
+ */
+export const updatePWAManifest = async () => {
+  try {
+    const config = window.getAppConfig?.() || {};
+
+    // Get current routing environment and use full URLs
+    const basePath = config.routing?.basePath || '';
+    const origin = window.location.origin;
+
+    // Use full URLs for manifest (critical for localhost)
+    const startUrl = basePath ? `${origin}${basePath}` : origin + '/';
+    const scopeUrl = basePath ? `${origin}${basePath}` : origin + '/';
+
+    console.log('📱 Generating PWA Manifest...');
+    console.log('🏠 Origin:', origin);
+    console.log('📂 Base Path:', basePath);
+    console.log('🎯 Start URL:', startUrl);
+
+    // Create dynamic manifest with valid URLs
+    const manifest = {
+      "name": "mStore",
+      "short_name": "mStore",
+      "description": "Modern PWA E-commerce platform for local businesses",
+      "start_url": startUrl,
+      "scope": scopeUrl,
+      "display": "standalone",
+      "orientation": "portrait-primary",
+      "background_color": "#000000",
+      "theme_color": "#000000",
+      "icons": [
+        {
+          "src": `${origin}/source/assets/logos/app_icon_192.png`,
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": `${origin}/source/assets/logos/app_icon_512.png`,
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ],
+      "categories": ["shopping", "lifestyle"],
+      "lang": "hi",
+      "dir": "ltr"
+    };
+
+    // Update manifest link dynamically
+    const manifestLink = document.querySelector('link[rel="manifest"]');
+    if (manifestLink) {
+      const blob = new Blob([JSON.stringify(manifest, null, 2)], {
+        type: 'application/json'
+      });
+      const manifestUrl = URL.createObjectURL(blob);
+      manifestLink.href = manifestUrl;
+
+      console.log('✅ PWA Manifest updated successfully');
+      console.log('🎯 Final Start URL:', startUrl);
+      console.log('🎯 Final Scope:', scopeUrl);
+
+      return manifestUrl;
+    } else {
+      console.warn('⚠️ Manifest link not found in DOM');
+    }
+  } catch (error) {
+    console.error('❌ Failed to update PWA manifest:', error);
+  }
+
+  return null;
+};
+
+/**
+ * Update service worker with current environment info
+ */
+export const updateServiceWorker = async () => {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (registration && registration.active) {
+        const config = window.getAppConfig?.() || {};
+
+        // Send environment update to service worker
+        registration.active.postMessage({
+          type: 'ENVIRONMENT_UPDATE',
+          config: config,
+          timestamp: new Date().toISOString()
+        });
+
+        console.log('🔄 Service worker updated with new environment');
+      }
+    } catch (error) {
+      console.error('❌ Failed to update service worker:', error);
+    }
+  }
+};
+
+/**
+ * Initialize PWA system with dynamic updates
+ */
+export const initializePWASystem = async () => {
+  try {
+    // Update manifest first
+    await updatePWAManifest();
+
+    // Then update service worker
+    await updateServiceWorker();
+
+    console.log('✅ PWA system initialized with dynamic environment');
+  } catch (error) {
+    console.error('❌ PWA system initialization failed:', error);
+  }
+};
+
+// Auto-initialize when imported
+if (typeof window !== 'undefined') {
+  // Initialize PWA system after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePWASystem);
+  } else {
+    initializePWASystem();
+  }
+}
