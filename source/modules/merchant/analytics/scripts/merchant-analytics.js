@@ -226,18 +226,6 @@ function setupEventListeners() {
     });
   });
 
-  // View All buttons
-  const viewAllButtons = document.querySelectorAll(
-    ".anls-table-header .anls-btn"
-  );
-  viewAllButtons.forEach((btn) => {
-    btn.addEventListener("click", function () {
-      showMoreData(
-        this.closest(".anls-table-container").querySelector(".anls-table-title")
-          .textContent
-      );
-    });
-  });
 
   // Checkbox interaction
   const checkbox = document.querySelector('input[type="checkbox"]');
@@ -301,9 +289,6 @@ function updateChartType(type) {
   showToast(`Switched to ${type} view`);
 }
 
-function showMoreData(type) {
-  showToast(`Showing all ${type}`);
-}
 
 function showToast(message) {
   // Remove existing toast

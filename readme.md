@@ -272,8 +272,6 @@ merchant: [
   'dashboard/transactions', // Transactions tab
   'dashboard/inventory', // Inventory management
   'dashboard/parties',   // Customer/party management
-  'dashboard/offers',    // Promotions & offers
-  'dashboard/banners',   // Banner management
   'dashboard/reports',   // Business reports
   'add-item',
   'add-item/:itemId',

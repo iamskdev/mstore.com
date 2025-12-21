@@ -115,6 +115,8 @@ const APP_SHELL_URLS = [
   './source/modules/merchant/dashboard/mrc-dashboard.html',
   './source/modules/merchant/dashboard/styles/mrc-dashboard.css',
   './source/modules/merchant/dashboard/scripts/mrc-dashboard.js',
+  './source/modules/merchant/dashboard/mrc-report.html',
+  './source/modules/merchant/dashboard/scripts/mrc-report.js',
 
   // Merchant Add Item View
   './source/modules/merchant/inventory/add-item.html',

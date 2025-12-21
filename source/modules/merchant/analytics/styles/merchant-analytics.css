@@ -171,27 +171,27 @@
 }
 
 .anls-profit-card {
-  border-top: 3px solid var(--success-color);
+  border-top: 3px solid var(--accent-success);
 }
 
 .anls-overdue-card {
-  border-top: 3px solid var(--danger-color);
+  border-top: 3px solid var(--accent-danger);
 }
 
 .anls-moneyflow-card {
-  border-top: 3px solid var(--info-color);
+  border-top: 3px solid var(--secondary-color);
 }
 
 .anls-inventory-card {
-  border-top: 3px solid var(--warning-color);
+  border-top: 3px solid var(--accent-info);
 }
 
 .anls-sales-card {
-  border-top: 3px solid var(--analytics-chart-sales);
+  border-top: 3px solid var(--accent-warning);
 }
 
 .anls-expenditure-card {
-  border-top: 3px solid var(--warning-color);
+  border-top: 3px solid var(--accent-secondary);
 }
 
 /* Money Flow Card - Rectangular Layout */
@@ -337,10 +337,12 @@
 
 .anls-revenue-container {
   min-height: 220px;
+  border-top: 3px solid var(--primary-light);
 }
 
 .anls-category-container {
   min-height: 220px;
+  border-top: 3px solid var(--success-color);
 }
 
 .anls-chart-header {
@@ -388,73 +390,6 @@
   }
 }
 
-/* ===== TABLES SECTION ===== */
-.anls-tables-section {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.anls-table-container {
-  background: var(--light-color);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border-color);
-  height: auto;
-}
-
-.anls-table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border-color);
-  background: var(--light-color);
-}
-
-.anls-table-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--dark-color);
-  margin: 0;
-}
-
-.anls-table-content {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.anls-data-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 400px;
-}
-
-.anls-data-table th {
-  padding: 12px 16px;
-  text-align: left;
-  font-weight: 600;
-  color: var(--gray);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 2px solid var(--border-color);
-  background: var(--light-color);
-}
-
-.anls-data-table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--dark-color);
-  font-size: 13px;
-}
-
-.anls-data-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
 /* ===== STATUS BADGES ===== */
 .anls-status-badge {
   padding: 4px 10px;
@@ -487,12 +422,6 @@
 .anls-growth-negative {
   color: var(--analytics-status-negative-text);
   font-weight: 600;
-}
-
-.anls-view-all-btn {
-  border: none;
-  padding: 4px 8px;
-  font-size: 12px;
 }
 
 .anls-secondary-text {
@@ -548,10 +477,6 @@
 
   .anls-charts-section {
     grid-template-columns: 3fr 1fr;
-  }
-
-  .anls-tables-section {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   .anls-chart-header {

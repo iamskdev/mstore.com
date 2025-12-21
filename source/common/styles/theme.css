@@ -20,6 +20,7 @@
   --text-primary: #1c1e21;
   --text-secondary: #606770;
   --text-tertiary: #8a8d91;
+  --text-muted: #999999; /* Muted text color */
   --accent-text: #ffffff; /* Text on colored accent backgrounds */
   --text-google-btn: #3c4043;
   --dark-color: #1c1e21; /* Dark text color */
@@ -45,6 +46,8 @@
   --warning-color: #f8961e; /* Warning color variant */
   --accent-success: #22c55e; /* Added for stock status in */
   --success-color: #4cc9f0; /* Success color variant */
+  --hover-light: rgba(0, 123, 255, 0.02); /* Light hover effect */
+  --hover-medium: rgba(0, 123, 255, 0.05); /* Medium hover effect */
 
   /* --- 4. Borders & States --- */
   --border-color: #e0e0e0;
@@ -59,6 +62,8 @@
   --button-disabled-bg: #cbd5e1; /* Added for disabled button background */
   --icon-invert-value: 0; /* FIX: Value for inverting icons (0 = no invert for light mode) */
   --transition: all 0.3s ease; /* General transition */
+  --top-height: 56px; /* Header height */
+  --bottom-height: 65px; /* Footer height */
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(0, 0, 0, 0.05);
@@ -134,6 +139,7 @@ html.dark-mode {
   --text-primary: #e0e0e0;
   --text-secondary: #a0a0a0;
   --text-tertiary: #7f8c8d;
+  --text-muted: #666666; /* Muted text color for dark mode */
   --accent-text: #ffffff; /* Text on colored accent backgrounds */
   --text-google-btn: #e0e0e0;
   --dark-color: #e0e0e0; /* Dark text color */
@@ -159,6 +165,8 @@ html.dark-mode {
   --warning-color: #fbbf24; /* Warning color variant */
   --accent-success: #22c55e; /* Added for stock status in */
   --success-color: #22c55e; /* Success color variant */
+  --hover-light: rgba(0, 119, 182, 0.03); /* Light hover effect for dark mode */
+  --hover-medium: rgba(0, 119, 182, 0.08); /* Medium hover effect for dark mode */
 
   /* --- 4. Borders & States --- */
   --border-color: #333333;
@@ -173,6 +181,8 @@ html.dark-mode {
   --button-disabled-bg: #cbd5e1; /* Added for disabled button background */
   --icon-invert-value: 1; /* FIX: Value for inverting icons (1 = invert for dark mode) */
   --transition: all 0.3s ease; /* General transition */
+  --top-height: 56px; /* Header height */
+  --bottom-height: 65px; /* Footer height */
 
   /* --- 5. Shadows & Elevation --- */
   --shadow-color: rgba(255, 255, 255, 0.05); /* Changed to a light shadow for dark mode */

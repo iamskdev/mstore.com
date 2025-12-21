@@ -124,8 +124,6 @@ class RouteUrlHandler {
       'merchant-inventory': { role: 'merchant', viewId: 'dashboard/inventory' },
       'merchant-parties': { role: 'merchant', viewId: 'dashboard/parties' },
       'merchant-posts': { role: 'merchant', viewId: 'dashboard/posts' },
-      'merchant-offers': { role: 'merchant', viewId: 'dashboard/offers' },
-      'merchant-banners': { role: 'merchant', viewId: 'dashboard/banners' },
       'merchant-reports': { role: 'merchant', viewId: 'dashboard/reports' }
     };
 

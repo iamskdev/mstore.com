@@ -18,7 +18,7 @@ class RouteValidator {
     return {
       guest: ['home'],
       consumer: ['home', 'cart', 'item-details/:id', 'conversation/:id', 'merchant-profile/:id', 'account', 'wishlist', 'updates', 'notifications'],
-      merchant: ['home', 'dashboard', 'dashboard/analytics', 'dashboard/transactions', 'dashboard/inventory', 'dashboard/parties', 'dashboard/posts', 'dashboard/offers', 'dashboard/banners', 'dashboard/reports', 'add-item', 'add-item/:itemId', 'profile-edit', 'add-invoice'],
+      merchant: ['home', 'dashboard', 'dashboard/analytics', 'dashboard/transactions', 'dashboard/inventory', 'dashboard/parties', 'dashboard/posts', 'dashboard/reports', 'add-item', 'add-item/:itemId', 'profile-edit', 'add-invoice'],
       admin: ['home', 'users', 'analytics', 'requests']
     };
   }

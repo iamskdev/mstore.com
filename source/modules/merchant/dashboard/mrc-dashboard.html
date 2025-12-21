@@ -7,8 +7,6 @@
             <button class="tab-btn" data-tab="transactions">Transactions</button>
             <button class="tab-btn" data-tab="inventory">Inventory</button>
             <button class="tab-btn" data-tab="parties">Parties</button>
-            <button class="tab-btn" data-tab="offers">Offers</button>
-            <button class="tab-btn" data-tab="banners">Banners</button>
             <button class="tab-btn" data-tab="reports">Reports</button>
             <div class="tab-indicator"></div>
         </div>
@@ -287,96 +285,6 @@
                       </div>
                     </section>
                   
-                    <!-- Tables Section -->
-                    <section class="anls-tables-section">
-                      <div class="anls-table-container">
-                        <div class="anls-table-header">
-                          <h3 class="anls-table-title">Top Products</h3>
-                          <button class="anls-btn anls-view-all-btn">View All →</button>
-                        </div>
-                        <div class="anls-table-content">
-                          <table class="anls-data-table">
-                            <thead>
-                              <tr>
-                                <th>Product</th>
-                                <th>Sales</th>
-                                <th>Revenue</th>
-                                <th>Growth</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>Premium Widget X</td>
-                                <td>1,245 units</td>
-                                <td>₹84,500</td>
-                                <td class="anls-growth-positive">+24%</td>
-                              </tr>
-                              <tr>
-                                <td>Basic Gadget Y</td>
-                                <td>892 units</td>
-                                <td>₹42,300</td>
-                                <td class="anls-growth-positive">+12%</td>
-                              </tr>
-                              <tr>
-                                <td>Deluxe Tool Z</td>
-                                <td>567 units</td>
-                                <td>₹67,800</td>
-                                <td class="anls-growth-negative">-5%</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                  
-                      <div class="anls-table-container">
-                        <div class="anls-table-header">
-                          <h3 class="anls-table-title">Recent Transactions</h3>
-                          <button class="anls-btn anls-view-all-btn">View All →</button>
-                        </div>
-                        <div class="anls-table-content">
-                          <table class="anls-data-table">
-                            <thead>
-                              <tr>
-                                <th>Date</th>
-                                <th>Customer</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>2024-01-15</td>
-                                <td>Global Distributors</td>
-                                <td>₹38,300</td>
-                                <td>
-                                  <span class="anls-status-badge anls-status-overdue"
-                                    >Overdue</span
-                                  >
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>2024-01-14</td>
-                                <td>Tech Solutions Inc</td>
-                                <td>₹21,000</td>
-                                <td>
-                                  <span class="anls-status-badge anls-status-paid">Paid</span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>2024-01-13</td>
-                                <td>Retail Chain Corp</td>
-                                <td>₹56,800</td>
-                                <td>
-                                  <span class="anls-status-badge anls-status-pending"
-                                    >Pending</span
-                                  >
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </section>
                   </main>
             </div>
         </div>
@@ -432,63 +340,15 @@
             </div>
         </div>
 
-        <!-- Offers Pane -->
-        <div class="add-scrollable-content" data-tab="offers">
-            <div class="content-filter-bar">
-                <button class="filter-btn active" data-offer-filter="all">All</button>
-                <button class="filter-btn" data-offer-filter="active">Active</button>
-                <button class="filter-btn" data-offer-filter="scheduled">Scheduled</button>
-                <button class="filter-btn" data-offer-filter="expired">Expired</button>
-            </div>
-            <div class="content-scrollable-area">
-                <div class="content-card">
-                    <div class="content-card-icon"><i class="fa-solid fa-tag"></i></div>
-                    <div class="content-card-details">
-                        <div class="content-card-title">DIWALI20</div>
-                        <div class="content-card-subtitle">20% off on all items. Expires in 3 days.</div>
-                    </div>
-                </div>
-                <div class="content-card">
-                    <div class="content-card-icon"><i class="fa-solid fa-percent"></i></div>
-                    <div class="content-card-details">
-                        <div class="content-card-title">Weekend Flash Sale</div>
-                        <div class="content-card-subtitle">Flat 50% off on electronics.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Banners Pane -->
-        <div class="add-scrollable-content" data-tab="banners">
-            <div class="content-filter-bar">
-                <button class="filter-btn active" data-banner-filter="all">All</button>
-                <button class="filter-btn" data-banner-filter="active">Active</button>
-                <button class="filter-btn" data-banner-filter="pending">Pending</button>
-                <button class="filter-btn" data-banner-filter="expired">Expired</button>
-            </div>
-            <div class="content-scrollable-area">
-                <div class="placeholder-content">
-                    <i class="fa-solid fa-images"></i>
-                    <p>No active banners.<br>Click the '+' button to add a new banner.</p>
-                </div>
-            </div>
-        </div>
 
         <!-- Reports Pane -->
         <div class="add-scrollable-content" data-tab="reports">
-            <div class="content-filter-bar">
-                <button class="filter-btn active" data-report-filter="overview">Overview</button>
-                <button class="filter-btn" data-report-filter="sales">Sales</button>
-                <button class="filter-btn" data-report-filter="inventory">Inventory</button>
-                <button class="filter-btn" data-report-filter="parties">Parties</button>
-                <button class="filter-btn filter-helper-only" data-report-filter="export" title="Export Report"><i class="fas fa-download"></i></button>
-            </div>
             <div class="content-scrollable-area">
-                <div class="list-container">
-                    <!-- Reports content will be dynamically injected here -->
+                <div id="reports-content-container" class="list-container">
+                    <!-- Reports content will be dynamically loaded here -->
                     <div class="placeholder-content">
                         <i class="fas fa-file-chart-column"></i>
-                        <p>Reports section coming soon...</p>
+                        <p>Loading reports...</p>
                     </div>
                 </div>
             </div>

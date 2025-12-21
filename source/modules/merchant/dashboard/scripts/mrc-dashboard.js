@@ -1,6 +1,7 @@
 import { createListCard, initCardHelper } from '../../../../templates/cards/card-helper.js';
 import { fetchAllItems, localCache } from '../../../../utils/data-manager.js';
 import '../../analytics/scripts/merchant-analytics.js';
+import './mrc-report.js';
 import { routeManager } from '../../../../routing/index.js';
 
 let isInitialized = false;
@@ -298,22 +299,10 @@ export async function init() {
             { label: 'Add Customer', icon: 'fa-solid fa-user-plus' },
             { label: 'Add Supplier', icon: 'fa-solid fa-user-tie' },
         ],
-        offers: [
-            { label: 'Add Offer / Discount', icon: 'fa-solid fa-percent' },
-            { label: 'Schedule Flash Sale', icon: 'fa-solid fa-bolt' },
-            { label: 'Add Coupon', icon: 'fa-solid fa-ticket' },
-
-        ],
-        banners: [
-            { label: 'Design From Template', icon: 'fa-solid fa-pen-ruler' },
-            { label: 'Add New Banner', icon: 'fa-solid fa-image' },
-
-        ],
         // NEW: Reports tab actions
         reports: [
-            { label: 'Generate Report', icon: 'fa-solid fa-chart-bar' },
-            { label: 'Export Data', icon: 'fa-solid fa-download' },
-            { label: 'Print Report', icon: 'fa-solid fa-print' }
+            { label: 'Schedule Report', icon: 'fa-solid fa-calendar-plus' },
+            { label: 'Generate Report', icon: 'fa-solid fa-chart-bar' }
         ]
     };
 
@@ -551,6 +540,33 @@ export async function init() {
         }).join('');
 
         container.innerHTML = cardsHTML;
+    }
+
+    // --- NEW: Function to load reports content ---
+    async function loadReportsContent() {
+        const reportsContainer = document.getElementById('reports-content-container');
+        if (!reportsContainer) return;
+
+        try {
+            // Load the HTML content
+            const response = await fetch('./source/modules/merchant/dashboard/mrc-report.html');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const htmlContent = await response.text();
+
+            // Insert the content into the container
+            reportsContainer.innerHTML = htmlContent;
+
+            // Initialize reports functionality if available
+            if (typeof window.initReports === 'function') {
+                window.initReports();
+            }
+
+        } catch (error) {
+            console.error('Failed to load reports content:', error);
+            reportsContainer.innerHTML = `<div class="placeholder-content" style="padding-top: 20px;"><i class="fas fa-chart-bar"></i><p>Failed to load reports. Please try again.</p></div>`;
+        }
     }
 
     // --- NEW: Function to render inventory items ---
@@ -1025,6 +1041,9 @@ let activeTabId = 'analytics';
                     }
                 })();
             }
+        } else if (activeTabId === 'reports') {
+            // Load reports content when tab becomes active
+            loadReportsContent();
         }
 
 
@@ -1146,35 +1165,7 @@ let activeTabId = 'analytics';
         });
     });
 
-    // Listener for Reports Tab
-    document.querySelectorAll('.add-scrollable-content[data-tab="reports"] .filter-btn').forEach(button => {
-        addManagedEventListener(button, 'click', function () {
-            const filter = this.dataset.reportFilter;
-            if (filter === 'export') {
-                // Handle export functionality
-                console.log('Export Reports clicked.');
-                return;
-            }
-            updateActiveFilterButton(this);
-            console.log('Report filter clicked:', filter);
-        });
-    });
 
-    // Listener for Offers Tab
-    document.querySelectorAll('.add-scrollable-content[data-tab="offers"] .filter-btn').forEach(button => {
-        addManagedEventListener(button, 'click', function () {
-            updateActiveFilterButton(this);
-            console.log('Offer filter clicked:', this.dataset.offerFilter);
-        });
-    });
-
-    // Listener for Banners Tab
-    document.querySelectorAll('.add-scrollable-content[data-tab="banners"] .filter-btn').forEach(button => {
-        addManagedEventListener(button, 'click', function () {
-            updateActiveFilterButton(this);
-            console.log('Banner filter clicked:', this.dataset.bannerFilter);
-        });
-    });
     // --- NEW: Function to check if party filters are active ---
     function arePartyFiltersActive() {
         const selectedSort = document.querySelector('input[name="party_sort"]:checked');

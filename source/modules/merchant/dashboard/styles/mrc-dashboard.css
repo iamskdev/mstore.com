@@ -707,3 +707,29 @@
     opacity: 1;
     pointer-events: auto;
 }
+
+/* --- Reports Tab Specific Styles --- */
+.add-scrollable-content[data-tab="reports"] .list-container {
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+}
+
+.add-scrollable-content[data-tab="reports"] .mrc-report-category-card {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.add-scrollable-content[data-tab="reports"] .mrc-report-entry {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.add-scrollable-content[data-tab="reports"] .mrc-report-entry-content {
+    text-align: left;
+}
+
+.add-scrollable-content[data-tab="reports"] .mrc-report-entry:hover {
+    margin-left: 0;
+    margin-right: 0;
+}

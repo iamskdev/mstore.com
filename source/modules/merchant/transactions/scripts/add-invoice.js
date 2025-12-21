@@ -1,9 +1,8 @@
 import { loadInstantAddItemModal } from './instant-add-item.js';
 import { InvoiceEventManager } from './invoice-event-manager.js';
+import { fetchAllItems, fetchAllUnits } from '../../../../utils/data-manager.js';
 
 export async function init() {
-    const itemsUrl = '../../../localstore/jsons/items.json';
-    const unitsUrl = '../../../localstore/jsons/units.json';
 
     const itemsListEl = document.getElementById('invoice-demo-items');
     const totalEl = document.getElementById('invoice-demo-total');
@@ -38,11 +37,6 @@ export async function init() {
       }
     ];
 
-    async function loadLocalJson(url) {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Failed to load ' + url);
-        return res.json();
-    }
 
     function formatCurrency(amount) {
         return '₹ ' + (amount || 0).toFixed(2);
@@ -143,25 +137,31 @@ export async function init() {
     async function init() {
       try {
         const [itemsData, unitsData] = await Promise.all([
-          loadLocalJson(itemsUrl),
-          loadLocalJson(unitsUrl)
+          fetchAllItems(),
+          fetchAllUnits()
         ]);
-        catalog = Array.isArray(itemsData) ? itemsData : [];
 
-        // Flatten units.json to simple options (prefer popular subunits)
+        // Process items data for catalog
+        catalog = Array.isArray(itemsData) ? itemsData.slice(0, 50) : [];
+
+        // Flatten units data to simple options (prefer popular subunits)
         unitOptions = [];
-        unitsData.forEach((unitGroup) => {
-          (unitGroup.subunits || []).forEach((sub) => {
-            unitOptions.push({
-              code: sub.code,
-              label: sub.title || sub.symbol || sub.code
-            });
+        if (Array.isArray(unitsData)) {
+          unitsData.forEach((unitGroup) => {
+            if (unitGroup.subunits) {
+              unitGroup.subunits.forEach((sub) => {
+                unitOptions.push({
+                  code: sub.code,
+                  label: sub.title || sub.symbol || sub.code
+                });
+              });
+            }
           });
-        });
+        }
 
       } catch (err) {
-        console.error(err);
-        // Fallback demo data if fetch fails (e.g., opened via file://)
+        console.error('Error loading data from database:', err);
+        // Fallback demo data if fetch fails
         catalog = [
           {
             meta: { itemId: 'DEMO-ITEM-1' },
