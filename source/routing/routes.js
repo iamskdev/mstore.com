@@ -30,9 +30,9 @@ const routeConfig = {
     },
     dashboard: {
       id: 'merchant-add-view',
-      path: './source/modules/merchant/pages/add.html',
-      cssPath: './source/modules/merchant/styles/add.css',
-      jsPath: './source/modules/merchant/scripts/add.js',
+      path: './source/modules/merchant/dashboard/mrc-dashboard.html',
+      cssPath: './source/modules/merchant/dashboard/styles/mrc-dashboard.css',
+      jsPath: './source/modules/merchant/dashboard/scripts/mrc-dashboard.js',
       title: 'Dashboard',
       isMainTab: true,
       dataDependencies: []

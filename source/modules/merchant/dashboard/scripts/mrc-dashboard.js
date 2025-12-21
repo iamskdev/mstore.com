@@ -1,7 +1,7 @@
-import { createListCard, initCardHelper } from '../../../templates/cards/card-helper.js';
-import { fetchAllItems, localCache } from '../../../utils/data-manager.js';
-import '../analytics/scripts/merchant-analytics.js';
-import { routeManager } from '../../../routing/index.js';
+import { createListCard, initCardHelper } from '../../../../templates/cards/card-helper.js';
+import { fetchAllItems, localCache } from '../../../../utils/data-manager.js';
+import '../../analytics/scripts/merchant-analytics.js';
+import { routeManager } from '../../../../routing/index.js';
 
 let isInitialized = false;
 let eventListeners = []; // To keep track of added event listeners
@@ -203,7 +203,7 @@ export async function init() {
             EDIT_ITEM: (item) => {
                 // Implement actual edit logic here
                 // Navigate to the add-item page with the item's ID
-                import('../../../main.js').then(({ routeManager }) => {
+                import('../../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', `add-item/${item.meta.itemId}`);
                 });
             },
@@ -767,24 +767,24 @@ let activeTabId = 'analytics';
             if (label === 'Add Item') {
                 toggleFabMenu(false);
                 // Import routeManager dynamically
-                import('../../../main.js').then(({ routeManager }) => {
+                import('../../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-item');
                 });
             }
             // Handle Analytics tab actions
-            else if (label === 'Sale' && activeTabId === 'analytics') {
+            else if (label === 'Add Sale' && activeTabId === 'analytics') {
                 toggleFabMenu(false);
                 // Store the type in sessionStorage before navigation
                 sessionStorage.setItem('invoiceType', 'sale');
-                import('../../../main.js').then(({ routeManager }) => {
+                import('../../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-invoice');
                 });
             }
-            else if (label === 'Purchase' && activeTabId === 'analytics') {
+            else if (label === 'Add Purchase' && activeTabId === 'analytics') {
                 toggleFabMenu(false);
                 // Store the type in sessionStorage before navigation
                 sessionStorage.setItem('invoiceType', 'purchase');
-                import('../../../main.js').then(({ routeManager }) => {
+                import('../../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-invoice');
                 });
             }
@@ -804,7 +804,7 @@ let activeTabId = 'analytics';
                 toggleFabMenu(false);
                 // Store the type in sessionStorage before navigation
                 sessionStorage.setItem('invoiceType', 'sale');
-                import('../../../main.js').then(({ routeManager }) => {
+                import('../../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-invoice');
                 });
             }
@@ -812,19 +812,19 @@ let activeTabId = 'analytics';
                 toggleFabMenu(false);
                 // Store the type in sessionStorage before navigation
                 sessionStorage.setItem('invoiceType', 'purchase');
-                import('../../../main.js').then(({ routeManager }) => {
+                import('../../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-invoice');
                 });
             }
             else if (label === 'Payment In') {
                 toggleFabMenu(false);
-                import('../../../main.js').then(({ routeManager }) => {
+                import('../../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-invoice');
                 });
             }
             else if (label === 'Payment Out') {
                 toggleFabMenu(false);
-                import('../../../main.js').then(({ routeManager }) => {
+                import('../../../../main.js').then(({ routeManager }) => {
                     routeManager.switchView('merchant', 'add-invoice');
                 });
             }

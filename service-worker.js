@@ -112,9 +112,9 @@ const APP_SHELL_URLS = [
   './source/modules/admin/scripts/admin-home.js',
 
   // Merchant Add View
-  './source/modules/merchant/pages/add.html',
-  './source/modules/merchant/styles/add.css',
-  './source/modules/merchant/scripts/add.js',
+  './source/modules/merchant/dashboard/mrc-dashboard.html',
+  './source/modules/merchant/dashboard/styles/mrc-dashboard.css',
+  './source/modules/merchant/dashboard/scripts/mrc-dashboard.js',
 
   // Merchant Add Item View
   './source/modules/merchant/pages/add-item.html',
