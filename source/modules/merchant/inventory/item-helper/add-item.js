@@ -3,12 +3,12 @@
  * Manages item creation form with full functionality
  */
 
-import { fetchItemById } from '../../../utils/data-manager.js';
-import { showToast } from '../../../utils/toast.js';
-import { AuthService } from '../../../firebase/auth/auth.js';
-import { localCache } from '../../../utils/data-manager.js';
-import { saveItem, generateNewItemId, fetchItem } from './item-helper/item-db-operations.js';
-import { ItemDataManager, ItemFormManager, ItemUIComponents, ItemMediaHandler, ItemEventManager } from './item-helper/index.js';
+import { fetchItemById } from '../../../../utils/data-manager.js';
+import { showToast } from '../../../../utils/toast.js';
+import { AuthService } from '../../../../firebase/auth/auth.js';
+import { localCache } from '../../../../utils/data-manager.js';
+import { saveItem, generateNewItemId, fetchItem } from './item-db-operations.js';
+import { ItemDataManager, ItemFormManager, ItemUIComponents, ItemMediaHandler, ItemEventManager } from './index.js';
 
 // Module state
 let initialized = false;

@@ -1,5 +1,5 @@
 # 📁 Project Path Tree (Gemini-friendly)
-📅 Last Updated: 19/12/2025, 18:36
+📅 Last Updated: 21/12/2025, 17:58
 
 H:\My Projects\ecommerce\mStore\.cursor\commands\commit-msg-drafting.md
 H:\My Projects\ecommerce\mStore\.firebaserc
@@ -32,11 +32,12 @@ H:\My Projects\ecommerce\mStore\archive\card-old.html
 H:\My Projects\ecommerce\mStore\archive\error-page.html
 H:\My Projects\ecommerce\mStore\archive\merchant-add-demo.html
 H:\My Projects\ecommerce\mStore\archive\merchant-profile-demo.html
-H:\My Projects\ecommerce\mStore\archive\new-analytic copy.html
+H:\My Projects\ecommerce\mStore\archive\new-analytic.html
 H:\My Projects\ecommerce\mStore\archive\photo-editor-demo.html
 H:\My Projects\ecommerce\mStore\archive\rating-demo.html
 H:\My Projects\ecommerce\mStore\archive\rating-modal.html
 H:\My Projects\ecommerce\mStore\archive\rating-modal.js
+H:\My Projects\ecommerce\mStore\archive\reports.html
 H:\My Projects\ecommerce\mStore\archive\request-to-switch-prof.html
 H:\My Projects\ecommerce\mStore\archive\story-viewer-demo.html
 H:\My Projects\ecommerce\mStore\archive\updates-demo.html
@@ -45,12 +46,14 @@ H:\My Projects\ecommerce\mStore\docs\brands_list.md
 H:\My Projects\ecommerce\mStore\docs\categories-schema-guide.md
 H:\My Projects\ecommerce\mStore\docs\commit-guide.md
 H:\My Projects\ecommerce\mStore\docs\commit_message.txt
+H:\My Projects\ecommerce\mStore\docs\config-readme.md
 H:\My Projects\ecommerce\mStore\docs\firebase-emulator.md
 H:\My Projects\ecommerce\mStore\docs\gemini_settings.md
 H:\My Projects\ecommerce\mStore\docs\id-generation.md
 H:\My Projects\ecommerce\mStore\docs\implementing-new-views.md
 H:\My Projects\ecommerce\mStore\docs\instruction.md
 H:\My Projects\ecommerce\mStore\docs\media-queries.md
+H:\My Projects\ecommerce\mStore\docs\migration-readme.md
 H:\My Projects\ecommerce\mStore\docs\path-is-flat.md
 H:\My Projects\ecommerce\mStore\docs\path-structured.md
 H:\My Projects\ecommerce\mStore\docs\renaming-the-app.md
@@ -317,33 +320,33 @@ H:\My Projects\ecommerce\mStore\source\modules\admin\styles\admin-home.css
 H:\My Projects\ecommerce\mStore\source\modules\merchant\analytics\merchant-analytics.html
 H:\My Projects\ecommerce\mStore\source\modules\merchant\analytics\scripts\merchant-analytics.js
 H:\My Projects\ecommerce\mStore\source\modules\merchant\analytics\styles\merchant-analytics.css
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\add-invoice.html
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\instant-add-item.html
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\add-invoice.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\instant-add-item.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\instant-db-operation.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\instant-ui-component.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\invoice-db-operation.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\invoice-event-manager.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\scripts\invoice-ui-component.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\invoices\styles\add-invoice.css
-H:\My Projects\ecommerce\mStore\source\modules\merchant\pages\add-item.html
-H:\My Projects\ecommerce\mStore\source\modules\merchant\pages\add.html
-H:\My Projects\ecommerce\mStore\source\modules\merchant\pages\merchant-profile-edit.html
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\add-item.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\add.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\index.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-data-manager.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-db-operations.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-event-manager.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-form-manager.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-media-handler.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-ui-components.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\item-helper\item-validator.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\scripts\merchant-profile-edit.js
-H:\My Projects\ecommerce\mStore\source\modules\merchant\styles\add-item.css
-H:\My Projects\ecommerce\mStore\source\modules\merchant\styles\add.css
-H:\My Projects\ecommerce\mStore\source\modules\merchant\styles\merchant-profile-edit.css
+H:\My Projects\ecommerce\mStore\source\modules\merchant\dashboard\mrc-dashboard.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\dashboard\scripts\mrc-dashboard.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\dashboard\styles\mrc-dashboard.css
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\add-item.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\item-helper\add-item.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\item-helper\index.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\item-helper\item-data-manager.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\item-helper\item-db-operations.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\item-helper\item-event-manager.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\item-helper\item-form-manager.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\item-helper\item-media-handler.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\item-helper\item-ui-components.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\item-helper\item-validator.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\inventory\styles\add-item.css
+H:\My Projects\ecommerce\mStore\source\modules\merchant\public-page\merchant-profile-edit.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\public-page\scripts\merchant-profile-edit.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\public-page\styles\merchant-profile-edit.css
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\add-invoice.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\instant-add-item.html
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\scripts\add-invoice.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\scripts\instant-add-item.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\scripts\instant-db-operation.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\scripts\instant-ui-component.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\scripts\invoice-db-operation.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\scripts\invoice-event-manager.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\scripts\invoice-ui-component.js
+H:\My Projects\ecommerce\mStore\source\modules\merchant\transactions\styles\add-invoice.css
 H:\My Projects\ecommerce\mStore\source\partials\drawer\drawer.html
 H:\My Projects\ecommerce\mStore\source\partials\drawer\drawer.js
 H:\My Projects\ecommerce\mStore\source\partials\filter\filter-bar.html
@@ -360,7 +363,10 @@ H:\My Projects\ecommerce\mStore\source\partials\navigations\top-nav.html
 H:\My Projects\ecommerce\mStore\source\partials\navigations\top-nav.js
 H:\My Projects\ecommerce\mStore\source\partials\role-switcher.html
 H:\My Projects\ecommerce\mStore\source\routing\index.js
+H:\My Projects\ecommerce\mStore\source\routing\route-config-healer.js
+H:\My Projects\ecommerce\mStore\source\routing\route-env-manager.js
 H:\My Projects\ecommerce\mStore\source\routing\route-manager.js
+H:\My Projects\ecommerce\mStore\source\routing\route-migration-handler.js
 H:\My Projects\ecommerce\mStore\source\routing\route-url-handler.js
 H:\My Projects\ecommerce\mStore\source\routing\route-validator.js
 H:\My Projects\ecommerce\mStore\source\routing\routes.js

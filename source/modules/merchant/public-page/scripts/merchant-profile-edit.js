@@ -1,7 +1,7 @@
-import { routeManager } from '../../../main.js';
-import { fetchMerchantById, localCache, updateMerchant, fetchAllMerchants } from '../../../utils/data-manager.js';
-import { showToast } from '../../../utils/toast.js';
-import { uploadToCloudinary, buildCloudinaryUrl, getCloudinaryPath } from '../../../api/cloudinary.js';
+import { routeManager } from '../../../../main.js';
+import { fetchMerchantById, localCache, updateMerchant, fetchAllMerchants } from '../../../../utils/data-manager.js';
+import { showToast } from '../../../../utils/toast.js';
+import { uploadToCloudinary, buildCloudinaryUrl, getCloudinaryPath } from '../../../../api/cloudinary.js';
 
 let currentStep = 1;
 let formSteps = [];

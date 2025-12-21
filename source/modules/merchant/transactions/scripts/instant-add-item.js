@@ -1052,7 +1052,7 @@ export async function loadInstantAddItemModal(isEdit = false, editItem = null, e
         }
 
         // Load the HTML content
-        const response = await fetch('./source/modules/merchant/invoices/instant-add-item.html');
+        const response = await fetch('./source/modules/merchant/transactions/instant-add-item.html');
         if (!response.ok) {
             throw new Error('Failed to load instant-add-item modal');
         }

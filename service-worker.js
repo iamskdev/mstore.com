@@ -117,9 +117,9 @@ const APP_SHELL_URLS = [
   './source/modules/merchant/dashboard/scripts/mrc-dashboard.js',
 
   // Merchant Add Item View
-  './source/modules/merchant/pages/add-item.html',
-  './source/modules/merchant/styles/add-item.css',
-  './source/modules/merchant/scripts/add-item.js',
+  './source/modules/merchant/inventory/add-item.html',
+  './source/modules/merchant/inventory/styles/add-item.css',
+  './source/modules/merchant/inventory/item-helper/add-item.js',
 
   // Merchant Analytics View
   './source/modules/merchant/analytics/merchant-analytics.html',
@@ -127,31 +127,31 @@ const APP_SHELL_URLS = [
   './source/modules/merchant/analytics/scripts/merchant-analytics.js',
 
   // Item Helper Modules
-  './source/modules/merchant/scripts/item-helper/index.js',
-  './source/modules/merchant/scripts/item-helper/item-data-manager.js',
-  './source/modules/merchant/scripts/item-helper/item-db-operations.js',
-  './source/modules/merchant/scripts/item-helper/item-event-manager.js',
-  './source/modules/merchant/scripts/item-helper/item-form-manager.js',
-  './source/modules/merchant/scripts/item-helper/item-media-handler.js',
-  './source/modules/merchant/scripts/item-helper/item-ui-components.js',
-  './source/modules/merchant/scripts/item-helper/item-validator.js',
+  './source/modules/merchant/inventory/item-helper/index.js',
+  './source/modules/merchant/inventory/item-helper/item-data-manager.js',
+  './source/modules/merchant/inventory/item-helper/item-db-operations.js',
+  './source/modules/merchant/inventory/item-helper/item-event-manager.js',
+  './source/modules/merchant/inventory/item-helper/item-form-manager.js',
+  './source/modules/merchant/inventory/item-helper/item-media-handler.js',
+  './source/modules/merchant/inventory/item-helper/item-ui-components.js',
+  './source/modules/merchant/inventory/item-helper/item-validator.js',
 
   // Merchant Profile Edit View
-  './source/modules/merchant/pages/merchant-profile-edit.html',
-  './source/modules/merchant/styles/merchant-profile-edit.css',
-  './source/modules/merchant/scripts/merchant-profile-edit.js',
+  './source/modules/merchant/public-page/merchant-profile-edit.html',
+  './source/modules/merchant/public-page/styles/merchant-profile-edit.css',
+  './source/modules/merchant/public-page/scripts/merchant-profile-edit.js',
 
   // Merchant Invoice Module
-  './source/modules/merchant/invoices/add-invoice.html',
-  './source/modules/merchant/invoices/styles/add-invoice.css',
-  './source/modules/merchant/invoices/scripts/add-invoice.js',
-  './source/modules/merchant/invoices/instant-add-item.html',
-  './source/modules/merchant/invoices/scripts/instant-add-item.js',
-  './source/modules/merchant/invoices/scripts/instant-db-operation.js',
-  './source/modules/merchant/invoices/scripts/instant-ui-component.js',
-  './source/modules/merchant/invoices/scripts/invoice-db-operation.js',
-  './source/modules/merchant/invoices/scripts/invoice-ui-component.js',
-  './source/modules/merchant/invoices/scripts/invoice-event-manager.js',
+  './source/modules/merchant/transactions/add-invoice.html',
+  './source/modules/merchant/transactions/styles/add-invoice.css',
+  './source/modules/merchant/transactions/scripts/add-invoice.js',
+  './source/modules/merchant/transactions/instant-add-item.html',
+  './source/modules/merchant/transactions/scripts/instant-add-item.js',
+  './source/modules/merchant/transactions/scripts/instant-db-operation.js',
+  './source/modules/merchant/transactions/scripts/instant-ui-component.js',
+  './source/modules/merchant/transactions/scripts/invoice-db-operation.js',
+  './source/modules/merchant/transactions/scripts/invoice-ui-component.js',
+  './source/modules/merchant/transactions/scripts/invoice-event-manager.js',
 
   //Modals
   './source/modals/account-switcher.html',

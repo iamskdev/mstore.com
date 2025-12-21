@@ -1,5 +1,5 @@
 # 📁 mStore Path Structure
-📅 Last Updated: 19/12/2025, 18:36
+📅 Last Updated: 21/12/2025, 17:58
 
 ├── .firebaserc
 ├── .gitignore
@@ -49,11 +49,12 @@
 │   ├── error-page.html
 │   ├── merchant-add-demo.html
 │   ├── merchant-profile-demo.html
-│   ├── new-analytic copy.html
+│   ├── new-analytic.html
 │   ├── photo-editor-demo.html
 │   ├── rating-demo.html
 │   ├── rating-modal.html
 │   ├── rating-modal.js
+│   ├── reports.html
 │   ├── request-to-switch-prof.html
 │   ├── story-viewer-demo.html
 │   └── updates-demo.html
@@ -63,12 +64,14 @@
 │   ├── categories-schema-guide.md
 │   ├── commit-guide.md
 │   ├── commit_message.txt
+│   ├── config-readme.md
 │   ├── firebase-emulator.md
 │   ├── gemini_settings.md
 │   ├── id-generation.md
 │   ├── implementing-new-views.md
 │   ├── instruction.md
 │   ├── media-queries.md
+│   ├── migration-readme.md
 │   ├── path-is-flat.md
 │   ├── path-structured.md
 │   ├── renaming-the-app.md
@@ -382,25 +385,15 @@
 │   │       │   ├── 📁 styles\
 │   │       │   │   └── merchant-analytics.css
 │   │       │   └── merchant-analytics.html
-│   │       ├── 📁 invoices\
+│   │       ├── 📁 dashboard\
 │   │       │   ├── 📁 scripts\
-│   │       │   │   ├── add-invoice.js
-│   │       │   │   ├── instant-add-item.js
-│   │       │   │   ├── instant-db-operation.js
-│   │       │   │   ├── instant-ui-component.js
-│   │       │   │   ├── invoice-db-operation.js
-│   │       │   │   ├── invoice-event-manager.js
-│   │       │   │   └── invoice-ui-component.js
+│   │       │   │   └── mrc-dashboard.js
 │   │       │   ├── 📁 styles\
-│   │       │   │   └── add-invoice.css
-│   │       │   ├── add-invoice.html
-│   │       │   └── instant-add-item.html
-│   │       ├── 📁 pages\
-│   │       │   ├── add-item.html
-│   │       │   ├── add.html
-│   │       │   └── merchant-profile-edit.html
-│   │       ├── 📁 scripts\
+│   │       │   │   └── mrc-dashboard.css
+│   │       │   └── mrc-dashboard.html
+│   │       ├── 📁 inventory\
 │   │       │   ├── 📁 item-helper\
+│   │       │   │   ├── add-item.js
 │   │       │   │   ├── index.js
 │   │       │   │   ├── item-data-manager.js
 │   │       │   │   ├── item-db-operations.js
@@ -409,13 +402,28 @@
 │   │       │   │   ├── item-media-handler.js
 │   │       │   │   ├── item-ui-components.js
 │   │       │   │   └── item-validator.js
-│   │       │   ├── add-item.js
-│   │       │   ├── add.js
-│   │       │   └── merchant-profile-edit.js
-│   │       └── 📁 styles\
-│   │           ├── add-item.css
-│   │           ├── add.css
-│   │           └── merchant-profile-edit.css
+│   │       │   ├── 📁 styles\
+│   │       │   │   └── add-item.css
+│   │       │   └── add-item.html
+│   │       ├── 📁 public-page\
+│   │       │   ├── 📁 scripts\
+│   │       │   │   └── merchant-profile-edit.js
+│   │       │   ├── 📁 styles\
+│   │       │   │   └── merchant-profile-edit.css
+│   │       │   └── merchant-profile-edit.html
+│   │       └── 📁 transactions\
+│   │           ├── 📁 scripts\
+│   │           │   ├── add-invoice.js
+│   │           │   ├── instant-add-item.js
+│   │           │   ├── instant-db-operation.js
+│   │           │   ├── instant-ui-component.js
+│   │           │   ├── invoice-db-operation.js
+│   │           │   ├── invoice-event-manager.js
+│   │           │   └── invoice-ui-component.js
+│   │           ├── 📁 styles\
+│   │           │   └── add-invoice.css
+│   │           ├── add-invoice.html
+│   │           └── instant-add-item.html
 │   ├── 📁 partials\
 │   │   ├── 📁 drawer\
 │   │   │   ├── drawer.html
@@ -439,7 +447,10 @@
 │   │   └── role-switcher.html
 │   ├── 📁 routing\
 │   │   ├── index.js
+│   │   ├── route-config-healer.js
+│   │   ├── route-env-manager.js
 │   │   ├── route-manager.js
+│   │   ├── route-migration-handler.js
 │   │   ├── route-url-handler.js
 │   │   ├── route-validator.js
 │   │   └── routes.js

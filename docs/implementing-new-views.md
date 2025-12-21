@@ -52,8 +52,8 @@ const routeConfig = {
             id: 'merchant-profile-edit-view', // यह ID गतिशील रूप से बनाए गए div को दी जाएगी
             path: './source/modules/merchant/pages/merchant-profile-edit.html',
             // JS और CSS पथ वैकल्पिक हैं, लेकिन अनुशंसित हैं
-            jsPath: './source/modules/merchant/scripts/merchant-profile-edit.js',
-            cssPath: './source/modules/merchant/styles/merchant-profile-edit.css',
+            jsPath: './source/modules/merchant/public-page/scripts/merchant-profile-edit.js',
+            cssPath: './source/modules/merchant/public-page/styles/merchant-profile-edit.css',
             title: 'प्रोफाइल एडिट', // पेज का शीर्षक
             isMainTab: false, // यह मुख्य टैब नहीं है
             dataDependencies: [] // आवश्यक डेटा निर्भरताएँ

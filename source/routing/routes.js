@@ -39,36 +39,36 @@ const routeConfig = {
     },
     'add-item': {
       id: 'merchant-add-item-view',
-      path: './source/modules/merchant/pages/add-item.html',
-      cssPath: './source/modules/merchant/styles/add-item.css',
-      jsPath: './source/modules/merchant/scripts/add-item.js',
+      path: './source/modules/merchant/inventory/add-item.html',
+      cssPath: './source/modules/merchant/inventory/styles/add-item.css',
+      jsPath: './source/modules/merchant/inventory/item-helper/add-item.js',
       title: (params) => (params?.itemId ? 'Edit Item' : 'Add Item'),
       isMainTab: false,
       dataDependencies: ['categories', 'brands', 'units']
     },
     'add-item/:itemId': {
       id: 'merchant-add-item-view',
-      path: './source/modules/merchant/pages/add-item.html',
-      cssPath: './source/modules/merchant/styles/add-item.css',
-      jsPath: './source/modules/merchant/scripts/add-item.js',
+      path: './source/modules/merchant/inventory/add-item.html',
+      cssPath: './source/modules/merchant/inventory/styles/add-item.css',
+      jsPath: './source/modules/merchant/inventory/item-helper/add-item.js',
       title: (params) => (params?.itemId ? 'Edit Item' : 'Add Item'),
       isMainTab: false,
       dataDependencies: ['categories', 'brands', 'units']
     },
     'profile-edit': {
       id: 'merchant-profile-edit-view',
-      path: './source/modules/merchant/pages/merchant-profile-edit.html',
-      cssPath: './source/modules/merchant/styles/merchant-profile-edit.css',
-      jsPath: './source/modules/merchant/scripts/merchant-profile-edit.js',
+      path: './source/modules/merchant/public-page/merchant-profile-edit.html',
+      cssPath: './source/modules/merchant/public-page/styles/merchant-profile-edit.css',
+      jsPath: './source/modules/merchant/public-page/scripts/merchant-profile-edit.js',
       title: 'Complete Your Profile',
       isMainTab: false, // It's a sub-view, not a main tab
       dataDependencies: []
     },
     'add-invoice': {
       id: 'merchant-add-invoice-view',
-      path: './source/modules/merchant/invoices/add-invoice.html',
-      cssPath: './source/modules/merchant/invoices/styles/add-invoice.css',
-      jsPath: './source/modules/merchant/invoices/scripts/add-invoice.js',
+      path: './source/modules/merchant/transactions/add-invoice.html',
+      cssPath: './source/modules/merchant/transactions/styles/add-invoice.css',
+      jsPath: './source/modules/merchant/transactions/scripts/add-invoice.js',
       title: (params) => params?.sale ? 'Create Sale Invoice' : params?.purchase ? 'Create Purchase' : 'Create Sale',
       isMainTab: false,
       dataDependencies: ['items', 'users', 'units']
