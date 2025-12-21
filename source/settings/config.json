@@ -7,21 +7,10 @@
     "build": "2025.12.19",
     "environment": "development",
     "description": "Modern PWA E-commerce platform for local businesses",
-    "keywords": [
-      "ecommerce",
-      "pwa",
-      "local",
-      "business",
-      "store"
-    ],
+    "keywords": ["ecommerce","pwa","local","business","store"],
     "category": "shopping",
     "platform": "web",
-    "supportedBrowsers": [
-      "chrome",
-      "firefox",
-      "safari",
-      "edge"
-    ]
+    "supportedBrowsers": ["chrome", "firefox", "safari", "edge"]
   },
   "routing": {
     "localIp": "http://127.0.0.1:3000/",
@@ -31,7 +20,7 @@
     "localHost": "http://localhost:2201",
     "serveMode": "github-pages",
     "currentRepo": "mstore.com",
-    "currentUsername": "iamskdev",
+    "currentUsername": "santrixstudio",
     "basePath": "/mstore.com/",
     "autoDetect": true,
     "lastEnvironmentCheck": "2025-12-19T14:25:11Z",
@@ -42,7 +31,7 @@
     "enabled": false,
     "urlMigration": false,
     "newUrl": null,
-    "message": "🚀 नया URL available है! अपडेट करें",
+    "message": "🚀 New Url migration is available!",
     "urgency": "medium",
     "startDate": null,
     "endDate": null,
@@ -64,7 +53,7 @@
     "serviceWorkerVersion": "v1.0.0"
   },
   "source": {
-    "data": "firebase",
+    "data": "emulator",
     "offlineCache": true,
     "cacheStrategy": "network-first",
     "syncInterval": 300000,
