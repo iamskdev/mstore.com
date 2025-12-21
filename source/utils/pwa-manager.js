@@ -304,12 +304,4 @@ export const initializePWASystem = async () => {
   }
 };
 
-// Auto-initialize when imported
-if (typeof window !== 'undefined') {
-  // Initialize PWA system after DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializePWASystem);
-  } else {
-    initializePWASystem();
-  }
-}
+// Auto-initialization removed - now handled by main.js after config healing

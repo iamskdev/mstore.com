@@ -53,7 +53,7 @@
     "serviceWorkerVersion": "v1.0.0"
   },
   "source": {
-    "data": "emulator",
+    "data": "firebase",
     "offlineCache": true,
     "cacheStrategy": "network-first",
     "syncInterval": 300000,
