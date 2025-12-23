@@ -156,54 +156,69 @@
       console.log('`beforeinstallprompt` event was fired and captured.');
     });
 
+  // --- Service Worker Registration (Early) ---
+  // Register service worker as early as possible for better offline handling
+  if ('serviceWorker' in navigator) {
+    // Check if service worker is already controlling the page
+    if (navigator.serviceWorker.controller) {
+      console.log('ℹ️ Service Worker already controlling the page');
+    } else {
+      console.log('🔄 Registering Service Worker...');
+    }
+
+    // Register service worker early
+    navigator.serviceWorker.register('./service-worker.js', { type: 'module' })
+      .then(registration => {
+        console.log('✅ Service Worker registered early:', registration);
+
+        // Wait for the service worker to be ready
+        return navigator.serviceWorker.ready;
+      })
+      .then(registration => {
+        console.log('✅ Service Worker ready and controlling page');
+      })
+      .catch(error => {
+        console.error('❌ Early Service Worker registration failed:', error);
+      });
+  }
+
   // 2. Initialize the main application.
   initializeApp()
     .then(() => {
       console.log("✅ Application initialized successfully.");
-      // --- Service Worker Management ---
+
+      // --- Service Worker Management (Detailed) ---
       if ('serviceWorker' in navigator) {
         const appConfig = getAppConfig();
-        const swName = appConfig.app.name;
-        const swVersion = appConfig.app.version;
 
         // Log the currently active service worker's version if it exists
         if (navigator.serviceWorker.controller) {
-                    console.log(`ℹ️ Active Service Worker Script URL: ${navigator.serviceWorker.controller.scriptURL}`);
+          console.log(`ℹ️ Active Service Worker Script URL: ${navigator.serviceWorker.controller.scriptURL}`);
         }
 
-        const register = () => {
-          if (appConfig.app.environment === 'development') {
-          }
-          // Register the service worker as a module to allow 'import' statements inside it.
-          navigator.serviceWorker.register('./service-worker.js', { type: 'module' })
-            .then(registration => {
-              console.log(`✅ Service Worker registered successfully:`, registration);
-              if (registration.active) {
-                console.log(`ℹ️ Registered Service Worker Script URL: ${registration.active.scriptURL}`);
+        // Check if we already registered above, just update status
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          const existingRegistration = registrations.find(reg => reg.active);
 
-                // Request actual cache name from newly registered service worker
-                const messageChannel = new MessageChannel();
-                messageChannel.port1.onmessage = (event) => {
-                    if (event.data && event.data.command === 'CACHE_NAME_RESPONSE') {
-                        console.log(`✅ Registered Service Worker Cache Name: ${event.data.cacheName}`);
-                    }
-                };
-                registration.active.postMessage({ command: 'GET_CACHE_NAME' }, [messageChannel.port2]);
+          if (existingRegistration) {
+            console.log('✅ Service Worker already active');
+            // Request cache name from active service worker
+            const messageChannel = new MessageChannel();
+            messageChannel.port1.onmessage = (event) => {
+              if (event.data && event.data.command === 'CACHE_NAME_RESPONSE') {
+                console.log(`✅ Active Service Worker Cache Name: ${event.data.cacheName}`);
               }
-            })
-            .catch(error => console.error('❌ Service Worker registration failed:', error, 'Ensure the service worker file is served with the correct MIME type (application/javascript or text/javascript) and not text/html.'));
-        };
-
-        const unregister = () => {
-          console.log('DEV MODE: Unregistering all service workers.');
-          navigator.serviceWorker.getRegistrations().then(registrations => {
-            for (let registration of registrations) {
-              registration.unregister();
-            }
-          });
-        };
-
-        appConfig.source.offlineCache ? register() : unregister();
+            };
+            existingRegistration.active.postMessage({ command: 'GET_CACHE_NAME' }, [messageChannel.port2]);
+          } else if (appConfig.source.offlineCache) {
+            // Register if not already registered and offline cache is enabled
+            navigator.serviceWorker.register('./service-worker.js', { type: 'module' })
+              .then(registration => {
+                console.log(`✅ Service Worker registered:`, registration);
+              })
+              .catch(error => console.error('❌ Service Worker registration failed:', error));
+          }
+        });
       } else {
         console.warn('Service Worker not supported in this browser.');
       }

@@ -88,10 +88,23 @@ window.checkConnectionAndRetry = function(button) {
   })
   .then(response => {
     if (response.ok) {
-      // Online - reload the page
+      // Online - reload only the current view, not the entire app
       button.innerHTML = '<span class="retry-icon">✅</span>Connected!';
       setTimeout(() => {
-        window.location.reload();
+        // Check if we're in offline view context (from main.js switchView)
+        if (window.routeManager) {
+          // Reload current view instead of full page reload
+          const currentView = window.routeManager.currentView;
+          if (currentView) {
+            window.routeManager.switchView(currentView, window.routeManager.currentRole);
+          } else {
+            // Fallback to page reload if no route manager available
+            window.location.reload();
+          }
+        } else {
+          // Fallback for standalone offline page
+          window.location.reload();
+        }
       }, 500);
     } else {
       throw new Error('Still offline');

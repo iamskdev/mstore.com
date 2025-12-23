@@ -512,7 +512,8 @@ self.addEventListener('fetch', (event) => {
 
         // Special handling for main app entry point when offline
         if (!navigator.onLine && request.destination === 'document' && request.url.endsWith('/index.html')) {
-          console.log('🌐 Offline: Main app entry point requested. Serving cached index.html to show cached data.');
+          console.log('🌐 Offline: Main app entry point requested. Attempting to serve from cache.');
+
           // Try to serve cached index.html so the app can load and show cached data
           const cachedIndex = await fromCache(request);
           if (cachedIndex) {
@@ -520,7 +521,7 @@ self.addEventListener('fetch', (event) => {
             return cachedIndex;
           }
 
-          // If index.html not cached, serve offline page as fallback
+          // If index.html not cached, this is a problem - serve offline page
           console.log('⚠️ index.html not cached, serving offline fallback');
           const offlineFallback = await fromCache(new Request(OFFLINE_PAGE));
           if (offlineFallback) {
@@ -559,8 +560,13 @@ self.addEventListener('fetch', (event) => {
           );
         }
 
-        // Don't serve offline page for other document requests - let app handle offline states internally
+        // For other app shell assets when offline, don't try network
+        if (!navigator.onLine) {
+          console.log(`🌐 Offline: Skipping network request for app shell asset: ${request.url}`);
+          return new Response('Offline - Asset not cached', { status: 503 });
+        }
 
+        // Don't serve offline page for other document requests - let app handle offline states internally
         return fromNetwork(request, cacheName);
       })()
     );
