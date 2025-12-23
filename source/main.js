@@ -435,8 +435,45 @@ class RouteManager {
     }
 
     if (resolvedConfig.path) { // If the view has a path, always load its content
-      await this.loadViewContent(newViewElement, resolvedConfig, role);
-      this.loadedViews.add(resolvedConfig.id); // Mark as loaded after content is loaded
+      const loadResult = await this.loadViewContent(newViewElement, resolvedConfig, role);
+
+      // Check if loadViewContent returned offline indicator
+      if (loadResult && loadResult.offline) {
+        console.log(`User is offline, showing offline view for ${resolvedConfig.id}`);
+
+        // Check if we have cached data for this view that we can show
+        let hasCachedData = false;
+        if (resolvedConfig.dataDependencies && resolvedConfig.dataDependencies.length > 0) {
+          // Check if any of the data dependencies have cached data
+          for (const dependency of resolvedConfig.dataDependencies) {
+            if (localStorage.getItem(`cached_${dependency}`) || sessionStorage.getItem(`cached_${dependency}`)) {
+              hasCachedData = true;
+              break;
+            }
+          }
+        }
+
+        // Use inline HTML for offline view to avoid any additional network requests
+        // that might trigger service worker's offline page serving
+        newViewElement.innerHTML = `
+          <div class="offline-view-container">
+            <div class="offline-view">
+              <div class="offline-icon">📶</div>
+              <h2 class="offline-title">You're Offline</h2>
+              <p class="offline-message">This view requires an internet connection. Please check your connection and try again.</p>
+              ${hasCachedData ? '<div class="offline-cached-notice">📱 Some cached data is available below</div>' : ''}
+              <button class="offline-retry-btn" onclick="checkConnectionAndRetry(this)">
+                <span class="retry-icon">🔄</span>
+                Retry Connection
+              </button>
+              <div class="offline-hint">💡 Some features may work from cache</div>
+            </div>
+          </div>
+        `;
+        this.loadedViews.add(resolvedConfig.id); // Mark as loaded to prevent re-attempts
+      } else {
+        this.loadedViews.add(resolvedConfig.id); // Mark as loaded after content is loaded
+      }
     } else if (!resolvedConfig.path && !this.loadedViews.has(resolvedConfig.id)) { // Handle views with path: null
       newViewElement.innerHTML = `<div class="view-placeholder" style="padding: 20px; text-align: center; color: var(--text-secondary); max-width: 80%; margin: auto;"><h3>${resolvedConfig.title} View</h3><p>This view is under development. Content will be available soon!</p></div>`;
       this.loadedViews.add(resolvedConfig.id); // Mark as loaded to prevent re-injection
@@ -490,9 +527,30 @@ class RouteManager {
 
   async loadViewContent(viewElement, config, role, force = false) {
     showPageLoader(); // Show page loader at the beginning of content loading
+
     // Fetch data dependencies before loading view content
+    // DataManager will serve from cache if available, even when offline
+    let dataFetchSuccessful = true;
     if (config.dataDependencies && config.dataDependencies.length > 0) {
-      await this._fetchDataDependencies(config.dataDependencies, force);
+      try {
+        await this._fetchDataDependencies(config.dataDependencies, force);
+        console.log(`Data dependencies loaded successfully for ${config.id}`);
+      } catch (error) {
+        console.warn('Failed to fetch data dependencies:', error);
+        dataFetchSuccessful = false;
+        // If we can't fetch data dependencies and we're offline, this is a problem
+        if (!navigator.onLine) {
+          hidePageLoader();
+          return { offline: true, reason: 'data_fetch_failed' };
+        }
+        throw error; // Re-throw if online
+      }
+    }
+
+    // If we're offline and data fetch failed (or no data dependencies exist), check if we can still show the view
+    if (!navigator.onLine && !dataFetchSuccessful) {
+      hidePageLoader();
+      return { offline: true, reason: 'offline_no_data' };
     }
     try {
       
@@ -501,26 +559,76 @@ class RouteManager {
       // Use specific cssPath from config, or fall back to convention for other views.
       const cssPath = config.cssPath || config.path.replace('.html', '.css');
       console.log(`routeManager: Attempting to load CSS from: ${cssPath}`);
+
+      // Ensure critical CSS is loaded first
+      const criticalCSS = ['./source/main.css', './source/common/styles/theme.css'];
+      for (const criticalPath of criticalCSS) {
+        if (!document.querySelector(`link[href="${criticalPath}"]`)) {
+          try {
+            const criticalLink = document.createElement('link');
+            criticalLink.rel = 'stylesheet';
+            criticalLink.href = criticalPath;
+            criticalLink.id = `critical-${criticalPath.split('/').pop().replace('.css', '')}`;
+            document.head.appendChild(criticalLink);
+            console.log(`routeManager: Loaded critical CSS: ${criticalPath}`);
+          } catch (error) {
+            console.warn(`routeManager: Failed to load critical CSS: ${criticalPath}`, error);
+          }
+        }
+      }
+
       if (!document.querySelector(`link[href="${cssPath}"]`)) {
-        // Check if the CSS file actually exists before adding the link tag
-        const cssCheck = await fetch(cssPath, { method: 'HEAD' });
-        if (cssCheck.ok) {
+        // Always try to load CSS - service worker will serve from cache when offline
+        try {
           const cssLink = document.createElement('link');
           cssLink.rel = 'stylesheet';
           cssLink.href = cssPath;
           cssLink.id = `${config.id}-style`; // Give it an ID for potential removal later
+
+          // Add timeout for CSS loading (10 seconds)
+          let cssTimeout = setTimeout(() => {
+            console.warn(`routeManager: CSS loading timeout for: ${cssPath} (navigator.onLine: ${navigator.onLine})`);
+            // Don't remove the link on timeout - service worker might still serve it
+          }, 10000);
+
+          // Add error handling for CSS loading
+          cssLink.onerror = () => {
+            clearTimeout(cssTimeout);
+            console.warn(`routeManager: Failed to load CSS: ${cssPath}`);
+
+            // Inject fallback CSS using offline module to ensure content is styled
+            injectFallbackCSS(config);
+          };
+
+          cssLink.onload = () => {
+            clearTimeout(cssTimeout);
+            console.log(`routeManager: Successfully loaded CSS: ${cssPath}`);
+          };
+
           document.head.appendChild(cssLink);
-          console.log(`routeManager: Successfully appended CSS: ${cssPath}`);
-        } else {
-          console.warn(`routeManager: CSS file not found or accessible: ${cssPath}. Status: ${cssCheck.status}`);
+          console.log(`routeManager: CSS link appended for: ${cssPath}`);
+
+        } catch (error) {
+          console.warn(`routeManager: Failed to create CSS link for: ${cssPath}`, error);
         }
       } else {
         console.log(`routeManager: CSS already loaded: ${cssPath}`);
       }
 
       // 2. Fetch and inject HTML content
-      const htmlResponse = await fetch(config.path);
-      if (!htmlResponse.ok) throw new Error(`HTML fetch failed: ${htmlResponse.status}`);
+      let htmlResponse;
+      try {
+        htmlResponse = await fetch(config.path);
+        if (!htmlResponse.ok) throw new Error(`HTML fetch failed: ${htmlResponse.status}`);
+      } catch (error) {
+        // If HTML fetch fails and we're offline, return offline indicator
+        if (!navigator.onLine) {
+          console.log(`Offline: Cannot load HTML content for ${config.path}`);
+          hidePageLoader();
+          return { offline: true };
+        }
+        throw error; // Re-throw if online
+      }
       let viewHtml = await htmlResponse.text();
 
       // FIX: Add a safeguard to prevent loading a full HTML document into a view.
@@ -955,6 +1063,7 @@ function simulateProgress(targetPercentage) {
  * @param {string} options.message - The message content of the alert.
  * @param {Array<object>} [options.buttons] - Array of button objects { text, class, onClick }.
  */
+
 window.showCustomAlert = function({ title, message, buttons = [] }) {
     // --- FIX: z-index issue with other modals ---
     // Temporarily increase the z-index to ensure the alert is on top of any other
@@ -1135,6 +1244,9 @@ export async function initializeApp() {
   // --- STEP 4: Initialize secondary handlers and fetch primary data ---
   initWishlistHandler();
   initAddToCartHandler();
+
+  // Initialize offline monitoring
+  initializeOfflineMonitoring();
   
   try {
     // Fetch and cache categories if not already in localStorage
@@ -1395,3 +1507,7 @@ function initializePullToRefresh() {
     }
   });
 }
+
+// --- Offline Management ---
+// Import offline monitoring and utilities
+import { initializeOfflineMonitoring, injectFallbackCSS } from './common/scripts/offline.js';

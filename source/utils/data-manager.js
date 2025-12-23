@@ -127,9 +127,15 @@ const createDataFetcher = (collectionName, idKey) => {
             // This function is defined here so it's in scope for both the "cached data" path and the "fresh fetch" path.
             const setupListener = (resolve, reject) => {
                 if (!firestore) {
-                    // If reject is not provided, just throw an error.
-                    const error = new Error(`Firestore is not initialized for ${collectionName}.`);
-                    if (reject) reject(error); else throw error;
+                    console.warn(`Firestore not available for ${collectionName} - using cached data only`);
+                    // Return empty array if no cached data, or resolve with cached data if available
+                    const cachedData = localCache.get(cacheKey);
+                    if (cachedData) {
+                        if (resolve) resolve(cachedData);
+                        return;
+                    }
+                    // If reject is not provided, just return empty array
+                    if (resolve) resolve([]);
                     return;
                 }
 
@@ -174,21 +180,29 @@ const createDataFetcher = (collectionName, idKey) => {
             }
 
             // If there's data in the cache, return it immediately for a fast UI response,
-            // while the listener sets up in the background.
+            // while the listener sets up in the background (only if online).
             const cachedData = localCache.get(cacheKey);
             if (cachedData) {
                 console.log(`[DataManager] ⚡️ Serving '${collectionName}' from cache.`);
-                // Only set up listener if not already active - avoid unnecessary Firebase connections
-                if (!isListenerActive) {
+                // Only set up listener if not already active AND we're online - avoid unnecessary Firebase connections when offline
+                if (!isListenerActive && navigator.onLine) {
                     console.log(`[DataManager] 🎧 Setting up background listener for '${collectionName}'...`);
                     setupListener(null, null);
+                } else if (!navigator.onLine) {
+                    console.log(`[DataManager] 🌐 Offline: Skipping listener setup for '${collectionName}'`);
                 } else {
                     console.log(`[DataManager] ✅ Listener already active for '${collectionName}'`);
                 }
                 return Promise.resolve(cachedData);
             }
 
-            // If no cached data, create a new promise and set up the listener.
+            // If no cached data and we're offline, return empty array
+            if (!navigator.onLine) {
+                console.log(`[DataManager] 🌐 Offline: No cached data for '${collectionName}', returning empty array`);
+                return Promise.resolve([]);
+            }
+
+            // If no cached data and online, create a new promise and set up the listener.
             return new Promise(setupListener);
         }
 
@@ -214,7 +228,8 @@ const createDataFetcher = (collectionName, idKey) => {
             }
         } else if (dataSource === 'firebase' || dataSource === 'emulator') {
             if (!firestore) {
-                throw new Error(`Firestore is not initialized for fetchById on ${collectionName}!`);
+                console.warn(`Firestore not available for fetchById on ${collectionName} - returning null`);
+                return null;
             }
             try {
                 // Query based on the specific ID key within the 'meta' object
@@ -259,7 +274,8 @@ export async function updateUser(userId, updateData) {
     }
 
     if (!firestore) {
-        throw new Error('Firestore is not initialized! Cannot update user.');
+        console.warn('Firestore not available - cannot update user offline');
+        return false;
     }
     if (!userId || !updateData) {
         throw new Error('User ID and update data are required.');

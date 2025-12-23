@@ -39,6 +39,36 @@ const APP_SHELL_URLS = [
   './source/utils/pwa-manager.js',
   './source/utils/theme-switcher.js',
   './source/utils/toast.js',
+
+  // Common Page Scripts
+  './source/common/scripts/offline.js',
+  './source/common/scripts/account.js',
+  './source/common/scripts/authentication.js',
+  './source/common/scripts/cart.js',
+  './source/common/scripts/chat.js',
+  './source/common/scripts/conversation.js',
+  './source/common/scripts/home.js',
+  './source/common/scripts/item-details.js',
+  './source/common/scripts/merchant-profile.js',
+  './source/common/scripts/notification.js',
+  './source/common/scripts/profile-update.js',
+  './source/common/scripts/updates.js',
+  './source/common/scripts/wishlist.js',
+
+  // Common Page Styles
+  './source/common/styles/account.css',
+  './source/common/styles/authentication.css',
+  './source/common/styles/cart.css',
+  './source/common/styles/chat.css',
+  './source/common/styles/conversation.css',
+  './source/common/styles/home.css',
+  './source/common/styles/item-details.css',
+  './source/common/styles/merchant-profile.css',
+  './source/common/styles/notification.css',
+  './source/common/styles/profile-update.css',
+  './source/common/styles/theme.css',
+  './source/common/styles/updates.css',
+  './source/common/styles/wishlist.css',
   './source/templates/banner.js',
   './source/utils/search-handler.js',
   './source/utils/cart-manager.js',
@@ -77,6 +107,8 @@ const APP_SHELL_URLS = [
   './source/common/pages/home.html',
   './source/common/styles/home.css',
   './source/common/scripts/home.js',
+  './source/common/pages/account.html',
+  './source/common/styles/account.css',
   './source/common/pages/wishlist.html',
   './source/common/scripts/wishlist.js',
   './source/common/styles/wishlist.css',
@@ -187,7 +219,13 @@ const APP_SHELL_URLS = [
   // Third-party Libraries
   'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.esm.js',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap'
+  'https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap',
+
+  // Firebase SDK (Critical for PWA offline functionality)
+  'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
+  'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js',
+  'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js',
+  'https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js'
 ];
 
 async function getCacheName() {
@@ -297,6 +335,13 @@ const getEnvironmentCacheKey = (url) => {
 };
 
 const fromNetwork = async (request, cacheName) => {
+  // Check if user is online before making network requests
+  if (!navigator.onLine) {
+    console.log(`🌐 Offline: Skipping network request for ${request.url}`);
+    throw new Error('Network request failed: User is offline');
+  }
+
+  console.log(`🌐 Online: Making network request for ${request.url}`);
   try {
     const response = await fetch(request);
     const responseClone = response.clone();
@@ -307,7 +352,7 @@ const fromNetwork = async (request, cacheName) => {
 
     return response;
   } catch (error) {
-    console.warn(`Network request failed: ${request.url}`, error);
+    console.warn(`❌ Network request failed: ${request.url}`, error);
     throw error;
   }
 };
@@ -419,6 +464,11 @@ self.addEventListener('message', async (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
+  // Debug CSS requests
+  if (request.url.includes('.css')) {
+    console.log(`🔍 SW: CSS request for: ${request.url} (online: ${navigator.onLine})`);
+  }
+
   if (!isCacheable(request)) return;
 
   const isAppShellAsset = APP_SHELL_URLS.some(
@@ -426,6 +476,24 @@ self.addEventListener('fetch', (event) => {
   );
 
   if (request.url.includes('/api/')) {
+    // For API requests, check online status first
+    if (!navigator.onLine) {
+      // Return offline response for API calls
+      return event.respondWith(
+        new Response(
+          JSON.stringify({
+            error: 'Offline',
+            message: 'You are currently offline. Please check your internet connection.'
+          }),
+          {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: { 'Content-Type': 'application/json' }
+          }
+        )
+      );
+    }
+    // Let API requests go through normally when online
     return;
   }
 
@@ -435,9 +503,15 @@ self.addEventListener('fetch', (event) => {
         const cacheName = await getCacheName();
         const cached = await fromCache(request);
         if (cached) {
-          event.waitUntil(fromNetwork(request, cacheName).catch(() => { }));
+          // Try to update cache in background if online
+          if (navigator.onLine) {
+            event.waitUntil(fromNetwork(request, cacheName).catch(() => { }));
+          }
           return cached;
         }
+
+        // Don't serve offline page for document requests - let app handle offline states internally
+
         return fromNetwork(request, cacheName);
       })()
     );
@@ -445,8 +519,16 @@ self.addEventListener('fetch', (event) => {
   }
 
   event.respondWith(
-    fromCache(request).then(
-      (cachedResponse) => cachedResponse || fromNetwork(request, RUNTIME_CACHE)
-    )
+    (async () => {
+      const cachedResponse = await fromCache(request);
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      // Don't serve offline page for document requests - let app handle offline states internally
+
+      // Try network for other resources
+      return fromNetwork(request, RUNTIME_CACHE);
+    })()
   );
 });

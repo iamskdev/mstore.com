@@ -43,41 +43,68 @@ export function initializeFirebase(appConfig) {
       // --- Emulator Suite Connection ---
       // If the app config specifies 'emulator', connect to the local emulators.
       // This allows for rapid, offline, and cost-free development and testing.
-      // IMPORTANT: Run `firebase emulators:start` in your terminal before running the app.  
+      // IMPORTANT: Run `firebase emulators:start` in your terminal before running the app.
       if (appConfig.source.data === 'emulator') {
-        console.warn("🔌 App is configured to use EMULATOR data source. Connecting to local Firebase Emulators...");
-        // Note: The host for firestore is just 'localhost', not a full URL.
-        firestore.useEmulator('127.0.0.1', 8090); 
-        auth.useEmulator('http://127.0.0.1:9099');
-        functions.useEmulator('127.0.0.1', 5001);
-        console.log("✅ Connected to local Firestore, Auth, and Functions emulators.");
-        
-        // Show a clear toast notification indicating the app is running in emulator mode.
-        showToast('success', '⚡️Running in emulator mode.', 3000);    
-        
-        // --- Hide Emulator Warning Banner (Aggressive Polling Method) ---
-        // This method repeatedly checks for the emulator warning banner and hides it.
-        // It's a robust solution for the race condition where the banner is injected unpredictably.
-        if (typeof document !== 'undefined') {
-          let attempts = 0;
-          const maxAttempts = 100; // Try for 5 seconds (100 * 50ms)
-          let emulatorBar; // Declare variable outside the loop to avoid redeclaration error.
-          const hideInterval = setInterval(() => {
-              // The emulator injects a <p> tag with this specific class.
-              emulatorBar = document.querySelector('.firebase-emulator-warning');
-              if (emulatorBar) {
-                  emulatorBar.style.setProperty('display', 'none', 'important');
-                  console.log(`✅ Firebase Emulator warning banner hidden after ${attempts + 1} attempts.`);
-                  clearInterval(hideInterval);
-              } else if (attempts++ >= maxAttempts) {
-                  console.warn('Could not find emulator warning banner to hide after 5 seconds.');
-                  clearInterval(hideInterval);
-              }
-          }, 50); // Check every 50ms
+        // Check if online before attempting to connect to emulators
+        if (!navigator.onLine) {
+          console.warn("🌐 Offline: Skipping Firebase emulator connection");
+          showToast('warning', '⚠️ Offline mode - Firebase emulators not available', 5000);
+          return;
+        }
+
+        try {
+          console.warn("🔌 App is configured to use EMULATOR data source. Connecting to local Firebase Emulators...");
+          // Note: The host for firestore is just 'localhost', not a full URL.
+          firestore.useEmulator('127.0.0.1', 8090);
+          auth.useEmulator('http://127.0.0.1:9099');
+          functions.useEmulator('127.0.0.1', 5001);
+          console.log("✅ Connected to local Firestore, Auth, and Functions emulators.");
+
+          // Show a clear toast notification indicating the app is running in emulator mode.
+          showToast('success', '⚡️Running in emulator mode.', 3000);
+
+          // --- Hide Emulator Warning Banner (Aggressive Polling Method) ---
+          // This method repeatedly checks for the emulator warning banner and hides it.
+          // It's a robust solution for the race condition where the banner is injected unpredictably.
+          if (typeof document !== 'undefined') {
+            let attempts = 0;
+            const maxAttempts = 100; // Try for 5 seconds (100 * 50ms)
+            let emulatorBar; // Declare variable outside the loop to avoid redeclaration error.
+            const hideInterval = setInterval(() => {
+                // The emulator injects a <p> tag with this specific class.
+                emulatorBar = document.querySelector('.firebase-emulator-warning');
+                if (emulatorBar) {
+                    emulatorBar.style.setProperty('display', 'none', 'important');
+                    console.log(`✅ Firebase Emulator warning banner hidden after ${attempts + 1} attempts.`);
+                    clearInterval(hideInterval);
+                } else if (attempts++ >= maxAttempts) {
+                    console.warn('Could not find emulator warning banner to hide after 5 seconds.');
+                    clearInterval(hideInterval);
+                }
+            }, 50); // Check every 50ms
+          }
+        } catch (error) {
+          console.error("❌ Failed to connect to Firebase emulators:", error);
+          showToast('error', '❌ Firebase emulator connection failed. Check if emulators are running.', 5000);
         }
       }
     } catch (error) {
       console.error("Firebase initialization failed:", error);
+
+      // For PWA offline functionality, don't prevent app loading
+      // Just log the error and continue with limited functionality
+      if (!navigator.onLine) {
+        console.warn("🌐 Offline: Firebase not available, app will work with cached data only");
+      } else {
+        console.error("🔴 Online but Firebase failed - check configuration");
+      }
+
+      // Set firebase to null so other parts of app know it's not available
+      firebase = null;
+      app = null;
+      firestore = null;
+      auth = null;
+      functions = null;
     }
   }
 }
