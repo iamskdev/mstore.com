@@ -528,6 +528,26 @@ class RouteManager {
   async loadViewContent(viewElement, config, role, force = false) {
     showPageLoader(); // Show page loader at the beginning of content loading
 
+    // Check if we have cached data available when offline
+    let hasCachedData = false;
+    if (!navigator.onLine && config.dataDependencies && config.dataDependencies.length > 0) {
+      for (const dependency of config.dataDependencies) {
+        const cacheKey = `cached_${dependency}`;
+        if (localStorage.getItem(cacheKey) || sessionStorage.getItem(cacheKey)) {
+          hasCachedData = true;
+          console.log(`📱 Found cached data for dependency: ${dependency}`);
+          break;
+        }
+      }
+    }
+
+    // If offline and no cached data available, show offline view immediately
+    if (!navigator.onLine && !hasCachedData && config.dataDependencies && config.dataDependencies.length > 0) {
+      console.log(`🌐 Offline with no cached data for ${config.id}, showing offline view`);
+      hidePageLoader();
+      return { offline: true, reason: 'offline_no_cached_data' };
+    }
+
     // Fetch data dependencies before loading view content
     // DataManager will serve from cache if available, even when offline
     let dataFetchSuccessful = true;
@@ -538,19 +558,18 @@ class RouteManager {
       } catch (error) {
         console.warn('Failed to fetch data dependencies:', error);
         dataFetchSuccessful = false;
-        // If we can't fetch data dependencies and we're offline, this is a problem
-        if (!navigator.onLine) {
+        // If we can't fetch data dependencies and we're offline but have cached data, continue
+        if (!navigator.onLine && hasCachedData) {
+          console.log(`🌐 Offline but cached data available, continuing with view load for ${config.id}`);
+        } else if (!navigator.onLine) {
+          // No cached data and offline - show offline view
           hidePageLoader();
-          return { offline: true, reason: 'data_fetch_failed' };
+          return { offline: true, reason: 'data_fetch_failed_offline' };
+        } else {
+          // Online but fetch failed - throw error
+          throw error;
         }
-        throw error; // Re-throw if online
       }
-    }
-
-    // If we're offline and data fetch failed (or no data dependencies exist), check if we can still show the view
-    if (!navigator.onLine && !dataFetchSuccessful) {
-      hidePageLoader();
-      return { offline: true, reason: 'offline_no_data' };
     }
     try {
       

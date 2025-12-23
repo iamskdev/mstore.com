@@ -3,7 +3,7 @@
     "owner": "santosh",
     "name": "mStore",
     "displayName": "mStore E-Commerce",
-    "version": "0.34.1",
+    "version": "0.34.2",
     "build": "2025.12.19",
     "environment": "development",
     "description": "Modern PWA E-commerce platform for local businesses",
@@ -226,7 +226,7 @@
   "audit": {
     "createdAt": "2025-09-08T09:56:14Z",
     "createdBy": "Santosh",
-    "modifyAt": "2025-12-23T06:53:20Z",
+    "modifyAt": "2025-12-23T07:23:47Z",
     "modifyBy": "System",
     "lastConfigUpdate": "2025-12-19T14:25:11Z",
     "configVersion": "2.0",

@@ -510,7 +510,56 @@ self.addEventListener('fetch', (event) => {
           return cached;
         }
 
-        // Don't serve offline page for document requests - let app handle offline states internally
+        // Special handling for main app entry point when offline
+        if (!navigator.onLine && request.destination === 'document' && request.url.endsWith('/index.html')) {
+          console.log('🌐 Offline: Main app entry point requested. Serving cached index.html to show cached data.');
+          // Try to serve cached index.html so the app can load and show cached data
+          const cachedIndex = await fromCache(request);
+          if (cachedIndex) {
+            console.log('✅ Serving cached index.html for offline app load');
+            return cachedIndex;
+          }
+
+          // If index.html not cached, serve offline page as fallback
+          console.log('⚠️ index.html not cached, serving offline fallback');
+          const offlineFallback = await fromCache(new Request(OFFLINE_PAGE));
+          if (offlineFallback) {
+            return offlineFallback;
+          }
+
+          // If offline page not cached, return a basic offline response
+          return new Response(
+            `<!DOCTYPE html>
+            <html lang="hi">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>mStore - Offline</title>
+              <style>
+                body { font-family: sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
+                .offline-icon { font-size: 4em; margin-bottom: 20px; }
+                h1 { color: #333; }
+                p { color: #666; margin-bottom: 30px; }
+                button { padding: 12px 24px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+                button:hover { background: #0056b3; }
+              </style>
+            </head>
+            <body>
+              <div class="offline-icon">📱</div>
+              <h1>You're Offline</h1>
+              <p>mStore is currently offline. Please check your internet connection and try again.</p>
+              <button onclick="window.location.reload()">Retry</button>
+            </body>
+            </html>`,
+            {
+              status: 200,
+              statusText: 'OK',
+              headers: { 'Content-Type': 'text/html' }
+            }
+          );
+        }
+
+        // Don't serve offline page for other document requests - let app handle offline states internally
 
         return fromNetwork(request, cacheName);
       })()
